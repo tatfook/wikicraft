@@ -27,10 +27,10 @@
 
                         <div class="btn-group show-md">
                             <div type="button" class="btn btn-default btn-sm"  ng-click="cmd_savepage()" title="保存（Ctrl+S）">
-                                <img ng-src="{{imgsPath+'icon/wiki_save.png'}}" alt=""> 保存
+                                <img ng-src="{{imgsPath+'icon/wiki_save.png'}}" alt=""> {{ "保存" | translate }}
                             </div>
                             <div class="btn btn-default btn-sm"  ng-click="cmd_newpage()" title="新建页（Shift+Ctrl+N）">
-                                <img ng-src="{{imgsPath+'icon/wiki_newPage.png'}}" alt=""> 新建页
+                                <img ng-src="{{imgsPath+'icon/wiki_newPage.png'}}" alt=""> {{ "新建页" | translate }}
                             </div>
                         </div>
                         <div class="btn-group">
@@ -111,7 +111,7 @@
                             </div>
                         </div>
                         <div class="btn-group">
-                            <div class="btn btn-default btn-sm" title="模块" ng-click="openWikiBlock()"><img ng-src="{{imgsPath+'icon/wiki_model.png'}}" alt=""> 模块</div>
+                            <div class="btn btn-default btn-sm" title="模块" ng-click="openWikiBlock()"><img ng-src="{{imgsPath+'icon/wiki_model.png'}}" alt=""> {{ "模块" | translate }}</div>
                         </div>
                         <div class= "btn-group  pull-right">
                             <div class="btn btn-default toolbar-page-version wiki-btn" title="版本" translate="版本"></div>
@@ -124,23 +124,23 @@
                         <div class="btn-group state-change">
                             <div class="btn btn-default btn-sm toolbar-page-file active" title="文件" ng-click="toggleFile()">
                                 <img ng-src="{{imgsPath+'icon/wiki_scan.png'}}" alt="">
-                                <img ng-src="{{imgsPath+'icon/wiki_scan_active.png'}}" alt=""> 浏览
+                                <img ng-src="{{imgsPath+'icon/wiki_scan_active.png'}}" alt=""> {{ "浏览" | translate }}
                             </div>
                             <div class="btn btn-default toolbar-new-site btn-sm active" title="新建网站" ng-click="newWebsite()">
                                 <img ng-src="{{imgsPath+'icon/wiki_newWebsite.png'}}" alt="">
-                                <img ng-src="{{imgsPath+'icon/wiki_newWebsite.png'}}" alt=""> 新建网站
+                                <img ng-src="{{imgsPath+'icon/wiki_newWebsite.png'}}" alt=""> {{ "新建网站" | translate }}
                             </div>
                         </div>
                         <div class="btn-group state-change">
                             <div class="btn btn-default btn-sm toolbar-page-code" title="代码" ng-click="showCodeView()">
                                 <img ng-src="{{imgsPath+'icon/wiki_code.png'}}" alt="">
-                                <img ng-src="{{imgsPath+'icon/wiki_code_active.png'}}" alt=""> 代码</div>
+                                <img ng-src="{{imgsPath+'icon/wiki_code_active.png'}}" alt=""> {{ "代码" | translate }}</div>
                             <div class="btn btn-default btn-sm toolbar-page-slide active hidden-xs" title="拆分" ng-click="codeAndPreview()">
                                 <img ng-src="{{imgsPath+'icon/wiki_split.png'}}" alt="">
-                                <img ng-src="{{imgsPath+'icon/wiki_split_active.png'}}" alt=""> 拆分</div>
+                                <img ng-src="{{imgsPath+'icon/wiki_split_active.png'}}" alt=""> {{ "拆分" | translate }}</div>
                             <div class="btn btn-default btn-sm toolbar-page-design" title="预览" ng-click="showPreview()">
                                 <img ng-src="{{imgsPath+'icon/wiki_preview.png'}}" alt="">
-                                <img ng-src="{{imgsPath+'icon/wiki_preview_active.png'}}" alt=""> 预览</div>
+                                <img ng-src="{{imgsPath+'icon/wiki_preview_active.png'}}" alt=""> {{ "预览" | translate }}</div>
                             </div>
                         <div class= "btn-group">
                             <input id="btUrl" class="btn btn-link btn-sm toolbar-page-preview" title="URL" style="border:1px solid #ccc; border-bottom-left-radius: 5px;border-top-left-radius: 5px; background: #fff;text-align: left;">
@@ -189,7 +189,7 @@
                             <ul class="list-group">
                                 <li class="list-group-item">
                                     <span class="icon expand-icon fa fa-chevron-down"></span>
-                                    已打开
+                                    {{ "已打开" | translate }}
                                     <span class="badge" ng-hide="isEmptyObject(opens)">
                                         <img class="show-parent" ng-click="cmd_closeAll()" ng-src="{{imgsPath+'icon/wiki_closeAll.png'}}" title="关闭全部">
                                         <img class="show-parent" ng-click="cmd_saveAll()" ng-src="{{imgsPath+'icon/wiki_saveAll.png'}}" title="保存全部">
@@ -215,7 +215,7 @@
                             <ul class="list-group">
                                 <li class="list-group-item">
                                     <span class="icon expand-icon fa fa-chevron-down"></span>
-                                    参与的项目
+                                    {{ "参与的项目" | translate }}
                                 </li>
                             </ul>
 							<div id="editableTree"></div>
@@ -224,14 +224,15 @@
                             <ul class="list-group" style="margin-bottom:0px;">
                                 <li class="list-group-item">
                                     <span class="icon expand-icon fa fa-chevron-down"></span>
-                                    临时的项目
+                                    {{ "临时的项目" | translate }}
                                 </li>
                             </ul>
                             <div id="readableTree"></div>
                         </div>
                     </div>
-                    <div class="code-view col-xs-12 full-height" style="height: 100%;overflow-y: hidden;">
+                    <div class="code-view col-xs-12 full-height" style="height: 100%;overflow-y: auto;display: flex;">
                         <div id="srcview" class="col-xs-6 full-noAttr-height">
+                            <button id="qiniuUploadBtn" style="display: none;"></button>
                             <div class="demo-control" style="display: none;"><a href="#" class="source-clear" translate="清除"></a></div>
                             <textarea id="source" name="source" class="source full-noAttr-height" TextMode="MultiLine"></textarea>
                             <div id="resize-bar" class="border"></div>

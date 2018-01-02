@@ -421,7 +421,7 @@
             overflow: hidden;
             position: absolute;
             top: -25px;
-            left: 195px;
+            right: -206px;
             cursor: pointer;
         }
 
@@ -473,21 +473,21 @@
                         <div class="field-item">
                             <lable class="desc" translate="充值金额："></lable>
                             <div class="price-field">
-                                <input type="text" name="price" ng-model="goods.price" ng-disabled="!hasUserNid()"/>元
+                                <input type="text" name="price" ng-model="goods.price" ng-disabled="!hasUserNid()"/>{{ "元" | translate }}
                             </div>
                         </div>
                         <div class="field-item" ng-if="hasUserNid()">
                             <lable class="desc" translate="兑换魔豆："></lable>
                             <lable class="rules">
                                 <span class="light light-bigger">{{ideal_money}}</span>
-                                魔豆
-                                （
+                                {{ "魔豆
+                                （" | translate }}
                                 <span class="light">1</span>
-                                人民币
-                                等于
+                                {{ "人民币
+                                等于" | translate }}
                                 <span class="light">{{goods.exchange_rate}}</span>
-                                魔豆
-                                ）
+                                {{ "魔豆
+                                ）" | translate }}
                             </lable>
                         </div>
                         <div class="field-item" ng-if="!hasUserNid()">
@@ -511,9 +511,9 @@
                         <div class="alipay-scan clearfix">
                             <img class="alipay-scan-img" src="/wiki/assets/imgs/alipay_scan.png" alt="扫一扫标识" />
                             <div class="alipay-scan-info">
-                                打开手机支付宝
+                                {{ "打开手机支付宝" | translate }}
                                 <br />
-                                扫一扫继续付款
+                                {{ "扫一扫继续付款" | translate }}
                             </div>
                         </div>
                         <div class="alipay-download">
@@ -527,7 +527,7 @@
                 </div>
                 <div ng-if="page == 'wechat'" class="wechat-pay-qrcode">
                     <div class="money">
-                        支付金额： <span>￥{{goods.price}}</span> 元
+                        {{ "支付金额：" | translate }} <span>￥{{goods.price}}</span> {{ "元" | translate }}
                     </div>
                     <div class="wechat-qrcode">
                         <img ng-src="http://qr.topscan.com/api.php?m=0&text={{qr_url}}">
@@ -537,12 +537,12 @@
                     <img src="/wiki/assets/imgs/pay_success.png"/>
                     <div class="pull-left">
                         <div class="success-info">
-                            恭喜，您已支付成功！
+                            {{ "恭喜，您已支付成功！" | translate }}
                             <div class="success-return" ng-if="returnUrl" translate="5秒钟后将返回..."></div>
                         </div>
                         <div class="success-operate">
                             <a ng-click="goMypay()" translate="查看支付记录"></a>
-                            或
+                            {{ "或" | translate }}
                             <a ng-click="back()" translate="返回"></a>
                         </div>
                     </div>
@@ -550,7 +550,7 @@
                 <div ng-if="page == 'fail'" class="pay-fail">
                     <div class="fail-info">
                         <img src="/wiki/assets/imgs/pay_fail.png" />
-                        支付未成功！
+                        {{ "支付未成功！" | translate }}
                     </div>
                     <div class="fail-code">ERROR: NO FAIL MESSAGE</div>
                 </div>

@@ -292,10 +292,10 @@
             <h3 class="clearfix ellipsis-1" title="{{userinfo.displayName || userinfo.username}}">{{userinfo.displayName || userinfo.username}}</h3>
             <p class="info clearfix ellipsis-1">
                 <span title="{{userinfo.displayName || userinfo.username}}">{{userinfo.displayName || userinfo.username}}</span>
-                <span class="pull-right">注册于{{userinfo.joindate || ""}}</span>
+                <span class="pull-right">{{ "注册于" | translate }}{{userinfo.joindate || ""}}</span>
             </p>
             <p class="userinfo-introduce">{{userinfo.introduce}}</p>
-            <div class="btn btn-block btn-primary" ng-click="favoriteUser(userinfo, 'fansOpt')">{{userinfo.concerned?"取消关注":"关 注"}}</div>
+            <div class="btn btn-block btn-primary" ng-click="favoriteUser(userinfo, 'fansOpt')">{{userinfo.concerned?translate("取消关注"):translate("关 注")}}</div>
             <div class="message-row">
                 <p class="userinfo-location"><img ng-src="{{imgsPath+'icon/wiki_location.png'}}" alt="" class="icon">{{userinfo.location}}</p>
                 <p><img ng-src="{{imgsPath+'icon/wiki_mail.png'}}" alt="" class="icon"><a href="mailto:{{userinfo.email}}" target="_blank" class="text-primary">{{userinfo.email}}</a></p>
@@ -347,7 +347,7 @@
                         <a href="#wiki_concern" aria-controls="wiki_concern" role="tab" data-toggle="tab" translate="关注"></a>
                     </li>
                     <li role="presentation">
-                        <a href="#wiki_fans" aria-controls="wiki_fans" role="tab" data-toggle="tab">粉丝<span class="info">({{fansCount || 0}})</span></a>
+                        <a href="#wiki_fans" aria-controls="wiki_fans" role="tab" data-toggle="tab">{{ "粉丝" | translate }}<span class="info">({{fansCount || 0}})</span></a>
                     </li>
                 </ul>
                 <!-- Tab panes -->
@@ -364,10 +364,10 @@
                                     <p class="ellipsis-1" title="{{x.desc}}">{{x.desc}}</p>
                                     <div class="col-md-12 info">
                                         <div class="col-md-6">
-                                            <span class="glyphicon glyphicon-eye-open"></span> 浏览量 {{x.visitCount}}
+                                            <span class="glyphicon glyphicon-eye-open"></span> {{ "浏览量" | translate }}{{x.visitCount}}
                                         </div>
                                         <div class="col-md-6">
-                                            <span class="glyphicon glyphicon-star text-danger"></span> 关注 {{x.favoriteCount}}
+                                            <span class="iconfont icon-dianzan text-danger"></span> {{x.favoriteCount}}
                                         </div>
                                     </div>
                                 </div>
@@ -381,13 +381,13 @@
                                 <div class="text">
                                     <h4><a ng-click="goUserSite(x)">{{x.name}}</a></h4>
                                     <p>作者：{{x.username}} </p>
-                                    <p class="ellipsis-1" title="{{x.desc}}">{{x.desc || "暂无简介"}}</p>
+                                    <p class="ellipsis-1" title="{{x.desc}}">{{x.desc || translate("暂无简介")}}</p>
                                     <div class="col-md-12 info">
                                         <div class="col-md-6">
-                                            <span class="glyphicon glyphicon-eye-open"></span> 浏览量 {{x.visitCount}}
+                                            <span class="glyphicon glyphicon-eye-open"></span> {{ "浏览量" | translate }}{{x.visitCount}}
                                         </div>
                                         <div class="col-md-6">
-                                            <span class="glyphicon glyphicon-star text-danger"></span> 关注 {{x.favoriteCount}}
+                                            <span class="iconfont icon-dianzan text-danger"></span> {{x.favoriteCount}}
                                         </div>
                                     </div>
                                 </div>
@@ -401,7 +401,7 @@
                                         <a title="在编辑器页面点击保存一次即为一条统计数据" translate="查看数据统计方法"></a>
                                     </div>
                                     <div class="pull-right hidden-xs">
-                                        弱
+                                        {{ "弱" | translate }}
                                         <ul class="legend clearfix">
                                             <li style="background-color: #eee"></li>
                                             <li style="background-color: #E8D8F8"></li>
@@ -409,10 +409,10 @@
                                             <li style="background-color: #77A4D0"></li>
                                             <li style="background-color: #3977AD"></li>
                                         </ul>
-                                        强
+                                        {{ "强" | translate }}
                                     </div>
-                                    <div class="pull-left show-xs">
-                                        弱
+                                    <div class="pull-left visible-xs">
+                                        {{ "弱" | translate }}
                                         <ul class="legend clearfix">
                                             <li style="background-color: #eee"></li>
                                             <li style="background-color: #E8D8F8"></li>
@@ -420,7 +420,7 @@
                                             <li style="background-color: #77A4D0"></li>
                                             <li style="background-color: #3977AD"></li>
                                         </ul>
-                                        强
+                                        {{ "强" | translate }}
                                     </div>
                                 </div>
                             </div>
@@ -434,7 +434,7 @@
                                     <span class="pull-right hidden-xs">{{x.updateDate}}</span>
                                 </div>
                             </div>
-                            <div ng-show="trendsCount>0" class="btn btn-block btn-outline col-xs-12" ng-click="loadActivity()">查看更多活动</div>
+                            <div ng-show="trendsCount>0" class="btn btn-block btn-outline col-xs-12" ng-click="loadActivity()">{{ "查看更多活动" | translate }}</div>
                         </div>
                     </div>
                     <div role="tabpanel" class="tab-pane clearfix" id="wiki_concern">
@@ -445,34 +445,34 @@
                                 <img ng-src="{{x.logoUrl || getImageUrl('wiki_cover.jpg',imgsPath)}}" alt="">
                                 <div class="text">
                                     <h4><a ng-click="goUserIndexPage(x.userinfo.username)">{{x.userinfo.displayName}}</a></h4>
-                                    <p>作者： <a class="text-muted" ng-click="goUserIndexPage(x.userinfo.username)">{{x.userinfo.username}}</a></p>
-                                    <p class="ellipsis-1" title="{{x.userinfo.desc}}">{{x.userinfo.desc || "暂无简介"}}</p>
+                                    <p>{{ "作者：" | translate }} <a class="text-muted" ng-click="goUserIndexPage(x.userinfo.username)">{{x.userinfo.username}}</a></p>
+                                    <p class="ellipsis-1" title="{{x.userinfo.desc}}">{{x.userinfo.desc || translate("暂无简介")}}</p>
                                     <div class="col-md-12 info">
                                         <div class="col-md-6">
-                                            <span class="glyphicon glyphicon-eye-open"></span> 浏览量 {{x.userinfo.visitCount || 0}}
+                                            <span class="glyphicon glyphicon-eye-open"></span> {{ "浏览量" | translate }}{{x.userinfo.visitCount || 0}}
                                         </div>
                                         <div class="col-md-6">
-                                            <span class="glyphicon glyphicon-star text-danger"></span> 关注 {{x.userinfo.favoriteCount || 0}}
+                                            <span class="iconfont icon-dianzan text-danger"></span> {{x.userinfo.favoriteCount || 0}}
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                         <div class="col-xs-12">
-                            <h3 class="title" translate="关注的网站"></h3>
-                            <p ng-show="followSiteTotal==0" translate="暂无关注的网站"></p>
+                            <h3 class="title" translate="喜欢的网站"></h3>
+                            <p ng-show="followSiteTotal==0" translate="暂无喜欢的网站"></p>
                             <div class="img-text col-md-6" ng-repeat="x in followSiteList">
                                 <img ng-src="{{x.logoUrl || getImageUrl('wiki_cover.jpg',imgsPath)}}" alt="">
                                 <div class="text">
-                                    <h4><a ng-click="goUserSite(x)">{{x.name || "作品名未知"}}</a></h4>
-                                    <p>作者：{{x.username || "作者未知"}} </p>
-                                    <p title="x.desc" class="ellipsis-1">{{x.desc || "暂无描述"}}</p>
+                                    <h4><a ng-click="goUserSite(x)">{{x.name || translate("作品名未知")}}</a></h4>
+                                    <p>作者：{{x.username || translate("作者未知")}} </p>
+                                    <p title="x.desc" class="ellipsis-1">{{x.desc || translate("暂无描述")}}</p>
                                     <div class="col-md-12 info">
                                         <div class="col-md-6">
-                                            <span class="glyphicon glyphicon-eye-open"></span> 浏览量 {{x.visitCount || 0}}
+                                            <span class="glyphicon glyphicon-eye-open"></span> {{ "浏览量" | translate }}{{x.visitCount || 0}}
                                         </div>
                                         <div class="col-md-6">
-                                            <span class="glyphicon glyphicon-star text-danger"></span> 关注 {{x.favoriteCount || 0}}
+                                            <span class="iconfont icon-dianzan text-danger"></span> {{x.favoriteCount || 0}}
                                         </div>
                                     </div>
                                 </div>
@@ -487,7 +487,7 @@
                                 <h4><a ng-click="goUserIndexPage(x.userinfo.username)">{{x.userinfo.displayName}}</a></h4>
                                 <p><img ng-src="{{imgsPath+'icon/wiki_location.png'}}" alt="" class="icon">{{x.userinfo.location}}</p>
                             </div>
-                            <div class="btn btn-primary" ng-disabled="x.fansUserId == user._id" ng-click="favoriteUser(x.userinfo)">{{x.userinfo.concerned?"取消关注":"关 注"}}</div>
+                            <div class="btn btn-primary" ng-disabled="x.fansUserId == user._id" ng-click="favoriteUser(x.userinfo)">{{x.userinfo.concerned?translate("取消关注"):translate("关 注")}}</div>
                         </div>
                     </div>
                 </div>

@@ -168,7 +168,7 @@
     <div ng-show="showItem == 'myPay'" class="col-md-10 main-content panel">
         <div class="panel-heading clearfix">
             <div style="float:left" translate="消费记录"></div>
-            <div style="float:right">余额{{balance/100 || "0"}}元</div>
+            <div style="float:right">{{ "余额" | translate }}{{balance/100 || "0"}}{{ "元" | translate }}</div>
         </div>
         <div class="panel-body mypay-panel">
             <div class="empty-box" ng-hide="myPays.length > 0">
@@ -222,7 +222,7 @@
         <div class="panel-heading" translate="我的VIP"></div>
         <div class="panel-body">
             <div class="vipinfo clearfix">
-                <div class="col-sm-4" ng-show="user.vipInfo.endDate">您的VIP特权将在<span class="text-danger">{{user.vipInfo.endDate}}</span>到期</div>
+                <div class="col-sm-4" ng-show="user.vipInfo.endDate">{{ "您的VIP特权将在" | translate }}<span class="text-danger">{{user.vipInfo.endDate}}</span>{{ "到期" | translate }}</div>
                 <div class="col-sm-4" ng-show="!user.vipInfo.endDate" translate="您还不是VIP用户。"></div>
                 <div class="col-sm-3">
                     <div class="btn btn-primary" ng-click="goPayPage()">{{(user.vipInfo.endDate ? "追加续费" : "成为VIP") | translate}}</div>
@@ -233,12 +233,12 @@
                     <h2 translate="免费账户"></h2>
                     <p class="info" translate="免费"></p>
                     <ul>
-                        <li><span class="glyphicon glyphicon-ok text-success"></span>免费创建网站</li>
-                        <li><span class="glyphicon glyphicon-ok text-success"></span>多平台在线编辑器</li>
-                        <li><span class="glyphicon glyphicon-ok text-success"></span>页面功能模块支持</li>
-                        <li><span class="glyphicon glyphicon-ok text-success"></span>子域名</li>
-                        <li><span class="glyphicon glyphicon-ok text-success"></span>网站CDN访问加速</li>
-                        <li><span class="glyphicon glyphicon-ok text-success"></span>设置VIP才可以访问</li>
+                        <li><span class="glyphicon glyphicon-ok text-success"></span>{{ "免费创建网站" | translate }}</li>
+                        <li><span class="glyphicon glyphicon-ok text-success"></span>{{ "多平台在线编辑器" | translate }}</li>
+                        <li><span class="glyphicon glyphicon-ok text-success"></span>{{ "页面功能模块支持" | translate }}</li>
+                        <li><span class="glyphicon glyphicon-ok text-success"></span>{{ "子域名" | translate }}</li>
+                        <li><span class="glyphicon glyphicon-ok text-success"></span>{{ "网站CDN访问加速" | translate }}</li>
+                        <li><span class="glyphicon glyphicon-ok text-success"></span>{{ "设置VIP才可以访问" | translate }}</li>
                         <li class="text-muted" translate="cname 转发"></li>
                         <li class="text-muted" translate="私有网站（额外权限管理）"></li>
                         <li class="text-muted" translate="组织网站模板"></li>
@@ -248,15 +248,15 @@
                     <h2 translate="VIP账号"></h2>
                     <p class="info" translate="30RMB/月"></p>
                     <ul>
-                        <li><span class="glyphicon glyphicon-ok text-success"></span>免费创建网站</li>
-                        <li><span class="glyphicon glyphicon-ok text-success"></span>多平台在线编辑器</li>
-                        <li><span class="glyphicon glyphicon-ok text-success"></span>页面功能模块支持</li>
-                        <li><span class="glyphicon glyphicon-ok text-success"></span>子域名</li>
-                        <li><span class="glyphicon glyphicon-ok text-success"></span>网站CDN访问加速</li>
-                        <li><span class="glyphicon glyphicon-ok text-success"></span>设置VIP才可以访问</li>
-                        <li><span class="glyphicon glyphicon-ok text-success"></span>cname 转发</li>
-                        <li><span class="glyphicon glyphicon-ok text-success"></span>私有网站（额外权限管理）</li>
-                        <li><span class="glyphicon glyphicon-ok text-success"></span>组织网站模板</li>
+                        <li><span class="glyphicon glyphicon-ok text-success"></span>{{ "免费创建网站" | translate }}</li>
+                        <li><span class="glyphicon glyphicon-ok text-success"></span>{{ "多平台在线编辑器" | translate }}</li>
+                        <li><span class="glyphicon glyphicon-ok text-success"></span>{{ "页面功能模块支持" | translate }}</li>
+                        <li><span class="glyphicon glyphicon-ok text-success"></span>{{ "子域名" | translate }}</li>
+                        <li><span class="glyphicon glyphicon-ok text-success"></span>{{ "网站CDN访问加速" | translate }}</li>
+                        <li><span class="glyphicon glyphicon-ok text-success"></span>{{ "设置VIP才可以访问" | translate }}</li>
+                        <li><span class="glyphicon glyphicon-ok text-success"></span>{{ "cname 转发" | translate }}</li>
+                        <li><span class="glyphicon glyphicon-ok text-success"></span>{{ "私有网站（额外权限管理）" | translate }}</li>
+                        <li><span class="glyphicon glyphicon-ok text-success"></span>{{ "组织网站模板" | translate }}</li>
                     </ul>
                 </div>
             </div>

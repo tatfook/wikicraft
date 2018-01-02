@@ -531,6 +531,16 @@ select.resize-view {
 .editingLine{
     border-right: 4px solid #FFAC36;
 }
+p.file-large-info{
+    padding: 0 35px;
+    font-size: 16px;
+    line-height: 36px;
+}
+p.file-large-info > .filename{
+    font-weight: bold;
+    padding: 5px;
+}
+
 @media (max-width: 768px) {
     .bg-title h1{
         height: 340px;

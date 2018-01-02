@@ -34,7 +34,7 @@ if(ajax_type == "mod") then
 	return;
 elseif(ajax_type == "wiki") then
 	-- Allow for cross-domain requests (from the frontend). 
-	send_origin_headers();
+	-- send_origin_headers();
 	-- cross-domain request allow
 	addheader('Access-Control-Allow-Origin','*');  -- debug use
 	--addheader('Access-Control-Allow-Credentials', 'true');  -- debug use

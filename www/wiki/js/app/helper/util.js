@@ -147,7 +147,7 @@ define([
         }
 
         if (username != "wiki" && !pagename) {
-            pagename = "";
+            pagename = "index";
             pagepath += (pagepath[pagepath.length-1] == "/" ? "" : "/") + pagename;
         }
         domain = hostname;

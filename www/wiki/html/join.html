@@ -146,7 +146,7 @@
             </div>
             <div class="checkbox clearfix">
                 <label>
-                    <input class="pull-right" type="checkbox" checked="{{agree}}" ng-model="agree">申请即视为同意 <a ng-click="goLicense()" translate="《KeepWork用户协议》"></a>
+                    <input class="pull-right" type="checkbox" checked="{{agree}}" ng-model="agree">{{ "申请即视为同意" | translate }} <a ng-click="goLicense()" translate="《KeepWork用户协议》"></a>
                 </label>
             </div>
             <a ng-click="register()" class="btn btn-primary btn-block btn-lg" ng-disabled="!agree" translate="注册"></a>
@@ -169,13 +169,13 @@
             </div>
         </form>
         <div class="successInfo" ng-show="step==2">
-            <h2><img ng-src="{{imgsPath+'icon/wiki_success.png'}}" alt=""> 恭喜您注册成功！</h2>
+            <h2><img ng-src="{{imgsPath+'icon/wiki_success.png'}}" alt=""> {{ "恭喜您注册成功！" | translate }}</h2>
             <div class="params">
                 <p>账号：{{username}}</p>
                 <p>系统默认个人网址地址：http://keepwork.com/{{username}}</p>
             </div>
             <div class="params">
-                <p>请在个人资料管理中绑定手机、email。绑定后的手机号与email均可作为登录账号使用。打开 <a ng-click="goUserCenter()">>>个人资料管理 << </a>，进行绑定。</p>
+                <p>{{ "请在个人资料管理中绑定手机、email。绑定后的手机号与email均可作为登录账号使用。打开" | translate }} <a ng-click="goUserCenter()">>>个人资料管理 << </a>{{ "，进行绑定。" | translate }}</p>
             </div>
             <div class="btns-group">
                 <div class="btn btn-primary" ng-click="goBack()" translate="返 回"></div>
@@ -208,7 +208,7 @@
                 </div>
                 <div class="checkbox clearfix">
                     <label>
-                        <input class="pull-right" type="checkbox" checked="{{agree}}" ng-model="agree">申请即视为同意 <a ng-click="goLicense()" translate="《KeepWork用户协议》"></a>
+                        <input class="pull-right" type="checkbox" checked="{{agree}}" ng-model="agree">{{ "申请即视为同意" | translate }} <a ng-click="goLicense()" translate="《KeepWork用户协议》"></a>
                     </label>
                 </div>
                 <div ng-click="register('other')" class="btn btn-primary btn-block btn-lg" ng-disabled="!agree" translate="确 定"></div>
