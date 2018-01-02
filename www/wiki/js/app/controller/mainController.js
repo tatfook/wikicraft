@@ -48,6 +48,7 @@ define([
             $http,
             $auth,
             $compile,
+            $translate,
             Account,
             Message,
             github,
