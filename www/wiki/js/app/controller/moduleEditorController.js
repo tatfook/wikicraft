@@ -97,8 +97,9 @@ define([
 
 		// 隐藏事件
 		$scope.click_hide = function(data) {
-            data.is_mod_hide = !data.is_mod_hide;
-            config.shareMap.moduleEditorParams.wikiBlock.modParams.imageType = data;
+            var changeData = data.data;
+            changeData.is_mod_hide = !changeData.is_mod_hide;
+            config.shareMap.moduleEditorParams.wikiBlock.modParams[data.$kp_key] = changeData;
             applyAttrChange();
 		}
 
@@ -132,6 +133,12 @@ define([
             });
         }
 
+        // 打开绘图板
+        $scope.openBoard = function(data){
+            // 画板
+            console.log("打开绘图板");
+        }
+
         // 多行文本弹窗
         $scope.openMultiText = function(data){
             $scope.editingData = data;
@@ -153,6 +160,7 @@ define([
             config.services.imageManagerModal({
                 title: '选择图片',
                 nav: 'myImages' ,//or 'internetImage' or 'beautifyImage'
+                modalPositionCenter: true,
                 currentPage: {
                     username: $scope.userinfo.username,
                     sitename: $scope.userinfo.sitename

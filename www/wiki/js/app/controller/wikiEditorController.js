@@ -1454,7 +1454,7 @@ define([
                         return newText;
                     } catch (e) {
                         console.log(e);
-                        return lines.slice(0, startPos + 1).join('\n') + '\n' + lines.slice(endPos).join('\n');
+                        return lines.slice(0, startPos + 1).join('\n') + '\n' + paramsText + '\n' + lines.slice(endPos).join('\n');
                     }
                 }
 
