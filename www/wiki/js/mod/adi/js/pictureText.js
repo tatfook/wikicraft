@@ -50,7 +50,7 @@ define([
 						is_mod_hide:false,  // 可视化是否显示 undefined取值editable
 						name:"标题",   // 表单显示名
 						text:"一个人，一条路，人在途中",// 默认值
-						href:"", // 默认值
+						href:"http://localhost", // 默认值
 						require: true, // 必填字段 没有使用默认值(默认值得有)
 					},
 					hTwo:{
@@ -60,7 +60,7 @@ define([
 						is_mod_hide:false,  // 可视化是否显示 undefined取值editable
 						name:"子标题",   // 表单显示名
 						text:"我们一直在旅行",// 默认值
-						href:"", // 默认值
+						href:"http://localhost", // 默认值
 						require: true, // 必填字段 没有使用默认值(默认值得有)
 					},
 					spanOne:{
@@ -68,10 +68,10 @@ define([
 						type:"link",   // 地段类型
 						editable:true, // 是否可以编辑
 						is_card_show:true,  // 是否在adi中显示编辑
-            is_mod_hide:false,  // 在模块中是否隐藏
+            			is_mod_hide:false,  // 在模块中是否隐藏
 						name:"文字说明",   // 表单显示名
 						text:"",// 默认值
-						href:"", // 默认值
+						href:"http://localhost", // 默认值
 						require: true, // 必填字段 没有使用默认值(默认值得有)
 					},
 					btn:{
@@ -82,7 +82,7 @@ define([
                         is_mod_hide:false,  // 在模块中是否隐藏
                         name:"按钮",   // 表单显示名
                         text:"更多照片", // 默认值
-                        href:"", // 默认值
+                        href:"http://localhost", // 默认值
                     	require: true, // 必填字段 没有使用默认值(默认值得有)
                     },
 				}
