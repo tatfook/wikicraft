@@ -140,6 +140,12 @@
         display: inline-block;
         margin-top: 1px
     }
+    .world-span1{
+        color: #999;
+    }
+    .world-span2{
+        color: #999;
+    }
     /* style3 css */
     .world5D{
         margin: 0 auto;
@@ -187,7 +193,12 @@
     }
     .world-work-span1{
         font-size: 20px;
+        color: #999;
     }
+    .world-work-span2{
+        color: #999;
+    }
+
     /* @media css */
     @media (max-width: 992px) {
         .world3D .inner{
@@ -234,7 +245,7 @@
             <div class="world-head clearfix">
                 <div class="world-div1">
                     <h2 ng-hide="params.worldName.is_mod_hide" class="worldName"><a>{{params.worldName.text}}</a></h2>
-                    <h2 ng-hide="params.username.is_mod_hide" class="useName">作者：{{params.username.text}}</h2>
+                    <h3 ng-hide="params.username.is_mod_hide" class="useName">作者：{{params.username.text}}</h3>
                 </div>
                 <div class="world-div2">
                     <div class="worldBtn"><a class="btn btn-block btn-primary world-btn2" ng-click="checkEngine()">进入</a></div>
@@ -251,8 +262,8 @@
                     <img ng-src="{{getImageUrl(params.logoUrl) || imgsPath + 'paracraftWorld.png'}}" alt="">
                 </div>
                 <div ng-hide="params.desc.is_mod_hide" class="world-text">
-                    <span>作品简介：</span><br>
-                        <span ng-if="params.desc.text.length == 0">
+                    <span class="world-span1">作品简介：</span><br>
+                        <span class="world-span2" ng-if="params.desc.text.length == 0">
                             从来都记忆模糊，记不得都去了哪些地方，看了哪些风景，遇到哪些人。尽管同学说，去<br>
                             旅行不在于记忆，而在于当时餐，午餐，晚餐。或许吃得不好，可是却依旧为对方擦去嘴角<br>
                             的油渍。风景如何，其实并不重要。于记忆，而在于当时餐，午餐，晚餐。或许吃得不<br>
@@ -277,7 +288,7 @@
             <div class="world-text3">
                 <div class="clearfix">
                     <h2 ng-hide="params.worldName.is_mod_hide" class="worldName2"><a>{{params.worldName.text}}</a></h2>
-                    <h2 ng-hide="params.username.is_mod_hide" class="worldUse2">作者：{{params.username.text}}</h2>
+                    <h3 ng-hide="params.username.is_mod_hide" class="worldUse2">作者：{{params.username.text}}</h3>
                 </div>
                 <div ng-hide="params.desc.is_mod_hide" class="world-work2">
                     <span class="world-work-span1">作品简介：</span><br>
