@@ -97,8 +97,9 @@ define([
 
 		// 隐藏事件
 		$scope.click_hide = function(data) {
-            data.is_mod_hide = !data.is_mod_hide;
-            config.shareMap.moduleEditorParams.wikiBlock.modParams.imageType = data;
+            var changeData = data.data;
+            changeData.is_mod_hide = !changeData.is_mod_hide;
+            config.shareMap.moduleEditorParams.wikiBlock.modParams[data.$kp_key] = changeData;
             applyAttrChange();
 		}
 
