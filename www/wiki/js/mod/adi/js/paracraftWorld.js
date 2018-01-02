@@ -172,7 +172,7 @@ define([
 						type         : "link",
 						editable     : false,
 						is_mod_show  : true,
-						name         : "世界名称",
+						name         : "btnLogo",
 						text         : config.wikiModPath + 'adi/assets/imgs/down.png',
 						require      : true,
 					},
