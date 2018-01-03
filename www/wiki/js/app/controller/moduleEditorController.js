@@ -298,6 +298,7 @@ define([
                 modParams = moduleEditorParams.wikiBlock.formatModParams("", paramsTemplate, modParams, false);
                 //console.log(modParams);
                 moduleEditorParams.wikiBlock.applyModParams(modParams);
+                setFakeIconPosition();
                 //config.shareMap.moduleEditorParams = undefined;
             }
         }
@@ -413,7 +414,7 @@ define([
         }
 
         function setFakeIconPosition(){
-            fakeIconDom = fakeIconDom.length > 0 ? fakeIconDom : $(".fake-icon");
+            fakeIconDom = fakeIconDom.length > 0 ? fakeIconDom : $(".mod-container.active .fake-icon");
             if (fakeIconDom.length <= 0) {
                 setTimeout(function(){
                     setFakeIconPosition();
@@ -426,6 +427,7 @@ define([
             fakeIconDom.css({
                 "left" : leftDistance / scaleSize
             });
+            fakeIconDom = [];
         }
 
 		function init() {
