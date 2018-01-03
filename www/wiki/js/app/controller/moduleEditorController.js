@@ -367,7 +367,7 @@ define([
                 return;
             }
 
-            $(".swiper-no-scroll").on("mousewheel", function(event){
+            $(".ui-select-dropdown.dropdown-menu").on("mousewheel", function(event){
                 console.log(event);
                 event.stopPropagation();
             });

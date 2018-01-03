@@ -444,6 +444,7 @@ define([
 						return;
 					}
 					if ($event) {
+                        $event.preventDefault();
 						$event.stopPropagation();
 					}
 					moduleEditorParams.selectObj = obj && obj.$kp_datas;
