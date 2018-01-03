@@ -32,7 +32,7 @@
 
             var ui = new Board(new Editor(urlParams['chrome'] == '0', themes), document.querySelector("#mx-client"));
 
-            if (data && data.length > 0 && data.replace(/[\ \r\n]+/g, "") != "blank") {
+            if (data && data.replace(/[\ \r\n]+/g, "").length > 0 && data.replace(/[\ \r\n]+/g, "") != "blank") {
                 doc = ui.editor.graph.getDecompressData(data);
 
                 ui.editor.setGraphXml(doc.documentElement);
@@ -94,8 +94,9 @@
         app.registerController("boardController", ['$scope', '$uibModal', '$sce', function ($scope, $uibModal, $sce) {
             if (wikiBlock.editorMode) {
                 $scope.mxClientEdit = true;
+                var modParams = wikiBlock.modParams.replace(/[\ \r\n]+/g, "");
 
-                if (typeof(wikiBlock.modParams) == "string" && wikiBlock.modParams.length == 0 || wikiBlock.modParams.replace(/[\ \r\n]+/g, "") == "blank") {
+                if (typeof(modParams) == "string" && modParams.length == 0 || modParams == "blank") {
                     $scope.mxClientStart = true;
                     $scope.startNotice   = "点击此处开始编辑";
                     $scope.$apply();
