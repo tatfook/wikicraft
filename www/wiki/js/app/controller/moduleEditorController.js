@@ -236,6 +236,30 @@ define([
             });
         }
 
+        $scope.getLinkTarget = function(data){
+            if (!data.target) {
+                data.target = "_blank";
+            }
+            var linkTarget;
+            switch (data.target) {
+                case "_self":
+                    linkTarget = "本窗口打开";
+                    break;
+                default:
+                    linkTarget = "新窗口打开";
+                    break;
+            }
+            return linkTarget;
+        }
+
+        $scope.setLinkTarget = function(data, value){
+            if (value == "_blank" || value == "_self") {
+                data.target = value;
+            }
+            data.target = data.target || "_blank";
+            applyAttrChange();
+        }
+
 		$scope.close = function() {
 			var moduleEditorParams = config.shareMap.moduleEditorParams || {};
 			$scope.editorDatas = $scope.datas_stack.pop();
@@ -248,7 +272,7 @@ define([
 					//console.log(modParams);
 					var paramsTemplate = angular.copy(moduleEditorParams.wikiBlock.params_template);
 					//console.log(paramsTemplate, modParams);
-					modParams = moduleEditorParams.wikiBlock.formatModParams("", paramsTemplate, modParams, true);
+					modParams = moduleEditorParams.wikiBlock.formatModParams("", paramsTemplate, modParams, false);
 					//console.log(modParams);
 					moduleEditorParams.wikiBlock.applyModParams(modParams);
 					//config.shareMap.moduleEditorParams = undefined;
@@ -271,7 +295,7 @@ define([
                 //console.log(modParams);
                 var paramsTemplate = angular.copy(moduleEditorParams.wikiBlock.params_template);
                 //console.log(paramsTemplate, modParams);
-                modParams = moduleEditorParams.wikiBlock.formatModParams("", paramsTemplate, modParams, true);
+                modParams = moduleEditorParams.wikiBlock.formatModParams("", paramsTemplate, modParams, false);
                 //console.log(modParams);
                 moduleEditorParams.wikiBlock.applyModParams(modParams);
                 //config.shareMap.moduleEditorParams = undefined;
