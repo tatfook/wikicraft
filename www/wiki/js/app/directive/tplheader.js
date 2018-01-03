@@ -19,7 +19,7 @@ define([
 				var pageinfo = $rootScope.pageinfo;
 				var template = mdwiki.template;
 				$scope.$rootScope = $rootScope;
-				$scope.isShow = mdwiki.editorMode;
+				$scope.isShow = mdwiki.editorMode && $rootScope.pageinfo;
 				$scope.mdwiki = mdwiki;
 
 				//console.log("---------------", $attrs.mdwikiname, mdwiki);
@@ -37,6 +37,7 @@ define([
 				$scope.$watch("$rootScope.pageinfo", function() {
 					pageinfo = $rootScope.pageinfo;
 					if (!pageinfo) {
+						$scope.isShow = false;
 						return;
 					}
 					//console.log(pageinfo);

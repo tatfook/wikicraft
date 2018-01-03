@@ -271,7 +271,7 @@ define([
             },
             applyModParams: function (modParams) {
 				var pos = blockCache.block.textPosition;
-                //console.log(modParams);
+				console.log(modParams);
                 if (!modParams || !editor || !mdwiki.options.editorMode) {
                     return;
                 }
@@ -280,7 +280,7 @@ define([
 					//modParams = angular.toJson(modParams, 4);
 					modParams = mdconf.jsonToMd(modParams);
                 }
-				console.log(modParams, pos);
+				//console.log(modParams, pos);
                 editor.replaceRange(modParams + '\n', {line: pos.from + 1, ch: 0}, {
                     line: pos.to - 1,
                     ch: 0
@@ -293,17 +293,28 @@ define([
 				}
 
 				var self = this;
+				var keywordMap = {
+					"is_leaf":true,
+					"order":true,
+					"type":true,
+					"editable":true,
+					"is_card_show":true,
+					"is_mod_hide":true,
+					"require":true,
+					"name":true,
+					"list":true, // 针对列表 不处理
+				}
+
 				//console.log(datas);
 				if (datas.is_leaf == true) {
 					datas.type = datas.type || "text";
 					data = data || {};
 					if (datas.require) {
-						if (datas.type == "text") {
-							data.text = data.text || datas.text;
-						}
-						if (datas.type == "link") {
-							data.text = data.text || datas.text;
-							data.href = data.href || datas.href;
+						for (var key in datas) {
+							if (keywordMap[key]) {
+								continue;
+							}
+							data[key] = data[key] || datas[key];
 						}
 						if (datas.type == "list") {
 							if (!angular.isArray(data.list)) {
@@ -315,19 +326,14 @@ define([
 						}
 					}
 					if (hideDefauleValue) {
-						if (datas.type == "text" && datas.text == data.text) {
-							delete data.text;
-						}
-
-						if (datas.type == "link") {
-							if (data.text == datas.text) {
-								delete data.text;
+						for (var key in datas) {
+							if (keywordMap[key]) {
+								continue;
 							}
-							if (data.href == datas.href) {
-								delete data.href;
+							if (typeof(key) != "object" && data[key] == datas[key]) {
+								delete data[key];
 							}
 						}
-
 						if (datas.type == "list") {
 							// 列表不作默认隐藏
 						}
@@ -950,6 +956,11 @@ define([
 		mdwiki.templateMatch = function(wikiBlock) {
 			var modParams = wikiBlock.modParams;
 			var pageinfo = util.getAngularServices().$rootScope.pageinfo;
+
+			// 临时页做全匹配
+			if (!pageinfo) {
+				return true;
+			}
 
 			var urlPrefix = "/" + pageinfo.username + "/" + pageinfo.sitename + "/";
 			var pagePath = pageinfo.url.substring(urlPrefix.length);
