@@ -45,7 +45,6 @@ define([
 						}
 						$scope.filelist.push(data[i]);
                     }
-					$scope.filelist = $scope.filelist.concat(data || []);
 				});
 			}
         }
