@@ -23,86 +23,92 @@ define([
 				],
 				params_template: {
 					design:{
-						is_leaf: true, // 叶子对象默认填true
-						type:"text",   // 地段类型
-						editable:false, // 是否可以编辑
-						is_mod_hide:true,  // 可视化是否显示 undefined取值editable
-						name:"样式",   // 表单显示名
-						text:"style1", // 默认值
-						require: true, // 必填字段 没有使用默认值
+						is_leaf      : true,
+						type         : "text",
+						editable     : false,
+						is_card_show : false,
+						is_mod_hide  : true,
+						name         : "样式",
+						text         : "style1",
+						require      : true,
 					},
 					pictureTextImg:{
-                        is_leaf: true, // 叶子对象默认填true
-						type:"media",   // 地段类型
-						mediaType: "image",
-<<<<<<< HEAD
-                        editable:true, // 是否可以编辑
-                        is_card_show:true,  // 是否在adi中显示编辑
-                        is_mod_hide:false,  // 在模块中是否隐藏
-=======
-						editable:true, // 是否可以编辑
-						is_card_show:true,
-                        is_mod_hide:false,  // 可视化是否显示 undefined取值editable
->>>>>>> add is card show
-                        name:"picture",   // 表单显示名
-                        text:config.wikiModPath + 'adi/assets/imgs/pictureMod.png', // 默认值
-                        href:config.wikiModPath + 'adi/assets/imgs/pictureMod.png', // 默认值
-                    	require: true, // 必填字段 没有使用默认值(默认值得有)
+                        is_leaf      : true,
+						type         : "media",
+						mediaType    : "image",
+						editable     : true,
+						is_card_show : true,
+                        is_mod_hide  : false,
+                        name         : "picture",
+                        text         : config.wikiModPath + 'adi/assets/imgs/pictureMod.png',
+                        href         : config.wikiModPath + 'adi/assets/imgs/pictureMod.png',
+                    	require      : true,
 					},
 					hOne:{
-						is_leaf: true, // 叶子对象默认填true
-						type:"link",   // 地段类型
-						editable:true, // 是否可以编辑
-						is_card_show:true,
-						is_mod_hide:false,  // 可视化是否显示 undefined取值editable
-						name:"标题",   // 表单显示名
-						text:"一个人，一条路，人在途中",// 默认值
-						href:"http://localhost", // 默认值
-						require: true, // 必填字段 没有使用默认值(默认值得有)
+						is_leaf      : true,
+						type         : "link",
+						editable     : true,
+						is_card_show : true,
+						is_mod_hide  : false,
+						name         : "标题",
+						text         : "一个人，一条路，人在途中",
+						href         : "", 
+						require      : true,
 					},
 					hTwo:{
-						is_leaf: true, // 叶子对象默认填true
-						type:"link",   // 地段类型
-						editable:true, // 是否可以编辑
-						is_card_show:true,
-						is_mod_hide:false,  // 可视化是否显示 undefined取值editable
-						name:"子标题",   // 表单显示名
-						text:"我们一直在旅行",// 默认值
-						href:"http://localhost", // 默认值
-						require: true, // 必填字段 没有使用默认值(默认值得有)
+						is_leaf      : true,
+						type         : "link",
+						editable     : true,
+						is_card_show : true,
+						is_mod_hide  : false,
+						name         : "子标题",
+						text         : "我们一直在旅行",
+						href         : "",
+						require      : true,
 					},
 					spanOne:{
-						is_leaf: true, // 叶子对象默认填true
-						type:"link",   // 地段类型
-						editable:true, // 是否可以编辑
-<<<<<<< HEAD
-						is_card_show:true,  // 是否在adi中显示编辑
-            			is_mod_hide:false,  // 在模块中是否隐藏
-=======
-						is_card_show:true,
-						is_mod_hide:false,  // 可视化是否显示 undefined取值editable
->>>>>>> add is card show
-						name:"文字说明",   // 表单显示名
-						text:"",// 默认值
-						href:"http://localhost", // 默认值
-						require: true, // 必填字段 没有使用默认值(默认值得有)
+						is_leaf      : true, 
+						type         : "link",
+						editable     : true,
+						is_card_show : true,
+            			is_mod_hide  : false,
+						name         : "文字说明",
+						text         : "",
+						href         : "",
+						require      : true,
 					},
 					btn:{
-                        is_leaf: true, // 叶子对象默认填true
-                        type:"link",   // 地段类型
-<<<<<<< HEAD
-                        editable:true, // 是否可以编辑
-                        is_card_show:true,  // 是否在adi中显示编辑
-                        is_mod_hide:false,  // 在模块中是否隐藏
-=======
-						editable:true, // 是否可以编辑
-						is_card_show:true,
-                        is_mod_hide:false,  // 可视化是否显示 undefined取值editable
->>>>>>> add is card show
-                        name:"按钮",   // 表单显示名
-                        text:"更多照片", // 默认值
-                        href:"http://localhost", // 默认值
-                    	require: true, // 必填字段 没有使用默认值(默认值得有)
+                        is_leaf      : true,
+                        type         : "link",
+                        editable     : true,
+                        is_card_show : true,
+                        is_mod_hide  : false,
+                        name         : "按钮",
+                        text         : "更多照片",
+                        href         : "",
+                    	require      : true,
+					},
+					spanOne:{
+						is_leaf      : true,
+						type         : "link",
+						editable     : true,
+						is_card_show : true,
+						is_mod_hide  : false,
+						name         : "文字说明",
+						text         : "",
+						href         : "",
+						require      : true,
+					},
+					btn:{
+                        is_leaf      : true,
+                        type         : "link",
+						editable     : true,
+						is_card_show : true,
+                        is_mod_hide  : false,
+                        name         : "按钮", 
+                        text         : "更多照片",
+                        href         : "", 
+                    	require      : true,
                     },
 				}
 			}
@@ -116,9 +122,6 @@ define([
         render: function (wikiblock) {
             registerController(wikiblock);
             return htmlContent;
-		},
-		initObj: function(){
-			return initObj;
-		},
+		}
     }
 });
