@@ -77,7 +77,7 @@ define([
     'factory/confirmDialog',
     'factory/realnameVerifyModal',
     'factory/datatreeEditorModal',
-    'factory/imageManagerModal',
+    'factory/assetsManagerModal',
     'factory/loadingInterceptor',
     'factory/selfDefinedModal',
 ], function () {

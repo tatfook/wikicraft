@@ -159,7 +159,7 @@ define([
         // 图库弹窗
         $scope.showImageModal = function(data){
             console.log(data);
-            config.services.imageManagerModal({
+            config.services.assetsManagerModal({
                 title: '选择图片',
                 nav: 'myImages' ,//or 'internetImage' or 'beautifyImage'
                 modalPositionCenter: true,
