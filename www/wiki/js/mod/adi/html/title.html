@@ -110,7 +110,12 @@
         <div class="title-mod container">
             <div class="title-mod-img" ng-hide="params.media_img.is_mod_hide">
                 <div ng-if="params.media_img.text.length == 0">YOUR LOGO</div>
-                <a class="title-clear-pointer" href="{{params.media_img.href}}"><img ng-if="params.media_img.text.length > 0" src="{{params.media_img.text}}"></a>
+                <a ng-if="editorMode" href="javascript::void(0)">
+                    <img ng-if="params.media_img.text.length > 0" src="{{params.media_img.text}}">
+                </a>
+                <a ng-if="!editorMode" ng-href="{{params.media_img.href}}">
+                    <img ng-if="params.media_img.text.length > 0" src="{{params.media_img.text}}">
+                </a>
             </div>
             <div class="title-mod-head">
                 <h1 class="h1" ng-hide="params.link_title.is_mod_hide">
@@ -128,7 +133,12 @@
         <div ng-class="{false:'title-clear-pointer'}[titleClass]" class="title-mod2 container">
             <div class="title-mod2-img-two" ng-hide="params.media_img.is_mod_hide">
                 <div ng-if="params.media_img.text.length == 0">YOUR LOGO</div>
-                <a href="{{params.media_img.href}}"><img ng-if="params.media_img.text.length > 0" src="{{params.media_img.text}}"></a>
+                <a ng-if="editorMode" href="javascript::void(0)">
+                    <img ng-if="params.media_img.text.length > 0" src="{{params.media_img.text}}">
+                </a>
+                <a ng-if="!editorMode" ng-href="{{params.media_img.href}}">
+                    <img ng-if="params.media_img.text.length > 0" src="{{params.media_img.text}}">
+                </a>
             </div>
             <div class="title-mod-head2">
                 <h1 class="h-one" ng-hide="params.link_title.is_mod_hide">
