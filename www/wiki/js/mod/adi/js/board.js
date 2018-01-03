@@ -1,11 +1,11 @@
 ﻿define([
     'app',
     'helper/util',
-    'text!wikimod/board/main.html',
+    'text!wikimod/adi/html/board.html',
     'pako',
-    '/wiki/js/mod/board/board.min.js?bust=3',
+    '/wiki/js/mod/adi/assets/board.min.js?bust=3',
 ], function (app, util, htmlContent, pako) {
-    jscolor.dir = "/wiki/js/mod/board/assets/images/";
+    jscolor.dir = "/wiki/js/mod/adi/assets/images/";
 
     var initEditor = function (data, callback) {
         if (!mxClient.isBrowserSupported()) {
