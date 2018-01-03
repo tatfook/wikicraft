@@ -7,6 +7,8 @@ define([
 
     function registerController(wikiblock) {
         app.registerController("titleController", ['$scope','$sce', function ($scope, $sce) {
+			$scope.editorMode = wikiblock.editorMode;
+
 			initObj = {
 				scope  : $scope,
 				styles : [
@@ -32,7 +34,7 @@ define([
 						text:"style1", // 默认值
 						require: true, // 必填字段 没有使用默认值
                     },
-                    mediaImg:{
+                    media_img:{
                         is_leaf: true, // 叶子对象默认填true
 						type:"media",   // 地段类型
 						mediaType:"image",
@@ -44,7 +46,7 @@ define([
                         href:"", // 默认值
                     	require: true, // 必填字段 没有使用默认值(默认值得有)
                         },
-				   	linkTitle:{
+				   	link_title:{
 						is_leaf: true, // 叶子对象默认填true
 						type:"link",   // 地段类型
 						editable:true, // 是否可以编辑
@@ -55,7 +57,7 @@ define([
 						href:"",// 默认值
 						require: true, // 必填字段 没有使用默认值(默认值得有)
 					},
-					linkSubtitle:{
+					link_subtitle:{
 						is_leaf: true, // 叶子对象默认填true
 						type:"link",   // 地段类型
 						editable:true, // 是否可以编辑
@@ -70,7 +72,7 @@ define([
             }
 
 			wikiblock.init(initObj);
-        }]);
+		}]);
     }
 
     return {
