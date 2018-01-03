@@ -32,7 +32,7 @@ define([
 						text:"style1", // 默认值
 						require: true, // 必填字段 没有使用默认值
                     },
-                    img:{
+                    mediaImg:{
                         is_leaf: true, // 叶子对象默认填true
 						type:"media",   // 地段类型
 						mediaType:"image",
@@ -41,10 +41,10 @@ define([
 						is_card_show:true,
                         name:"logo",   // 表单显示名
                         text:config.wikiModPath + 'adi/assets/imgs/titleMod.png', // 默认值
-                        href:config.wikiModPath + 'adi/assets/imgs/titleMod.png', // 默认值
+                        href:"", // 默认值
                     	require: true, // 必填字段 没有使用默认值(默认值得有)
                         },
-				   	hOne:{
+				   	linkTitle:{
 						is_leaf: true, // 叶子对象默认填true
 						type:"link",   // 地段类型
 						editable:true, // 是否可以编辑
@@ -52,10 +52,10 @@ define([
 						is_card_show:true,
 						name:"标题",   // 表单显示名
 						text:"YOUR HEAD LINE", // 默认值
-						href:"http://localhost",// 默认值
+						href:"",// 默认值
 						require: true, // 必填字段 没有使用默认值(默认值得有)
 					},
-				   	hTwo:{
+					linkSubtitle:{
 						is_leaf: true, // 叶子对象默认填true
 						type:"link",   // 地段类型
 						editable:true, // 是否可以编辑
@@ -63,7 +63,7 @@ define([
 						is_card_show:true,
 						name:"子标题",   // 表单显示名
 						text:"YOUR SUB LINE", // 默认值
-						href:"http://localhost",// 默认值
+						href:"",// 默认值
 						require: true, // 必填字段 没有使用默认值(默认值得有)
 					},
 				}
