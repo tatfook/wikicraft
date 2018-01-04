@@ -3,9 +3,12 @@
  */
 
 define(['app', 'text!wikimod/adi/html/menu.html'], function (app, htmlContent) {
-    function registerController(wikiBlock) {
+    function registerController(wikiblock) {
         app.registerController("menuController", ['$scope',function ($scope) {
-            wikiBlock.init({
+
+			$scope.editorMode = wikiblock.editorMode;
+
+            wikiblock.init({
                 scope:$scope,
                 styles:[
                 {
@@ -58,8 +61,8 @@ define(['app', 'text!wikimod/adi/html/menu.html'], function (app, htmlContent) {
     }
 
     return {
-        render: function (wikiBlock) {
-            registerController(wikiBlock);
+        render: function (wikiblock) {
+            registerController(wikiblock);
             return  htmlContent;       // 返回模块标签内容
         }
     }
