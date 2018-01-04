@@ -86,34 +86,37 @@ define([
 						text     : "style1",
 						require  : true,
 					},
-					logoUrl : {
+					menu_logoUrl : {
 						is_leaf      : true,
 						type         : "menu",
 						editable     : true,
 						is_mod_show  : true,
+						is_mod_hide  : false, 
 						name         : "LOGO",  
 						text         : [],
 						require      : true,
 					},
-					version : {
+					link_version : {
 						is_leaf      : true,
 						type         : "link",
 						editable     : true,
 						is_mod_show  : true,
+						is_mod_hide  : false, 
 						name         : "版本",
 						text         : "",
 						require      : true,
 					},
-					opusId : {
+					link_opusId : {
 						is_leaf      : true,
 						type         : "link",
 						editable     : true,
 						is_mod_show  : true,
+						is_mod_hide  : false, 
 						name         : "世界ID",
 						text         : "",
 						require      : true,
 					},
-					desc : {
+					link_desc : {
 						is_leaf      : true,
 						type         : "link",
 						editable     : true,
@@ -122,7 +125,7 @@ define([
 						text         : "",
 						require      : true,
 					},
-					worldUrl : {
+					link_worldUrl : {
 						is_leaf      : true,
 						type         : "link",
 						editable     : true,
@@ -131,47 +134,52 @@ define([
 						text         : "",
 						require      : true,
 					},
-					filesTotals : {
+					link_filesTotals : {
 						is_leaf      : true,
 						type         : "link",
 						editable     : true,
 						is_mod_show  : true,
+						is_mod_hide  : false, 
 						name         : "文件大小",
 						text         : "",
 						require      : true,
 					},
-					username : {
+					link_username : {
 						is_leaf      : true,
 						type         : "link",
 						editable     : true,
 						is_mod_show  : true,
+						is_mod_hide  : false, 
 						name         : "用户名",
 						text         : "",
 						require      : true,
 					},
-					updateDate : {
+					link_updateDate : {
 						is_leaf      : true,
 						type         : "link",
 						editable     : true,
 						is_mod_show  : true,
+						is_mod_hide  : false, 
 						name         : "更新时间",
 						text         : "",
 						require      : true,
 					},
-					worldName : {
+					link_worldName : {
 						is_leaf      : true,
 						type         : "link",
 						editable     : true,
 						is_mod_show  : true,
+						is_mod_hide  : false, 
 						name         : "世界名称",
 						text         : "",
 						require      : true,
 					},
-					btnLogo:{
+					link_btnLogo:{
 						is_leaf      : true,
 						type         : "link",
 						editable     : false,
 						is_mod_show  : true,
+						is_mod_hide  : false, 
 						name         : "btnLogo",
 						text         : config.wikiModPath + 'adi/assets/imgs/down.png',
 						require      : true,
