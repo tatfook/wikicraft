@@ -86,7 +86,7 @@ define([
 						text     : "style1",
 						require  : true,
 					},
-					menu_logoUrl : {
+					logoUrl : {
 						is_leaf      : true,
 						type         : "menu",
 						editable     : true,
@@ -96,7 +96,7 @@ define([
 						text         : [],
 						require      : true,
 					},
-					link_version : {
+					version : {
 						is_leaf      : true,
 						type         : "link",
 						editable     : true,
@@ -106,7 +106,7 @@ define([
 						text         : "",
 						require      : true,
 					},
-					link_opusId : {
+					opusId : {
 						is_leaf      : true,
 						type         : "link",
 						editable     : true,
@@ -116,7 +116,7 @@ define([
 						text         : "",
 						require      : true,
 					},
-					link_desc : {
+					desc : {
 						is_leaf      : true,
 						type         : "link",
 						editable     : true,
@@ -125,7 +125,7 @@ define([
 						text         : "",
 						require      : true,
 					},
-					link_worldUrl : {
+					worldUrl : {
 						is_leaf      : true,
 						type         : "link",
 						editable     : true,
@@ -134,7 +134,7 @@ define([
 						text         : "",
 						require      : true,
 					},
-					link_filesTotals : {
+					filesTotals : {
 						is_leaf      : true,
 						type         : "link",
 						editable     : true,
@@ -144,7 +144,7 @@ define([
 						text         : "",
 						require      : true,
 					},
-					link_username : {
+					username : {
 						is_leaf      : true,
 						type         : "link",
 						editable     : true,
@@ -154,7 +154,7 @@ define([
 						text         : "",
 						require      : true,
 					},
-					link_updateDate : {
+					updateDate : {
 						is_leaf      : true,
 						type         : "link",
 						editable     : true,
@@ -164,7 +164,7 @@ define([
 						text         : "",
 						require      : true,
 					},
-					link_worldName : {
+					worldName : {
 						is_leaf      : true,
 						type         : "link",
 						editable     : true,
@@ -174,7 +174,7 @@ define([
 						text         : "",
 						require      : true,
 					},
-					link_btnLogo:{
+					btnLogo:{
 						is_leaf      : true,
 						type         : "link",
 						editable     : false,
