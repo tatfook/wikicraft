@@ -10,6 +10,7 @@ define([
         app.registerController("paracraftWorldController", ['$scope','$sce', function ($scope, $sce) {
 			$scope.imgsPath  = config.wikiModPath + 'adi/assets/imgs/';
 			$scope.showModal = false;
+			$scope.editorMode = wikiblock.editorMode;
 
 			var token = localStorage.getItem("satellizer_token");
 
@@ -91,6 +92,7 @@ define([
 						type         : "menu",
 						editable     : true,
 						is_mod_show  : true,
+						is_mod_hide  : false, 
 						name         : "LOGO",  
 						text         : [],
 						require      : true,
@@ -100,6 +102,7 @@ define([
 						type         : "link",
 						editable     : true,
 						is_mod_show  : true,
+						is_mod_hide  : false, 
 						name         : "版本",
 						text         : "",
 						require      : true,
@@ -109,6 +112,7 @@ define([
 						type         : "link",
 						editable     : true,
 						is_mod_show  : true,
+						is_mod_hide  : false, 
 						name         : "世界ID",
 						text         : "",
 						require      : true,
@@ -136,6 +140,7 @@ define([
 						type         : "link",
 						editable     : true,
 						is_mod_show  : true,
+						is_mod_hide  : false, 
 						name         : "文件大小",
 						text         : "",
 						require      : true,
@@ -145,6 +150,7 @@ define([
 						type         : "link",
 						editable     : true,
 						is_mod_show  : true,
+						is_mod_hide  : false, 
 						name         : "用户名",
 						text         : "",
 						require      : true,
@@ -154,6 +160,7 @@ define([
 						type         : "link",
 						editable     : true,
 						is_mod_show  : true,
+						is_mod_hide  : false, 
 						name         : "更新时间",
 						text         : "",
 						require      : true,
@@ -163,6 +170,7 @@ define([
 						type         : "link",
 						editable     : true,
 						is_mod_show  : true,
+						is_mod_hide  : false, 
 						name         : "世界名称",
 						text         : "",
 						require      : true,
@@ -172,6 +180,7 @@ define([
 						type         : "link",
 						editable     : false,
 						is_mod_show  : true,
+						is_mod_hide  : false, 
 						name         : "btnLogo",
 						text         : config.wikiModPath + 'adi/assets/imgs/down.png',
 						require      : true,
