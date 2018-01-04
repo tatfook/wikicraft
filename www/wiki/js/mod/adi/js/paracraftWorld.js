@@ -10,6 +10,7 @@ define([
         app.registerController("paracraftWorldController", ['$scope','$sce', function ($scope, $sce) {
 			$scope.imgsPath  = config.wikiModPath + 'adi/assets/imgs/';
 			$scope.showModal = false;
+			$scope.editorMode = wikiblock.editorMode;
 
 			var token = localStorage.getItem("satellizer_token");
 
