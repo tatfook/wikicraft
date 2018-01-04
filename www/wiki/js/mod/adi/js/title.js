@@ -25,48 +25,48 @@ define([
 				],
 				params_template : {
 					design:{
-						is_leaf: true, // 叶子对象默认填true
-						type:"text",   // 地段类型
-						editable:false, // 是否可以编辑
-						is_mod_hide:true,  // 可视化是否显示 undefined取值editable
-						is_card_show:true,
-						name:"样式",   // 表单显示名
-						text:"style1", // 默认值
-						require: true, // 必填字段 没有使用默认值
+						is_leaf      : true, 
+						type         : "text",   
+						editable     : false, 
+						is_mod_hide  : true,  
+						is_card_show : true,
+						name         : "样式",   
+						text         : "style1", 
+						require      : true, 
                     },
                     media_img:{
-                        is_leaf: true, // 叶子对象默认填true
-						type:"media",   // 地段类型
-						mediaType:"image",
-                        editable:true, // 是否可以编辑
-						is_mod_hide:true,  // 可视化是否显示 undefined取值editable
-						is_card_show:true,
-                        name:"logo",   // 表单显示名
-                        text:config.wikiModPath + 'adi/assets/imgs/titleMod.png', // 默认值
-                        href:"", // 默认值
-                    	require: true, // 必填字段 没有使用默认值(默认值得有)
+                        is_leaf      : true, 
+						type         : "media",   
+						mediaType    : "image",
+                        editable     : true, 
+						is_mod_hide  : true,  
+						is_card_show : true,
+                        name         : "logo",   
+                        text         : config.wikiModPath + 'adi/assets/imgs/titleMod.png', 
+                        href         : "", 
+                    	require      : true, 
                         },
 				   	link_title:{
-						is_leaf: true, // 叶子对象默认填true
-						type:"link",   // 地段类型
-						editable:true, // 是否可以编辑
-						is_mod_hide:true,  // 可视化是否显示 undefined取值editable
-						is_card_show:true,
-						name:"标题",   // 表单显示名
-						text:"YOUR HEAD LINE", // 默认值
-						href:"",// 默认值
-						require: true, // 必填字段 没有使用默认值(默认值得有)
+						is_leaf      : true, 
+						type         : "link",   
+						editable     : true, 
+						is_mod_hide  : true,  
+						is_card_show : true,
+						name         : "标题",   
+						text         : "YOUR HEAD LINE", 
+						href         : "",
+						require      : true, 
 					},
 					link_subtitle:{
-						is_leaf: true, // 叶子对象默认填true
-						type:"link",   // 地段类型
-						editable:true, // 是否可以编辑
-						is_mod_hide:true,  // 可视化是否显示 undefined取值editable
-						is_card_show:true,
-						name:"子标题",   // 表单显示名
-						text:"YOUR SUB LINE", // 默认值
-						href:"",// 默认值
-						require: true, // 必填字段 没有使用默认值(默认值得有)
+						is_leaf      : true, 
+						type         : "link",   
+						editable     : true, 
+						is_mod_hide  : true,  
+						is_card_show : true,
+						name         : "子标题",   
+						text         : "YOUR SUB LINE", 
+						href         : "",
+						require      : true, 
 					},
 				}
             }
