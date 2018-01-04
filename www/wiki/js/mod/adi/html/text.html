@@ -1,0 +1,30 @@
+<style>
+    .textContainerLeft{
+        text-align: left;
+        width: 100%;
+    }
+    .textContainerCenter{
+        text-align: center;
+        width: 100%;
+    }
+    .textTitle{
+        font-weight: bold;
+        font-size: 32px;
+    }
+    .textContent {
+        font-size: 14px;
+        line-height: 30px;
+        text-indent: 28px;
+    }
+</style>
+
+<div ng-controller="textController">
+    <div class="textContainerLeft" ng-if="params.design.text == 'left'">
+        <h1 class='textTitle'>{{params.title.text}}</h1>
+        <div class='textContent'>{{params.multiText_desc.text}}</div>
+    </div>
+    <div class="textContainerCenter" ng-if="params.design.text == 'center'">
+        <h1 class='textTitle'>{{params.title.text}}</h1>
+        <div class='textContent'>{{params.multiText_desc.text}}</div>
+    </div>
+</div>
