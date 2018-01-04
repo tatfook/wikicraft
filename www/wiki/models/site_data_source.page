@@ -46,14 +46,19 @@ function site_data_source:copyDataSourceToSite(siteDataSource, dataSource)
 		return 
 	end
 
+	local username = getUsername()
+	
 	siteDataSource.dataSourceId = dataSource._id
 	siteDataSource.dataSourceName = dataSource.name
 	siteDataSource.type = dataSource.type
 	siteDataSource.dataSourceUserId = dataSource.dataSourceUserId
 	siteDataSource.dataSourceUsername = dataSource.dataSourceUsername
-	siteDataSource.dataSourceToken = dataSource.dataSourceToken
 	siteDataSource.apiBaseUrl = dataSource.apiBaseUrl
 	siteDataSource.rawBaseUrl = dataSource.rawBaseUrl
+
+	if username == dataSource.username then
+		siteDataSource.dataSourceToken = dataSource.dataSourceToken
+	end
 	
 	return
 end
