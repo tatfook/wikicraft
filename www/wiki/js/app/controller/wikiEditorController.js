@@ -2895,19 +2895,6 @@ define([
                     }
                 }
 
-                function setFakeIconPosition(leftDistance, scaleSize){
-                    fakeIconDom = fakeIconDom.length > 0 ? fakeIconDom : $(".fake-icon");
-                    if (fakeIconDom.length <= 0) {
-                        setTimeout(function(){
-                            setFakeIconPosition(leftDistance, scaleSize);
-                        }, 300);
-                        return;
-                    }
-                    fakeIconDom.css({
-                        "left" : leftDistance / scaleSize
-                    });
-                }
-
                 function getScaleSize(scroll) {
                     var winWidth = $(window).width();
                     var boxWidth = $("#preview").width();//30为#preview的padding宽度
@@ -2942,8 +2929,6 @@ define([
                         resizeResult(scaleItem.resultWidth);
                     }
                     var scaleSize = val || getScaleSize();
-                    var boxWidth = $("#preview").width();
-                    setFakeIconPosition((boxWidth/2), scaleSize);
                     setTimeout(function () {
                         $('#' + mdwiki.getMdWikiContainerId()).css({
                             "transform": "scale(" + scaleSize + ")",

@@ -1,18 +1,18 @@
 <style>
     /* style1 css */
-    .title{
+    .title-mod{
         width: 100%;
         height: 150px;
         padding: 0;
         margin: 0px;
     }
-    .title .img, .title .title-head{
+    .title-mod .title-mod-img, .title-mod .title-mod-head{
         float: left;
     }
-    .title .title-head{
+    .title-mod .title-mod-head{
         margin-top:32px;
     }
-    .title .img{
+    .title-mod .title-mod-img{
         line-height: 108px;
         font-size: 20px;
         text-align: center;
@@ -21,12 +21,12 @@
         width: 89px;
         height: 89px;
     }
-    .title .img img{
+    .title-mod .title-mod-img img{
         width:100%;
         height:100%;
         overflow: hidden;
     }
-    .title .title-head .h1{
+    .title-mod .title-mod-head .h1{
         width: 600px;
         height: 26px;
         padding: 0;
@@ -38,7 +38,7 @@
         -webkit-box-orient: vertical;  
         white-space: normal; 
     }
-    .title .title-head .h2{
+    .title-mod .title-mod-head .h2{
         width: 600px;
         height: 16px;
         font-size: 15px;
@@ -51,6 +51,11 @@
         -webkit-box-orient: vertical;  
         white-space: normal; 
     }
+
+    .title-clear-pointer a{
+        cursor: default !important;
+    }
+
     /* style1 css 伪类 */
     .h1 a:link  , .h1 a:visited ,
     .h1 a:hover , .h1 a:active{
@@ -62,28 +67,28 @@
     }
 
     /* style2 css */
-    .title2{
+    .title-mod2{
         width: 100%;
         height: 180px;
         padding-top: 30px;
         margin: 0px;
     }
-    .title2 .img-two{
+    .title-mod2 .title-mod2-img-two{
         width:89px;
         height:89px;
         overflow: hidden;
         text-align: center;
         margin: 0 auto;
     }
-    .title-head2{
+    .title-mod-head2{
         padding-top: 10px;
     }
-    .title2 .title-head2 .h-one{
+    .title-mod2 .title-mod-head2 .h-one{
         text-align: center;
         margin: 0 auto;
         font-size: 25px;
     }
-    .title2 .title-head2 .h-two{
+    .title-mod2 .title-mod-head2 .h-two{
         text-align: center;
         margin: 0 auto;
         font-size: 15px;
@@ -101,27 +106,49 @@
     }
 </style>
 <div ng-controller="titleController">
-    <div ng-if='params.design.text=="style1"'>
-        <div class="title container">
-            <div class="img" ng-hide="params.img.is_mod_hide">
-                <div ng-if="params.img.text.length == 0">YOUR LOGO</div>
-                <a href="{{params.img.href}}" target="_blank"><img ng-if="params.img.text.length > 0" src="{{params.img.text}}"></a>
+    <div ng-class="{true:'title-clear-pointer'}[editorMode]" ng-if='params.design.text=="style1"'>
+        <div class="title-mod container">
+            <div class="title-mod-img" ng-hide="params.media_img.is_mod_hide">
+                <div ng-if="params.media_img.text.length == 0">YOUR LOGO</div>
+                <a ng-if="editorMode" href="javascript::void(0)">
+                    <img ng-if="params.media_img.text.length > 0" src="{{params.media_img.text}}">
+                </a>
+                <a ng-if="!editorMode" ng-href="{{params.media_img.href}}">
+                    <img ng-if="params.media_img.text.length > 0" src="{{params.media_img.text}}">
+                </a>
             </div>
-            <div class="title-head">
-                <h1 class="h1" ng-hide="params.hOne.is_mod_hide"><a href="{{params.hOne.href}}" target="_blank">{{params.hOne.text}}</a></h1>
-                <h2 class="h2" ng-hide="params.hTwo.is_mod_hide"><a href="{{params.hTwo.href}}" target="_blank">{{params.hTwo.text}}</a></h2>
+            <div class="title-mod-head">
+                <h1 class="h1" ng-hide="params.link_title.is_mod_hide">
+                    <a ng-if="editorMode" href="javascript::void(0)">{{params.link_title.text}}</a>
+                    <a ng-if="!editorMode" ng-href="{{params.link_title.href}}">{{params.link_title.text}}</a>
+                </h1>
+                <h2 class="h2" ng-hide="params.link_subtitle.is_mod_hide">
+                    <a ng-if="editorMode" href="javascript::void(0)">{{params.link_subtitle.text}}</a>
+                    <a ng-if="!editorMode" ng-href="{{params.link_subtitle.href}}">{{params.link_subtitle.text}}</a>
+                </h2>
             </div>
         </div>
     </div>
     <div ng-if='params.design.text=="style2"'>
-        <div class="title2 container">
-            <div class="img-two" ng-hide="params.img.is_mod_hide">
-                <div ng-if="params.img.text.length == 0">YOUR LOGO</div>
-                <a href="{{params.img.href}}" target="_blank"><img ng-if="params.img.text.length > 0" src="{{params.img.text}}"></a>
+        <div ng-class="{false:'title-clear-pointer'}[titleClass]" class="title-mod2 container">
+            <div class="title-mod2-img-two" ng-hide="params.media_img.is_mod_hide">
+                <div ng-if="params.media_img.text.length == 0">YOUR LOGO</div>
+                <a ng-if="editorMode" href="javascript::void(0)">
+                    <img ng-if="params.media_img.text.length > 0" src="{{params.media_img.text}}">
+                </a>
+                <a ng-if="!editorMode" ng-href="{{params.media_img.href}}">
+                    <img ng-if="params.media_img.text.length > 0" src="{{params.media_img.text}}">
+                </a>
             </div>
-            <div class="title-head2">
-                <h1 class="h-one" ng-hide="params.hOne.is_mod_hide"><a href="{{params.hOne.href}}" target="_blank">{{params.hOne.text}}</a></h1>
-                <h2 class="h-two" ng-hide="params.hTwo.is_mod_hide"><a href="{{params.hTwo.href}}" target="_blank">{{params.hTwo.text}}</a></h2>
+            <div class="title-mod-head2">
+                <h1 class="h-one" ng-hide="params.link_title.is_mod_hide">
+                    <a ng-if="editorMode" href="javascript::void(0)">{{params.link_title.text}}</a>
+                    <a ng-if="!editorMode" ng-href="{{params.link_title.href}}">{{params.link_title.text}}</a>
+                </h1>
+                <h2 class="h-two" ng-hide="params.link_subtitle.is_mod_hide">
+                    <a ng-if="editorMode" href="javascript::void(0)">{{params.link_subtitle.text}}</a>
+                    <a ng-if="!editorMode" ng-href="{{params.link_subtitle.href}}">{{params.link_subtitle.text}}</a>
+                </h2>
             </div>
         </div>
     </div>
