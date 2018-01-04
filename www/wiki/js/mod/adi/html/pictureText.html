@@ -26,7 +26,6 @@
     .picture-body .picture-span{
         margin-left: 70px;
         float: left;
-        margin-top: -30px;
     }
     .picture-span{
         max-width:576px;
@@ -34,11 +33,11 @@
         text-align: left;
     }
     .picture-span h1{
-        margin-top: 20px;
-        margin-bottom: 100px;
+        margin-top: 0;
+        margin-bottom: 40px;
     }
     .picture-span h2{
-        margin: 0;
+        margin-bottom: 90px;
     }
     .picture-btn{
         float: right;
@@ -89,9 +88,12 @@
     }
     .picture-spans h1{
         max-width: 100px;
+        font-size: 32px;
+        margin-top: -20px;
     }
     .picture-spans h2{
         max-width: 25px;
+        font-size: 24px;
     }
     .style2-picture-img{
         float: left;
@@ -142,14 +144,14 @@
                     <a ng-if="!editorMode && params.image_picture.text.length > 0" target="{{params.image_picture.target ? params.image_picture.target : '_blank' }}" ng-href="{{params.image_picture.href}}"><img ng-src="{{params.image_picture.text}}"></a>
                 </div>
                 <div class="picture-span">
-                    <h2 ng-hide="params.link_sublink.is_mod_hide">
-                        <a ng-if="editorMode" ng-click="viewEditorClick(params.link_sublink, $event)" href="javascript::void(0)">{{params.link_sublink.text}}</a>
-                        <a ng-if="!editorMode" target="{{params.link_sublink.target ? params.link_sublink.target : '_blank'}}" ng-href="{{params.link_sublink.href}}">{{params.link_sublink.text}}</a>
-                    </h2>
                     <h1 ng-hide="params.link_headline.is_mod_hide">
                         <a ng-if="editorMode" ng-click="viewEditorClick(params.link_headline, $event)" href="{{params.link_headline.href}}">{{params.link_headline.text}}</a>
                         <a ng-if="!editorMode" target="{{params.link_headline.target ? params.link_headline.target : '_blank'}}" ng-href="{{params.link_headline.href}}">{{params.link_headline.text}}</a>
                     </h1>
+                    <h2 ng-hide="params.link_sublink.is_mod_hide">
+                        <a ng-if="editorMode" ng-click="viewEditorClick(params.link_sublink, $event)" href="javascript::void(0)">{{params.link_sublink.text}}</a>
+                        <a ng-if="!editorMode" target="{{params.link_sublink.target ? params.link_sublink.target : '_blank'}}" ng-href="{{params.link_sublink.href}}">{{params.link_sublink.text}}</a>
+                    </h2>
                     <div class="span-one">
                         <span ng-hide="params.multiText_desc.is_mod_hide">
                             <span>
