@@ -26,7 +26,7 @@ define([
 				$scope.$watch("mdwiki.template" ,function(){
 					//console.log("================================", mdwiki.template, mdwiki);
 					template = mdwiki.template;
-					console.log(template);
+					//console.log(template);
 					if (template) {
 						$scope.templateSrc = template.isPageTemplate ? "当前页面" : "_theme";
 					} else {

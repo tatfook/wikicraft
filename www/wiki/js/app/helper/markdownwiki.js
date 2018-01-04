@@ -411,7 +411,7 @@ define([
 				self.blockCache.adiObj = obj;
 				obj.scope.params = self.modParams;
 				//console.log(self.modParams);
-				//console.log(self.format_params_template, self.modParams);
+
 				//console.log(self.modParams);
 
 				if (!editor) {
@@ -424,9 +424,9 @@ define([
 					var oldPos = oldWikiBlock.blockCache.block.textPosition;
 					var pos = self.blockCache.block.textPosition;
 					if (oldPos.from == pos.from) {
-                        moduleEditorParams.wikiBlock = self;
                         $("#" + self.containerId).addClass("active");
 						if (moduleEditorParams.show_type == "design") {
+							moduleEditorParams.wikiBlock = self;
 							moduleEditorParams.updateEditorObj(self.format_params_template);
 						}
 						console.log("更新wikiblock", moduleEditorParams);
