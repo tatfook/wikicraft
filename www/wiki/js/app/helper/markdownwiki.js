@@ -271,7 +271,7 @@ define([
             },
             applyModParams: function (modParams) {
 				var pos = blockCache.block.textPosition;
-				console.log(modParams);
+				//console.log(modParams);
                 if (!modParams || !editor || !mdwiki.options.editorMode) {
                     return;
                 }
@@ -409,7 +409,7 @@ define([
 				self.setDesignList = moduleEditorParams.setDesignList;
 
 				self.blockCache.adiObj = obj;
-				obj.scope.params = self.modParams;
+				obj.scope.params = angular.copy(self.modParams);
 				//console.log(self.modParams);
 
 				//console.log(self.modParams);
@@ -418,12 +418,13 @@ define([
 					return;
 				}
 
+				//console.log(moduleEditorParams, self);
 				
 				if (moduleEditorParams && moduleEditorParams.wikiBlock) {
 					var oldWikiBlock = moduleEditorParams.wikiBlock;
 					var oldPos = oldWikiBlock.blockCache.block.textPosition;
 					var pos = self.blockCache.block.textPosition;
-					if (oldPos.from == pos.from) {
+					if (moduleEditorParams.wikiBlockStartPost == pos.from) {
                         $("#" + self.containerId).addClass("active");
 						if (moduleEditorParams.show_type == "design") {
 							moduleEditorParams.wikiBlock = self;
@@ -476,6 +477,8 @@ define([
 					} else {
 						obj = self.format_params_template;
                     }
+					//console.log(self);
+					moduleEditorParams.wikiBlockStartPost = self.blockCache.block.textPosition.from;
                     moduleEditorParams.wikiBlock = self;
                     moduleEditorParams.activeContainerId = self.containerId;
                     
@@ -493,6 +496,7 @@ define([
 					var self = getSelf(obj);	
 					var moduleEditorParams = config.shareMap.moduleEditorParams || {};
 					//console.log(self);
+					moduleEditorParams.wikiBlockStartPost = self.blockCache.block.textPosition.from;
 					moduleEditorParams.wikiBlock = self;
 					moduleEditorParams.is_show = true;
 					moduleEditorParams.show_type = "design";
@@ -886,13 +890,18 @@ define([
             var blockCache = undefined;
 
             //console.log(token);
+			var adiWikiBlockCache = ((config.shareMap.moduleEditorParams || {}).wikiBlock || {}).blockCache;
             var blockCacheList = mdwiki.blockCacheMap[text];
             for (var i = 0; blockCacheList && i < blockCacheList.length; i++) {
                 blockCache = blockCacheList[i];
                 if (!blockCache.domNode) {
                     continue;
                 }
+
                 if (!blockCache.isUsing) {  // 返回一个未被使用缓存块
+					if (adiWikiBlockCache && adiWikiBlockCache.block.textPosition.form == blockCache.block.textPosition.from) {
+						continue;
+					}
                     blockCache.isUsing = true;
                     return blockCache;
                 }
