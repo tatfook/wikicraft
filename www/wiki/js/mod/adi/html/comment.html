@@ -1,0 +1,36 @@
+<style>
+.commentContainer {
+    padding: 70px 100px;
+}
+.commentTitle {
+    font-weight: bold;
+    font-size: 18px;
+    margin-bottom: 10px;
+}
+.commentText {
+    border: 2px solid rgb(245,245,245);
+    width: 80%;
+    height: 40px;
+}
+.commentSummit {
+    width: 10%;
+    font-size: 10px;
+    float: right;
+    margin-right: 9%;
+    padding-top: 12px;
+}
+.commentSummit>button {
+    border-radius: 3px;
+    background: white;
+    padding: 4px 6px;
+    border: 1px solid rgb(235,235,235);
+}
+</style>
+
+<div ng-controller="commentController">
+    <div class="commentContainer">
+        <div class="commentTitle">我要评论</div>
+        <input class="commentText" type="text" ng-value="{{params.title.text}}">
+        <div class="commentSummit"><button>提交</button></div>
+    </div>
+</div>
