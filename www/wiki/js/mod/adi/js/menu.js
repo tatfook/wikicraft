@@ -25,7 +25,7 @@ define(['app', 'text!wikimod/adi/html/menu.html'], function (app, htmlContent) {
                         require: true,
                         text:"left", // 默认值
                     },
-                    menu:{
+                    menu_menu:{
                         is_leaf: true,
                         type: "menu",
                         editable: true,
@@ -35,15 +35,15 @@ define(['app', 'text!wikimod/adi/html/menu.html'], function (app, htmlContent) {
                         text: [
                             {
                                 id: 1,
-                                name : '腾讯新闻',
-                                url  : 'https://news.qq.com',
-                                note : '腾讯新闻',
+                                name : '菜单1',
+                                url  : '#',
+                                note : '#',
                                 children: [
                                     {
-                                        id   : 2,
-                                        name : '八卦新闻',
-                                        url  : 'https://news.qq.com',
-                                        note : '八卦新闻',
+                                        id   : 1,
+                                        name : '菜单1.1',
+                                        url  : '#',
+                                        note : '#',
                                         children: []
                                     }
                                 ]

@@ -78,11 +78,11 @@
 </style>
 
 <div ng-controller="menuController">
-	<div ng-if="params.design.text == 'left' && !params.menu.is_mod_hide">
+	<div ng-if="params.design.text == 'left' && !params.menu_menu.is_mod_hide">
 		<div class="menu">
             <ul class="clearfix">
-                <li ng-repeat="item in params.menu.text">
-                    <a ng-href="{{item.url}}" target="_blank">{{item.name}}</a>
+                <li ng-repeat="item in params.menu_menu.text">
+                    <a ng-href="{{item.url.length > 0 ? item.url : #}}" target="_blank">{{item.name}}</a>
                     <ul class="sub-menu">
                         <li ng-repeat="subItem in item.children">
                             <a ng-href="{{subItem.url}}" target="_blank">{{subItem.name}}</a>
@@ -92,10 +92,10 @@
             </ul>
 		</div>
 	</div>
-	<div ng-if="params.design.text == 'right'  && !params.menu.is_mod_hide">
+	<div ng-if="params.design.text == 'right'  && !params.menu_menu.is_mod_hide">
         <div class="menu menu-right">
             <ul class="clearfix">
-                <li ng-repeat="item in params.menu.text">
+                <li ng-repeat="item in params.menu_menu.text">
                     <a ng-href="{{item.url}}" target="_blank">{{item.name}}</a>
                     <ul class="sub-menu">
                         <li ng-repeat="subItem in item.children">
