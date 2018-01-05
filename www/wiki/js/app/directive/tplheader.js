@@ -10,7 +10,7 @@ define([
 		return {
 			restrict: 'E',
 			scope: true,
-			template:'<div ng-show="{{isShow}}" ng-click="click()"><span>{{templateSrc}}</span><span>{{committer_name + "于" + committed_date + "更新"}}</span></div>',
+			template:'<div ng-show="isShow" ng-click="click()"><span>{{templateSrc}}</span><span>{{committer_name + "于" + committed_date + "更新"}}</span></div>',
 			controller: ["$rootScope", "$scope", "$attrs", function($rootScope, $scope, $attrs){
 				if (!$attrs.mdwikiname || !config.mdwikiMap[$attrs.mdwikiname]) {
 					return;
@@ -40,6 +40,8 @@ define([
 						$scope.isShow = false;
 						return;
 					}
+
+					$scope.isShow = true;
 					//console.log(pageinfo);
 					if (pageinfo.committer_name) {
 						$scope.committer_name = pageinfo.committer_name.substring(11);
@@ -47,7 +49,7 @@ define([
 					if (pageinfo.committed_date) {
 						$scope.committed_date = pageinfo.committed_date.substring(0,10);
 					}
-
+					util.$apply();
 				});
 				$scope.click = function(){
 					template = mdwiki.template;
