@@ -1,7 +1,8 @@
 define([
     'app',
+    'helper/util',
     'text!wikimod/adi/html/text.html'
-], function(app, htmlContent) {
+], function(app, util, htmlContent) {
     function registerController (wikiblock) {
         app.registerController("textController", ['$scope','$sce', function ($scope,$sce) {
             $scope.editorMode = wikiblock.editorMode;
@@ -50,6 +51,7 @@ define([
 					}
                 }
             })
+            $scope.params.multiText_desc.text = $sce.trustAsHtml($scope.params.multiText_desc.text);
         }])
     }
     

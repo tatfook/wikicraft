@@ -30,10 +30,10 @@
 <div ng-controller="textController">
     <div class="textContainerLeft" ng-if="params.design.text == 'left'">
         <h1 class='textTitle' ng-click="viewEditorClick(params.title, $event)">{{params.title.text}}</h1>
-        <pre><div class='textContent' ng-click="viewEditorClick(params.multiText_desc, $event)">{{params.multiText_desc.text}}</div></pre>
+        <div class='textContent' ng-click="viewEditorClick(params.multiText_desc, $event)" ng-bind-html="params.multiText_desc.text"></div>
     </div>
     <div class="textContainerCenter" ng-if="params.design.text == 'center'">
         <h1 class='textTitle' ng-click="viewEditorClick(params.title, $event)">{{params.title.text}}</h1>
-        <pre><div class='textContent' ng-click="viewEditorClick(params.multiText_desc, $event)">{{params.multiText_desc.text}}</div></pre>
+        <div class='textContent' ng-click="viewEditorClick(params.multiText_desc, $event)" ng-bind-html="params.multiText_desc.text"></div>
     </div>
 </div>
