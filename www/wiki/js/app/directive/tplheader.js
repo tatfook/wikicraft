@@ -10,7 +10,10 @@ define([
 		return {
 			restrict: 'E',
 			scope: true,
-			template:'<div ng-show="isShow" ng-click="click()"><span>{{templateSrc}}</span><span>{{committer_name + "于" + committed_date + "更新"}}</span></div>',
+            template:'<div ng-show="isShow" class="tpl-header" ng-click="click()">\
+                        <span ng-bind-html="templateSrc"></span>\
+                        <span class="pull-right">上次保存：<span class="update-by-name">{{committer_name}}</span>于{{committed_date}}</span>\
+                      </div>',
 			controller: ["$rootScope", "$scope", "$attrs", function($rootScope, $scope, $attrs){
 				if (!$attrs.mdwikiname || !config.mdwikiMap[$attrs.mdwikiname]) {
 					return;
@@ -28,9 +31,10 @@ define([
 					template = mdwiki.template;
 					//console.log(template);
 					if (template) {
-						$scope.templateSrc = template.isPageTemplate ? "当前页面" : "_theme";
+                        $scope.templateSrc = template.isPageTemplate ? "当前页面" : "_theme";
+                        $scope.templateSrc += "<i class='iconfont icon-bianji'></i>";
 					} else {
-						$scope.templateSrc =  "模板为空";
+						$scope.templateSrc =  "模板为空" + "<i class='iconfont icon-tianjia'></i>";
 					}
 				});
 
