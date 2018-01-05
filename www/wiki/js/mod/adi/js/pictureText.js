@@ -86,7 +86,7 @@ define([
 						is_card_show : true,
 						is_mod_hide  : false,
 						name         : "文字说明",
-						text         : $sce.trustAsHtml("&nbsp;&nbsp;&nbsp;&nbsp;一个人去旅行，而且是去故乡的山水间徜徉。\
+						text         : "&nbsp;&nbsp;&nbsp;&nbsp;一个人去旅行，而且是去故乡的山水间徜徉。\
 临行之前，面对太多的疑问和不解：为何是一个人？\
 也有善意的提醒：何不去远方！\
 昆明呀——赶一个花海；三亚呀——赴一个蓝天碧海。\
@@ -104,7 +104,7 @@ define([
 如果可以，我真想和你一直旅行。\
 或许是某个未开发的荒凉小岛，或许是某座闻名遐迩的文化古城。我们可以沿途用镜头记录彼此的笑脸，和属于我们的风景。\
 一起吃早餐，午餐，晚餐。或许吃得不好，可是却依旧为对方擦去嘴角的油渍。风景如何，其实并不重要。\
-重要的是，你在我的身边。"),
+重要的是，你在我的身边。",
 						href         : "",
 						require      : true,
 					},
@@ -112,7 +112,8 @@ define([
 			}
 
 			
-            wikiblock.init(initObj);
+			wikiblock.init(initObj);
+			$scope.params.multiText_desc.text = $sce.trustAsHtml($scope.params.multiText_desc.text);
         }]);
     }
 
