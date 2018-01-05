@@ -3,8 +3,9 @@
     'helper/util',
     'text!wikimod/adi/html/board.html',
     'pako',
+    'helper/mdconf',
     '/wiki/js/mod/adi/assets/board.min.js?bust=3',
-], function (app, util, htmlContent, pako) {
+], function (app, util, htmlContent, pako, mdconf) {
     jscolor.dir = "/wiki/js/mod/adi/assets/images/";
 
     var initEditor = function (data, callback) {
@@ -47,7 +48,7 @@
         });
     }
 
-    var initPreview = function (wikiBlock, callback) {
+    var initPreview = function (wikiblock, callback) {
         if (!mxClient.isBrowserSupported()) {
             return "Browser is not supported!";
         }
@@ -68,8 +69,9 @@
 
             var mxGraphModelData;
 
-            if (wikiBlock.modParams) {
-                mxGraphModelData = graph.getDecompressData(wikiBlock.modParams);
+            if (wikiblock.modParams.diagram_board && wikiblock.modParams.diagram_board.data) {
+                var data = "<diagram version=\"0.0.1\">" + wikiblock.modParams.diagram_board.data + "</diagram>";
+                mxGraphModelData = graph.getDecompressData(data);
             }
 
             var decoder = new mxCodec(mxGraphModelData);
@@ -95,9 +97,9 @@
             $scope.editorMode = wikiblock.editorMode;
 
             if (wikiblock.editorMode) {
-                var modParams = wikiblock.modParams.replace(/[\ \r\n]+/g, "");
+                var boardData = (wikiblock.modParams.diagram_board && wikiblock.modParams.diagram_board.data) ? wikiblock.modParams.diagram_board.data : "";
 
-                if (typeof(modParams) == "string" && modParams.length == 0 || modParams == "blank") {
+                if (typeof(boardData) == "string" && boardData.length == 0 || boardData == "blank") {
                     $scope.mxClientStart = true;
                     $scope.startNotice   = "点击此处开始编辑";
                     $scope.$apply();
@@ -106,7 +108,6 @@
                         $scope.preview = $sce.trustAsHtml(svg);
                         $scope.$apply();
                     });
-                    
                 }
             } else {
                 initPreview(wikiblock, function (svg) {
@@ -126,6 +127,7 @@
 						is_card_show : true,
 						is_mod_hide  : false,
                         name         : "绘图板",
+                        data         : "",
                         options      : {
                             "animation"      : true,
                             "ariaLabeledBy"  : "title",
@@ -137,14 +139,15 @@
                             "backdrop"       : "static",
                             "keyboard"       : false,
                         },
-                        success     : function(res){
-                            console.log(res);
-                            var compressData = $scope.ui.getCurrentCompressData();
+                        success     : function(ui){
+                            var compressData = ui.getCurrentCompressData();
+
+                            compressData = compressData.replace("<diagram version=\"0.0.1\">", "").replace("</diagram>", "");
+
+                            var diagram_board = mdconf.jsonToMd({"diagram_board":{"data":compressData}});
 
                             if(compressData){
-                                wikiblock.applyModParams(compressData);
-                            }else{
-                                wikiblock.applyModParams("blank");
+                                wikiblock.applyModParams(diagram_board);
                             }
                         },
                         error      : function(res){
@@ -160,8 +163,17 @@
 
         app.registerController("mxController", ['$scope', '$uibModalInstance', function ($scope, $uibModalInstance) {
             $scope.close = function () {
-                $uibModalInstance.close();
+                $uibModalInstance.close($scope.ui);
             }
+
+            $scope.$watch('$viewContentLoaded', function(){
+                setTimeout(function () {
+                    initEditor(wikiblock.modParams.diagram_board.data, function (ui) {
+                        $scope.ui = ui;
+                        $scope.$apply();
+                    });
+                }, 0)
+            });
         }]);
     }
 
