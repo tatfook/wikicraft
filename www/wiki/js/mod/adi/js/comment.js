@@ -1,11 +1,168 @@
 define([
     'app',
+    'helper/util',
+    'helper/sensitiveWord',
     'text!wikimod/adi/html/comment.html'
-], function(app, htmlContent) {
-    function registerController (wikiblock) {
-        app.registerController("commentController", ['$scope','$sce', function ($scope,$sce) {
+], function (app, util, sensitiveWord, htmlContent) {
+    function registerController(wikiblock) {
+        app.registerController("commentController", ['$scope', '$rootScope', 'Account', 'Message', 'modal', function ($scope, $rootScope, Account, Message, modal) {
             $scope.editorMode = wikiblock.editorMode;
+            
+            $scope.user = Account.getUser();
+            $scope.isAuthenticated = Account.isAuthenticated();
+            $scope.dateToStandard = function(inputDate) {
+                if (!inputDate) {
+                    return "";
+                }
+                var outputDate = "";
+                var arrs = inputDate.split(" ");
+                outputDate+= arrs[0] + " " + arrs[1].split("-").join(":");
+                return outputDate;
+            }
 
+            if($scope.editorMode) {
+                var path = util.parseUrl().pathname;
+                var params = path.split("/");
+                var urlObj = $rootScope.urlObj;
+
+                var currentScope = [];
+                var data = data || {};
+                
+                currentScope.userinfo = data.userinfo;
+                currentScope.siteinfo = data.siteinfo;
+
+                render(currentScope);
+            } else {
+                util.http("POST", config.apiUrlPrefix + "website/getDetailInfo", {
+                    username: params[1],
+                    sitename: params[2],
+                    pagename: params[3],
+                    userId: $rootScope.user && $rootScope.user._id,
+                }, function (data) {
+                    var currentScope = [];
+                    data = data || {};
+                
+                    currentScope.userinfo = data.userinfo;
+                    currentScope.siteinfo = data.siteinfo;
+
+                    render(currentScope);
+                });
+            }
+
+            function render(currentScope) {
+                var goLogin = function() {
+                    modal('controller/loginController', {
+                        controller: 'loginController',
+                        backdrop:"static"
+                    }, function (result) {
+                        $scope.isAuthenticated = true;
+                        $scope.user = Account.getUser();
+                        $scope.comment.userId = $scope.user && $scope.user._id;
+                        $scope.submitComment();
+                    }, function (result) {
+                        console.log(result);
+                    });
+                }
+
+                if($scope.editorMode) {
+                    $scope.comment = { 
+                        url: util.parseUrl().pathname, 
+                        websiteId: '', 
+                        userId: '' 
+                    };
+                } else {
+                    $scope.comment = { 
+                        url: util.parseUrl().pathname, 
+                        websiteId: currentScope.siteinfo._id, 
+                        userId: $scope.user && $scope.user._id 
+                    };
+                }
+
+                $scope.submitComment = function () {
+                    $scope.comment.content = util.stringTrim($scope.comment.content);
+                    if (!$scope.comment.content || $scope.comment.content.length == 0) {
+                        Message.danger("请填写评论内容！");
+                        return;
+                    }
+
+                    //$scope.isAuthenticated = true;
+                    $scope.tipInfo = "";
+                    if (!$scope.isAuthenticated) {
+                        // alert("登陆后才能评论!");
+                        goLogin();
+                        return;
+                    }
+
+                    // window.x = config.services.realnameVerifyModal();
+                    
+                    config.services.realnameVerifyModal().then(function() {
+                        return sensitiveWord.getAllSensitiveWords($scope.comment.content);
+                    }).then(function(results) {
+                        var isSensitive = results && results.length;
+                        isSensitive && console.log("包含敏感词:" + results.join("|"));
+                        trySaveComment(isSensitive);
+                    }).catch(function(error) {
+                        console.log('error');
+                    });
+
+                    function trySaveComment(isSensitive) {
+                        if (isSensitive) {
+                            $scope.tipInfo="您输入的内容不符合互联网安全规范，请修改";
+                            $scope.$apply();
+                            return;
+                        }
+                        util.post(config.apiUrlPrefix + 'website_comment/create', $scope.comment, function (data) {
+                            $scope.comment.content = "";
+                            console.log(data);
+                            $scope.getCommentList();
+                        });
+                    }
+                }
+
+                $scope.getCommentList = function () {
+                    if($scope.editorMode) {
+                        $scope.commentObj = {
+                            commentList: [
+                                {
+                                    userInfo: {
+                                            portrait: '',
+                                            username: '1'
+                                        }, 
+                                    content: 'aaa', 
+                                    updateTime: '2018-1-2 13-20'
+                                },
+                                {
+                                    userInfo: {
+                                            portrait: '',
+                                            username: '2'
+                                        }, 
+                                    content: 'bbb', 
+                                    updateTime: '2018-1-1 10-50'
+                                }
+                        ]}
+                    } else {
+                        util.post(config.apiUrlPrefix + 'website_comment/getByPageUrl', { url: util.parseUrl().pathname, pageSize:10000000 }, function (data) {
+                            $scope.commentObj = data;
+                        });
+                    }
+                }
+
+                $scope.deleteComment = function (comment) {
+                    util.post(config.apiUrlPrefix + 'website_comment/deleteById', comment, function (data) {
+                        $scope.getCommentList();
+                    })
+                }
+
+                function init() {
+                    $scope.getCommentList();
+                }
+
+                init();
+
+                console.log('****************************************')
+                console.log($scope)
+            }
+            
             wikiblock.init({
                 scope: $scope,
                 styles:[
@@ -23,16 +180,16 @@ define([
                         name: '样式',
                         text: 'style1'
                     },
-                    title:{
-                        is_leaf: true, // 叶子对象默认填true
-                        type:"text",   // 地段类型
-                        editable:true, // 是否可以编辑
-                        is_card_show:true,  // 是否在adi中显示编辑
-                        is_mod_hide:false,  // 在模块中是否隐藏
-                        name:"标题",   // 表单显示名
-                        text:"卢布尔雅那", // 默认值
-                        require: true, // 必填字段 没有使用默认值(默认值得有)
-                    }
+                    multiText_desc:{
+                        is_leaf      : true,
+                        type         : "menu",
+                        editable     : true,
+                        is_card_show : false,
+                        is_mod_hide  : false,
+                        name         : "历史评论",
+                        text         : '123143243341',
+                        require      : true,
+					}
                 }
             })
         }])
