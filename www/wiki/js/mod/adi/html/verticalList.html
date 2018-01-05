@@ -1,6 +1,49 @@
+<!-- 竖排 list mod -->
 <style>
+/* style1 css */
 
+/* style2 css */
+
+.clear-pointer a{
+        cursor : default;
+    }
 </style>
-<div ng-controller="verticalListController">
-
+<div ng-controller="verticalListController" ng-class="{true : 'clear-pointer'}[editorMode]">
+    <div ng-if='params.design.text=="style1"'>
+        <div>
+            <div>
+                <a ng-if="editorMode" href="javascript::void(0)">
+                    <img ng-src="{{params.image_imgOne.text}}">
+                </a>
+                <a ng-if="!editorMode" href="params.image_imgOne.href">
+                    <img ng-src="{{params.image_imgOne.text}}">
+                </a>
+                <div>
+                    <span>
+                        <a ng-if="editorMode" href="javascript::void(0)"></a>
+                        <a ng-if="!editorMode"></a>
+                    </span>
+                </div>
+            </div>
+            <div>
+                <img img ng-src="{{params.image_imgTwo.text}}">
+                <div>
+                    <span>123</span>
+                </div>
+            </div>
+            <div>
+                <img img ng-src="{{params.image_imgThree.text}}">
+                <div>
+                    <span>123</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div ng-if='params.design.text=="style2"'>
+        <div>
+            <div></div>
+            <div></div>
+            <div></div>
+        </div>
+    </div>
 </div>
