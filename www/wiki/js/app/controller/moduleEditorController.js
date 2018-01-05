@@ -133,7 +133,7 @@ define([
         // 打开绘图板
         $scope.openBoard = function(data){
             // 画板
-            console.log("打开绘图板");
+            config.services.selfDefinedModal(data.options, data.success, data.error);
         }
 
         // 多行文本弹窗

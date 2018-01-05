@@ -53,9 +53,9 @@
         font-size: 13.33333px;
     }
 
-    .mx-client-edit {
+    /* .mx-client-edit {
         cursor: pointer;
-    }
+    } */
 
     .mx-client-start {
         background-color: #dedede;
@@ -119,19 +119,23 @@
     .geSidebarContainer *,
     .geDialog,
     .geDialog * {
-        -moz-box-sizing: unset; /*Firefox3.5+*/
-        -webkit-box-sizing: unset; /*Safari3.2+*/
-        -o-box-sizing: unset; /*Opera9.6*/
-        -ms-box-sizing: unset; /*IE8*/
-        box-sizing: unset; /*W3C标准(IE9+，Safari5.1+,Chrome10.0+,Opera10.6+都符合box-sizing*/
+        -moz-box-sizing: unset;
+        -webkit-box-sizing: unset;
+        -o-box-sizing: unset;
+        -ms-box-sizing: unset;
+        box-sizing: unset;
     }
 
     .geDialog table, .geDialog table tbody {
         display: table;
     }
+
+    .clear-cursor a{
+        cursor: default;
+    }
 </style>
 
-<div ng-controller="boardController" ng-class="{'mx-client-edit' : mxClientEdit}" ng-click="edit()">
-    <div ng-bind-html="preview"></div>
-    <div ng-if="mxClientStart" ng-class="{'mx-client-start' : mxClientStart}">{{startNotice}}</div>
+<div ng-controller="boardController">
+    <div ng-hide="params.diagram_board.is_mod_hide" ng-bind-html="preview"></div>
+    <div ng-hide="params.diagram_board.is_mod_hide" ng-if="mxClientStart" ng-class="{'mx-client-start' : mxClientStart}">{{startNotice}}</div>
 </div>

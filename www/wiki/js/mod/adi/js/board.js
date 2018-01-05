@@ -1,11 +1,12 @@
 ﻿define([
     'app',
     'helper/util',
-    'text!wikimod/board/main.html',
+    'text!wikimod/adi/html/board.html',
     'pako',
-    '/wiki/js/mod/board/board.min.js?bust=3',
-], function (app, util, htmlContent, pako) {
-    jscolor.dir = "/wiki/js/mod/board/assets/images/";
+    'helper/mdconf',
+    '/wiki/js/mod/adi/assets/board.min.js?bust=3',
+], function (app, util, htmlContent, pako, mdconf) {
+    jscolor.dir = "/wiki/js/mod/adi/assets/images/";
 
     var initEditor = function (data, callback) {
         if (!mxClient.isBrowserSupported()) {
@@ -32,7 +33,7 @@
 
             var ui = new Board(new Editor(urlParams['chrome'] == '0', themes), document.querySelector("#mx-client"));
 
-            if (data && data.length > 0 && data.replace(/[\ \r\n]+/g, "") != "blank") {
+            if (data && data.replace(/[\ \r\n]+/g, "").length > 0 && data.replace(/[\ \r\n]+/g, "") != "blank") {
                 doc = ui.editor.graph.getDecompressData(data);
 
                 ui.editor.setGraphXml(doc.documentElement);
@@ -47,7 +48,7 @@
         });
     }
 
-    var initPreview = function (wikiBlock, callback) {
+    var initPreview = function (wikiblock, callback) {
         if (!mxClient.isBrowserSupported()) {
             return "Browser is not supported!";
         }
@@ -68,8 +69,9 @@
 
             var mxGraphModelData;
 
-            if (wikiBlock.modParams) {
-                mxGraphModelData = graph.getDecompressData(wikiBlock.modParams);
+            if (wikiblock.modParams.diagram_board && wikiblock.modParams.diagram_board.data) {
+                var data = "<diagram version=\"0.0.1\">" + wikiblock.modParams.diagram_board.data + "</diagram>";
+                mxGraphModelData = graph.getDecompressData(data);
             }
 
             var decoder = new mxCodec(mxGraphModelData);
@@ -90,76 +92,94 @@
         });
     }
 
-    function registerController(wikiBlock) {
+    function registerController(wikiblock) {
         app.registerController("boardController", ['$scope', '$uibModal', '$sce', function ($scope, $uibModal, $sce) {
-            if (wikiBlock.editorMode) {
-                $scope.mxClientEdit = true;
+            $scope.editorMode = wikiblock.editorMode;
 
-                if (typeof(wikiBlock.modParams) == "string" && wikiBlock.modParams.length == 0 || wikiBlock.modParams.replace(/[\ \r\n]+/g, "") == "blank") {
+            if (wikiblock.editorMode) {
+                var boardData = (wikiblock.modParams.diagram_board && wikiblock.modParams.diagram_board.data) ? wikiblock.modParams.diagram_board.data : "";
+
+                if (typeof(boardData) == "string" && boardData.length == 0 || boardData == "blank") {
                     $scope.mxClientStart = true;
                     $scope.startNotice   = "点击此处开始编辑";
                     $scope.$apply();
                 } else {
-                    initPreview(wikiBlock, function (svg) {
+                    initPreview(wikiblock, function (svg) {
                         $scope.preview = $sce.trustAsHtml(svg);
                         $scope.$apply();
                     });
-                    
                 }
             } else {
-                initPreview(wikiBlock, function (svg) {
+                initPreview(wikiblock, function (svg) {
                     $scope.preview = $sce.trustAsHtml(svg);
                     $scope.$apply();
                 });
             }
 
-            $scope.edit = function () {
-                if (!wikiBlock.editorMode) {
-                    return;
-                }
+            wikiblock.init({
+                scope  : $scope,
+				styles : [],
+				params_template : {
+                    diagram_board:{
+                        is_leaf      : true,
+						type         : "diagram",
+                        editable     : true,
+						is_card_show : true,
+						is_mod_hide  : false,
+                        name         : "绘图板",
+                        data         : "",
+                        options      : {
+                            "animation"      : true,
+                            "ariaLabeledBy"  : "title",
+                            "ariaDescribedBy": "body",
+                            "template"       : "<div id='mx-client'><div class='mx-client-close' ng-click='close()'>关闭</div></div>",
+                            "controller"     : "mxController",
+                            "size"           : "lg",
+                            "openedClass"    : "mx-client-modal",
+                            "backdrop"       : "static",
+                            "keyboard"       : false,
+                        },
+                        success     : function(ui){
+                            var compressData = ui.getCurrentCompressData();
 
-                $uibModal.open({
-                    "animation"      : true,
-                    "ariaLabeledBy"  : "title",
-                    "ariaDescribedBy": "body",
-                    "template"       : "<div id='mx-client'><div class='mx-client-close' ng-click='close()'>关闭</div></div>",
-                    "controller"     : "mxController",
-                    "size"           : "lg",
-                    "openedClass"    : "mx-client-modal",
-                    "backdrop"       : "static",
-                    "keyboard"       : false,
-                })
-                .result.then(function () {
-                    var compressData = $scope.ui.getCurrentCompressData();
+                            compressData = compressData.replace("<diagram version=\"0.0.1\">", "").replace("</diagram>", "");
 
-                    if(compressData){
-                        wikiBlock.applyModParams(compressData);
-                    }else{
-                        wikiBlock.applyModParams("blank");
-                    }
-                }, function (params) {
-                    
-                });
+                            var diagram_board = mdconf.jsonToMd({"diagram_board":{"data":compressData}});
 
-                setTimeout(function () {
-                    initEditor(wikiBlock.modParams, function (ui) {
-                        $scope.ui = ui;
-                        $scope.$apply();
-                    });
-                }, 500)
-            };
+                            if(compressData){
+                                wikiblock.applyModParams(diagram_board);
+                            }
+                        },
+                        error      : function(res){
+                            console.log(res);
+                        },
+                    	require    : true,
+                    },
+				}
+            });
+
+            console.log($scope.params);
         }])
 
         app.registerController("mxController", ['$scope', '$uibModalInstance', function ($scope, $uibModalInstance) {
             $scope.close = function () {
-                $uibModalInstance.close();
+                $uibModalInstance.close($scope.ui);
             }
+
+            $scope.$watch('$viewContentLoaded', function(){
+                setTimeout(function () {
+                    initEditor(wikiblock.modParams.diagram_board.data, function (ui) {
+                        $scope.ui = ui;
+                        $scope.$apply();
+                    });
+                }, 0)
+            });
         }]);
     }
 
     return {
-        render: function (wikiBlock) {
-            registerController(wikiBlock);
+        render: function (wikiblock) {
+            registerController(wikiblock);
             return htmlContent;
         },
     };

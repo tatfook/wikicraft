@@ -79,6 +79,7 @@ define([
     'factory/datatreeEditorModal',
     'factory/imageManagerModal',
     'factory/loadingInterceptor',
+    'factory/selfDefinedModal',
 ], function () {
     return {};
 });
