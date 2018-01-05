@@ -220,6 +220,30 @@ define([
             applyAttrChange();
         }
 
+        $scope.userInputLink = function($select, data){
+             var search = $select.search,
+                list = angular.copy($select.items),
+                FLAG = -1;
+            //remove last user input
+            list = list.filter(function(item) { 
+                return item.id !== FLAG; 
+            });
+            if (!search) {
+                $select.items = list;
+            }
+            else {
+                //manually add user input and set selection
+                var userInputItem = {
+                    id: FLAG, 
+                    url: search
+                };
+                $select.items = [userInputItem].concat(list);
+                $select.selected = userInputItem.url;
+                data.href = userInputItem.url;
+                applyAttrChange();
+            }
+        }
+
         $scope.showAllLink = function(){
             $scope.linkFilter = $scope.user.username;
             $scope.showResult = true;
