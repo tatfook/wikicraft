@@ -334,6 +334,12 @@
         right: 5px;
     }
 
+    .module-editor .down-link-select .ui-select-toggle>.caret {
+        border-bottom-color: transparent;
+        border-top: 9px solid #999;
+        bottom: -5px;
+    }
+
     .module-editor .link-select input[type="search"] {
         border: none;
         box-shadow: none;
@@ -342,9 +348,14 @@
         outline: none;
     }
 
-    .module-editor .ui-select-bootstrap>.ui-select-choices{
+    .module-editor .ui-select-bootstrap>.ui-select-choices {
         max-height: 130px;
         margin-top: 20px;
+    }
+
+    .module-editor .ui-select-bootstrap.down-link-select>.ui-select-choices {
+        max-height: 140px;
+        margin-top: 0;
     }
 
     .module-editor .image-card-main {
@@ -362,7 +373,7 @@
         border-bottom: 1px solid #A7A7A7;
     }
 
-    .module-editor .image-card-main .col-xs-6.active{
+    .module-editor .image-card-main .col-xs-6.active {
         background-color: #3977AD;
         color: #FFF;
     }
@@ -472,7 +483,7 @@
                             <div ng-if="data.type == 'multiText'">
                                 <div class="card-input-box">
                                     <input type="text" class="card-input" ng-change="applyAttrChange()" ng-model="data.data.text" placeholder="内容">
-                                    <i class="pull-right iconfont icon-enlarge" ng-click="openMultiText(data.data)"></i>
+                                    <i class="pull-right iconfont icon-enlarge" ng-click="openMultiText(data.data, 'text')"></i>
                                 </div>
                                 <div class="card-input-box">
                                     <!-- <input type="text" 
@@ -482,17 +493,10 @@
                                         ng-blur="setShowResult(false)"
                                     > -->
                                     <!-- <i class="pull-right glyphicon glyphicon-play" ng-click="showAllLink()"></i> -->
-                                    <ui-select class="link-select card-input" 
-                                        ng-model = "data.data.href" 
-                                        reset-search-input = "false"
-                                        on-select = "urlSelected($item, $model, data.data)"
-                                    >
+                                    <ui-select class="link-select card-input" ng-model="data.data.href" reset-search-input="false" on-select="urlSelected($item, $model, data.data, 'href')">
                                         <ui-select-match allow-clear="false" placeholder="{{data.data.href}}">{{data.data.href}}</ui-select-match>
-                                        <ui-select-choices repeat="file in (filelist | filter: $select.search) track by $index"
-                                            refresh-delay="0" 
-                                            refresh="userInputLink($select, data.data)"
-                                            position = "up"
-                                        >
+                                        <ui-select-choices repeat="file in (filelist | filter: $select.search) track by $index" refresh-delay="0" refresh="userInputLink($select, data.data)"
+                                            position="up">
                                             <span ng-bind="file.url"></span>
                                         </ui-select-choices>
                                     </ui-select>
@@ -516,7 +520,20 @@
                                 </div>
                             </div>
                             <div ng-if="data.type == 'page'">
-                                <div>
+                                <div class="card-input-box">
+                                    <ui-select class="link-select down-link-select card-input" ng-model="data.data.contentUrl" reset-search-input="false" on-select="urlSelected($item, $model, data.data, 'contentUrl')">
+                                        <ui-select-match allow-clear="false" placeholder="{{data.data.contentUrl}}">{{data.data.contentUrl}}</ui-select-match>
+                                        <ui-select-choices repeat="file in (filelist | filter: $select.search) track by $index" refresh-delay="0" refresh="userInputLink($select, data.data)"
+                                            position="down">
+                                            <span ng-bind="file.url"></span>
+                                        </ui-select-choices>
+                                    </ui-select>
+                                </div>
+                                <div class="card-input-box">
+                                    <input type="text" class="card-input" ng-change="applyAttrChange()" ng-model="data.data.content" placeholder="或编辑内容">
+                                    <i class="pull-right iconfont icon-enlarge" ng-click="openMultiText(data.data, 'content')"></i>
+                                </div>
+                                <!-- <div>
                                     <div>
                                         填充文件:
                                     </div>
@@ -531,7 +548,7 @@
                                     <div>
                                         <textarea ng-model="data.data.content"></textarea>
                                     </div>
-                                </div>
+                                </div> -->
                             </div>
                             <!-- 链接 -->
                             <!-- <div ng-if="data.type == 'link'">

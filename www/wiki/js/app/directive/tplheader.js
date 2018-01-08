@@ -12,9 +12,9 @@ define([
 			scope: true,
             template:'<div ng-show="isShow" class="tpl-header" ng-click="click()">\
                         <span ng-bind-html="templateSrc"></span>\
-                        <span class="pull-right">上次保存：<span class="update-by-name">{{committer_name}}</span>于{{committed_date}}</span>\
+                        <span class="pull-right" ng-click="showVersions()">上次保存：{{committer_name}}于{{committed_date}}</span>\
                       </div>',
-			controller: ["$rootScope", "$scope", "$attrs", function($rootScope, $scope, $attrs){
+			controller: ["$rootScope", "$scope", "$attrs", "modal", function($rootScope, $scope, $attrs, modal){
 				if (!$attrs.mdwikiname || !config.mdwikiMap[$attrs.mdwikiname]) {
 					return;
 				}
@@ -34,10 +34,10 @@ define([
                         $scope.templateSrc = template.isPageTemplate ? "当前页面" : "_theme";
                         $scope.templateSrc += "<i class='iconfont icon-bianji'></i>";
 					} else {
-						$scope.templateSrc =  "模板为空" + "<i class='iconfont icon-tianjia'></i>";
-					}
-				});
-
+                        $scope.templateSrc =  "模板为空" + "<i class='iconfont icon-tianjia'></i>";
+                    }
+                });
+                
 				$scope.$watch("$rootScope.pageinfo", function() {
 					pageinfo = $rootScope.pageinfo;
 					if (!pageinfo) {
@@ -54,7 +54,22 @@ define([
 						$scope.committed_date = pageinfo.committed_date.substring(0,10);
 					}
 					util.$apply();
-				});
+                });
+                
+                $scope.showVersions = function(){
+                    $scope.currentPage = $scope.pageinfo;
+                    modal('controller/gitVersionController', {
+                        controller: 'gitVersionController',
+                        size: 'lg',
+                        backdrop: true,
+                        scope: $scope
+                    }, function (wikiBlock) {
+                        console.log(wikiBlock);
+                    }, function (result) {
+                        console.log(result);
+                    });
+                }
+
 				$scope.click = function(){
 					template = mdwiki.template;
 					console.log(template, mdwiki);

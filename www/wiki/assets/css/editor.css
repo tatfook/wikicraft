@@ -532,6 +532,15 @@ select.resize-view {
     vertical-align: middle;
     color: #3977AD;
     cursor: pointer;
+    font-weight: bold;
+}
+
+.tpl-header-container .pull-right{
+    cursor: pointer;
+}
+
+.tpl-header-container .pull-right:hover{
+    color: #3977AD;
 }
 
 .att-edit-box {

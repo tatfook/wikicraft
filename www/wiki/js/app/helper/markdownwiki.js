@@ -823,7 +823,7 @@ define([
 			var tplheaderContent = '<tplheader data-mdwikiname="' + mdwiki.mdwikiName + '"></tplheader>';
             var htmlContent = '<div class="wikiEditor" id="' + mdwikiContainerId + '"><div id="' + mdwikiContentContainerId + '"></div><div id="' + mdwikiTempContentContainerId + '"></div></div>';
             var scriptContent = '<script>mdwikiRender("' + mdwikiName + '","' + text + '")</script>';
-            return tplheaderContent + htmlContent + scriptContent;
+            return htmlContent + scriptContent;
         }
 
         mdwiki.bindRenderContainer = function (selector, tplSelector) {
@@ -975,8 +975,9 @@ define([
 				return true;
 			}
 
-			var urlPrefix = "/" + pageinfo.username + "/" + pageinfo.sitename + "/";
-			var pagePath = pageinfo.url.substring(urlPrefix.length);
+            var urlPrefix = "/" + pageinfo.username + "/" + pageinfo.sitename + "/";
+            var tempUrl = pageinfo.url || pageinfo.pagename;
+			var pagePath = tempUrl.substring(urlPrefix.length);
 
 			if (typeof(modParams) != "object" || !modParams.urlMatch) {
 				return true;
