@@ -97,7 +97,8 @@ define([
 		// 隐藏事件
 		$scope.click_hide = function(data) {
             data.is_mod_hide = !data.is_mod_hide;
-            applyAttrChange();
+            //applyAttrChange();
+            throttle(applyAttrChange);
 		}
 
 		// 点击列表项
@@ -123,7 +124,8 @@ define([
                 datatree: data.text
             }, function(result){
                 data.text = result;
-                applyAttrChange();
+                //applyAttrChange();
+				throttle(applyAttrChange);
                 console.log(result);
             }, function(err){
                 console.log(err);
@@ -146,7 +148,8 @@ define([
                 scope: $scope
             }).result.then(function(result){
                 console.log(result);
-                applyAttrChange();
+                //applyAttrChange();
+				throttle(applyAttrChange);
                 // $scope.editingData.text = result;
             });
         }
@@ -166,7 +169,8 @@ define([
                 //handle url
                 console.log(data);
                 data.text = url;
-                applyAttrChange();
+                //applyAttrChange();
+				throttle(applyAttrChange);
             });
         }
 
@@ -192,7 +196,8 @@ define([
                 if (provider == "link") {
                     var link = $rootScope.link;
                     data[key] = link.url;
-                    applyAttrChange();
+                    //applyAttrChange();
+					throttle(applyAttrChange);
                 }
             }, function (text, error) {
                 console.log('text:' + text);
@@ -210,14 +215,16 @@ define([
 
         $scope.urlSelected = function(item, modal, data){
             data.href = item.url;
-            applyAttrChange();
+            //applyAttrChange();
+            throttle(applyAttrChange);
         }
 
         $scope.selectUrl = function(data, url){
             data.href = url;
             $scope.showResult = false;
             $scope.linkFilter = "";
-            applyAttrChange();
+            //applyAttrChange();
+            throttle(applyAttrChange);
         }
 
         $scope.showAllLink = function(){
@@ -254,7 +261,8 @@ define([
                 data.target = value;
             }
             data.target = data.target || "_blank";
-            applyAttrChange();
+            //applyAttrChange();
+            throttle(applyAttrChange);
         }
 
 		$scope.close = function() {

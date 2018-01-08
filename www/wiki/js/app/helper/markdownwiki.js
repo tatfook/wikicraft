@@ -426,6 +426,7 @@ define([
 					var pos = self.blockCache.block.textPosition;
 					if (moduleEditorParams.wikiBlockStartPost == pos.from) {
                         $("#" + self.containerId).addClass("active");
+						moduleEditorParams.wikiBlock.blockCache.block.textPosition = self.blockCache.block.textPosition;
 						if (moduleEditorParams.show_type == "design") {
 							moduleEditorParams.wikiBlock = self;
 							moduleEditorParams.updateEditorObj(self.format_params_template);

@@ -2873,7 +2873,7 @@ define([
                         //moduleEditorParams.setKnowledge(toLineInfo ? toLineInfo.text:"");
 
                         timer = undefined;
-                    })(isStopRender), 100);
+                    })(isStopRender));
                 });
                 mdwiki.bindRenderContainer(".result-html");
                 editor.focus();
