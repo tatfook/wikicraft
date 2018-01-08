@@ -26,15 +26,31 @@
                 </div>
             </div>
             <div>
-                <img img ng-src="{{params.image_imgTwo.text}}">
+                <a ng-if="editorMode" href="javascript::void(0)">
+                    <img ng-src="{{params.image_imgTwo.text}}">
+                </a>
+                <a ng-if="!editorMode" href="params.image_imgTwo.href">
+                    <img ng-src="{{params.image_imgTwo.text}}">
+                </a>
                 <div>
-                    <span>123</span>
+                    <span>
+                        <a ng-if="editorMode" href="javascript::void(0)"></a>
+                        <a ng-if="!editorMode"></a>
+                    </span>
                 </div>
             </div>
             <div>
-                <img img ng-src="{{params.image_imgThree.text}}">
+                <a ng-if="editorMode" href="javascript::void(0)">
+                    <img ng-src="{{params.image_imgThree.text}}">
+                </a>
+                <a ng-if="!editorMode" href="params.image_imgThree.href">
+                    <img ng-src="{{params.image_imgThree.text}}">
+                </a>
                 <div>
-                    <span>123</span>
+                    <span>
+                        <a ng-if="editorMode" href="javascript::void(0)"></a>
+                        <a ng-if="!editorMode"></a>
+                    </span>
                 </div>
             </div>
         </div>
