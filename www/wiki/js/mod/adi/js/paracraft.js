@@ -2,7 +2,7 @@ define([
     'app',
 	'helper/util',
 	'helper/mdconf',
-    'text!wikimod/adi/html/paracraftWorld.html',
+    'text!wikimod/adi/html/paracraft.html',
 ], function (app, util, mdconf, htmlContent) {
 	var initObj;
 
