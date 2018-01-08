@@ -2875,7 +2875,7 @@ define([
                         timer = undefined;
                     })(isStopRender));
                 });
-                mdwiki.bindRenderContainer(".result-html");
+                mdwiki.bindRenderContainer(".result-html", ".tpl-header-container");
                 editor.focus();
                 setEditorHeight();
 //}}}

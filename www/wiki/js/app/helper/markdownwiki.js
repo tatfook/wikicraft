@@ -826,17 +826,19 @@ define([
             return tplheaderContent + htmlContent + scriptContent;
         }
 
-        mdwiki.bindRenderContainer = function (selector) {
+        mdwiki.bindRenderContainer = function (selector, tplSelector) {
+            tplSelector = tplSelector || ".tpl-header-container";
             mdwiki.mdwikiContainerSelector = selector;
             var mdwikiContainerId = mdwiki.getMdWikiContainerId();
             var mdwikiContentContainerId = mdwiki.getMdWikiContentContainerId();
             var mdwikiTempContentContainerId = mdwiki.getMdWikiTempContentContainerId();
             //var htmlContent = '<div style="margin: 0px 10px" id="' + mdwikiContainerId + '"><div id="' + mdwikiContentContainerId + '"></div><div id="' + mdwikiTempContentContainerId + '"></div></div>';
 			var tplheaderContent = '<tplheader data-mdwikiname="' + mdwiki.mdwikiName + '"></tplheader>';
-			var htmlContent = tplheaderContent + '<div class="wikiEditor" id="' + mdwikiContainerId + '"><div id="' + mdwikiContentContainerId + '"></div><div id="' + mdwikiTempContentContainerId + '"></div></div>';
+			var htmlContent = '<div class="wikiEditor" id="' + mdwikiContainerId + '">' + '<div id="' + mdwikiContentContainerId + '"></div><div id="' + mdwikiTempContentContainerId + '"></div></div>';
             mdwiki.clearBlockCache();
             //$(selector).html(htmlContent);
             util.html(selector, htmlContent);
+            util.html(tplSelector, tplheaderContent);
         }
 
         mdwiki.getMdWikiContainerId = function () {
