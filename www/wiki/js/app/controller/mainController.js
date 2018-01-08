@@ -59,7 +59,7 @@ define([
             realnameVerifyModal,
             datatreeEditorModal,
             imageManagerModal,
-            selfDefinedModal,
+            selfDefinedModal
         ) {
             //console.log("mainController");
             
