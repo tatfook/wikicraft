@@ -1,6 +1,23 @@
 <!-- 竖排 list mod -->
 <style>
 /* style1 css */
+.vertica-dec1 , .vertica-dec2 , .vertica-dec3{
+    width: 569px;
+    height: 350px;
+    -webkit-line-clamp: 1;  
+    overflow: hidden;  
+    display: -webkit-box;  
+    -webkit-box-orient: vertical;  
+    white-space: normal; 
+    float: left;
+}
+.vertica-body a img {
+    float: left;
+}
+.vertica-body{
+    height: 350px;
+    margin-bottom: 30px;
+}
 
 /* style2 css */
 
@@ -11,45 +28,48 @@
 <div ng-controller="verticalListController" ng-class="{true : 'clear-pointer'}[editorMode]">
     <div ng-if='params.design.text=="style1"'>
         <div>
-            <div>
+            <div class="vertica-body">
                 <a ng-if="editorMode" href="javascript::void(0)">
                     <img ng-src="{{params.image_imgOne.text}}">
                 </a>
                 <a ng-if="!editorMode" href="params.image_imgOne.href">
                     <img ng-src="{{params.image_imgOne.text}}">
                 </a>
-                <div>
+                <div class="vertica-dec1">
+                    <span></span>
                     <span>
-                        <a ng-if="editorMode" href="javascript::void(0)"></a>
-                        <a ng-if="!editorMode"></a>
+                        <a ng-if="editorMode" href="javascript::void(0)">{{params.multiText_decOne.text}}</a>
+                        <a ng-if="!editorMode">{{params.multiText_decOne.text}}</a>
                     </span>
                 </div>
             </div>
-            <div>
+            <div class="vertica-body">
                 <a ng-if="editorMode" href="javascript::void(0)">
                     <img ng-src="{{params.image_imgTwo.text}}">
                 </a>
                 <a ng-if="!editorMode" href="params.image_imgTwo.href">
                     <img ng-src="{{params.image_imgTwo.text}}">
                 </a>
-                <div>
+                <div class="vertica-dec2">
+                    <span></span>
                     <span>
-                        <a ng-if="editorMode" href="javascript::void(0)"></a>
-                        <a ng-if="!editorMode"></a>
+                        <a ng-if="editorMode" href="javascript::void(0)">{{params.multiText_decTwo.text}}</a>
+                        <a ng-if="!editorMode">{{params.multiText_decTwo.text}}</a>
                     </span>
                 </div>
             </div>
-            <div>
+            <div class="vertica-body">
                 <a ng-if="editorMode" href="javascript::void(0)">
                     <img ng-src="{{params.image_imgThree.text}}">
                 </a>
                 <a ng-if="!editorMode" href="params.image_imgThree.href">
                     <img ng-src="{{params.image_imgThree.text}}">
                 </a>
-                <div>
+                <div class="vertica-dec3">
+                    <span></span>
                     <span>
-                        <a ng-if="editorMode" href="javascript::void(0)"></a>
-                        <a ng-if="!editorMode"></a>
+                        <a ng-if="editorMode" href="javascript::void(0)">{{params.multiText_decThree.text}}</a>
+                        <a ng-if="!editorMode">{{params.multiText_decThree.text}}</a>
                     </span>
                 </div>
             </div>
