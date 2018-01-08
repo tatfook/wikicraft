@@ -311,7 +311,8 @@ define([
 					data = data || {};
 					if (datas.require) {
 						for (var key in datas) {
-							if (keywordMap[key] || typeof(datas[key]) == "object") {
+							//if (keywordMap[key] || typeof(datas[key]) == "object") {
+							if (keywordMap[key]) {
 								continue;
 							}
 							data[key] = data[key] || datas[key];
