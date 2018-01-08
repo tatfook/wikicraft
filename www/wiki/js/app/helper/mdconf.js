@@ -95,7 +95,7 @@ define([
 		var _mdToJson = function(line) {
 			var temp = line.match(/^([-+#]) (.*)/);
 			var flag = temp[1];
-			var content = line.substring(flag.length +1);	
+			var content = line.substring(flag.length +1).trim();	
 			var key, value;
 
 			if (flag == "#") {
