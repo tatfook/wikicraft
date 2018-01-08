@@ -95,7 +95,7 @@ define([
 		var _mdToJson = function(line) {
 			var temp = line.match(/^([-+#]) (.*)/);
 			var flag = temp[1];
-			var content = temp[2].trim();	
+			var content = line.substring(flag.length +1);	
 			var key, value;
 
 			if (flag == "#") {
@@ -128,6 +128,7 @@ define([
 		}
 
 		var is_comment = false;
+		var line = "";
 		for (var i = 0; i < temp_lines.length; i++) {
 			if (temp_lines[i].match(/^<!--.*-->\s*$/)) {
 				continue;
@@ -143,7 +144,7 @@ define([
 				continue;
 			}
 			if (!temp_lines[i].match(/^[-+#] .*/)) {
-				line += temp_lines[i] + "\n";
+				line += (line ? "\n" : "") + temp_lines[i];
 				continue;
 			}
 			if (line) {
