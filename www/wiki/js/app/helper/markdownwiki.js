@@ -903,9 +903,12 @@ define([
                 }
 
                 if (!blockCache.isUsing) {  // 返回一个未被使用缓存块
-					if (adiWikiBlockCache && adiWikiBlockCache.block.textPosition.form == blockCache.block.textPosition.from) {
+					if (adiWikiBlockCache && blockCache.wikiBlock.cmdName == adiWikiBlockCache.wikiBlock.cmdName) {
 						continue;
 					}
+					//if (adiWikiBlockCache && adiWikiBlockCache.block.textPosition.form == blockCache.block.textPosition.from) {
+						//continue;
+					//}
                     blockCache.isUsing = true;
                     return blockCache;
                 }
