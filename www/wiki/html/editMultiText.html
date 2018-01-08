@@ -50,10 +50,10 @@
     <h4 class="modal-title">文本</h4>
 </div>
 <div class="modal-body clearfix">
-    <textarea placeholder="书写内容（可以使用markdown语法）:" autofocus ng-model="editingData.text">{{editingData.text}}</textarea>
+    <textarea placeholder="书写内容（可以使用markdown语法）:" autofocus ng-model="multiText">{{multiText}}</textarea>
     <button class="btn pull-right" 
-        ng-class="{true:'btn-default', false:'btn-primary'}[!editingData.text]" 
-        ng-disabled="!editingData.text"
+        ng-class="{true:'btn-default', false:'btn-primary'}[!multiText]" 
+        ng-disabled="!multiText"
         ng-click="finishEdit()"
     >确认</button>
 </div>

@@ -139,8 +139,9 @@ define([
         }
 
         // 多行文本弹窗
-        $scope.openMultiText = function(data){
-            $scope.editingData = data;
+        $scope.openMultiText = function(data, key){
+            key = key || "text";
+            $scope.editingData = data[key];
             $uibModal.open({
                 templateUrl: config.htmlPath + "editMultiText.html",
                 controller: "multiTextController",
@@ -149,7 +150,8 @@ define([
             }).result.then(function(result){
                 console.log(result);
                 //applyAttrChange();
-				throttle(applyAttrChange);
+                data[key] = result;
+                throttle(applyAttrChange);
                 // $scope.editingData.text = result;
             });
         }
@@ -213,8 +215,9 @@ define([
             });
         }
 
-        $scope.urlSelected = function(item, modal, data){
-            data.href = item.url;
+        $scope.urlSelected = function(item, modal, data, key){
+            key = key || "href";
+            data[key] = item.url;
             //applyAttrChange();
             throttle(applyAttrChange);
         }
@@ -551,13 +554,14 @@ define([
 	}]);
 
     app.registerController("multiTextController", ["$scope", "$uibModalInstance", function($scope, $uibModalInstance){
+        $scope.multiText = $scope.editingData;
         console.log("multiTextController");
         $scope.cancel = function () {
             $uibModalInstance.dismiss('cancel');
         }
 
         $scope.finishEdit = function(){
-            $uibModalInstance.close('finish');
+            $uibModalInstance.close($scope.multiText);
         }
     }])
 
