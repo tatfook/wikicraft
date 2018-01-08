@@ -343,7 +343,7 @@
     }
 
     .module-editor .ui-select-bootstrap>.ui-select-choices{
-        height: 130px;
+        max-height: 130px;
         margin-top: 20px;
     }
 
@@ -482,9 +482,17 @@
                                         ng-blur="setShowResult(false)"
                                     > -->
                                     <!-- <i class="pull-right glyphicon glyphicon-play" ng-click="showAllLink()"></i> -->
-                                    <ui-select class="link-select card-input" ng-model="data.data.href" on-select="urlSelected($item, $model, data.data)">
+                                    <ui-select class="link-select card-input" 
+                                        ng-model = "data.data.href" 
+                                        reset-search-input = "false"
+                                        on-select = "urlSelected($item, $model, data.data)"
+                                    >
                                         <ui-select-match allow-clear="false" placeholder="{{data.data.href}}">{{data.data.href}}</ui-select-match>
-                                        <ui-select-choices repeat="file in (filelist | filter: $select.search) track by $index">
+                                        <ui-select-choices repeat="file in (filelist | filter: $select.search) track by $index"
+                                            refresh-delay="0" 
+                                            refresh="userInputLink($select, data.data)"
+                                            position = "up"
+                                        >
                                             <span ng-bind="file.url"></span>
                                         </ui-select-choices>
                                     </ui-select>
