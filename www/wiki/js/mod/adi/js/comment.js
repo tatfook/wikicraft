@@ -21,18 +21,34 @@ define([
             }
 
             if($scope.editorMode) {
+                var path = '/ukinll/first';
+                var params = path.split("/");
+                var urlObj = $rootScope.urlObj;
+                console.log(params)
+
+                util.http("POST", 'http://keepwork.com/api/wiki/models/website/getDetailInfo', {
+                    username: params[1],
+                    sitename: params[2]
+                    // pagename: params[3],
+                    // userId: $rootScope.user && $rootScope.user._id,
+                }, function (data) {
+                    var currentScope = [];
+                    data = data || {};
+                
+                    currentScope.userinfo = data.userinfo;
+                    currentScope.siteinfo = data.siteinfo;
+
+                    console.log('*************************************')
+                    console.log(currentScope)
+
+                    render(currentScope);
+                });
+
+            } else {
                 var path = util.parseUrl().pathname;
                 var params = path.split("/");
                 var urlObj = $rootScope.urlObj;
 
-                var currentScope = [];
-                var data = data || {};
-                
-                currentScope.userinfo = data.userinfo;
-                currentScope.siteinfo = data.siteinfo;
-
-                render(currentScope);
-            } else {
                 util.http("POST", config.apiUrlPrefix + "website/getDetailInfo", {
                     username: params[1],
                     sitename: params[2],
@@ -57,7 +73,7 @@ define([
                     }, function (result) {
                         $scope.isAuthenticated = true;
                         $scope.user = Account.getUser();
-                        $scope.comment.userId = $scope.user && $scope.user._id;
+                        $scope.comment.userId = 18943;
                         $scope.submitComment();
                     }, function (result) {
                         console.log(result);
@@ -66,9 +82,9 @@ define([
 
                 if($scope.editorMode) {
                     $scope.comment = { 
-                        url: util.parseUrl().pathname, 
-                        websiteId: '', 
-                        userId: '' 
+                        url: '/ukinll/first', 
+                        websiteId: currentScope.siteinfo._id, 
+                        userId: 18943 
                     };
                 } else {
                     $scope.comment = { 
@@ -111,35 +127,32 @@ define([
                             $scope.$apply();
                             return;
                         }
-                        util.post(config.apiUrlPrefix + 'website_comment/create', $scope.comment, function (data) {
-                            $scope.comment.content = "";
-                            console.log(data);
-                            $scope.getCommentList();
-                        });
+                        if($scope.editorMode){
+                            util.post('http://keepwork.com/api/wiki/models/website_comment/create', $scope.comment, function (data) {
+                                $scope.comment.content = "";
+                                console.log(data);
+                                $scope.getCommentList();
+                            });
+
+                        } else {
+                            util.post(config.apiUrlPrefix + 'website_comment/create', $scope.comment, function (data) {
+                                $scope.comment.content = "";
+                                console.log(data);
+                                $scope.getCommentList();
+                            });
+                        }
                     }
                 }
 
                 $scope.getCommentList = function () {
                     if($scope.editorMode) {
-                        $scope.commentObj = {
-                            commentList: [
-                                {
-                                    userInfo: {
-                                            portrait: '',
-                                            username: '1'
-                                        }, 
-                                    content: 'aaa', 
-                                    updateTime: '2018-1-2 13-20'
-                                },
-                                {
-                                    userInfo: {
-                                            portrait: '',
-                                            username: '2'
-                                        }, 
-                                    content: 'bbb', 
-                                    updateTime: '2018-1-1 10-50'
-                                }
-                        ]}
+                        util.post('http://keepwork.com/api/wiki/models/website_comment/getByPageUrl', {
+                            url: path,
+                            pageSize:10000000
+                        }, function (data) {
+                            $scope.commentObj = data;
+                        });
+
                     } else {
                         util.post(config.apiUrlPrefix + 'website_comment/getByPageUrl', { url: util.parseUrl().pathname, pageSize:10000000 }, function (data) {
                             $scope.commentObj = data;
@@ -148,9 +161,18 @@ define([
                 }
 
                 $scope.deleteComment = function (comment) {
-                    util.post(config.apiUrlPrefix + 'website_comment/deleteById', comment, function (data) {
-                        $scope.getCommentList();
-                    })
+                    if($scope.editorMode) {
+                        util.post('http://keepwork.com/api/wiki/models/website_comment/deleteById', 
+                            comment,
+                            function (data) {
+                                $scope.getCommentList()
+                            }
+                        )
+                    } else {
+                        util.post(config.apiUrlPrefix + 'website_comment/deleteById', comment, function (data) {
+                            $scope.getCommentList();
+                        })
+                    }
                 }
 
                 function init() {
@@ -158,9 +180,6 @@ define([
                 }
 
                 init();
-
-                console.log('****************************************')
-                console.log($scope)
             }
             
             wikiblock.init({
@@ -182,7 +201,7 @@ define([
                     },
                     multiText_desc:{
                         is_leaf      : true,
-                        type         : "menu",
+                        type         : "none",
                         editable     : true,
                         is_card_show : false,
                         is_mod_hide  : false,
