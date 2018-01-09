@@ -187,7 +187,8 @@ define([
                 styles:[
                     {
                         design: {
-                            text: 'style1'
+                            text: 'style1',
+                            cover: './../assets/images/comment.png'
                         }
                     }
                 ],
