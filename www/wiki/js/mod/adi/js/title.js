@@ -7,6 +7,7 @@ define([
 
     function registerController(wikiblock) {
         app.registerController("titleController", ['$scope','$sce', function ($scope, $sce) {
+			
 			$scope.editorMode = wikiblock.editorMode;
 
 			initObj = {
