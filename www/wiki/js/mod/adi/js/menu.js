@@ -14,11 +14,13 @@ define(['app', 'text!wikimod/adi/html/menu.html'], function (app, htmlContent) {
                 {
                     design:{
                         text:'left',
+                        cover: './../assets/images/menuLeft.png'
                     }
                 },
                 {
                     design:{
                         text:'right',
+                        cover: './../assets/images/menuRight.png'
                     }
                 }
                 ],
