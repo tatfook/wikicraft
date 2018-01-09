@@ -815,6 +815,9 @@ define([
                 // 非wiki mod todo
                 var moduleEditorParams = config.shareMap.moduleEditorParams || {};
                 moduleEditorParams.activeContainerId = "";
+				moduleEditorParams.show_type = "knowledge";
+				moduleEditorParams.setKnowledge("");
+				util.$apply();
 			}
 			//console.log(cur_line);
 			//console.log(mdwiki.blockList);
