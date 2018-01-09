@@ -129,11 +129,13 @@
 
     .clear-pointer a{
         cursor : default;
+    }
+    .clear-class a{
         color: black;
     }
 </style>
 
-<div ng-controller="pictureTextController" ng-class="{true : 'clear-pointer'}[editorMode]">
+<div ng-controller="pictureTextController" ng-class="{true : 'clear-pointer',false : 'clear-class'}[editorMode]">
 
     <!-- style1 -->
     <div ng-if='params.design.text=="style1"'>
