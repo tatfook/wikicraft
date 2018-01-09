@@ -92,7 +92,7 @@
     }
     /* style2 css */
     .world4D{
-        width: 1190px;
+        max-width: 1190px;
         margin: 0 auto;
     }
     .world4D .world-head .world-div1 .worldName , .world4D .world-head .world-div1 .useName{
@@ -127,7 +127,7 @@
         top: -50%; */
     }
     .world4D .world-body .world-text{
-        width: 720px;
+        width: 675px;
         height: 275px;
         -webkit-line-clamp: 1;  
         overflow: hidden;  
@@ -135,7 +135,7 @@
         -webkit-box-orient: vertical;  
         white-space: normal; 
         margin-left: 30px;
-        font-size: 18px;
+        font-size: 16px;
     }
     .world-btn2{
         text-align: center;
@@ -153,7 +153,7 @@
     /* style3 css */
     .world5D{
         margin: 0 auto;
-        width: 1040px;
+        max-width: 1040px;
     }
     .world-img3{
         float: left;
@@ -190,7 +190,8 @@
     .world-work2{
         margin-top: 15px;
         height:197.73px;
-        width: 560px;
+        width: 545px;
+        font-size: 13px;
         -webkit-line-clamp: 1;  
         overflow: hidden;  
         display: -webkit-box;  
@@ -226,7 +227,7 @@
     }
 </style>
 <div ng-controller="paracraftWorldController">
-    <div ng-class="{true:'world-clear-pointer'}[editorMode]" ng-if='params.design.text=="style1"' class="world3D">
+    <div ng-class="{true:'world-clear-pointer'}[editorMode]" ng-if='params.design.text=="style1"' class="world3D container">
         <div ng-hide="params.logoUrl.is_mod_hide" class="img">
             <img ng-src="{{getImageUrl(params.logoUrl) || imgsPath + '3DWorld.jpg'}}" alt="">
         </div>
@@ -240,7 +241,7 @@
                 </div>
                 <div class="col-xs-12">
                     <div class="col-xs-6" ng-hide="params.worldUrl.is_mod_hide">
-                        <a ng-if="!editorMode" class="btn btn-block btn-default" href="{{params.worldUrl.text}}">下载</a>
+                        <a ng-if="!editorMode" class="btn btn-block btn-default" target="{{params.worldUrl.target ? params.worldUrl.target : '_blank'}}" href="{{params.worldUrl.text}}">下载</a>
                         <a ng-if="editorMode" href="javascript::void(0)" class="btn btn-block btn-default">下载</a>
                     </div>
                     <div class="col-xs-6">
@@ -258,7 +259,7 @@
         </div>
     </div>
     <div ng-class="{true:'world-clear-pointer'}[editorMode]" ng-if='params.design.text=="style2"'>
-        <div class="world4D">
+        <div class="world4D container">
             <div class="world-head clearfix">
                 <div class="world-div1">
                     <h2 ng-hide="params.worldName.is_mod_hide" class="worldName"><a>{{params.worldName.text}}</a></h2>
@@ -271,7 +272,7 @@
                     </div>
                     <div ng-hide="params.worldUrl.is_mod_hide" class="worldBtn">
                         <img src="{{params.btnLogo.text}}" alt="">
-                        <a class="btn btn-block btn-default world-btn2" ng-if="!editorMode" href="{{params.worldUrl.text}}">下载</a>
+                        <a class="btn btn-block btn-default world-btn2" ng-if="!editorMode" target="{{params.worldUrl.target ? params.worldUrl.target : '_blank'}}" href="{{params.worldUrl.text}}">下载</a>
                         <a class="btn btn-block btn-default world-btn2" ng-if="editorMode" href="javascript::void(0)">下载</a>
                     </div>
                 </div>
@@ -300,7 +301,7 @@
         </div>
     </div>
     <div ng-class="{true:'world-clear-pointer'}[editorMode]" ng-if='params.design.text=="style3"'>
-        <div class="world5D clearfix">
+        <div class="world5D clearfix container">
             <div ng-hide="params.logoUrl.is_mod_hide" class="world-img3">
                 <img ng-src="{{getImageUrl(params.logoUrl) || imgsPath + 'paracraftWorld.png'}}" alt="">
             </div>
@@ -320,7 +321,7 @@
                 </div>
                 <div ng-hide="params.worldUrl.is_mod_hide" class="world-btn3">
                     <img src="{{params.btnLogo.text}}" alt="">
-                    <a class="btn btn-block btn-default" ng-if="!editorMode" href="{{params.worldUrl.text}}">下载</a>
+                    <a class="btn btn-block btn-default" ng-if="!editorMode" target="{{params.worldUrl.target ? params.worldUrl.target : '_blank'}}" href="{{params.worldUrl.text}}">下载</a>
                     <a class="btn btn-block btn-default" ng-if="editorMode" href="javascript::void(0)">下载</a>
                 </div>
                 <div class="world-btn3">
