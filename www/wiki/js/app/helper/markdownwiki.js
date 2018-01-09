@@ -393,49 +393,6 @@ define([
 				return data;
 			},
 			init: function(obj) {
-				// {"scope":scope, style_list:[],  params_template:{}}
-				if (!obj || !obj.scope) {
-					return;
-				}
-
-				var self = this;
-				var moduleEditorParams = config.shareMap.moduleEditorParams || {};
-				self.scope = obj.scope;
-				self.params_template = obj.params_template || {};
-				self.styles = obj.styles || [];
-
-				self.format_params_template = angular.copy(self.params_template);
-				self.modParams = self.formatModParams("", self.format_params_template, self.modParams);
-				self.setEditorObj = moduleEditorParams.setEditorObj;
-				self.setDesignList = moduleEditorParams.setDesignList;
-
-				self.blockCache.adiObj = obj;
-				obj.scope.params = angular.copy(self.modParams);
-				//console.log(self.modParams);
-
-				//console.log(self.modParams);
-
-				if (!editor) {
-					return;
-				}
-
-				//console.log(moduleEditorParams, self);
-				
-				if (moduleEditorParams && moduleEditorParams.wikiBlock) {
-					var oldWikiBlock = moduleEditorParams.wikiBlock;
-					var oldPos = oldWikiBlock.blockCache.block.textPosition;
-					var pos = self.blockCache.block.textPosition;
-					if (moduleEditorParams.wikiBlockStartPost == pos.from) {
-                        $("#" + self.containerId).addClass("active");
-						moduleEditorParams.wikiBlock.blockCache.block.textPosition = self.blockCache.block.textPosition;
-						if (moduleEditorParams.show_type == "design") {
-							moduleEditorParams.wikiBlock = self;
-							moduleEditorParams.updateEditorObj(self.format_params_template);
-						}
-						console.log("更新wikiblock", moduleEditorParams);
-					}
-				}
-
 				var getSelf = function(obj){
 					//console.log(obj);
 					if (typeof(obj) == "string") {
@@ -485,7 +442,9 @@ define([
                     moduleEditorParams.activeContainerId = self.containerId;
                     
                     $(".mod-container.active").removeClass("active");
-                    self.blockCache.domNode.addClass("active");
+					if (self.blockCache.domNode) {
+						self.blockCache.domNode.addClass("active");
+					}
                     moduleEditorParams.setEditorObj(obj);
 					//console.log(params_template);
 					// moduleEditorParams.is_show = true;
@@ -506,6 +465,54 @@ define([
 					$("#moduleEditorContainer").show();
 
 				}
+			
+				// {"scope":scope, style_list:[],  params_template:{}}
+				if (!obj || !obj.scope) {
+					return;
+				}
+
+				var self = this;
+				var moduleEditorParams = config.shareMap.moduleEditorParams || {};
+				self.scope = obj.scope;
+				self.params_template = obj.params_template || {};
+				self.styles = obj.styles || [];
+
+				self.format_params_template = angular.copy(self.params_template);
+				self.modParams = self.formatModParams("", self.format_params_template, self.modParams);
+				self.setEditorObj = moduleEditorParams.setEditorObj;
+				self.setDesignList = moduleEditorParams.setDesignList;
+
+				self.blockCache.adiObj = obj;
+				obj.scope.params = angular.copy(self.modParams);
+				//console.log(self.modParams);
+
+				//console.log(self.modParams);
+
+				if (!editor) {
+					return;
+				}
+
+				//console.log(moduleEditorParams, self);
+
+				if (moduleEditorParams && moduleEditorParams.wikiBlockStartPost != undefined) {
+					//var oldWikiBlock = moduleEditorParams.wikiBlock;
+					//var oldPos = oldWikiBlock.blockCache.block.textPosition;
+					var pos = self.blockCache.block.textPosition;
+					if (moduleEditorParams.wikiBlockStartPost == pos.from) {
+						if (moduleEditorParams.wikiBlock == undefined) {
+							moduleEditorParams.wikiBlock = self;
+							config.services.$rootScope.viewEditorClick(""+self.containerId+"");
+						}
+                        $("#" + self.containerId).addClass("active");
+						moduleEditorParams.wikiBlock.blockCache.block.textPosition = self.blockCache.block.textPosition;
+						if (moduleEditorParams.show_type == "design") {
+							moduleEditorParams.wikiBlock = self;
+							moduleEditorParams.updateEditorObj(self.format_params_template);
+						}
+						console.log("更新wikiblock", moduleEditorParams);
+					}
+				}
+
 
 				var containerId = "#" + self.containerId;
 				if (!self.blockCache.block.isTemplate) {
@@ -798,12 +805,19 @@ define([
                     return;
                 }
 				// wiki mod todo
-				curBlock.blockCache.wikiBlockParams.scope && curBlock.blockCache.wikiBlockParams.scope.viewEditorClick(curBlock.blockCache.containerId);	
+				if (curBlock && curBlock.blockCache && curBlock.blockCache.wikiBlockParams &&
+						curBlock.blockCache.wikiBlockParams.scope) {
+
+					curBlock.blockCache.wikiBlockParams.scope.viewEditorClick(curBlock.blockCache.containerId);	
+				}
 
 			} else {
                 // 非wiki mod todo
                 var moduleEditorParams = config.shareMap.moduleEditorParams || {};
                 moduleEditorParams.activeContainerId = "";
+				moduleEditorParams.show_type = "knowledge";
+				moduleEditorParams.setKnowledge("");
+				util.$apply();
 			}
 			//console.log(cur_line);
 			//console.log(mdwiki.blockList);
@@ -903,9 +917,15 @@ define([
                 }
 
                 if (!blockCache.isUsing) {  // 返回一个未被使用缓存块
-					if (adiWikiBlockCache && adiWikiBlockCache.block.textPosition.form == blockCache.block.textPosition.from) {
+					if (adiWikiBlockCache && 
+							adiWikiBlockCache.wikiBlock && 
+							blockCache.wikiBlock && 
+							blockCache.wikiBlock.cmdName == adiWikiBlockCache.wikiBlock.cmdName) {
 						continue;
 					}
+					//if (adiWikiBlockCache && adiWikiBlockCache.block.textPosition.form == blockCache.block.textPosition.from) {
+						//continue;
+					//}
                     blockCache.isUsing = true;
                     return blockCache;
                 }
@@ -945,6 +965,7 @@ define([
 
             return blockCache;
         }
+
         mdwiki.clearBlockCache = function () {
             for (key in mdwiki.blockCacheMap) {
                 var blockCacheList = mdwiki.blockCacheMap[key];
@@ -980,11 +1001,11 @@ define([
             var tempUrl = pageinfo.url || pageinfo.pagename;
 			var pagePath = tempUrl.substring(urlPrefix.length);
 
-			if (typeof(modParams) != "object" || !modParams.urlMatch) {
+			if (typeof(modParams) != "object" || !modParams.urlmatch || !modParams.urlmatch.text) {
 				return true;
 			}
-			// 存在urlMatch 字段 做一个子串匹配
-			if (pagePath && pagePath.indexOf(modParams.urlMatch) >= 0) {
+			// 存在urlmatch 字段 做一个子串匹配
+			if (pagePath && pagePath.indexOf(modParams.urlmatch.text) >= 0) {
 				return true;
 			}
 

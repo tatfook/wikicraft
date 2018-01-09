@@ -322,16 +322,16 @@
                         </ul>
                     </div>
                 </li>
-                <li class="list-group-item" >
+                <li class="list-group-item">
                     <div class="panel" ng-class='getStyleClass("ServerMonitor")'>
-                        <div class="panel-heading" ng-click='clickMenuItem("ServerMonitor")'>
+                        <div class="panel-heading" ng-click='clickServerMenuItem("ServerMonitor")'>
                             <strong>服务器监控</strong>
                         </div>
                     </div>
                 </li>
                 <li class="list-group-item">
                     <div class="panel" ng-class='getStyleClass("wikicmd")'>
-                        <div class="panel-heading" ng-click='clickMenuItem("wikicmd")'>
+                        <div class="panel-heading" ng-click='clickCmd()'>
                             <strong>wikicmd</strong>
                         </div>
                     </div>
@@ -1137,7 +1137,7 @@
                             <td>{{item._id}}</td>
                             <td>{{item.name}}</td>
                             <td>
-                                <button class="btn btn-default" ng-click="clickDelete(item, 'sensitive_words')">删除</button>
+                                <button class="btn btn-default" ng-click="clickDeleteSensitiveWord(item, 'sensitive_words')">删除</button>
                             </td>
                         </tr>
                     </tbody>
@@ -1160,54 +1160,54 @@
 
             <!--wikicmd-->
             <div ng-show='selectMenuItem=="wikicmd"'>
-                <div class="btn btn-danger" ng-click="insertAll()">从js上传mods</div>
+                <!-- <div class="btn btn-danger" ng-click="insertAll()">从js上传mods</div> -->
                 <div style="margin: 10px;">
                     <form role="form" class="form-horizontal">
-                        <div class="form-group">
+                        <!-- <div class="form-group">
                             <label class="col-sm-2 control-label">ID:</label>
                             <div class="col-sm-10">
-                                <input ng-model="query._id" type="text" class="form-control" placeholder="ID(添加勿填)">
+                                <input ng-model="wikiQuery._id" type="text" class="form-control" placeholder="ID(添加勿填)">
                             </div>
-                        </div>
+                        </div> -->
                         <div class="form-group">
                             <label class="col-sm-2 control-label">名称:</label>
                             <div class="col-sm-10">
-                                <input ng-model="query.name" type="text" class="form-control" placeholder="名称">
+                                <input ng-model="wikiQuery.name" type="text" class="form-control" placeholder="名称">
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="col-sm-2 control-label">分类:</label>
                             <div class="col-sm-10">
-                                <input ng-model="query.classifyName" type="text" class="form-control" placeholder="分类">
+                                <input ng-model="wikiQuery.classifyName" type="text" class="form-control" placeholder="分类">
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="col-sm-2 control-label">命令名:</label>
                             <div class="col-sm-10">
-                                <input ng-model="query.wikiCmdName" type="text" class="form-control" placeholder="命令名">
+                                <input ng-model="wikiQuery.wikiCmdName" type="text" class="form-control" placeholder="命令名">
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="col-sm-2 control-label">LogoUrl:</label>
                             <div class="col-sm-10">
-                                <input ng-model="query.logoUrl" type="text" class="form-control" placeholder="图标">
+                                <input ng-model="wikiQuery.logoUrl" type="text" class="form-control" placeholder="图标">
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="col-sm-2 control-label">备注:</label>
                             <div class="col-sm-10">
-                                <input ng-model="query.desc" type="text" class="form-control" placeholder="备注">
+                                <input ng-model="wikiQuery.desc" type="text" class="form-control" placeholder="备注">
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="col-sm-2 control-label">内容:</label>
                             <div class="col-sm-10">
-                                <textarea ng-model="query.content"  class="form-control" rows=10 placeholder="wiki命令内容"></textarea>
+                                <textarea ng-model="wikiQuery.content"  class="form-control" rows=10 placeholder="wiki命令内容"></textarea>
                             </div>
                         </div>
                         <div class="col-sm-offset-2">
-                            <button class="btn btn-default" ng-click="clickUpsertWikicmd()">添加</button>
-                            <button class="btn btn-default" ng-click="clickQuery()">查询</button>
+                            <button class="btn btn-default" ng-click="clickUpsertWikicmd()">更新</button>
+                            <!-- <button class="btn btn-default" ng-click="clickQuery()">查询</button> -->
                         </div>
                     </form>
                 </div>
@@ -1222,20 +1222,20 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr ng-repeat="x in data" ng-hide="x.isDelete" ng-hide="x.isDelete">
+                        <tr ng-repeat="x in wikiData">
                             <td>{{x._id}}</td>
                             <td>{{x.name}}</td>
                             <td>{{x.classifyName}}</td>
                             <td>{{x.wikiCmdName}}</td>
                             <td>
-                                <button class="btn btn-default" ng-click="clickEdit(x)">编辑</button>
-                                <button class="btn btn-default" ng-click="clickDelete(x)">删除</button>
+                                <button class="btn btn-default" ng-click="clickEditMod(x)">编辑</button>
+                                <button class="btn btn-default" ng-click="clickDeleteMod(x)">删除</button>
                             </td>
                         </tr>
                     </tbody>
                 </table>
                 <div class="pagination-box">
-                    <ul uib-pagination ng-change="clickQuery()"
+                    <ul uib-pagination ng-change="queryWikiModule()"
                         items-per-page='wikiPageSize' previous-text="上一页"
                         next-text="下一页" total-items="wikicmdTotalItems"
                         ng-model="wikiCurrentPage" max-size="5"

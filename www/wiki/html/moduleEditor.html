@@ -442,9 +442,12 @@
                             </div>
                         </div>
                         <div class="attr-content">
+                            <div ng-if="data.type == '_text_'">
+                                <input id="{{data.id}}" class="card-input" type="text" ng-change="applyAttrChange()" ng-model="data.data.text" placeholder="文本">
+                            </div>
                             <!-- 简单文本及默认类型 -->
                             <div ng-if="data.type == 'text' || data.type == 'link' || !data.type">
-                                <input class="card-input js-focus" type="text" ng-change="applyAttrChange()" ng-model="data.data.text" placeholder="链接">
+                                <input class="card-input js-focus" type="text" ng-change="applyAttrChange()" ng-model="data.data.text" placeholder="文本">
                                 <input type="text" class="card-input" ng-change="applyAttrChange()" ng-model="data.data.href" placeholder="链接">
                                 <div class="dropdown link-dropdown">
                                     <button id="dLabel-text" class="btn btn-default" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
