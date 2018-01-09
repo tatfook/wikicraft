@@ -188,7 +188,7 @@ define([
                     {
                         design: {
                             text: 'style1',
-                            cover: './../assets/images/comment.png'
+                            cover: '/wiki/js/mod/adi/assets/images/comment.png'
                         }
                     }
                 ],
