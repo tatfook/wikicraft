@@ -77,7 +77,7 @@ define([
                         is_card_show : true,
                         is_mod_hide  : false,
                         name         : "按钮",
-                        text         : "更多照片",
+                        text         : "查看更多",
                         href         : "",
                     	require      : true,
 					},
