@@ -466,8 +466,8 @@ define([
             if (content.length > 1) {
                 var imgType = content[0];
                 content = content[1];
-                imgType = imgType.match(/image\/([\w]+)/);
-                imgType = imgType && imgType[1];
+                imgType = imgType.match(/(image|video)\/([\w]+)/);
+                imgType = imgType && imgType[2];
                 if (imgType) {
                     path = path + '.' + imgType;
                 }

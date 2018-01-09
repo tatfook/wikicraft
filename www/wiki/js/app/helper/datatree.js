@@ -102,7 +102,8 @@ define([], function () {
         }
 
         function xIsEmpty(x) {
-            return keys.filter(function(keyItem) {
+            var nameAndKeys = keys.concat('name'); //name is necessary
+            return nameAndKeys.filter(function(keyItem) {
                 var value = x[keyItem.key];
                 if (typeof value === 'string') return !!value.trim();
                 if (typeof value === 'boolean') return true;

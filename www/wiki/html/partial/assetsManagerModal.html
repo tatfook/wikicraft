@@ -65,11 +65,31 @@
         user-select: none;
     }
 
+    .my-images-item .media-wrapper {
+        display: flex;
+        height: 100%;
+    }
+
     .my-images-item img {
         width: 100%;
         height: 100%;
         object-fit: contain;
         background: #f0f0f0;
+    }
+
+    .my-images-item video,
+    .my-images-item .video {
+        width: 100%;
+        height: 100%;
+    }
+    .my-images-item .video-icon {
+        text-align: center;
+        font-size: 50px;
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background: rgba(0,0,0,.1);
     }
 
     .my-images-item.choosed {
@@ -198,6 +218,7 @@
                         &#43; &nbsp;<span translate="添加图片"></span>
                         <input id="image-files-picker-input" style="display:none;" type="file" ng-model="imageFilesPickerInput" ng-on="{change: onInputFileChange}" />
                     </label>
+                    <span id="qiniuUploadAssetsBtn"></span>
                     <span translate="将图片拖拽此处上传"></span>
                 </div>
                 <div class="my-images-body">
@@ -207,11 +228,12 @@
                         ng-class="{choosed: isItemChoosed(image)}" 
                         ng-click="toggleChooseItem(image)"
                     >
-                        <img ng-src="{{ image.url }}" alt="">
+                        <div class="media-wrapper" ng-bind-html="getUrlPreviewDOM(image.url)"></div>
                         <div class="tools-cover">
+                            <div ng-if="isUrlVideo(image.url)" class="video-icon iconfont icon-video-placeholder"></div>
                             <div class="choosed-icon iconfont icon-check-mark"></div>
                             <div class="footer-tools">
-                                <span class="beautify-icon iconfont icon-1mofabang" ng-click="beautifyImage(image)"></span>
+                                <span ng-if="isUrlImage(image.url)" class="beautify-icon iconfont icon-1mofabang" ng-click="beautifyImage(image)"></span>
                                 <span class="remove-icon iconfont icon-bianjiqi-shanchu" ng-click="removeImage(image)"></span>
                             </div>
                         </div>
