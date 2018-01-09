@@ -1,7 +1,7 @@
 define([
     'app',
     'helper/util',
-    'text!wikimod/adi/html/photo.html',
+    'text!wikimod/adi/html/img.html',
 ], function (app, util, htmlContent) {
 
     function registerController(wikiblock) {
