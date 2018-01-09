@@ -13,13 +13,13 @@ define([
                     {
                         design: {
                             text: 'left',
-                            cover: './../assets/images/textLeft.png'
+                            cover: '/wiki/js/mod/adi/assets/images/textLeft.png'
                         }
                     },
                     {
                         design: {
                             text: 'center',
-                            cover: './../assets/images/textCenter.png'
+                            cover: '/wiki/js/mod/adi/assets/images/textCenter.png'
                         }
                     }
                 ],
