@@ -14,12 +14,14 @@ define([
 				styles : [
 					{
 						"design": {
-							"text":"style1",
+                            "text":"style1",
+                            "cover":"http://git.keepwork.com/gitlab_rls_official/keepworkimages/raw/master/official_images/img_1515414255990.jpeg"
 						},
 					},
 					{
 						"design": {
-							"text":"style2",
+                            "text":"style2",
+                            "cover":"http://git.keepwork.com/gitlab_rls_official/keepworkimages/raw/master/official_images/img_1515414270193.jpeg"
 						},
 					},
 				],
