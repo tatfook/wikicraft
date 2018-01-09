@@ -4,20 +4,20 @@
         width: 100%;
         height: 150px;
         padding: 0;
-        margin: 0px;
+        margin: 0 auto;
     }
     .title-mod .title-mod-img, .title-mod .title-mod-head{
         float: left;
     }
     .title-mod .title-mod-head{
-        margin-top:32px;
+        margin-top:30px;
+        margin-bottom: 31px;
     }
     .title-mod .title-mod-img{
-        line-height: 108px;
         font-size: 20px;
         text-align: center;
-        margin-left: 100px;
-        margin-top: 20px;
+        margin-top:31px;
+        margin-bottom: 30px;
         width: 89px;
         height: 89px;
     }
@@ -27,11 +27,12 @@
         overflow: hidden;
     }
     .title-mod .title-mod-head .h1{
-        width: 600px;
+        width: 300px;
         height: 26px;
         padding: 0;
-        margin-left: 10px;
-        font-size: 25px;
+        margin-left: 14px;
+        font-size: 22px;
+        font-family: "Microsoft YaHei";
         -webkit-line-clamp: 1;  
         overflow: hidden;  
         display: -webkit-box;  
@@ -39,12 +40,13 @@
         white-space: normal; 
     }
     .title-mod .title-mod-head .h2{
-        width: 600px;
+        width: 300px;
         height: 16px;
-        font-size: 15px;
-        color: rgb(196, 191, 191); 
-        margin-left: 10px;
-        margin-top: -10px;
+        font-size: 16px;
+        font-family: "Microsoft YaHei";
+        color: rgb(0, 0, 0); 
+        margin-left: 14px;
+        margin-top: -3px;
         -webkit-line-clamp: 1;  
         overflow: hidden;  
         display: -webkit-box;  
@@ -55,6 +57,9 @@
     .title-clear-pointer a{
         cursor: default !important;
     }
+    .title-clear a {
+        color: black;
+    }
 
     /* style1 css 伪类 */
     .h1 a:link  , .h1 a:visited ,
@@ -63,7 +68,7 @@
     }
     .h2 a:link  , .h2 a:visited ,
     .h2 a:hover , .h2 a:active{
-        color: rgb(196, 191, 191); 
+        color: rgb(0, 0, 0); 
     }
 
     /* style2 css */
@@ -92,7 +97,7 @@
         text-align: center;
         margin: 0 auto;
         font-size: 15px;
-        color: rgb(196, 191, 191); 
+        color: rgb(0, 0, 0); 
     }
     
     /* style2 css 伪类 */
@@ -102,11 +107,11 @@
     }
     .h-two a:link  , .h-two a:visited ,
     .h-two a:hover , .h-two a:active{
-        color: rgb(196, 191, 191); 
+        color: rgb(0, 0, 0); 
     }
 </style>
 <div ng-controller="titleController">
-    <div ng-class="{true:'title-clear-pointer'}[editorMode]" ng-if='params.design.text=="style1"'>
+    <div ng-class="{true:'title-clear-pointer',false:'title-clear'}[editorMode]" ng-if='params.design.text=="style1"'>
         <div class="title-mod container">
             <div class="title-mod-img" ng-hide="params.media_img.is_mod_hide">
                 <div ng-if="params.media_img.text.length == 0">YOUR LOGO</div>
