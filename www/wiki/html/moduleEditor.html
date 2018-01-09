@@ -47,6 +47,10 @@
         background-color: #FFF;
     }
 
+    .module-editor .attr-item.active{
+        border-color: #3977AD;
+    }
+
     .module-editor .attr-item .header {
         height: 30px;
         line-height: 30px;
@@ -430,7 +434,7 @@
         <div role="tabpanel" class="tab-pane" ng-class="{true: 'active'}[show_type == 'editor']" id="Attr">
             <div id="editorSwiper" class="editor-swiper swiper-container swiper-container-horizontal">
                 <div class="swiper-wrapper">
-                    <div class="swiper-slide attr-item swiper-no-swiping" ng-repeat="data in editorDatas">
+                    <div id="{{data.id}}" class="swiper-slide attr-item swiper-no-swiping" ng-repeat="data in editorDatas">
                         <div class="header">
                             <span class="attr-name">{{data.name}}</span>
                             <div class="switch" ng-click="click_hide(data.data)" ng-class="{true: 'active'}[!data.data.is_mod_hide]">
@@ -440,7 +444,7 @@
                         <div class="attr-content">
                             <!-- 简单文本及默认类型 -->
                             <div ng-if="data.type == 'text' || data.type == 'link' || !data.type">
-                                <input id="{{data.id}}" class="card-input" type="text" ng-change="applyAttrChange()" ng-model="data.data.text" placeholder="链接">
+                                <input class="card-input js-focus" type="text" ng-change="applyAttrChange()" ng-model="data.data.text" placeholder="链接">
                                 <input type="text" class="card-input" ng-change="applyAttrChange()" ng-model="data.data.href" placeholder="链接">
                                 <div class="dropdown link-dropdown">
                                     <button id="dLabel-text" class="btn btn-default" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
@@ -482,7 +486,7 @@
                             <!-- 多行文本 -->
                             <div ng-if="data.type == 'multiText'">
                                 <div class="card-input-box">
-                                    <input type="text" class="card-input" ng-change="applyAttrChange()" ng-model="data.data.text" placeholder="内容">
+                                    <input type="text" class="card-input js-focus" ng-change="applyAttrChange()" ng-model="data.data.text" placeholder="内容">
                                     <i class="pull-right iconfont icon-enlarge" ng-click="openMultiText(data.data, 'text')"></i>
                                 </div>
                                 <div class="card-input-box">
@@ -521,7 +525,7 @@
                             </div>
                             <div ng-if="data.type == 'page'">
                                 <div class="card-input-box">
-                                    <ui-select class="link-select down-link-select card-input" ng-model="data.data.contentUrl" reset-search-input="false" on-select="urlSelected($item, $model, data.data, 'contentUrl')">
+                                    <ui-select class="link-select down-link-select card-input js-focus" ng-model="data.data.contentUrl" reset-search-input="false" on-select="urlSelected($item, $model, data.data, 'contentUrl')">
                                         <ui-select-match allow-clear="false" placeholder="{{data.data.contentUrl}}">{{data.data.contentUrl}}</ui-select-match>
                                         <ui-select-choices repeat="file in (filelist | filter: $select.search) track by $index" refresh-delay="0" refresh="userInputLink($select, data.data)"
                                             position="down">

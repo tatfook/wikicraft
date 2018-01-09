@@ -471,17 +471,16 @@ define([
 			moduleEditorParams.updateEditorObj = function(obj) {
                 $scope.editorDatas = get_order_list(obj);
                 util.$apply();
-			}
+            }
+            
+            var isFunction = function (functionToCheck) {
+                var getType = {};
+                return functionToCheck && getType.toString.call(functionToCheck) === '[object Function]';
+            }
 
 			moduleEditorParams.setEditorObj = function(obj) {
                 setFakeIconPosition();
                 moduleEditorParams = config.shareMap.moduleEditorParams || {};
-                var selectObj = moduleEditorParams.selectObj;
-				if (selectObj) {
-					setTimeout(function(){
-						$("#" + selectObj.id).css("background-color", "red");
-					});
-                }
                 
                 var blockLineNumFrom = moduleEditorParams.wikiBlock.blockCache.block.textPosition.from;
                 var blockLineNumTo = moduleEditorParams.wikiBlock.blockCache.block.textPosition.to;
@@ -497,6 +496,20 @@ define([
                 $scope.editorDatas = get_order_list(obj);
                 util.$apply();
                 initSwiper("editor");
+                
+                var selectObj = moduleEditorParams.selectObj;
+				if (selectObj) {
+                    if (!isFunction(swiper["editor"].slideTo)) {
+                        return;
+                    }
+                    var slideStartId = $scope.editorDatas[0].id;
+                    var slideToId = selectObj.id;
+                    var indexSlideTo = slideToId - slideStartId;
+                    swiper["editor"].slideTo(indexSlideTo);
+                    $(".swiper-slide.active").removeClass("active");
+                    $("#" + slideToId).addClass("active");
+                    $("#" + slideToId + " .js-focus").focus();
+                }
             }
             var setDesignViewWidth = function(){
                 win = win || $(window);
