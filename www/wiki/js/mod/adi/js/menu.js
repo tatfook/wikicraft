@@ -39,17 +39,12 @@ define(['app', 'text!wikimod/adi/html/menu.html'], function (app, htmlContent) {
                         require: true,
                         text: [
                             {
-                                id: 1,
                                 name : '菜单1',
                                 url  : '',
-                                note : '',
                                 children: [
                                     {
-                                        id   : 1,
                                         name : '菜单1.1',
-                                        url  : '',
-                                        note : '',
-                                        children: []
+                                        url  : ''
                                     }
                                 ]
                             }
