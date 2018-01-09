@@ -496,7 +496,24 @@ define([
 					return;
 				}
 
-				//console.log(moduleEditorParams, self);
+                //console.log(moduleEditorParams, self);
+                var fakeIconDom = [];
+                function setFakeIconPosition(){
+                    fakeIconDom = fakeIconDom.length > 0 ? fakeIconDom : $(".mod-container.active .fake-icon");
+                    if (fakeIconDom.length <= 0) {
+                        setTimeout(function(){
+                            setFakeIconPosition();
+                        });
+                        return;
+                    }
+                    var boxWidth = $("#preview").width();
+                    var leftDistance = boxWidth/2;
+                    var scaleSize = $rootScope.scaleSelect.scaleValue;
+                    fakeIconDom.css({
+                        "left" : leftDistance / scaleSize
+                    });
+                    fakeIconDom = [];
+                }
 
 				if (moduleEditorParams && moduleEditorParams.wikiBlockStartPost != undefined) {
 					//var oldWikiBlock = moduleEditorParams.wikiBlock;
@@ -513,10 +530,11 @@ define([
 							moduleEditorParams.wikiBlock = self;
 							moduleEditorParams.updateEditorObj(self.format_params_template);
 						}
-						console.log("更新wikiblock", moduleEditorParams);
+                        console.log("更新wikiblock", moduleEditorParams);
 					}
-				}
-
+                }
+                
+                setFakeIconPosition();
 
 				var containerId = "#" + self.containerId;
 				if (!self.blockCache.block.isTemplate) {
