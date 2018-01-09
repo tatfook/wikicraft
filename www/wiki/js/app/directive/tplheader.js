@@ -40,7 +40,7 @@ define([
                 
 				$scope.$watch("$rootScope.pageinfo", function() {
 					pageinfo = $rootScope.pageinfo;
-					if (!pageinfo) {
+					if (!mdwiki.editorMode || !pageinfo) {
 						$scope.isShow = false;
 						return;
 					}

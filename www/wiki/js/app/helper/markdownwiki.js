@@ -393,34 +393,6 @@ define([
 				return data;
 			},
 			init: function(obj) {
-				// {"scope":scope, style_list:[],  params_template:{}}
-				if (!obj || !obj.scope) {
-					return;
-				}
-
-				var self = this;
-				var moduleEditorParams = config.shareMap.moduleEditorParams || {};
-				self.scope = obj.scope;
-				self.params_template = obj.params_template || {};
-				self.styles = obj.styles || [];
-
-				self.format_params_template = angular.copy(self.params_template);
-				self.modParams = self.formatModParams("", self.format_params_template, self.modParams);
-				self.setEditorObj = moduleEditorParams.setEditorObj;
-				self.setDesignList = moduleEditorParams.setDesignList;
-
-				self.blockCache.adiObj = obj;
-				obj.scope.params = angular.copy(self.modParams);
-				//console.log(self.modParams);
-
-				//console.log(self.modParams);
-
-				if (!editor) {
-					return;
-				}
-
-				//console.log(moduleEditorParams, self);
-			
 				var getSelf = function(obj){
 					//console.log(obj);
 					if (typeof(obj) == "string") {
@@ -493,6 +465,34 @@ define([
 					$("#moduleEditorContainer").show();
 
 				}
+			
+				// {"scope":scope, style_list:[],  params_template:{}}
+				if (!obj || !obj.scope) {
+					return;
+				}
+
+				var self = this;
+				var moduleEditorParams = config.shareMap.moduleEditorParams || {};
+				self.scope = obj.scope;
+				self.params_template = obj.params_template || {};
+				self.styles = obj.styles || [];
+
+				self.format_params_template = angular.copy(self.params_template);
+				self.modParams = self.formatModParams("", self.format_params_template, self.modParams);
+				self.setEditorObj = moduleEditorParams.setEditorObj;
+				self.setDesignList = moduleEditorParams.setDesignList;
+
+				self.blockCache.adiObj = obj;
+				obj.scope.params = angular.copy(self.modParams);
+				//console.log(self.modParams);
+
+				//console.log(self.modParams);
+
+				if (!editor) {
+					return;
+				}
+
+				//console.log(moduleEditorParams, self);
 
 				if (moduleEditorParams && moduleEditorParams.wikiBlockStartPost != undefined) {
 					//var oldWikiBlock = moduleEditorParams.wikiBlock;
@@ -1001,11 +1001,11 @@ define([
             var tempUrl = pageinfo.url || pageinfo.pagename;
 			var pagePath = tempUrl.substring(urlPrefix.length);
 
-			if (typeof(modParams) != "object" || !modParams.urlmatch) {
+			if (typeof(modParams) != "object" || !modParams.urlmatch || !modParams.urlmatch.text) {
 				return true;
 			}
 			// 存在urlmatch 字段 做一个子串匹配
-			if (pagePath && pagePath.indexOf(modParams.urlmatch) >= 0) {
+			if (pagePath && pagePath.indexOf(modParams.urlmatch.text) >= 0) {
 				return true;
 			}
 
