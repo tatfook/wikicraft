@@ -35,7 +35,7 @@ define([
                         editable     : true, 
                         is_mod_hide  : false,  
                         is_card_show : true,
-                        name         : "photo",   
+                        name         : "图片",   
                         text         : config.wikiModPath + 'adi/assets/imgs/photo.png', 
                         href         : "", 
                         require      : true, 
