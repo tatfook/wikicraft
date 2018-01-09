@@ -43,7 +43,7 @@
 <div ng-controller="commentController" class="comment">
     <div class="container">
         <h3>我要评论</h3>
-        <div class="comments-box" ng-hide="{{params.multiText_desc.is_mod_hide}}">
+        <div class="comments-box">
             <div class="comment-item clearfix" ng-repeat="comment in commentObj.commentList">
                 <img ng-src="{{comment.userInfo.portrait ||  imgsPath + 'default_portrait.png'}}">
                 <div class="text">
