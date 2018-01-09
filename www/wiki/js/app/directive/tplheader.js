@@ -77,6 +77,8 @@ define([
 						console.log("新建模板");
 						var defaultTemplate = "```@template/js/layout\n```\n";
 						mdwiki.editor.replaceRange(defaultTemplate, {line: 0, ch: 0}, {line:0,ch: 0});
+						config.shareMap.moduleEditorParams.wikiBlockStartPost = 0;
+						config.shareMap.moduleEditorParams.wikiBlock = undefined;
 						return ;
 					}
 					if (!template.isPageTemplate) {

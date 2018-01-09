@@ -1231,6 +1231,9 @@ define([
 							return ;	
 						}
 
+						var moduleEditorParams = config.shareMap.moduleEditorParams;
+						moduleEditorParams.show_type = "knowledge";
+						moduleEditorParams.setKnowledge("");
                         setEditorValue(page, content);
 					}
                     getCurrentPageContent(page, function (data) {
