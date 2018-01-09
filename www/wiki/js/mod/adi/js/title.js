@@ -15,13 +15,13 @@ define([
 					{
 						"design": {
                             "text":"style1",
-                            "cover":"http://git.keepwork.com/gitlab_rls_official/keepworkimages/raw/master/official_images/img_1515414255990.jpeg"
+                            "cover":"/wiki/js/mod/adi/assets/images/titleLeft.png"
 						},
 					},
 					{
 						"design": {
                             "text":"style2",
-                            "cover":"http://git.keepwork.com/gitlab_rls_official/keepworkimages/raw/master/official_images/img_1515414270193.jpeg"
+                            "cover":"/wiki/js/mod/adi/assets/images/titleCenter.png"
 						},
 					},
 				],
