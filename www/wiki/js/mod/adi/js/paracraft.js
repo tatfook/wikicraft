@@ -61,18 +61,21 @@ define([
 					{
 						"design": {
 							"text":"style1",
+							"cover":"/wiki/js/mod/adi/assets/images/paracraft1.png"
 						},
 						
 					},
 					{
 						"design": {
 							"text":"style2",
+							"cover":"/wiki/js/mod/adi/assets/images/paracraft2.png"
 						},
 						
 					},
 					{
 						"design": {
 							"text":"style3",
+							"cover":"/wiki/js/mod/adi/assets/images/paracraft3.png"
 						},
 						
 					},
