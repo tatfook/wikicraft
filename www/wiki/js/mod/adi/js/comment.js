@@ -196,7 +196,7 @@ define([
                     design: {
                         is_leaf: true,
                         require: true,
-                        is_mod_hide: true,
+                        is_mod_hide: false,
                         name: '样式',
                         text: 'style1'
                     },
