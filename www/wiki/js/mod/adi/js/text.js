@@ -32,6 +32,7 @@ define([
                         text: 'left'
                     },
                     title:{
+                        target: false,
                         is_leaf: true, // 叶子对象默认填true
                         type:"text",   // 地段类型
                         editable:true, // 是否可以编辑
