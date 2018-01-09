@@ -405,6 +405,10 @@ define([
 					return undefined;
 				}
 				config.services.$rootScope.viewEditorClick = function(obj, $event) {
+                    var isCodeView = moduleEditorParams && moduleEditorParams.show_type;
+                    if (!isCodeView) {
+                        return;
+                    }
 					var self = getSelf(obj);	
 					if (!self || !self.blockCache) {
 						return;
