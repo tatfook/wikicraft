@@ -1,6 +1,8 @@
 <style>
     .photo-clear-pointer a{
         cursor : default;
+    }
+    .photo-clear a {
         color: black;
     }
     .photo-body{
@@ -14,7 +16,7 @@
     }
 </style>
 <div ng-controller="photoController">
-    <div ng-class="{true:'photo-clear-pointer'}[editorMode]" ng-if='params.design.text=="style1"'>
+    <div ng-class="{true:'photo-clear-pointer',false:'photo-clear'}[editorMode]" ng-if='params.design.text=="style1"'>
         <div class="photo-body" ng-hide="params.media_photo.is_mod_hide">
             <a ng-if="!editorMode" href="{{params.media_photo.href}}"><img ng-src="{{params.media_photo.text}}"></a>
             <a ng-if="editorMode" href="javascript::void(0)"><img ng-src="{{params.media_photo.text}}"></a>

@@ -1,7 +1,7 @@
 define([
     'app',
     'helper/util',
-    'text!wikimod/adi/html/photo.html',
+    'text!wikimod/adi/html/img.html',
 ], function (app, util, htmlContent) {
 
     function registerController(wikiblock) {
@@ -22,7 +22,7 @@ define([
                         is_leaf      : true, 
                         type         : "text",   
                         editable     : false, 
-                        is_mod_hide  : true,  
+                        is_mod_hide  : false,  
                         is_card_show : true,
                         name         : "样式",   
                         text         : "style1", 
@@ -33,9 +33,9 @@ define([
                         type         : "media",   
                         mediaType    : "image",
                         editable     : true, 
-                        is_mod_hide  : true,  
+                        is_mod_hide  : false,  
                         is_card_show : true,
-                        name         : "photo",   
+                        name         : "图片",   
                         text         : config.wikiModPath + 'adi/assets/imgs/photo.png', 
                         href         : "", 
                         require      : true, 
