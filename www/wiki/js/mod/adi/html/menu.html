@@ -81,7 +81,7 @@
 
 <div ng-controller="menuController" ng-class="{true : 'clear-pointer', false : 'clear'}[editorMode]">
 	<div ng-if="params.design.text == 'left' && !params.menu_menu.is_mod_hide">
-		<div class="menu">
+		<div class="container menu">
             <ul class="clearfix">
                 <li ng-repeat="item in params.menu_menu.text">
                     <a ng-if="!editorMode" ng-href="{{item.url}}" target="_blank">{{item.name}}</a>
@@ -97,7 +97,7 @@
 		</div>
 	</div>
 	<div ng-if="params.design.text == 'right'  && !params.menu_menu.is_mod_hide">
-        <div class="menu menu-right">
+        <div class="container menu menu-right">
             <ul class="clearfix">
                 <li ng-repeat="item in params.menu_menu.text">
                     <a ng-if="!editorMode" ng-href="{{item.url}}" target="_blank">{{item.name}}</a>
