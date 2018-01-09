@@ -9,7 +9,6 @@
  *          modalPositionCenter: false,
  *          datatree: [
  *              {
- *                  id: '1',
  *                  name: 'name1',
  *                  children: [...sub datatree]
  *              }
@@ -36,11 +35,11 @@
 //     modalPositionCenter: false,
 //     keys: [
 //         {key:'url', name: '链接', placeholder:"请输入链接"},
-//         {key:'note', name: '备注', placeholder:"请输入备注"},
-//     ], 
+//         {key:'note', name: '备注', placeholder:"请输入备注"}
+//     ],
 //     showLocation: true, 
 //     datatree: [
-//         {id: 0, name:'nihao', children: [{id:2, name: 'nibuhao'}]}
+//         {name:'nihao', children: [{name: 'nibuhao'}]}
 //     ]
 // }, res => console.log(res));
 
@@ -56,7 +55,7 @@ define([
         var options = options || {};
         options.title = options.title || 'Datatree Editor';
         options.showLocation = typeof options.showLocation === 'boolean' ? options.showLocation : true;
-        options.datatree = options.datatree || [{id: defaultUUID}];
+        options.datatree = options.datatree || [{__inner__id: defaultUUID}];
         options.keys = options.keys || [];
 
         $scope.title = options.title;
@@ -82,12 +81,12 @@ define([
         $scope.removeItem = function(item) {
             datatree.removeItemItemInflattenedData(item, $scope.flattenedData);
             if ($scope.flattenedData.length == 0) {
-                $scope.flattenedData.push({id: defaultUUID}) //add a empty
+                $scope.flattenedData.push({__inner__id: defaultUUID}) //add a empty
             }
         }
         $scope.submit = function() {
             var result = datatree.clearEmptyItemsInFlattenedData($scope.flattenedData, $scope.keys);
-            result = datatree.makeTreeWithParentId(result);
+            result = datatree.makeTreeWithInnerParentId(result);
             $scope.$close(result);
         }
         $scope.cancel = function() {
