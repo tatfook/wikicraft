@@ -5,18 +5,17 @@
         background-color: #327abf;
     }
 
-    .menu > ul{
+    .menu > .container > ul{
         list-style-type: none;
+        padding-left: 0;
         margin: 0;
-        padding-left: 90px;
         height: 100%;
         width: auto;
         background-image: url("/wiki/js/mod/adi/assets/imgs/menu-button-bg.png");
         background-repeat: no-repeat;
-        background-position-x: 90px;
     }
 
-    .menu > ul > li{
+    .menu > .container > ul > li{
         float: left;
         height: 50px;
         color: white;
@@ -30,16 +29,16 @@
         font-size: 17px;
     }
 
-    .menu > ul > li a{
+    .menu > .container > ul > li a{
         color: white;
         text-decoration: none;
     }
 
-    .menu > ul > li:hover > .sub-menu{
+    .menu > .container > ul > li:hover > .sub-menu{
         display: block;
     }
 
-    .menu > ul > li > .sub-menu{
+    .menu > .container > ul > li > .sub-menu{
         display: none;
         position: absolute;
         width: auto;
@@ -49,7 +48,7 @@
         left: 0;
     }
 
-    .menu > ul > li > .sub-menu > li{
+    .menu > .container > ul > li > .sub-menu > li{
         background: #183d60;
         border-bottom: solid 1px #3a90e3;
         padding: 0 20px;
@@ -59,18 +58,17 @@
         font-size: 14px;
     }
 
-    .menu > ul > li > .sub-menu > li:last-child{
+    .menu > .container > ul > li > .sub-menu > li:last-child{
         border-bottom-left-radius: 10px;
         border-bottom-right-radius: 10px;
     }
 
-    .menu-right > ul{
+    .menu-right > .container > ul{
         padding-left: 0;
-        padding-right: 90px;
         background: none;
     }
 
-    .menu-right > ul > li{
+    .menu-right > .container > ul > li{
         float: right;
         background-position-x: 0;
     }
@@ -80,36 +78,40 @@
 </style>
 
 <div ng-controller="menuController" ng-class="{true : 'clear-pointer', false : 'clear'}[editorMode]">
-	<div ng-if="params.design.text == 'left' && !params.menu_menu.is_mod_hide">
-		<div class="container menu">
-            <ul class="clearfix">
-                <li ng-repeat="item in params.menu_menu.text">
-                    <a ng-if="!editorMode" ng-href="{{item.url}}" target="_blank">{{item.name}}</a>
-                    <a ng-if="editorMode" ng-click="viewEditorClick(params.menu_menu, $event)" class="edit" href="javascript:void(0)">{{item.name}}</a>
-                    <ul class="sub-menu">
-                        <li ng-repeat="subItem in item.children">
-                            <a ng-if="!editorMode" ng-href="{{subItem.url}}" target="_blank">{{subItem.name}}</a>
-                            <a ng-if="editorMode" ng-click="viewEditorClick(params.menu_menu, $event)" href="javascript:void(0)">{{subItem.name}}</a>
-                        </li>
-                    </ul>
-                </li>
-            </ul>
-		</div>
-	</div>
-	<div ng-if="params.design.text == 'right'  && !params.menu_menu.is_mod_hide">
-        <div class="container menu menu-right">
-            <ul class="clearfix">
-                <li ng-repeat="item in params.menu_menu.text">
-                    <a ng-if="!editorMode" ng-href="{{item.url}}" target="_blank">{{item.name}}</a>
-                    <a ng-if="editorMode" ng-click="viewEditorClick(params.menu_menu, $event)" class="edit" nhref="javascript:void(0)">{{item.name}}</a>
-                    <ul class="sub-menu">
-                        <li ng-repeat="subItem in item.children">
-                            <a ng-if="!editorMode" ng-href="{{subItem.url}}" target="_blank">{{subItem.name}}</a>
-                            <a ng-if="editorMode" ng-click="viewEditorClick(params.menu_menu, $event)" href="javascript:void(0)">{{subItem.name}}</a>
-                        </li>
-                    </ul>
-                </li>
-            </ul>
+    <div ng-if="params.design.text == 'left' && !params.menu_menu.is_mod_hide">
+        <div class="menu">
+            <div class="container">
+                <ul class="clearfix">
+                    <li ng-repeat="item in params.menu_menu.text">
+                        <a ng-if="!editorMode" ng-href="{{item.url}}" target="_blank">{{item.name}}</a>
+                        <a ng-if="editorMode" ng-click="viewEditorClick(params.menu_menu, $event)" class="edit" href="javascript:void(0)">{{item.name}}</a>
+                        <ul class="sub-menu">
+                            <li ng-repeat="subItem in item.children">
+                                <a ng-if="!editorMode" ng-href="{{subItem.url}}" target="_blank">{{subItem.name}}</a>
+                                <a ng-if="editorMode" ng-click="viewEditorClick(params.menu_menu, $event)" href="javascript:void(0)">{{subItem.name}}</a>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
         </div>
-	</div>
+        </div>
+    </div>
+    <div ng-if="params.design.text == 'right'  && !params.menu_menu.is_mod_hide">
+        <div class="menu menu-right">
+            <div class="container">
+                <ul class="clearfix">
+                    <li ng-repeat="item in params.menu_menu.text">
+                        <a ng-if="!editorMode" ng-href="{{item.url}}" target="_blank">{{item.name}}</a>
+                        <a ng-if="editorMode" ng-click="viewEditorClick(params.menu_menu, $event)" class="edit" nhref="javascript:void(0)">{{item.name}}</a>
+                        <ul class="sub-menu">
+                            <li ng-repeat="subItem in item.children">
+                                <a ng-if="!editorMode" ng-href="{{subItem.url}}" target="_blank">{{subItem.name}}</a>
+                                <a ng-if="editorMode" ng-click="viewEditorClick(params.menu_menu, $event)" href="javascript:void(0)">{{subItem.name}}</a>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
 </div>
