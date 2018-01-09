@@ -1,0 +1,248 @@
+<style>
+    .image-manager-popup .modal-header {
+        background: #437EAC;
+        color: white;
+    }
+
+    .image-manager-popup .modal-header .close {
+        color: white;
+        opacity: 1;
+    }
+
+    .image-manager-dialog .modal-main-body {
+        display: flex;
+    }
+    .image-manager-dialog .modal-main-body .right-board {
+        flex: auto;
+        min-height: 500px;
+        min-width: 850px;
+    }
+
+    .image-manager-dialog .modal-main-body .left-nav {
+        background: #f5f5f5;
+        width: 100px;
+        flex: 0 0 100px;
+    }
+    
+    .image-manager-dialog .modal-main-body .left-nav a {
+        display: block;
+        padding: 15px 10px 15px 20px;
+        color: initial;
+    }
+    
+    .image-manager-dialog .modal-main-body .left-nav a + a {
+        display: block;
+        padding: 15px 0 15px 20px;
+        border-top: 1px solid #dddddd;
+    }
+
+    .image-manager-dialog .modal-main-body .left-nav a.active {
+        background: white;
+    }
+
+    .my-images-head {
+        padding: 12px 20px;
+        display: flex;
+        align-items: flex-end;
+    }
+
+    .my-images-body {
+        padding: 20px 0 10px 20px;
+        min-height: 450px;
+        max-height: 600px;
+        overflow: auto;
+    }
+
+    .my-images-item {
+        position: relative;
+        margin-right: 10px;
+        margin-bottom: 10px;
+        width: 120px;
+        height: 120px;
+        float: left;
+        border-radius: 3px;
+        overflow: hidden;
+        user-select: none;
+    }
+
+    .my-images-item img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        background: #f0f0f0;
+    }
+
+    .my-images-item.choosed {
+
+    }
+
+    .my-images-item [class*=icon] {
+        cursor: pointer;
+    }
+
+    .beautify-icon {
+        font-size: 20px;
+    }
+
+    .remove-icon,
+    .beautify-icon {
+        padding: 3px 10px 0 3px;
+    }
+
+    .my-images-item .tools-cover {
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: 2;
+        width: 100%;
+        height: 100%;
+        border: none;
+        color: white;
+        /* text-shadow: 0 0 2px black; */
+    }
+
+    .my-images-item .choosed-icon {
+        display: none;
+        position: absolute;
+        top: 8px;
+        right: 8px;
+        color: #437EAC;
+        background: white;
+    }
+
+    .my-images-item .footer-tools {
+        display: none;
+        position: absolute;
+        width: 100%;
+        background: #437EAC;
+        bottom: 0px;
+        color: white;
+        text-align: right;
+        height: 24px;
+    }
+
+    .my-images-item.choosed .choosed-icon {
+        display: block;
+        width: 16px;
+        height: 16px;
+        color: white;
+        background: #437EAC;
+        line-height: 18px;
+        text-align: center;
+        font-size: 12px;
+        border-radius: 50%;
+    }
+
+    .my-images-item.choosed,
+    .my-images-item:hover {
+        border-radius: 0;
+    }
+
+    .my-images-item.choosed .footer-tools,
+    .my-images-item:hover .footer-tools {
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+    }
+
+    .my-images-item.choosed .tools-cover,
+    .my-images-item:hover .tools-cover {
+        border: 2px solid #437EAC;
+    }
+    .image-manager-hide {
+        display: none!important;
+    }
+
+    .my-images-click-to-add {
+        height: 30px;
+        margin-right: 1em;
+        display: flex;
+        border-radius: 5px;
+        min-width: 120px;
+        justify-content: center;
+        font-weight: 400;
+        align-items: center;
+        background: #437EAC;
+        color: white;
+    }
+
+    .internet-image-board {
+        padding: 60px 30px 30px;
+    }
+
+    .image-manager-submit-footer {
+        float: right;
+        padding: 20px 30px 30px;
+    }
+    .image-manager-submit-footer button {
+        height: 30px;
+        line-height: 0;
+        min-width: 120px;
+    }
+</style>
+<div class="image-manager-dialog">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" ng-click="$dismiss()">&times;</button>
+        <h4 class="modal-title">{{title | translate}}</h4>
+    </div>
+    <div class="modal-main-body">
+        <div class="left-nav">
+            <a ng-class="{active: currentNav==='myImages'}" href="javascript:;" translate="我的图片" ng-click="toggleNav('myImages')"></a>
+            <a ng-class="{active: currentNav==='internetImage'}" href="javascript:;" translate="网络图片" ng-click="toggleNav('internetImage')"></a>
+            <a ng-class="{active: currentNav==='beautifyImage'}" href="javascript:;" translate="美化图片" ng-click="toggleNav('beautifyImage')"></a>
+        </div>
+        <div class="right-board" ng-on="{drop: onDropFiles, dragover: preventDefault, dragenter: preventDefault}">
+            <div class="my-images" ng-class="{'image-manager-hide': currentNav!=='myImages'}">
+                <div class="my-images-head">
+                    <label class="my-images-click-to-add">
+                        &#43; &nbsp;<span translate="添加图片"></span>
+                        <input id="image-files-picker-input" style="display:none;" type="file" ng-model="imageFilesPickerInput" ng-on="{change: onInputFileChange}" />
+                    </label>
+                    <span translate="将图片拖拽此处上传"></span>
+                </div>
+                <div class="my-images-body">
+                    <div class="my-images-item" 
+                        ng-if="imageList.length"
+                        ng-repeat="image in imageList | orderBy:'-'" 
+                        ng-class="{choosed: isItemChoosed(image)}" 
+                        ng-click="toggleChooseItem(image)"
+                    >
+                        <img ng-src="{{ image.url }}" alt="">
+                        <div class="tools-cover">
+                            <div class="choosed-icon iconfont icon-check-mark"></div>
+                            <div class="footer-tools">
+                                <span class="beautify-icon iconfont icon-1mofabang" ng-click="beautifyImage(image)"></span>
+                                <span class="remove-icon iconfont icon-bianjiqi-shanchu" ng-click="removeImage(image)"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="my-images-footer image-manager-submit-footer" ng-show="currentNav!=='beautifyImage'">
+                    <button type="submit" class="btn btn-fill btn-md btn-primary" ng-disabled="!getSubmittable()" ng-click="submit()" translate="确定"></button>
+                </div>
+            </div>
+            <div ng-class="{'image-manager-hide': currentNav!=='internetImage'}">
+                <div  class="internet-image-board">
+                    <div class="input-group">
+                        <div class="input-group-addon" translate="图片地址"></div>
+                        <input type="text" class="form-control"  ng-model="internetImageUrl" placeholder="http://...">
+                    </div>
+                </div>       
+                <div class="internet-image-footer image-manager-submit-footer" ng-show="currentNav!=='beautifyImage'">
+                    <button type="submit" class="btn btn-fill btn-md btn-primary" ng-disabled="!getSubmittable()" ng-click="submit()" translate="引用"></button>
+                </div>
+            </div>
+            <div>
+                <div ng-style="{
+                    height: currentNav!=='beautifyImage' ? '0' : '700px'
+                }">
+                    <div id="imageManagerXiuxiuContainer"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- <div class="modal-footer" ng-show="currentNav!=='beautifyImage'">
+        <button type="submit" class="btn btn-fill btn-md btn-primary" ng-disabled="!getSubmittable()" ng-click="submit()" translate="确定"></button>
+        <button type="button" class="btn btn-md" data-dismiss="modal" ng-click="cancel()" translate="取消"></button>
+    </div> -->
+</div>

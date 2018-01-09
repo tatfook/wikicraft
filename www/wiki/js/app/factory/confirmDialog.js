@@ -22,16 +22,24 @@ define([
             confirmObj.confirmBtnClass = params.confirmBtnClass ? params.confirmBtnClass : false;
             confirmObj.theme = params.theme ? params.theme : false;
             confirmObj.titleInfo = params.titleInfo ? params.titleInfo : "";
+            confirmObj.operationBtns = params.operationBtns || [];
 
             app.registerController("confirmDialogController",['$scope', function ($scope) {
                 $scope.confirmObj = confirmObj;
+
+                $scope.btnClickHandler = function(btnObj) {
+                    btnObj.clickHandler($scope);
+                }
             }]);
 
-            $uibModal.open({
+            var modal = $uibModal.open({
                 template: htmlContent,
                 size: confirmObj.size,
+                backdrop: params.backdrop || true,
                 controller: 'confirmDialogController',
-            }).result.then(cb, errcb);
+            });
+            modal.opened.then(params.openedCb, params.openedErrcb);
+            modal.result.then(cb, errcb);
         }
 
         return confirmDialog;

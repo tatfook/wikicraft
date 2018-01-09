@@ -19,7 +19,7 @@ define([
 
 	app.registerController = app.controller;
 
-	app.config(['$controllerProvider', '$httpProvider', '$authProvider','$locationProvider', '$translateProvider', function ($controllerProvider, $httpProvider, $authProvider, $locationProvider, $translateProvider) {
+	app.config(['$controllerProvider', '$httpProvider', '$authProvider','$locationProvider','$translateProvider','$compileProvider', function ($controllerProvider, $httpProvider, $authProvider, $locationProvider, $translateProvider, $compileProvider) {
 		//$locationProvider.hashPrefix('!');
 		//$locationProvider.html5Mode({enabled:true});
 		// 提供动态注册控制接口

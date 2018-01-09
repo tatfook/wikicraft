@@ -32,15 +32,8 @@ body,
     padding: 2px;
 }
 .result-html {
-    /*padding: 2px 10px;*/
     overflow: auto;
-    /*background-color: #fff;*/
-    /*border: 1px solid #eee;*/
-    /*border: 1px solid #ccc;*/
-    /*border-radius: 4px;*/
-}
-.result-html img {
-    /*max-width: 35%;*/
+    padding: 19px 0;
 }
 .result-src,
 .result-debug {
@@ -239,6 +232,9 @@ body,
     box-shadow: none;
 }
 
+.CodeMirror-wrap{
+    margin-right: 9px;
+}
 .border{
     width: 10px;
     height: 100%;
@@ -484,6 +480,88 @@ select.resize-view {
     width:100%;
     height:100%;
     object-fit:cover;
+}
+
+.wikiEditor .mod-container{
+    border: 2px dashed transparent;
+    position: relative;
+}
+.wikiEditor .mod-container.active{
+    position: relative;
+    border: 2px dashed #69B9FF;
+}
+.wikiEditor .mod-container.active .fake-icon{
+    display: inline-block;
+}
+.wikiEditor .fake-icon{
+    display: none;
+    width: 38px;
+    height: 38px;
+    background-color: #7FC3FF;
+    color: #FFF;
+    border-radius: 50%;
+    text-align: center;
+    line-height: 34px;
+    font-size: 30px;
+    position: absolute;
+    left: 271px;
+    z-index: 11;
+    cursor: pointer;
+}
+.wikiEditor .fake-icon:hover{
+    transform: scale(1.211);
+}
+.wikiEditor .fake-icon.add-before{
+    top: -19px;
+    bottom: auto;
+}
+.wikiEditor .fake-icon.add-after{
+    top: auto;
+    bottom: -19px;
+}
+
+.tpl-header-container{
+    font-size: 14px;
+    background-color: #F5F5F5;
+    color: #999;
+    padding: 3px 25px;
+}
+
+.tpl-header-container .iconfont{
+    margin-left: 10px;
+    vertical-align: middle;
+    color: #3977AD;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.tpl-header-container .pull-right{
+    cursor: pointer;
+}
+
+.tpl-header-container .pull-right:hover{
+    color: #3977AD;
+}
+
+.att-edit-box {
+    height: 280px;
+    z-index: 4;
+    background-color: #FFF;
+    border-left: 1px solid #EEE;
+    padding: 0;
+    z-index: 1;
+}
+.editingLine{
+    border-right: 4px solid #FFAC36;
+}
+p.file-large-info{
+    padding: 0 35px;
+    font-size: 16px;
+    line-height: 36px;
+}
+p.file-large-info > .filename{
+    font-weight: bold;
+    padding: 5px;
 }
 
 @media (max-width: 768px) {

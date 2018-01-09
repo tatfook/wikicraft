@@ -184,7 +184,7 @@
                     <td>{{item.subject}}</td>
                     <td class="money">{{item.method == 'Spend' ? "-" : "+"}} &yen; {{item.price < 0 ? -item.price/100 : item.price/100}}</td>
                     <td>{{payStatus[item.status]}}</td>
-                    <!--<td ng-show="item.code == 0">兑换成功 <sapn class="iconfont icon-icon-copy text-success"></sapn></td>
+                    <!--<td ng-show="item.code == 0">兑换成功 <sapn class="iconfont icon-check-mark text-success"></sapn></td>
                     <td ng-show="item.code != 0">兑换失败 <sapn class="text-danger">&times;</sapn></td>-->
                 </tr>
             </table>

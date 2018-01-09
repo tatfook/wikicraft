@@ -1,0 +1,28 @@
+<?npl
+--[[
+Title: wiki module chpPermission
+Author: j
+Date: 2017/12/8
+]]
+
+function main()
+	local wikiModuleList = {
+		{
+			name="章节权限",
+			classifyName="章节权限",
+			content=[[
+                ```@chpPermission/js/chpPermission
+                ```
+            ]],
+			wikiCmdName="@chpPermission/js/chpPermission",
+			logoUrl="",
+			desc="将当前页面加入章节权限",
+			flag=1,
+		},
+	}
+		
+	regitsterWikiModuleList(wikiModuleList)
+end
+
+main()
+

@@ -86,6 +86,7 @@
         'bluebird': "empty:",
         'js-aho-corasick': "lib/js-aho-corasick/aho-corasick",
         'md5': "lib/md5",
+        'swiper': "empty:",
 
         // 自定义模块
         'app': 'app',

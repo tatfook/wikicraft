@@ -1,0 +1,99 @@
+<div ng-controller="modEditComplexController" class="container">
+    <div ng-click="showModal()">showModal</div>
+	<div ng-if='params.design.text=="style1"'>
+		<div class="col-xs-6">
+			<div ng-hide="params.image.is_mod_hide">
+				<img class="center-block" alt="{{params.image.text}}" ng-src="{{params.image.href}}"/>
+			</div>
+		</div>
+		<div class="col-xs-6" style="padding-top:70px">
+            <div ng-click="viewEditorClick(params.menu, $event)" ng-hide="params.menu.is_mod_hide" class="kp_module_editor_input_tag">
+                <div style="text-align:center; font-size: 18px">
+                    <ul>
+                        <li ng-repeat="firstItem in params.menu.text">
+                            <a ng-href="{{firstItem.url}}" target="{{firstItem.target || '_blank'}}">{{firstItem.name}}</a>
+                            <ul ng-show="firstItem.children.length > 0">
+                                <li ng-repeat="secondItem in firstItem.children">
+                                    <a ng-href="{{secondItem.url}}" target="{{secondItem.target || '_blank'}}">{{secondItem.name}}</a>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+			<div ng-click="viewEditorClick(params.title, $event)" ng-hide="params.title.is_mod_hide"class="kp_module_editor_input_tag">
+				<div style="text-align:center; font-size: 18px">
+                    {{params.title.text}}
+				</div>
+			</div>
+			<div ng-click="viewEditorClick(params.subtitle, $event)" ng-hide="params.subtitle.is_mod_hide" class="kp_module_editor_input_tag">
+				<div style="text-align:center; font-size:16px">
+					{{params.subtitle.text}}
+				</div>
+            </div>
+            <div ng-click="viewEditorClick(params.multiText, $event)" ng-hide="params.multiText.is_mod_hide" class="kp_module_editor_input_tag">
+                <div style="text-align:center; font-size:18px">
+                    {{params.multiText.text}}
+                    <p>link: <a href="{{params.multiText.href}}" target="{{params.multiText.target || '_blank'}}">{{params.multiText.href}}</a></p>
+                </div>
+            </div>
+            <div ng-click="viewEditorClick(params.imageType, $event)" ng-hide="params.imageType.is_mod_hide" class="kp_module_editor_input_tag">
+                <a ng-href="{{params.imageType.href}}" target="{{params.imageType.target || '_blank'}}">
+                    <img ng-src="{{params.imageType.text}}">
+                </a>
+            </div>
+			<div ng-click="viewEditorClick(params.paragraph, $event)" ng-hide="params.paragraph.is_mod_hide" class="kp_module_editor_input_tag">
+				<div style="text-align:center; font-size:18px">
+					{{params.paragraph.text}}
+				</div>
+			</div>
+			<div class="kp_module_editor_input_tag" ng-hide="params.link.is_mod_hide" ng-click="viewEditorClick(params.link, $event)">
+				<a class="btn center-block" ng-href="{{params.link.href}}" target="{{params.link.target || '_blank'}}">{{params.link.text || "BUTTON"}}</a>
+			</div>
+		</div>
+
+		<h3>简单列表</h3>
+		<div ng-repeat="item in params.list.list" ng-click="viewEditorClick(params.list, $event)" ng-hide="params.list.is_mod_hide" class="kp_module_editor_input_tag">
+			<div ng-click="viewEditorClick(item, $event)">
+				{{item.text}}
+			</div>
+		</div>
+		<h3>对象列表</h3>
+		<div ng-repeat="item in params.object_list.list" ng-click="viewEditorClick(params.object_list)" ng-hide="params.object_list.is_mod_hide" class="kp_module_editor_input_tag">
+			<div ng-click="viewEditorClick(item.link, $event)" style="margin:20px">
+				{{item.link.text}}
+			</div>
+		</div>
+	</div>
+	<div ng-if='params.design.text=="style2"'>
+		<div class="col-xs-6">
+			<div ng-hide="params.image.is_mod_hide">
+				<img class="center-block" alt="{{params.image.text}}" ng-src="{{params.image.href}}"/>
+			</div>
+		</div>
+		<div class="col-xs-6" style="padding-top:70px">
+			<div ng-click="viewEditorClick(params.title, $event)" ng-hide="params.title.is_mod_hide" class="kp_module_editor_input_tag">
+				<div style="text-align:center; font-size: 18px">
+					{{params.title.text}}
+				</div>
+			</div>
+			<div ng-click="viewEditorClick(params.subtitle, $event)" ng-hide="params.subtitle.is_mod_hide" class="kp_module_editor_input_tag">
+				<div style="text-align:center; font-size:16px">
+					{{params.subtitle.text}}
+				</div>
+			</div>
+			<div ng-click="viewEditorClick(params.paragraph, $event)" ng-hide="params.paragraph.is_mod_hide" class="kp_module_editor_input_tag">
+				<div style="text-align:center; font-size:18px">
+					{{params.paragraph.text}}
+				</div>
+			</div>
+			<div class="kp_module_editor_input_tag" ng-click="viewEditorClick(params.link, $event)" ng-hide="params.link.is_mod_hide">
+				<a class="btn center-block" ng-href="{{params.link.href}}" target="{{params.link.target || '_blank'}}">{{params.link.text || "BUTTON"}}</a>
+			</div>
+		</div>
+
+		<div ng-repeat="item in params.list.list" ng-hide="params.list.is_mod_hide" ng-click="viewEditorClick(params.list, $event)" class="kp_module_editor_input_tag">
+			<div>{{item.title.text}}</div>
+		</div>
+	</div>
+</div>

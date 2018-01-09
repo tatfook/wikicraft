@@ -197,7 +197,14 @@ end
 
 -- 获取bust version
 function getBustVersion()
+	local hostname = request:GetHost() or ""
 	local version = mem_cache:get("bustVersion")
+
+	--log(hostname)
+	if (string.find(hostname, 'localhost')) then
+		return os.time()
+	end
+
 	if not version then
 		version = tostring(os.time())
 		mem_cache:set("bustVersion", version)

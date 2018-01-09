@@ -2130,6 +2130,111 @@ define([], function () {
             "en": "(mediate) between two parties"
         },
         {
+            "_key": "取消",
+            "zh-cn": "取消",
+            "en": "cancel"
+        },
+        {
+            "_key": "Datatree Editor",
+            "zh-cn": "树状结构数据编辑器",
+            "en": "Datatree Editor"
+        },
+        {
+            "_key": "文字",
+            "zh-cn": "文字",
+            "en": "Text"
+        },
+        {
+            "_key": "位置",
+            "zh-cn": "位置",
+            "en": "Location"
+        },
+        {
+            "_key": "编辑器",
+            "zh-cn": "编辑器",
+            "en": "Editor"
+        },
+        {
+            "_key": "前面添加",
+            "zh-cn": "前面添加",
+            "en": "Add Before"
+        },
+        {
+            "_key": "前面添加",
+            "zh-cn": "前面添加",
+            "en": "Add Before"
+        },
+        {
+            "_key": "后面添加",
+            "zh-cn": "后面添加",
+            "en": "Add After"
+        },
+        {
+            "_key": "添加子项",
+            "zh-cn": "添加子项",
+            "en": "Add Child"
+        },
+        {
+            "_key": "请输入链接",
+            "zh-cn": "请输入链接",
+            "en": "Input Link"
+        },
+        {
+            "_key": "请输入文字",
+            "zh-cn": "请输入文字",
+            "en": "Input Text"
+        },
+        {
+            "_key": "选择图片",
+            "zh-cn": "选择图片",
+            "en": "Select Image"
+        },
+        {
+            "_key": "网络图片",
+            "zh-cn": "网络图片",
+            "en": "Internet"
+        },
+        {
+            "_key": "我的图片",
+            "zh-cn": "我的图片",
+            "en": "Storage"
+        },
+        {
+            "_key": "美化图片",
+            "zh-cn": "美化图片",
+            "en": "Beautify"
+        },
+        {
+            "_key": "添加图片",
+            "zh-cn": "添加图片",
+            "en": "Add Image"
+        },
+        {
+            "_key": "图片地址",
+            "zh-cn": "图片地址",
+            "en": "Image Address"
+        },
+        {
+            "_key": "引用",
+            "zh-cn": "引用",
+            "en": "Submit"
+        },
+        {
+            "_key": "将图片拖拽此处上传",
+            "zh-cn": "将图片拖拽此处上传",
+            "en": "Drag and drop image to upload"
+        },
+        {
+            "_key": "REMOVE_GROUP_AUTH_CONFIRM_MSG",
+            "zh-cn": "确定删除对 {{ groupname }} 分组的授权？",
+            "en": "Are you sure to remove {{ groupname }} group authentication?"
+        },
+        {
+            "_key": "REMOVE_GROUP_CONFIRM_MSG",
+            "zh-cn": "确定删除 {{ groupname }} 分组？",
+            "en": "Are you sure to remove {{ groupname }} group?",
+        },
+        {
             "_key": "右对齐",
             "zh-cn": "右对齐",
             "en": "align right"

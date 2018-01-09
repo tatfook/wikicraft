@@ -11,6 +11,7 @@ define([
         stack:[],   // 堆栈操作模拟
         id:0,       // ID产生器 局部唯一性
         lastUrlObj:{}, // 记录最近一次URL信息
+        urlRegex: /(https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9]\.[^\s]{2,})/,
     };
 
     util.getId = function () {
@@ -568,6 +569,20 @@ define([
 	util.base32Decode = function(str) {
 		return base32.decode(str);
 	}
+
+    //合并参数
+    util.mergeParams = function(otherObj, thisObj){
+        var Oparams_template = otherObj.params_template;
+        var Tparams_template = thisObj.params_template;
+
+        for(itemA in Tparams_template){
+            for(itemB in Oparams_template){
+                if(itemA != itemB){
+                    Tparams_template[itemB] = Oparams_template[itemB];
+                }
+            }
+        }
+    }
 
     config.util = util;
     return util;

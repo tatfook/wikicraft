@@ -1,0 +1,39 @@
+<style>
+    .textContainerLeft{
+        text-align: left;
+        width: 100%;
+        padding: 20px;
+    }
+    .textContainerCenter{
+        text-align: center;
+        width: 100%;
+        padding: 20px;
+    }
+    .textTitle{
+        font-weight: bold;
+        font-size: 32px;
+        width: 100%
+    }
+    pre {
+        white-space: pre-wrap;
+        word-wrap: break-word;
+        background: inherit;
+        border: none;
+    }
+    .textContent {
+        font-size: 14px;
+        line-height: 30px;
+        text-indent: 28px;
+    }
+</style>
+
+<div ng-controller="textController">
+    <div class="textContainerLeft" ng-if="params.design.text == 'left'">
+        <h1 class='textTitle' ng-click="viewEditorClick(params.title, $event)">{{params.title.text}}</h1>
+        <div class='textContent' ng-click="viewEditorClick(params.multiText_desc, $event)" ng-bind-html="params.multiText_desc.text"></div>
+    </div>
+    <div class="textContainerCenter" ng-if="params.design.text == 'center'">
+        <h1 class='textTitle' ng-click="viewEditorClick(params.title, $event)">{{params.title.text}}</h1>
+        <div class='textContent' ng-click="viewEditorClick(params.multiText_desc, $event)" ng-bind-html="params.multiText_desc.text"></div>
+    </div>
+</div>
