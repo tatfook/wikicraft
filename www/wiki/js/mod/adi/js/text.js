@@ -12,12 +12,14 @@ define([
                 styles:[
                     {
                         design: {
-                            text: 'left'
+                            text: 'left',
+                            cover: './../assets/images/textLeft.png'
                         }
                     },
                     {
                         design: {
-                            text: 'center'
+                            text: 'center',
+                            cover: './../assets/images/textCenter.png'
                         }
                     }
                 ],
