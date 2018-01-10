@@ -16,6 +16,14 @@
         position: relative;
     }
 
+    .style1 a{
+        color: #666;
+    }
+
+    .style1 .btn-primary{
+        color: #ffffff;
+    }
+
     .style1 h4{
         margin-top:0;
     }
@@ -126,27 +134,39 @@
 
     /* style2 css */
     .style2{
-        max-width: 1190px;
+        max-width: 1170px;
         margin: 0 auto;
+        margin-bottom: 39px;
+        padding-top: 51px;
+        padding-bottom: 51px;
     }
 
     .style2 .world-head .world-name,
     .style2 .world-head .username {
         float: left;
-        margin-right: 15px;
+        margin: 0;
+        margin-right: 30px;
+    }
+
+    .style2 .world-head .world-name{
+        font-size: 18px;
+        color: #327ab7;
+    }
+
+    .style2 .world-head .username a{
+        font-size: 14px;
+        margin-top: 2px;
+        color: #0f2639;
+        font-weight: normal;
     }
 
     .style2 .world-head .world-btn {
         float: right;
-        width: 150px;
+        width: 110px;
         margin-left: 30px;
         text-align: center;
         margin-top: 0;
     } 
-
-    .style2 .world-head .world-btn img {
-        margin-right: 15px;
-    }
 
     .style2 .world-body .world-img,
     .style2 .world-body .world-text{
@@ -165,13 +185,9 @@
     }
 
     .style2 .world-body .world-text{
-        width: 675px;
+        width: 669px;
         height: 275px;
-        -webkit-line-clamp: 1;  
-        overflow: hidden;  
-        display: -webkit-box;  
-        -webkit-box-orient: vertical;  
-        white-space: normal; 
+        overflow: hidden;
         margin-left: 30px;
         font-size: 16px;
     }
@@ -185,81 +201,92 @@
         margin-top: 1px
     }
 
-    .style2 .world-span1{
-        color: #999;
+    .style2 .world-text span{
+        color: #999999;
     }
 
-    .style2 .world-span2{
-        color: #999;
+    .style2 .world-text .world-span{
+        display: block;
+        font-weight: bold;
     }
 
     /* style3 css */
     .style3{
         margin: 0 auto;
-        max-width: 1040px;
+        max-width: 1170px;
+        margin-bottom: 39px;
+        padding-top: 51px;
+        padding-bottom: 51px;
     }
 
     .style3 .world-img{
         float: left;
         height: 314px;
-        width: 431px;
+        width: 417px;
         overflow: hidden;
     }
 
     .style3 .world-img img{
         height: 100%;
-        /* position: relative;
-        left: -50%;
-        top: -50%; */
     }
 
     .style3 .world-text{
         float:left;
-        margin-left: 30px;
+        margin-left: 48px;
     }
 
     .style3 .world-btn{
-        width: 150px;
+        width: 110px;
         float: left;
         margin-right: 30px;
         margin-top: 0px;
     }
 
-    .style3 .world-btn img{
-        margin-right: 15px;
-    }
-
     .style3 .world-name{
         margin-top:0;
+        margin-bottom: 7px;
+    }
+
+    .style3 .world-name a{
+        font-size:20px;
+        color: #327ab7;
+        font-weight: bold;
+        font-family: 'Microsoft YaHei';
     }
 
     .style3 .username{
-        margin-top: 5px;
+        margin-top: 0px;
+        margin-bottom: 33px;
+    }
+
+    .style3 .username a{
+        font-size: 16px;
+        font-family: 'Microsoft YaHei';
+        color: #0f2639;
+        font-weight: normal; 
     }
 
     .style3 .world-work{
-        margin-top: 15px;
-        height:197.73px;
+        height:198px;
         width: 545px;
         font-size: 13px;
-        -webkit-line-clamp: 1;  
-        overflow: hidden;  
-        display: -webkit-box;  
-        -webkit-box-orient: vertical;  
-        white-space: normal; 
-        
     }
 
-    .style3 .world-work-span1{
-        font-size: 20px;
-        color: #999;
+    .style3 .world-work a{
+        white-space: pre-wrap;
+        color: #999999;
     }
 
-    .style3 .world-work-span2{
-        color: #999;
+    .style3 .world-work span{
+        color: #999999;
     }
 
-    .world-clear-pointer a{
+    .style3 .world-work-span{
+        font-size: 16px;
+        display:block;
+    }
+
+    .world-clear-pointer, .world-clear-pointer a{
         cursor: default !important;
     }
 </style>
@@ -271,26 +298,59 @@
         </div>
         <div class="text">
             <h4 ng-hide="params.link_world_url.is_mod_hide">
-                {{params.link_world_name.text}}
+                <a ng-if="editorMode" href="javascript::void(0)">{{params.link_world_name.text}}</a>
+                <a ng-if="!editorMode"
+                   ng-class="{true:'world-clear-pointer'}[params.link_world_name.href.length == 0]"
+                   target="{{params.link_world_name.target ? params.link_world_name.target : '_blank'}}"
+                   ng-href="{{params.link_world_name.href}}">{{params.link_world_name.text}}</a>
+
                 <p ng-hide="params.link_update_date.is_mod_hide" class="info pull-right">
-                    {{params.link_update_date.text + " 版本：" + params.link_version.text}}
+                    <a ng-if="editorMode" href="javascript::void(0)">{{params.link_update_date.text + " 版本：" + params.link_version.text}}</a>
+                    <a ng-if="!editorMode"
+                       ng-class="{true:'world-clear-pointer'}[params.link_update_date.href.length == 0]"
+                       target="{{params.link_update_date.target ? params.link_update_date.target : '_blank'}}"
+                       ng-href="{{params.link_update_date.href}}">
+                        {{params.link_update_date.text + " 版本：" + params.link_version.text}}
+                    </a>
                 </p>
             </h4>
             <div class="inner clearfix">
-                <p ng-hide="params.link_username.is_mod_hide">作者：{{params.link_username.text}}</p>
+                <p ng-hide="params.link_username.is_mod_hide">
+                    <a ng-if="editorMode" href="javascript::void(0)">作者：{{params.link_username.text}}</a>
+                    <a ng-if="!editorMode"
+                       ng-class="{true:'world-clear-pointer'}[params.link_username.href.length == 0]"
+                       target="{{params.link_username.target ? params.link_username.target : '_blank'}}"
+                       ng-href="{{params.link_username.href}}">
+                        作者：{{params.link_username.text}}
+                    </a>
+                </p>
                 <div class="col-xs-12">
                     <div class="col-xs-6 info">
-                        <img ng-src="{{imgsPath + 'icon/world3D_eye.png'}}" class="icon" alt="">浏览量 {{viewTimes}}</div>
-                    <div ng-hide="params.link_files_totals.is_mod_hide" class="col-xs-6 info" ng-bind="'大小' + getSize(params.link_files_totals.text)"></div>
+                        <img ng-src="{{imgsPath + 'icon/world3D_eye.png'}}" class="icon" alt="">浏览量 {{viewTimes}}
+                    </div>
+                    <div ng-hide="params.link_files_totals.is_mod_hide" class="col-xs-6 info">
+                        <a ng-if="editorMode" href="javascript::void(0)" ng-bind="'大小' + getSize(params.link_files_totals.text)"></a>
+                        <a ng-if="!editorMode"
+                           ng-class="{true:'world-clear-pointer'}[params.link_files_totals.href.length == 0]"
+                           target="{{params.link_files_totals.target ? params.link_files_totals.target : '_blank'}}"
+                           ng-href="{{params.link_files_totals.href}}"
+                           ng-bind="'大小' + getSize(params.link_files_totals.text)"></a>
+                    </div>
                 </div>
                 <div class="col-xs-12">
                     <div class="col-xs-6" ng-hide="params.link_world_url.is_mod_hide">
-                        <a ng-if="!editorMode" class="btn btn-block btn-default" target="{{params.link_world_url.target ? params.link_world_url.target : '_blank'}}" href="{{params.link_world_url.text}}">下载</a>
                         <a ng-if="editorMode" href="javascript::void(0)" class="btn btn-block btn-default">下载</a>
+                        <a ng-if="!editorMode"
+                           class="btn btn-block btn-default"
+                           ng-class="{true:'world-clear-pointer'}[params.link_world_url.href.length == 0]"
+                           target="{{params.link_world_url.target ? params.link_world_url.target : '_blank'}}"
+                           ng-href="{{params.link_world_url.href}}">
+                            下载
+                        </a>
                     </div>
                     <div class="col-xs-6">
-                        <a ng-if="!editorMode" class="btn btn-block btn-primary" ng-click="checkEngine()">进入</a>
                         <a ng-if="editorMode" class="btn btn-block btn-primary">进入</a>
+                        <a ng-if="!editorMode" class="btn btn-block btn-primary" ng-click="checkEngine()">进入</a>
                     </div>
                 </div>
             </div>
@@ -304,21 +364,40 @@
     </div>
 
     <div ng-class="{true:'world-clear-pointer'}[editorMode]" ng-if='params.design.text=="style2"'>
-        <div class="style2 container">
+        <div class="style2">
             <div class="world-head clearfix">
                 <div>
-                    <h2 ng-hide="params.link_world_name.is_mod_hide" class="world-name"><a>{{params.link_world_name.text}}</a></h2>
-                    <h3 ng-hide="params.link_username.is_mod_hide" class="username">作者：{{params.link_username.text}}</h3>
+                    <h2 ng-hide="params.link_world_name.is_mod_hide" class="world-name">
+                        <a ng-if="editorMode" href="javascript::void(0)">{{params.link_world_name.text}}</a>
+                        <a ng-if="!editorMode"
+                           ng-class="{true:'world-clear-pointer'}[params.link_world_name.href.length == 0]"
+                           target="{{params.link_world_name.target ? params.link_world_name.target : '_blank'}}"
+                           ng-href="{{params.link_world_name.href}}">
+                            {{params.link_world_name.text}}</a>
+                    </h2>
+                    <h3 ng-hide="params.link_username.is_mod_hide" class="username">
+                        <a ng-if="editorMode" href="javascript::void(0)">作者：{{params.link_username.text}}</a>
+                        <a ng-if="!editorMode"
+                           ng-class="{true:'world-clear-pointer'}[params.link_username.href.length == 0]"
+                           target="{{params.link_username.target ? params.link_username.target : '_blank'}}"
+                           ng-href="{{params.link_username.href}}">
+                            作者：{{params.link_username.text}}
+                        </a>
+                    </h3>
                 </div>
                 <div ng-hide="params.link_world_url.is_mod_hide">
-                    <a class="btn btn-block btn-primary world-btn" ng-if="!editorMode" ng-click="checkEngine()">进入</a>
                     <a class="btn btn-block btn-primary world-btn" ng-if="editorMode">进入</a>
+                    <a class="btn btn-block btn-primary world-btn" ng-if="!editorMode" ng-click="checkEngine()">进入</a>
                     
-                    <a class="btn btn-block btn-default world-btn" ng-if="!editorMode" target="{{params.link_world_url.target ? params.link_world_url.target : '_blank'}}" href="{{params.link_world_url.text}}">
+                    <a class="btn btn-block btn-default world-btn" ng-if="editorMode" href="javascript::void(0)">
                         <img ng-src="{{downloadImg}}" alt="">
                         下载
                     </a>
-                    <a class="btn btn-block btn-default world-btn" ng-if="editorMode" href="javascript::void(0)">
+                    <a class="btn btn-block btn-default world-btn"
+                       ng-if="!editorMode"
+                       ng-class="{true:'world-clear-pointer'}[params.link_world_url.text.length == 0]"
+                       target="{{params.link_world_url.target ? params.link_world_url.target : '_blank'}}"
+                       ng-href="{{params.link_world_url.text}}">
                         <img ng-src="{{downloadImg}}" alt="">
                         下载
                     </a>
@@ -329,34 +408,62 @@
                     <img ng-src="{{params.media_logo.text.length == 0 && imgsPath + '3DWorld.jpg' || params.media_logo.text}}" alt="">
                 </div>
                 <div ng-hide="params.link_desc.is_mod_hide" class="world-text">
-                    <span class="world-span1">作品简介：</span><br>
-                        <span ng-bind-html="params.link_desc.text"></span>
+                    <span class="world-span">作品简介：</span>
+                    <span ng-bind-html="params.link_desc.text"></span>
                 </div>
             </div>
         </div>
     </div>
 
     <div ng-class="{true:'world-clear-pointer'}[editorMode]" ng-if='params.design.text=="style3"'>
-        <div class="style3 clearfix container">
+        <div class="style3 clearfix">
             <div ng-hide="params.media_logo.is_mod_hide" class="world-img">
                 <img ng-src="{{params.media_logo.text.length == 0 && imgsPath + '3DWorld.jpg' || params.media_logo.text}}" alt="">
             </div>
             <div class="world-text">
                 <div class="clearfix">
-                    <h2 ng-hide="params.link_world_name.is_mod_hide" class="world-name"><a>{{params.link_world_name.text}}</a></h2>
-                    <h3 ng-hide="params.link_username.is_mod_hide" class="username">作者：{{params.link_username.text}}</h3>
+                    <h2 ng-hide="params.link_world_name.is_mod_hide" class="world-name">
+                        <a ng-if="editorMode" href="javascript::void(0)">
+                            {{params.link_world_name.text}}
+                        </a>
+                        <a ng-if="!editorMode"
+                           ng-class="{true:'world-clear-pointer'}[params.link_world_name.href.length == 0]"
+                           target="{{params.link_world_name.target ? params.link_world_name.target : '_blank'}}"
+                           ng-href="{{params.link_world_name.href}}">
+                            {{params.link_world_name.text}}
+                        </a>
+                    </h2>
+                    <h3 ng-hide="params.link_username.is_mod_hide" class="username">
+                        <a ng-if="editorMode" href="javascript::void(0)">
+                            作者：{{params.link_username.text}}
+                        </a>
+                        <a ng-if="!editorMode"
+                           ng-class="{true:'world-clear-pointer'}[params.link_username.href.length == 0]"
+                           target="{{params.link_username.target ? params.link_username.target : '_blank'}}"
+                           ng-href="{{params.link_username.href}}">
+                            作者：{{params.link_username.text}}
+                        </a>
+                    </h3>
                 </div>
-                <div ng-hide="params.link_desc.is_mod_hide" class="world-work">
-                    <span class="world-work-span1">作品简介：</span>
-                    <br>
-                    <span ng-bind-html="params.link_desc.text"></span>
+                <div ng-hide="params.multiText_desc.is_mod_hide" class="world-work">
+                    <span class="world-work-span">作品简介：</span>
+                    <a ng-if="editorMode" href="javascript::void(0)" ng-bind-html="params.multiText_desc.text"></a>
+                    <a ng-if="!editorMode"
+                       ng-class="{true:'world-clear-pointer'}[params.multiText_desc.href.length == 0]"
+                       ng-href="{{params.multiText_desc.href}}"
+                       target="{{params.multiText_desc.target ? params.multiText_desc.target : '_blank'}}"
+                       ng-bind-html="params.multiText_desc.text"></a>
                 </div>
                 <div ng-hide="params.link_world_url.is_mod_hide">
-                    <a class="btn btn-block btn-default world-btn" ng-if="!editorMode" target="{{params.link_world_url.target ? params.link_world_url.target : '_blank'}}" href="{{params.link_world_url.text}}">
+                    <a class="btn btn-block btn-default world-btn"ng-if="editorMode" href="javascript::void(0)">
                         <img ng-src="{{downloadImg}}" alt="">
                         下载
                     </a>
-                    <a class="btn btn-block btn-default world-btn" ng-if="editorMode" href="javascript::void(0)">
+                    <a class="btn btn-block btn-default world-btn"
+                       ng-if="!editorMode"
+                       ng-class="{true:'world-clear-pointer'}[params.link_world_url.text.length == 0]"
+                       target="{{params.link_world_url.target ? params.link_world_url.target : '_blank'}}"
+                       ng-href="{{params.link_world_url.text}}">
                         <img ng-src="{{downloadImg}}" alt="">
                         下载
                     </a>

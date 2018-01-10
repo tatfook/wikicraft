@@ -111,6 +111,7 @@ define([
 						name          : "版本",
 						text          : "",
 						require       : true,
+						href		  : "",
 					},
 					link_opus_id : {
 						is_leaf       : true,
@@ -121,10 +122,11 @@ define([
 						name          : "世界ID",
 						text          : "",
 						require       : true,
+						href		  : "",
 					},
-					link_desc : {
+					multiText_desc : {
 						is_leaf       : true,
-						type          : "link",
+						type          : "multiText",
 						editable      : true,
 						is_card_show  : true,
 						is_mod_hide   : false, 
@@ -133,6 +135,7 @@ define([
 旅行不在于记忆，而在于当时餐，午餐，晚餐。或许吃得不好，可是却依旧为对方擦去嘴角\n\
 的油渍。风景如何，其实并不重要。",
 						require       : true,
+						href		  : "",
 					},
 					link_world_url : {
 						is_leaf       : true,
@@ -143,6 +146,7 @@ define([
 						name          : "世界下载地址",
 						text          : "",
 						require       : true,
+						href		  : "",
 					},
 					link_files_totals : {
 						is_leaf       : true,
@@ -153,6 +157,7 @@ define([
 						name          : "文件大小",
 						text          : "",
 						require       : true,
+						href		  : "",
 					},
 					link_username : {
 						is_leaf       : true,
@@ -163,6 +168,7 @@ define([
 						name          : "用户名",
 						text          : "",
 						require       : true,
+						href		  : "",
 					},
 					link_update_date : {
 						is_leaf       : true,
@@ -173,6 +179,7 @@ define([
 						name          : "更新时间",
 						text          : "",
 						require       : true,
+						href		  : "",
 					},
 					link_world_name : {
 						is_leaf       : true,
@@ -183,6 +190,7 @@ define([
 						name          : "世界名称",
 						text          : "",
 						require       : true,
+						href		  : "",
 					}
 				}
             }
@@ -192,7 +200,7 @@ define([
 			$scope.checkEngine = function () {
                 $scope.showModal=true;
 
-                window.open("paracraft:// usertoken=\"" + token + "\" cmd/loadworld " + $scope.params.worldUrl.text);
+                window.open("paracraft:// usertoken=\"" + token + "\" cmd/loadworld " + $scope.params.link_world_url.text);
 			}
 			
 			$scope.clickDownload = function() {
