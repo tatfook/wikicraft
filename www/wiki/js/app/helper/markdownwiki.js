@@ -460,7 +460,12 @@ define([
                     $(".mod-container.active").removeClass("active");
 					if (self.blockCache.domNode) {
 						self.blockCache.domNode.addClass("active");
-					}
+                    }
+                    var modToLine = self.blockCache.block.textPosition.to;
+                    editor.setCursor({
+                        "line": modToLine-1,
+                        "ch": 0
+                    });
                     moduleEditorParams.setEditorObj(obj);
 					//console.log(params_template);
 					// moduleEditorParams.is_show = true;
@@ -802,7 +807,7 @@ define([
             return md;
         };
 
-		mdwiki.cursorActivity = function() {
+		mdwiki.cursorActivity = function(cm) {
 			var cur_line = mdwiki.editor.getCursor().line;
 			var blockList = mdwiki.blockList || [], curBlock = undefined;
 			for (var i = 0; i < blockList.length; i++) {
@@ -828,10 +833,12 @@ define([
 				}
 
 			} else {
+                console.log(cm);
                 // 非wiki mod todo
                 var moduleEditorParams = config.shareMap.moduleEditorParams || {};
                 moduleEditorParams.activeContainerId = "";
-				moduleEditorParams.show_type = "knowledge";
+                moduleEditorParams.show_type = "knowledge";
+                console.log("markwnwiki---line 838");
 				moduleEditorParams.setKnowledge("");
 				util.$apply();
 			}
