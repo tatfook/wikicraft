@@ -75,6 +75,11 @@ define([
             }
 
 			wikiblock.init(initObj);
+			$scope.titleImg = {
+				"background-image"    : 'url('+ $scope.params.media_img.text +')',
+				"background-size"     : "cover",
+				"background-position" : "center center",
+			}
 		}]);
     }
 
