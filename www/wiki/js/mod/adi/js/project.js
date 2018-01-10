@@ -136,4 +136,5 @@ define([
             return htmlContent;
 		}
     }
+    
 });
