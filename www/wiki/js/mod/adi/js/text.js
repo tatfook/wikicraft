@@ -1,8 +1,9 @@
 define([
     'app',
+    'markdown-it',
     'helper/util',
     'text!wikimod/adi/html/text.html'
-], function(app, util, htmlContent) {
+], function(app, markdown_it, util, htmlContent) {
     function registerController (wikiblock) {
         app.registerController("textController", ['$scope','$sce', function ($scope,$sce) {
             $scope.editorMode = wikiblock.editorMode;
@@ -55,7 +56,11 @@ define([
 					}
                 }
             })
-            $scope.params.multiText_desc.text = $sce.trustAsHtml($scope.params.multiText_desc.text);
+            var md = new markdown_it({
+                html: true,
+                langPrefix: 'code-',
+            })
+            $scope.params.multiText_desc.text = md.render($scope.params.multiText_desc.text);
         }])
     }
     
