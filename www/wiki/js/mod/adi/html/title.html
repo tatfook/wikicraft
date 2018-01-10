@@ -6,16 +6,14 @@
     a{
         color: black;
     }
+
     /* style1 css */
+
     .title-mod{
         height: 150px;
     }
-    .title-mod .title-mod-img, .title-mod .title-mod-head{
+    .title-mod .title-mod-img, .title-mod .title-mod-head1{
         float: left;
-    }
-    .title-mod .title-mod-head{
-        margin-top:30px;
-        margin-bottom: 31px;
     }
     .title-mod .title-mod-img{
         font-size: 20px;
@@ -30,27 +28,27 @@
         height:100%;
         overflow: hidden;
     }
-    .title-mod .title-mod-head .h1{
+    .title-mod .title-mod-head1 .h1{
         width: 300px;
-        height: 26px;
         padding: 0;
-        margin-left: 14px;
-        font-size: 22px;
+        margin-top: 44px;
+        margin-bottom: 0;
+        margin-left: 18px;
+        font-size: 32px;
         font-family: "Microsoft YaHei";
+        font-weight: bold;
         -webkit-line-clamp: 1;  
         overflow: hidden;  
         display: -webkit-box;  
         -webkit-box-orient: vertical;  
         white-space: normal; 
     }
-    .title-mod .title-mod-head .h2{
+    .title-mod .title-mod-head1 .h2{
         width: 300px;
-        height: 16px;
-        font-size: 16px;
+        font-size: 24px;
         font-family: "Microsoft YaHei";
-        color: rgb(0, 0, 0); 
-        margin-left: 14px;
-        margin-top: -3px;
+        margin-left: 18px;
+        margin-top: 7px;
         -webkit-line-clamp: 1;  
         overflow: hidden;  
         display: -webkit-box;  
@@ -61,20 +59,23 @@
     .title-clear-pointer a{
         cursor: default !important;
     }
+
     /* style1 css 伪类 */
+
     .h1 a:link  , .h1 a:visited ,
     .h1 a:hover , .h1 a:active{
-        color: black;
+        color:#0f2639;
     }
     .h2 a:link  , .h2 a:visited ,
     .h2 a:hover , .h2 a:active{
-        color: rgb(0, 0, 0); 
+        color:#0f2639;
     }
 
     /* style2 css */
+
     .title-mod2{
-        height: 180px;
-        padding-top: 30px;
+        height: 200px;
+        padding-top: 20px;
     }
     .title-mod2 .title-mod2-img-two{
         width:89px;
@@ -83,13 +84,13 @@
         text-align: center;
         margin: 0 auto;
     }
-    .title-mod-head2{
-        padding-top: 10px;
-    }
     .title-mod2 .title-mod-head2 .h-one{
         text-align: center;
         margin: 0 auto;
         font-size: 25px;
+        font-weight: bold;
+        margin-top: 11px;
+        margin-bottom: 8px;
     }
     .title-mod2 .title-mod-head2 .h-two{
         text-align: center;
@@ -99,6 +100,7 @@
     }
     
     /* style2 css 伪类 */
+
     .h-one a:link  , .h-one a:visited ,
     .h-one a:hover , .h-one a:active{
         color: black;
@@ -107,8 +109,12 @@
     .h-two a:hover , .h-two a:active{
         color: rgb(0, 0, 0); 
     }
+
 </style>
 <div ng-controller="titleController">
+
+    <!-- style1 html -->
+
     <div ng-class="{true:'title-clear-pointer'}[editorMode]" ng-if='params.design.text=="style1"'>
         <div class="title-mod container">
             <div class="title-mod-img" ng-hide="params.media_img.is_mod_hide">
@@ -120,7 +126,7 @@
                     <img ng-if="params.media_img.text.length > 0" src="{{params.media_img.text}}">
                 </a>
             </div>
-            <div class="title-mod-head">
+            <div class="title-mod-head1">
                 <h1 class="h1" ng-hide="params.link_title.is_mod_hide">
                     <a ng-if="editorMode" href="javascript::void(0)">{{params.link_title.text}}</a>
                     <a target="{{params.link_title.target ? params.link_title.target : '_blank'}}" ng-if="!editorMode" ng-href="{{params.link_title.href}}">{{params.link_title.text}}</a>
@@ -132,6 +138,9 @@
             </div>
         </div>
     </div>
+
+    <!-- style2 html -->
+
     <div ng-if='params.design.text=="style2"'>
         <div ng-class="{false:'title-clear-pointer'}[titleClass]" class="title-mod2 container">
             <div class="title-mod2-img-two" ng-hide="params.media_img.is_mod_hide">
