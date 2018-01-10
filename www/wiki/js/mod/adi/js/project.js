@@ -1,8 +1,9 @@
 define([
-    'app',
+	'app',
+	'markdown-it',
     'helper/util',
 	'text!wikimod/adi/html/project.html',
-], function (app, util, htmlContent) {
+], function (app, markdown_it, util, htmlContent) {
 
     function registerController(wikiblock) {
         app.registerController("pictureTextController", ['$scope','$sce', function ($scope, $sce) {
@@ -121,7 +122,11 @@ define([
 
 			
 			wikiblock.init(initObj);
-			$scope.params.multiText_desc.text = $sce.trustAsHtml($scope.params.multiText_desc.text);
+			var md = new markdown_it({
+				html: true,
+				langPrefix: 'code-'
+			})
+			$scope.params.multiText_desc.text = md.render($scope.params.multiText_desc.text);
 			$scope.projectImg = {
 				"background-image"    : 'url('+ $scope.params.image_picture.text +')',
 				"background-size"     : "cover",
