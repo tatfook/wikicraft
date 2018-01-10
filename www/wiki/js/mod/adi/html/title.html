@@ -114,7 +114,16 @@
     .h-two a:hover , .h-two a:active{
         color:#0f2639; 
     }
-
+    .insert-h1 {
+        display: block;
+        height: 44px;
+        width: 100%;
+    }
+    .insert-hOne {
+        display: block;
+        height: 55px;
+        width: 100%;
+    }
 </style>
 
 <div ng-controller="titleController">
@@ -148,6 +157,7 @@
                        ng-if="!editorMode"
                        ng-href="{{params.link_title.href}}">{{params.link_title.text}}</a>
                 </h1>
+                <h1 class="insert-h1" ng-hide="!params.link_title.is_mod_hide"></h1>
                 <h2 class="h2"
                     ng-hide="params.link_subtitle.is_mod_hide">
                     <a ng-if="editorMode"
@@ -190,6 +200,7 @@
                        ng-class="{true:'title-clear-pointer2'}[!params.link_title.href.length]"
                        ng-href="{{params.link_title.href}}">{{params.link_title.text}}</a>
                 </h1>
+                <div class="insert-hOne" ng-hide="!params.link_title.is_mod_hide"></div>
                 <h2 class="h-two" ng-hide="params.link_subtitle.is_mod_hide">
                     <a ng-if="editorMode" 
                        href="javascript::void(0)"
