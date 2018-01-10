@@ -71,6 +71,7 @@ define([
                 "background-image" : 'url('+ $scope.params.media_imgTwo.text +')',
                 "background-size"  : "cover",
             }
+            
         }]);
     }
 
