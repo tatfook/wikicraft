@@ -328,14 +328,14 @@ define([
                 var paramsTemplate = angular.copy(moduleEditorParams.wikiBlock.params_template);
                 //console.log(paramsTemplate, modParams);
                 modParams = moduleEditorParams.wikiBlock.formatModParams("", paramsTemplate, modParams, false);
-                //console.log(modParams);
+				//console.log(modParams);
                 moduleEditorParams.wikiBlock.applyModParams(modParams);
                 setFakeIconPosition();
                 //config.shareMap.moduleEditorParams = undefined;
             }
         }
         
-        $scope.applyAttrChange = function () {
+        $scope.applyAttrChange = function (text) {
             throttle(applyAttrChange);
         }
 

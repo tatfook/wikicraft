@@ -271,6 +271,7 @@ define([
                 util.html('#' + blockCache.containerId, htmlContent);
 
                 blockCache.domNode = $('#' + blockCache.containerId);
+				//console.log(self.selfLoadContent, block.isTemplate);
                 if (block.isTemplate) {
 					if (self.selfLoadContent) {
 						self.loadContent = function() {
@@ -584,7 +585,7 @@ define([
         var selector = '#' + mdwiki.getMdWikiContentContainerId();
         var tempSelector = '#' + mdwiki.getMdWikiTempContentContainerId();
 
-        //console.log($(selector), $(tempSelector), blockList);
+		//console.log($(selector), $(tempSelector), blockList);
         if (!$(selector).length) {
             $(container).prepend('<div id="' + mdwiki.getMdWikiContentContainerId() + '"></div>');
         }
@@ -1012,7 +1013,7 @@ define([
 			}
 
             var urlPrefix = "/" + pageinfo.username + "/" + pageinfo.sitename + "/";
-            var tempUrl = pageinfo.url || pageinfo.pagename;
+            var tempUrl = pageinfo.url || pageinfo.pagepath || pageinfo.pagename;
 			var pagePath = tempUrl.substring(urlPrefix.length);
 
 			if (typeof(modParams) != "object" || !modParams.urlmatch || !modParams.urlmatch.text) {
@@ -1022,13 +1023,14 @@ define([
 			if (pagePath && pagePath.indexOf(modParams.urlmatch.text) >= 0) {
 				return true;
 			}
+			//console.log(pageinfo, pagePath, modParams);
 
 			return false;
 		}
 
         // 解析文本
         mdwiki.parse = function (text) {
-            //console.log(text);
+			//console.log(text);
             var textLineList = text.split('\n');
             var tokenList = md.parse(text, {});
             var blockList = [];
@@ -1085,6 +1087,7 @@ define([
             mdwiki.blockList = blockList;
 			//console.log(tokenList);
 			//console.log(blockList);
+			//console.log(mdwiki.tempate);
             return blockList;
         }
         return mdwiki;
