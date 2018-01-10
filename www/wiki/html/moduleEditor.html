@@ -478,8 +478,9 @@
                             <!-- 图像 -->
                             <div ng-if="data.type == 'media'" class="image-card-main">
                                 <div class="fake-nav clearfix">
-                                    <div class="col-xs-6" ng-class="{true:'active'}[!data.data.mediaType || data.data.mediaType == 'image']" ng-click="setItem(data.data, 'image')">图片</div>
-                                    <div class="col-xs-6" ng-class="{true:'active'}[data.data.mediaType == 'video']" ng-click="setItem(data.data, 'video')">视频</div>
+                                    <!-- <div class="col-xs-6" ng-class="{true:'active'}[!data.data.mediaType || data.data.mediaType == 'image']" ng-click="setItem(data.data, 'image')">图片</div>
+                                    <div class="col-xs-6" ng-class="{true:'active'}[data.data.mediaType == 'video']" ng-click="setItem(data.data, 'video')">视频</div> -->
+                                    <div class="col-xs-12" ng-class="{true:'active'}[!data.data.mediaType || data.data.mediaType == 'image']" ng-click="setItem(data.data, 'image')">图片</div>
                                 </div>
                                 <div class="media-container">
                                     <div class="img-box">
