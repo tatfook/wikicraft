@@ -42,12 +42,12 @@
         <div class="textContainerLeft" ng-if="params.design.text == 'left'" ng-class="{true:'clear-pointer'}[editorMode]">
             <h1 ng-if="editorMode" class='textTitle' ng-click="viewEditorClick(params.title, $event)"><a target="{{params.title.target ? params.title.target : 'false'}}" ng-href="{{params.title.href}}">{{params.title.text}}</a></h1>
             <h1 ng-if="!editorMode"  class='textTitle'><a target="{{params.title.target ? params.title.target : '_blank'}}" ng-href="{{params.title.href}}">{{params.title.text}}</a></h1>
-            <div class='textContent' ng-click="viewEditorClick(params.multiText_desc, $event)" ng-bind-html="params.multiText_desc.text"></div>
+            <div class='textContent' ng-bind-html="params.multiText_desc.text"></div>
         </div>
         <div class="textContainerCenter" ng-if="params.design.text == 'center'" ng-class="{true:'clear-pointer'}[editorMode]">
             <h1 ng-if="editorMode" class='textTitle' ng-click="viewEditorClick(params.title, $event)"><a target="{{params.title.target ? params.title.target : 'false'}}" ng-href="{{params.title.href}}">{{params.title.text}}</a></h1>
             <h1 ng-if="!editorMode"  class='textTitle'><a target="{{params.title.target ? params.title.target : '_blank'}}" ng-href="{{params.title.href}}">{{params.title.text}}</a></h1>
-            <div class='textContent' ng-click="viewEditorClick(params.multiText_desc, $event)" ng-bind-html="params.multiText_desc.text"></div>
+            <div class='textContent' ng-bind-html="params.multiText_desc.text"></div>
         </div>
     </div>
 </div>
