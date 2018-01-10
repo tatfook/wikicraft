@@ -523,7 +523,7 @@ define([
                     }
                     var boxWidth = $("#preview").width();
                     var leftDistance = boxWidth/2;
-                    var scaleSize = $rootScope.scaleSelect.scaleValue;
+                    var scaleSize = config.services.$rootScope.scaleSelect.scaleValue;
                     fakeIconDom.css({
                         "left" : leftDistance / scaleSize
                     });
