@@ -81,13 +81,17 @@ define([
 			
 			function init() {
 				//$scope.params = modParams;
-				//console.log($scope.params);
+				//console.log(modParams);
 				setTimeout(function(){
 					for (var i = 0; i < modParams.rows.list.length; i++) {
 						var row = modParams.rows.list[i];
 						for (var j = 0; j < row.cols.list.length; j++) {
 							var col = row.cols.list[j];
 							if (col.isMainContent) {
+								//console.log($("#" + col.$kp_id),wikiBlock.content);
+								if (!$("#" + col.$kp_id).length) {
+									return;
+								}
 								util.html("#" + col.$kp_id, wikiBlock.content);
 							} else {
 								render(col.$kp_id, col.content, col.contentUrl);
@@ -281,6 +285,7 @@ define([
 	return {
 		render: function(wikiBlock) {
             wikiBlock.modParams = wikiBlock.modParams ? angular.merge({}, defaultModParams, wikiBlock.modParams) : defaultModParams;
+			//console.log(angular.copy(wikiBlock.modParams));
 			registerController(wikiBlock);
 			return htmlContent;
 		}
