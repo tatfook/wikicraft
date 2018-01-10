@@ -8,6 +8,9 @@ define([
 ], function(app, util, markdownwiki, dataSource, htmlContent){
 
 	var defaultModParams = {
+		urlmatch: {
+			text:"",
+		},
 		rows: {
 			list: [
 			{
@@ -110,13 +113,14 @@ define([
 						require:true,
 						text:"style1",
 					},
-					//urlmatch: {
+					urlmatch: {
 						//is_leaf:true,
 						//editable:true,
 						//type:"_text_",
 						//name:"urlmatch",
-						////order:-1,
-					//},
+						//order:-1,
+						text:"",
+					},
 					rows:{
 						is_leaf: true,
 						type: "list",
@@ -189,6 +193,9 @@ define([
 					design:{
 						text:"style1",
 					},
+					urlmatch: {
+						text:"",
+					},
 					rows:{
 						list:[
 						{
@@ -196,7 +203,6 @@ define([
 								list:[
 								{
 									"desc": "default 布局",
-									"class":"container",
 									isMainContent: true,
 								}
 								]
@@ -208,6 +214,32 @@ define([
 				{
 					design:{
 						text:"style2",
+					},
+					urlmatch: {
+						text:"",
+					},
+					rows:{
+						list:[
+						{
+							cols: {
+								list:[
+								{
+									"desc": "居中布局",
+									"class":"container",
+									isMainContent: true,
+								}
+								]
+							}
+						}
+						]
+					},
+				},
+				{
+					design:{
+						text:"style3",
+					},
+					urlmatch: {
+						text:"",
 					},
 					rows:{
 						list: [
@@ -242,7 +274,10 @@ define([
 				},
 				{
 					design:{
-						text:"style3",
+						text:"style4",
+					},
+					urlmatch: {
+						text:"",
 					},
 					rows:{
 						list: [

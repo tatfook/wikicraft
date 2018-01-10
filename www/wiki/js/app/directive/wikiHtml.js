@@ -8,7 +8,7 @@ define(['app'], function (app) {
 				return $scope.$eval(attrs.wikiHtml);
 			}, function(value){
 				element.html(value);
-				console.log(element.contents());
+				//console.log(element.contents());
 				$compile(element.contents())(scope);
 			});
 		}

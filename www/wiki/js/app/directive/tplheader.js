@@ -11,13 +11,16 @@ define([
 			restrict: 'E',
 			scope: true,
             template:'<div ng-show="isShow" class="tpl-header" ng-click="click()">\
-                        <span ng-bind-html="templateSrc"></span>\
+						{{templateSrc}}\
+						<i ng-show="isShowEdit" class="iconfont icon-bianji"></i>\
+						<i ng-show="isShowNew" ng-click="clickNewTemplate($event)" class="iconfont icon-tianjia"></i>\
                         <span class="pull-right" ng-click="showVersions()">上次保存：{{committer_name}}于{{committed_date}}</span>\
                       </div>',
 			controller: ["$rootScope", "$scope", "$attrs", "modal", function($rootScope, $scope, $attrs, modal){
 				if (!$attrs.mdwikiname || !config.mdwikiMap[$attrs.mdwikiname]) {
 					return;
 				}
+				var clickEventType = undefined;
 				var mdwiki = config.mdwikiMap[$attrs.mdwikiname];
 				var pageinfo = $rootScope.pageinfo;
 				var template = mdwiki.template;
@@ -32,12 +35,20 @@ define([
 					//console.log(template);
 					if (template) {
                         $scope.templateSrc = template.isPageTemplate ? "当前页面" : "_theme";
-                        $scope.templateSrc += "<i class='iconfont icon-bianji'></i>";
+						$scope.isShowEdit = true;
+						if ($scope.templateSrc == "_theme") {
+							$scope.isShowNew = true;
+						} else {
+							$scope.isShowNew = false;
+						}
 					} else {
-                        $scope.templateSrc =  "模板为空" + "<i class='iconfont icon-tianjia'></i>";
+                        $scope.templateSrc =  "布局模板为空";
+						$scope.isShowEdit = false;
+						$scope.isShowNew = true;
                     }
                 });
                 
+
 				$scope.$watch("$rootScope.pageinfo", function() {
 					pageinfo = $rootScope.pageinfo;
 					if (!mdwiki.editorMode || !pageinfo) {
@@ -70,12 +81,23 @@ define([
                     });
                 }
 
+				$scope.clickNewTemplate = function($event) {
+					if ($event) {
+						$event.stopPropagation();
+					}
+					
+					var defaultTemplate = "```@template/js/layout\n# urlmatch\n- text:\n```\n";
+					mdwiki.editor.replaceRange(defaultTemplate, {line: 0, ch: 0}, {line:0,ch: 0});
+					config.shareMap.moduleEditorParams.wikiBlockStartPost = 0;
+					config.shareMap.moduleEditorParams.wikiBlock = undefined;
+				}
+
 				$scope.click = function(){
 					template = mdwiki.template;
 					console.log(template, mdwiki);
 					if (!template) {
 						console.log("新建模板");
-						var defaultTemplate = "```@template/js/layout\n```\n";
+						var defaultTemplate = "```@template/js/layout\n# urlmatch\n- text:\n```\n";
 						mdwiki.editor.replaceRange(defaultTemplate, {line: 0, ch: 0}, {line:0,ch: 0});
 						config.shareMap.moduleEditorParams.wikiBlockStartPost = 0;
 						config.shareMap.moduleEditorParams.wikiBlock = undefined;
