@@ -5,21 +5,27 @@
     .photo-clear a {
         color: black;
     }
-    .photo-body{
-        width: 100%;
+    .photo-div1{
+        width:100%;
         height:600px;
     }
-    .photo-body img{
+    .photo-div2{
         width:100%;
-        height:100%;
-        overflow: hidden;
+        height:800px;
     }
+
 </style>
 <div ng-controller="photoController">
     <div ng-class="{true:'photo-clear-pointer',false:'photo-clear'}[editorMode]" ng-if='params.design.text=="style1"'>
-        <div class="photo-body" ng-hide="params.media_photo.is_mod_hide">
-            <a ng-if="!editorMode" href="{{params.media_photo.href}}"><img ng-src="{{params.media_photo.text}}"></a>
-            <a ng-if="editorMode" href="javascript::void(0)"><img ng-src="{{params.media_photo.text}}"></a>
+        <div class="photo-body" ng-hide="params.media_imgOne.is_mod_hide">
+            <a ng-if="editorMode" href="javascript::void(0)"><div class="photo-div1" ng-style="imgOneStyle"></div></a>
+            <a ng-if="!editorMode" target="{{params.media_imgOne.target ? params.media_imgOne.target : '_blank'}}" href="{{params.media_imgOne.href}}"><div class="photo-div1" ng-style="imgOneStyle"></div></a>
+        </div>
+    </div>
+    <div ng-class="{true:'photo-clear-pointer',false:'photo-clear'}[editorMode]" ng-if='params.design.text=="style2"'>
+        <div class="photo-body2" ng-hide="params.media_imgTwo.is_mod_hide">
+            <a ng-if="editorMode" href="javascript::void(0)"><div class="photo-div2" ng-style="imgTwoStyle"></div></a>
+            <a ng-if="!editorMode" target="{{params.media_imgOne.target ? params.media_imgOne.target : '_blank'}}" href="{{params.media_imgOne.href}}"><div class="photo-div2" ng-style="imgTwoStyle"></div></a>
         </div>
     </div>
 </div>
