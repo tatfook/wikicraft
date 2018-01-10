@@ -13,13 +13,13 @@ define([
                     {
                         design: {
                             text: 'left',
-                            cover: './../assets/images/textLeft.png'
+                            cover: '/wiki/js/mod/adi/assets/images/textLeft.png'
                         }
                     },
                     {
                         design: {
                             text: 'center',
-                            cover: './../assets/images/textCenter.png'
+                            cover: '/wiki/js/mod/adi/assets/images/textCenter.png'
                         }
                     }
                 ],
@@ -32,6 +32,7 @@ define([
                         text: 'left'
                     },
                     title:{
+                        target: false,
                         is_leaf: true, // 叶子对象默认填true
                         type:"text",   // 地段类型
                         editable:true, // 是否可以编辑

@@ -14,6 +14,13 @@ define([
                     {
                         "design": {
                             "text":"style1",
+                            "cover": "/wiki/js/mod/adi/assets/images/imgOne.png"
+                        },
+                    },
+                    {
+                        "design": {
+                            "text":"style2",
+                            "cover": "/wiki/js/mod/adi/assets/images/imgTwo.png"
                         },
                     },
                 ],
@@ -28,7 +35,7 @@ define([
                         text         : "style1", 
                         require      : true, 
                     },
-                    media_photo:{
+                    media_imgOne:{
                         is_leaf      : true, 
                         type         : "media",   
                         mediaType    : "image",
@@ -36,7 +43,19 @@ define([
                         is_mod_hide  : false,  
                         is_card_show : true,
                         name         : "图片",   
-                        text         : config.wikiModPath + 'adi/assets/imgs/photo.png', 
+                        text         : config.wikiModPath + 'adi/assets/imgs/imgOne.png', 
+                        href         : "", 
+                        require      : true, 
+                        },
+                    media_imgTwo:{
+                        is_leaf      : true, 
+                        type         : "media",   
+                        mediaType    : "image",
+                        editable     : true, 
+                        is_mod_hide  : false,  
+                        is_card_show : true,
+                        name         : "图片",   
+                        text         : config.wikiModPath + 'adi/assets/imgs/imgTwo.png', 
                         href         : "", 
                         require      : true, 
                         },
@@ -44,6 +63,15 @@ define([
             }
 
             wikiblock.init(initObj);
+            $scope.imgOneStyle = {
+                "background-image" : 'url('+ $scope.params.media_imgOne.text +')',
+                "background-size"  : "cover",
+            }
+            $scope.imgTwoStyle = {
+                "background-image" : 'url('+ $scope.params.media_imgTwo.text +')',
+                "background-size"  : "cover",
+            }
+            
         }]);
     }
 

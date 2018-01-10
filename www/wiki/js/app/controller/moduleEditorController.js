@@ -116,10 +116,10 @@ define([
         $scope.openMenuEditor = function(data) {
             console.log(data);
             config.services.datatreeEditorModal({
-                title: data.name, 
+                title: '菜单编辑器', 
                 keys: [
                     {key:'url', name: '链接', placeholder:"请输入链接"},
-                ], 
+                ],
                 showLocation: true, 
                 datatree: data.text
             }, function(result){
@@ -159,7 +159,7 @@ define([
         // 图库弹窗
         $scope.showImageModal = function(data){
             console.log(data);
-            config.services.imageManagerModal({
+            config.services.assetsManagerModal({
                 title: '选择图片',
                 nav: 'myImages' ,//or 'internetImage' or 'beautifyImage'
                 modalPositionCenter: true,

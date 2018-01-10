@@ -196,7 +196,7 @@ define([
                     design: {
                         is_leaf: true,
                         require: true,
-                        is_mod_hide: true,
+                        is_mod_hide: false,
                         name: '样式',
                         text: 'style1'
                     },
@@ -205,9 +205,9 @@ define([
                         type         : "none",
                         editable     : true,
                         is_card_show : false,
-                        is_mod_hide  : false,
-                        name         : "历史评论",
-                        text         : '123143243341',
+                        is_mod_hide  : 'none',
+                        name         : "评论",
+                        text         : '',
                         require      : true,
 					}
                 }

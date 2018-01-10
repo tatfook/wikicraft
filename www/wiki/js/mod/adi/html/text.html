@@ -2,17 +2,20 @@
     .textContainerLeft{
         text-align: left;
         width: 100%;
-        padding: 20px;
     }
     .textContainerCenter{
         text-align: center;
         width: 100%;
-        padding: 20px;
     }
     .textTitle{
+        margin-top: 40px;
+    }
+    .textTitle > a {
         font-weight: bold;
         font-size: 32px;
-        width: 100%
+        width: 100%;
+        color: #0f2639;
+        font-family: 'Microsoft YaHei','Hiragino Sans GB',Helvetica,Arial,'Lucida Grande',sans-serif;
     }
     pre {
         white-space: pre-wrap;
@@ -21,19 +24,28 @@
         border: none;
     }
     .textContent {
-        font-size: 14px;
+        font-size: 16px;
         line-height: 30px;
         text-indent: 28px;
+        white-space: pre-wrap;
+        margin-bottom: 50px;
+        color: #0f2639;
+        font-family: 'Microsoft YaHei','Hiragino Sans GB',Helvetica,Arial,'Lucida Grande',sans-serif;
+    }
+    .clear-pointer a{
+        cursor: default !important;
     }
 </style>
 
 <div ng-controller="textController">
-    <div class="textContainerLeft" ng-if="params.design.text == 'left'">
-        <h1 class='textTitle' ng-click="viewEditorClick(params.title, $event)">{{params.title.text}}</h1>
-        <div class='textContent' ng-click="viewEditorClick(params.multiText_desc, $event)" ng-bind-html="params.multiText_desc.text"></div>
-    </div>
-    <div class="textContainerCenter" ng-if="params.design.text == 'center'">
-        <h1 class='textTitle' ng-click="viewEditorClick(params.title, $event)">{{params.title.text}}</h1>
-        <div class='textContent' ng-click="viewEditorClick(params.multiText_desc, $event)" ng-bind-html="params.multiText_desc.text"></div>
+    <div class="container">
+        <div class="textContainerLeft" ng-if="params.design.text == 'left'" ng-class="{true:'clear-pointer'}[editorMode]">
+            <h1 class='textTitle' ng-click="viewEditorClick(params.title, $event)"><a target="{{params.title.target ? params.title.target : '_blank'}}" href="#">{{params.title.text}}</a></h1>
+            <div class='textContent' ng-click="viewEditorClick(params.multiText_desc, $event)" ng-bind-html="params.multiText_desc.text"></div>
+        </div>
+        <div class="textContainerCenter" ng-if="params.design.text == 'center'" ng-class="{true:'clear-pointer'}[editorMode]">
+            <h1 class='textTitle' ng-click="viewEditorClick(params.title, $event)"><a target="{{params.title.target ? params.title.target : 'false'}}" href="#">{{params.title.text}}</a></h1>
+            <div class='textContent' ng-click="viewEditorClick(params.multiText_desc, $event)" ng-bind-html="params.multiText_desc.text"></div>
+        </div>
     </div>
 </div>
