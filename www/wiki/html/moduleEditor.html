@@ -48,7 +48,11 @@
     }
 
     .module-editor .attr-item.active{
-        border-color: #3977AD;
+        border-color: #0088FF;
+    }
+
+    .module-editor .attr-item.active .header{
+        background-color: #0088FF;
     }
 
     .module-editor .attr-item .header {
@@ -60,6 +64,12 @@
         padding: 0 57px;
         font-size: 16px;
         position: relative;
+    }
+
+    .module-editor .attr-item .header.mod-hide {
+        background-color: #FFF;
+        color: #333;
+        border-bottom: 1px solid #DDD;
     }
 
     .module-editor .attr-content {
@@ -207,6 +217,7 @@
         text-align: right;
         font-size: 13px;
         padding: 0 8px;
+        cursor: pointer;
     }
 
     .switch::before {
@@ -435,7 +446,7 @@
             <div id="editorSwiper" class="editor-swiper swiper-container swiper-container-horizontal">
                 <div class="swiper-wrapper">
                     <div id="{{data.id}}" class="swiper-slide attr-item swiper-no-swiping" ng-repeat="data in editorDatas">
-                        <div class="header">
+                        <div class="header" ng-class="{false: 'mod-hide'}[!data.data.is_mod_hide]">
                             <span class="attr-name">{{data.name}}</span>
                             <div class="switch" ng-click="click_hide(data.data)" ng-class="{true: 'active'}[!data.data.is_mod_hide]">
                                 {{(!data.data.is_mod_hide) ? "开" : "关"}}
