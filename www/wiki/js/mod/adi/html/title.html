@@ -58,6 +58,9 @@
     .title-clear-pointer a{
         cursor: default !important;
     }
+    .title-clear-pointer2{
+        cursor: default !important;
+    }
 
     /* style1 css 伪类 */
 
@@ -122,21 +125,38 @@
         <div class="title-mod container">
             <div class="title-mod-img" ng-hide="params.media_img.is_mod_hide">
                 <div ng-if="params.media_img.text.length == 0">YOUR LOGO</div>
-                <a ng-if="editorMode" href="javascript::void(0)">
+                <a ng-if="editorMode"
+                   href="javascript::void(0)"
+                   ng-click="viewEditorClick(params.link_title,$event)">
                     <div ng-style="titleImg"></div>
                 </a>
-                <a target="{{params.media_img.target ? params.media_img.target : '_blank'}}" ng-if="!editorMode" ng-href="{{params.media_img.href}}">
+                <a target="{{params.media_img.target ? params.media_img.target : '_blank'}}"
+                   ng-if="!editorMode"
+                   ng-href="{{params.media_img.href}}"
+                   ng-class="{true:'title-clear-pointer2'}[!params.media_img.href.length]">
                     <div ng-style="titleImg"></div>
                 </a>
             </div>
             <div class="title-mod-head1">
-                <h1 class="h1" ng-hide="params.link_title.is_mod_hide">
-                    <a ng-if="editorMode" href="javascript::void(0)">{{params.link_title.text}}</a>
-                    <a target="{{params.link_title.target ? params.link_title.target : '_blank'}}" ng-if="!editorMode" ng-href="{{params.link_title.href}}">{{params.link_title.text}}</a>
+                <h1 class="h1"
+                    ng-hide="params.link_title.is_mod_hide">
+                    <a ng-if="editorMode"
+                       href="javascript::void(0)"
+                       ng-click="viewEditorClick(params.link_title,$event)">{{params.link_title.text}}</a>
+                    <a target="{{params.link_title.target ? params.link_title.target : '_blank'}}"
+                       ng-class="{true:'title-clear-pointer2'}[!params.link_title.href.length]"
+                       ng-if="!editorMode"
+                       ng-href="{{params.link_title.href}}">{{params.link_title.text}}</a>
                 </h1>
-                <h2 class="h2" ng-hide="params.link_subtitle.is_mod_hide">
-                    <a ng-if="editorMode" href="javascript::void(0)">{{params.link_subtitle.text}}</a>
-                    <a target="{{params.link_subtitle.target ? params.link_subtitle.target : '_blank'}}" ng-if="!editorMode" ng-href="{{params.link_subtitle.href}}">{{params.link_subtitle.text}}</a>
+                <h2 class="h2"
+                    ng-hide="params.link_subtitle.is_mod_hide">
+                    <a ng-if="editorMode"
+                       ng-click="viewEditorClick(params.link_subtitle,$event)"
+                       href="javascript::void(0)">{{params.link_subtitle.text}}</a>
+                    <a target="{{params.link_subtitle.target ? params.link_subtitle.target : '_blank'}}"
+                       ng-if="!editorMode"
+                       ng-class="{true:'title-clear-pointer2'}[!params.link_subtitle.href.length]"
+                       ng-href="{{params.link_subtitle.href}}">{{params.link_subtitle.text}}</a>
                 </h2>
             </div>
         </div>
@@ -145,24 +165,39 @@
     <!-- style2 html -->
 
     <div ng-if='params.design.text=="style2"'>
-        <div ng-class="{false:'title-clear-pointer'}[titleClass]" class="title-mod2 container">
+        <div ng-class="{true:'title-clear-pointer'}[editorMode]" class="title-mod2 container">
             <div class="title-mod2-img-two" ng-hide="params.media_img.is_mod_hide">
                 <div ng-if="params.media_img.text.length == 0">YOUR LOGO</div>
-                <a ng-if="editorMode" href="javascript::void(0)">
+                <a ng-if="editorMode"
+                   ng-click="viewEditorClick(params.media_img,$event)"
+                   href="javascript::void(0)">
                     <div ng-style="titleImg"></div>
                 </a>
-                <a target="{{params.media_img.target ? params.media_img.target : '_blank'}}" ng-if="!editorMode" ng-href="{{params.media_img.href}}">
+                <a target="{{params.media_img.target ? params.media_img.target : '_blank'}}"
+                   ng-if="!editorMode"
+                   ng-class="{true:'title-clear-pointer2'}[!params.media_img.href.length]"
+                   ng-href="{{params.media_img.href}}">
                     <div ng-style="titleImg"></div>
                 </a>
             </div>
             <div class="title-mod-head2">
                 <h1 class="h-one" ng-hide="params.link_title.is_mod_hide">
-                    <a ng-if="editorMode" href="javascript::void(0)">{{params.link_title.text}}</a>
-                    <a target="{{params.link_title.target ? params.link_title.target : '_blank'}}" ng-if="!editorMode" ng-href="{{params.link_title.href}}">{{params.link_title.text}}</a>
+                    <a ng-if="editorMode"
+                       ng-click="viewEditorClick(params.link_title,$event)"
+                       href="javascript::void(0)">{{params.link_title.text}}</a>
+                    <a target="{{params.link_title.target ? params.link_title.target : '_blank'}}"
+                       ng-if="!editorMode"
+                       ng-class="{true:'title-clear-pointer2'}[!params.link_title.href.length]"
+                       ng-href="{{params.link_title.href}}">{{params.link_title.text}}</a>
                 </h1>
                 <h2 class="h-two" ng-hide="params.link_subtitle.is_mod_hide">
-                    <a ng-if="editorMode" href="javascript::void(0)">{{params.link_subtitle.text}}</a>
-                    <a target="{{params.link_subtitle.target ? params.link_subtitle.target : '_blank'}}" ng-if="!editorMode" ng-href="{{params.link_subtitle.href}}">{{params.link_subtitle.text}}</a>
+                    <a ng-if="editorMode" 
+                       href="javascript::void(0)"
+                       ng-click="viewEditorClick(params.link_subtitle,$event)">{{params.link_subtitle.text}}</a>
+                    <a target="{{params.link_subtitle.target ? params.link_subtitle.target : '_blank'}}"
+                       ng-if="!editorMode"
+                       ng-class="{true:'title-clear-pointer2'}[!params.link_subtitle.href.length]"
+                       ng-href="{{params.link_subtitle.href}}">{{params.link_subtitle.text}}</a>
                 </h2>
             </div>
         </div>
