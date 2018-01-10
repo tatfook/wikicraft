@@ -530,12 +530,12 @@
                                     <button id="dLabel-multi-text" class="btn btn-default" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
                                         ng-disabled="!data.data.href || data.data.href == ''"
                                     >
-                                        {{data.data.target == "_self" ? "本窗口打开":"新窗口打开"}}
+                                        {{getLinkTarget(data.data)}}
                                         <span class="glyphicon glyphicon-chevron-down"></span>
                                     </button>
                                     <ul class="dropdown-menu" aria-labelledby="dLabel-multi-text">
-                                        <li ng-hide="data.data.target == '_self'">本窗口打开</li>
-                                        <li ng-hide="data.data.target == '_blank'">新窗口打开</li>
+                                        <li ng-hide="data.data.target == '_self'" ng-click="setLinkTarget(data.data,'_self')">本窗口打开</li>
+                                        <li ng-hide="data.data.target == '_blank'" ng-click="setLinkTarget(data.data,'_blank')">新窗口打开</li>
                                     </ul>
                                 </div>
                             </div>
