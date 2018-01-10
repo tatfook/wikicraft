@@ -35,19 +35,7 @@ define([
                         text         : "style1", 
                         require      : true, 
                     },
-                    media_imgOne:{
-                        is_leaf      : true, 
-                        type         : "media",   
-                        mediaType    : "image",
-                        editable     : true, 
-                        is_mod_hide  : false,  
-                        is_card_show : true,
-                        name         : "图片",   
-                        text         : config.wikiModPath + 'adi/assets/imgs/imgOne.png', 
-                        href         : "", 
-                        require      : true, 
-                        },
-                    media_imgTwo:{
+                    media_img:{
                         is_leaf      : true, 
                         type         : "media",   
                         mediaType    : "image",
@@ -58,18 +46,13 @@ define([
                         text         : config.wikiModPath + 'adi/assets/imgs/imgTwo.png', 
                         href         : "", 
                         require      : true, 
-                        },
+                        }
                 }
             }
 
             wikiblock.init(initObj);
-            $scope.imgOneStyle = {
-                "background-image" : 'url('+ $scope.params.media_imgOne.text +')',
-                "background-size"  : "cover",
-            }
-            $scope.imgTwoStyle = {
-                "background-image" : 'url('+ $scope.params.media_imgTwo.text +')',
-                "background-size"  : "cover",
+            $scope.photoStyle = {
+                'background-image': 'url(' + $scope.params.media_img.text + ')'
             }
             
         }]);
