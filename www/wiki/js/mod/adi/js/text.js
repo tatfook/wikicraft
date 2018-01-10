@@ -41,6 +41,7 @@ define([
                         name:"标题",   // 表单显示名
                         text:"卢布尔雅那", // 默认值
                         require: true, // 必填字段 没有使用默认值(默认值得有)
+                        href: ''
                         },
                     multiText_desc:{
                         is_leaf      : true,
