@@ -14,13 +14,13 @@ define(['app', 'text!wikimod/adi/html/menu.html'], function (app, htmlContent) {
                 {
                     design:{
                         text:'left',
-                        cover: '/wiki/js/mod/adi/assets/images/menuLeft.png'
+                        cover: 'http://git.keepwork.com/gitlab_rls_official/keepworkimages/raw/master/official_images/img_1515414062976.jpeg'
                     }
                 },
                 {
                     design:{
                         text:'right',
-                        cover: '/wiki/js/mod/adi/assets/images/menuRight.png'
+                        cover: 'http://git.keepwork.com/gitlab_rls_official/keepworkimages/raw/master/official_images/img_1515414083068.jpeg'
                     }
                 }
                 ],
