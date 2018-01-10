@@ -294,11 +294,13 @@ define([
 					//modParams = angular.toJson(modParams, 4);
 					modParams = mdconf.jsonToMd(modParams);
                 }
+                var oldCursorPosition = editor.getCursor();
 				//console.log(modParams, pos);
                 editor.replaceRange(modParams + '\n', {line: pos.from + 1, ch: 0}, {
                     line: pos.to - 1,
                     ch: 0
                 });
+                editor.setCursor(oldCursorPosition);
             },
 
 			formatModParams: function(key, datas, data, hideDefauleValue) {
