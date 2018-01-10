@@ -8,13 +8,13 @@ define([
 
     function registerController(wikiblock) {
         app.registerController("paracraftWorldController", ['$scope','$sce', function ($scope, $sce) {
-			$scope.imgsPath  = config.wikiModPath + 'adi/assets/imgs/';
-			$scope.showModal = false;
+			$scope.imgsPath   = config.wikiModPath + 'adi/assets/imgs/';
+			$scope.showModal  = false;
 			$scope.editorMode = wikiblock.editorMode;
 
 			var token = localStorage.getItem("satellizer_token");
 
-			var params_text = wikiblock.blockCache.block.content.replace(/```@adi\/js\/paracraftWorld/, "");
+			var params_text = wikiblock.blockCache.block.content.replace(/```@adi\/js\/paracraft/, "");
 			params_text = params_text.replace(/```/, "");
 
 			var isJSON = true;
@@ -60,19 +60,22 @@ define([
 				styles : [
 					{
 						"design": {
-							"text":"style1",
+							"text" : "style1",
+							"cover": "/wiki/js/mod/adi/assets/images/paracraft1.png"
 						},
 						
 					},
 					{
 						"design": {
-							"text":"style2",
+							"text" : "style2",
+							"cover": "/wiki/js/mod/adi/assets/images/paracraft2.png"
 						},
 						
 					},
 					{
 						"design": {
-							"text":"style3",
+							"text" : "style3",
+							"cover": "/wiki/js/mod/adi/assets/images/paracraft3.png"
 						},
 						
 					},

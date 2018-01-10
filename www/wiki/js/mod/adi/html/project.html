@@ -4,6 +4,9 @@
         padding: 0;
         margin: 0;
     }
+    a{
+        color: black;
+    }
     .picture-one{
         padding-top: 30px;
         margin: 0 auto;
@@ -127,9 +130,9 @@
         color: black;
     }
 
+
     .clear-pointer a{
         cursor : default;
-        color: black;
     }
 </style>
 
@@ -137,7 +140,7 @@
 
     <!-- style1 -->
     <div ng-if='params.design.text=="style1"'>
-        <div class="picture-one">
+        <div class="picture-one container">
             <div class="picture-body clearfix">
                 <div ng-hide="params.image_picture.is_mod_hide" class="picture-img">
                     <div ng-if="params.image_picture.text.length == 0">YOUR PICTURE</div>
@@ -172,7 +175,7 @@
 
     <!-- style2 -->
     <div ng-if='params.design.text=="style2"'>
-        <div class="picture-two">
+        <div class="picture-two container">
             <div class="picture-two-body clearfix">
                 <div class="clearfix pull-left">
                     <div ng-hide="params.multiText_desc.is_mod_hide" class="picture-spans">

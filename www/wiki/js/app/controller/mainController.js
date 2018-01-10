@@ -38,8 +38,8 @@ define([
         'confirmDialog',
         'realnameVerifyModal',
         'datatreeEditorModal',
-        'imageManagerModal',
         'selfDefinedModal',
+        'assetsManagerModal',
         function (
             $scope,
             $rootScope,
@@ -58,8 +58,8 @@ define([
             confirmDialog,
             realnameVerifyModal,
             datatreeEditorModal,
-            imageManagerModal,
-            selfDefinedModal
+            selfDefinedModal,
+            assetsManagerModal
         ) {
             //console.log("mainController");
             
@@ -88,8 +88,8 @@ define([
                     confirmDialog:confirmDialog,
                     realnameVerifyModal:realnameVerifyModal,
                     datatreeEditorModal:datatreeEditorModal,
-                    imageManagerModal:imageManagerModal,
                     selfDefinedModal:selfDefinedModal,
+                    assetsManagerModal:assetsManagerModal
                 };
 
                 util.setAngularServices({

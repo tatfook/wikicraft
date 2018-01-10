@@ -12,14 +12,14 @@ define([], function () {
     datatree.flattenTreeByChildren = function (data, parentId) {
         //create totally new data
         var result = data.reduce(function(prev, item) {
-            item.id = item.id || datatree.uuid();
+            item.__inner__id = datatree.uuid();
             var tempItem = datatree.copyObj(item);
             tempItem.children = null;
-            tempItem.parentId = parentId;
+            tempItem.__inner__parent__id = parentId;
             var tempRes = prev.concat(tempItem);
 
             return (item.children && item.children.length) 
-                ? tempRes.concat(datatree.flattenTreeByChildren(item.children, item.id))
+                ? tempRes.concat(datatree.flattenTreeByChildren(item.children, item.__inner__id))
                 : tempRes;
 
         }, []);
@@ -28,10 +28,10 @@ define([], function () {
     }
 
     datatree.getPathOfItemInflattenedData = function(item, flattenedData) {
-        if (!item.parentId) return '/';
-        if (item.parentId) {
+        if (!item.__inner__parent__id) return '/';
+        if (item.__inner__parent__id) {
             var parentItem = flattenedData.filter(function(x) {
-                return x.id === item.parentId;
+                return x.__inner__id === item.__inner__parent__id;
             })[0];
             return datatree.getPathOfItemInflattenedData(parentItem, flattenedData) + parentItem.name + '/'
         };
@@ -39,37 +39,37 @@ define([], function () {
 
     datatree.addSiblingInflattenedDataBeforeItem = function(item, flattenedData) {
         flattenedData.splice(flattenedData.indexOf(item), 0, {
-            id: datatree.uuid(),
+            __inner__id: datatree.uuid(),
             name: '',
-            parentId: item.parentId
+            __inner__parent__id: item.__inner__parent__id
         });
     }
     
     datatree.addSiblingInflattenedDataAfterItem = function(item, flattenedData) {
         flattenedData.splice(flattenedData.indexOf(item) + 1, 0, {
-            id: datatree.uuid(),
+            __inner__id: datatree.uuid(),
             name: '',
-            parentId: item.parentId
+            __inner__parent__id: item.__inner__parent__id
         });
     }
 
     datatree.addChildOfItemInflattenedData = function(item, flattenedData) {
         flattenedData.splice(flattenedData.indexOf(item) + 1, 0, {
-            id: datatree.uuid(),
+            __inner__id: datatree.uuid(),
             name: '',
-            parentId: item.id
+            __inner__parent__id: item.__inner__id
         });
     }
 
     datatree.removeItemItemInflattenedData = function(item, flattenedData) {
         var startIndex = flattenedData.indexOf(item);
         var removeLength = flattenedData.reduce(function(prev, x) {
-            if (item.id === x.id) {
+            if (item.__inner__id === x.__inner__id) {
                 return prev.concat(x);
             }
 
             var xIsChildOfPrevItems = prev.filter(function(prevItem) {
-                return prevItem.id === x.parentId 
+                return prevItem.__inner__id === x.__inner__parent__id 
             }).length > 0;
 
             if (xIsChildOfPrevItems) {
@@ -94,7 +94,7 @@ define([], function () {
 
         if (isEmpty) {
             return isEmpty && flattenedData.filter(function(x) {
-                return x.parentId === item.id;
+                return x.__inner__parent__id === item.__inner__id;
             }).reduce(function(prevIsEmpty, x) {
                 if (!prevIsEmpty) return prevIsEmpty;
                 return prevIsEmpty && datatree.isItemEmpty(x, flattenedData, keys)
@@ -102,7 +102,8 @@ define([], function () {
         }
 
         function xIsEmpty(x) {
-            return keys.filter(function(keyItem) {
+            var nameAndKeys = keys.concat({key: 'name'}); //name is necessary
+            return nameAndKeys.filter(function(keyItem) {
                 var value = x[keyItem.key];
                 if (typeof value === 'string') return !!value.trim();
                 if (typeof value === 'boolean') return true;
@@ -111,28 +112,50 @@ define([], function () {
         }
     }
 
-    datatree.makeTreeWithParentId = function (data) {
+    datatree.makeTreeWithInnerParentId = function (data) {
         //combine with original data
         var result = [];
         var getItemById = function (data, id) {
             for (var index in data) {
-                if (data[index] && data[index].id === id) {
+                if (data[index] && data[index].__inner__id === id) {
                     return data[index]
                 }
             }
         };
 
         data.forEach(function(item) {
-            if (!item.parentId) {
+            if (!item.__inner__parent__id) {
                 result.push(item);
                 return;
             }
-            var parentItem = getItemById(data, item.parentId);
+            var parentItem = getItemById(data, item.__inner__parent__id);
             parentItem.children = parentItem.children || [];
             parentItem.children.push(item);
         });
 
+        //copy and remove __inner__*key* in result
+        result = cloneObjWithoutCertainKeyRecursively(result, /^__inner__/);
+
+        console.log('result: ', result);
+
         return result;
+    }
+
+    function cloneObjWithoutCertainKeyRecursively(obj, keyPatternRegex) {
+        if (obj === null || typeof(obj) !== 'object' || '__inner__isActiveClone' in obj)
+            return obj;
+  
+        var temp = Array.isArray(obj) ? [] : {};
+  
+        for (var key in obj) {
+          if (!keyPatternRegex.test(key) && Object.prototype.hasOwnProperty.call(obj, key)) {
+            obj['__inner__isActiveClone'] = null;
+            temp[key] = cloneObjWithoutCertainKeyRecursively(obj[key], keyPatternRegex);
+            delete obj['__inner__isActiveClone'];
+          }
+        }
+
+        return temp;
     }
 
     return datatree;

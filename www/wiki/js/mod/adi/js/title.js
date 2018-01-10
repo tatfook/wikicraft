@@ -7,6 +7,7 @@ define([
 
     function registerController(wikiblock) {
         app.registerController("titleController", ['$scope','$sce', function ($scope, $sce) {
+			
 			$scope.editorMode = wikiblock.editorMode;
 
 			initObj = {
@@ -15,13 +16,13 @@ define([
 					{
 						"design": {
                             "text":"style1",
-                            "cover":"http://git.keepwork.com/gitlab_rls_official/keepworkimages/raw/master/official_images/img_1515414255990.jpeg"
+                            "cover":"/wiki/js/mod/adi/assets/images/titleLeft.png"
 						},
 					},
 					{
 						"design": {
                             "text":"style2",
-                            "cover":"http://git.keepwork.com/gitlab_rls_official/keepworkimages/raw/master/official_images/img_1515414270193.jpeg"
+                            "cover":"/wiki/js/mod/adi/assets/images/titleCenter.png"
 						},
 					},
 				],
@@ -30,7 +31,7 @@ define([
 						is_leaf      : true, 
 						type         : "text",   
 						editable     : false, 
-						is_mod_hide  : true,  
+						is_mod_hide  : false,  
 						is_card_show : true,
 						name         : "样式",   
 						text         : "style1", 
@@ -41,7 +42,7 @@ define([
 						type         : "media",   
 						mediaType    : "image",
                         editable     : true, 
-						is_mod_hide  : true,  
+						is_mod_hide  : false,  
 						is_card_show : true,
                         name         : "logo",   
                         text         : config.wikiModPath + 'adi/assets/imgs/titleMod.png', 
@@ -52,7 +53,7 @@ define([
 						is_leaf      : true, 
 						type         : "link",   
 						editable     : true, 
-						is_mod_hide  : true,  
+						is_mod_hide  : false,  
 						is_card_show : true,
 						name         : "标题",   
 						text         : "YOUR HEAD LINE", 
@@ -63,7 +64,7 @@ define([
 						is_leaf      : true, 
 						type         : "link",   
 						editable     : true, 
-						is_mod_hide  : true,  
+						is_mod_hide  : false,  
 						is_card_show : true,
 						name         : "子标题",   
 						text         : "YOUR SUB LINE", 

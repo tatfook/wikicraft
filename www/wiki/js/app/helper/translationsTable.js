@@ -2155,6 +2155,11 @@ define([], function () {
             "en": "Editor"
         },
         {
+            "_key": "菜单编辑器",
+            "zh-cn": "菜单编辑器",
+            "en": "Menu Editor"
+        },
+        {
             "_key": "前面添加",
             "zh-cn": "前面添加",
             "en": "Add Before"
