@@ -77,18 +77,35 @@
     }
 </style>
 
-<div ng-controller="menuController" ng-class="{true : 'clear-pointer', false : 'clear'}[editorMode]">
+<div ng-controller="menuController" 
+     ng-class="{true : 'clear-pointer', false : 'clear'}[editorMode]">
     <div ng-if="params.design.text == 'left' && !params.menu_menu.is_mod_hide">
         <div class="menu">
             <div class="container">
                 <ul class="clearfix">
                     <li ng-repeat="item in params.menu_menu.text">
-                        <a ng-if="!editorMode" ng-href="{{item.url}}" target="_blank">{{item.name}}</a>
-                        <a ng-if="editorMode" ng-click="viewEditorClick(params.menu_menu, $event)" class="edit" href="javascript:void(0)">{{item.name}}</a>
+                        <a ng-if="!editorMode" 
+                           ng-href="{{item.url}}" 
+                           target="_blank">
+                           {{item.name}}
+                        </a>
+                        <a ng-if="editorMode" 
+                           ng-click="viewEditorClick(params.menu_menu, $event)" 
+                           class="edit" 
+                           href="javascript:void(0)">{{item.name}}
+                        </a>
                         <ul class="sub-menu">
                             <li ng-repeat="subItem in item.children">
-                                <a ng-if="!editorMode" ng-href="{{subItem.url}}" target="_blank">{{subItem.name}}</a>
-                                <a ng-if="editorMode" ng-click="viewEditorClick(params.menu_menu, $event)" href="javascript:void(0)">{{subItem.name}}</a>
+                                <a ng-if="!editorMode" 
+                                   ng-href="{{subItem.url}}" 
+                                   target="_blank">
+                                   {{subItem.name}}
+                                </a>
+                                <a ng-if="editorMode" 
+                                   ng-click="viewEditorClick(params.menu_menu, $event)" 
+                                   href="javascript:void(0)">
+                                   {{subItem.name}}
+                                </a>
                             </li>
                         </ul>
                     </li>
