@@ -238,7 +238,7 @@
                             <a ng-if="editorMode" href="javascript::void(0)">{{params.link_headline.text}}</a>
                         </h1>
                         <h1>
-                            <a ng-if="!editorMode" ng-href="{{params.link_headline.href}}">{{params.link_headline.text}}</a>
+                            <a ng-if="!editorMode" target="{{params.link_headline.target ? params.link_headline.target : '_blank'}}" ng-href="{{params.link_headline.href}}">{{params.link_headline.text}}</a>
                         </h1>
                     </div>
                     <div ng-hide="params.link_sublink.is_mod_hide">
@@ -246,7 +246,7 @@
                             <a ng-if="editorMode" href="javascript::void(0)">{{params.link_sublink.text}}</a>
                         </h2>
                         <h2>
-                            <a ng-if="!editorMode" ng-href="{{params.link_sublink.href}}">{{params.link_sublink.text}}</a>
+                            <a ng-if="!editorMode" target="{{params.link_sublink.target ? params.link_sublink.target : '_blank'}}" ng-href="{{params.link_sublink.href}}">{{params.link_sublink.text}}</a>
                         </h2>
                     </div>
                     <div ng-hide="params.multiText_desc.is_mod_hide">
@@ -254,7 +254,7 @@
                             <a ng-if="editorMode" href="javascript::void(0)" ng-bind-html="params.multiText_desc.text"></a>
                         </span>
                         <span>
-                            <a ng-if="!editorMode" ng-href="{{params.multiText_desc.href}}" ng-bind-html="params.multiText_desc.text"></a>
+                            <a ng-if="!editorMode" target="{{params.multiText_desc.target ? params.multiText_desc.target : '_blank'}}" ng-href="{{params.multiText_desc.href}}" ng-bind-html="params.multiText_desc.text"></a>
                         </span>
                     </div>
                 </div>
