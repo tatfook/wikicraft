@@ -21,12 +21,10 @@
         text-align: center;
         margin-top:31px;
         margin-bottom: 30px;
+    }
+    .title-mod .title-mod-img div{
         width: 89px;
         height: 89px;
-    }
-    .title-mod .title-mod-img img{
-        width:100%;
-        height:100%;
         overflow: hidden;
     }
     .title-mod .title-mod-head1 .h1{
@@ -85,6 +83,10 @@
         text-align: center;
         margin: 0 auto;
     }
+    .title-mod2 .title-mod2-img-two div{
+        width:89px;
+        height:89px;
+    }
     .title-mod2 .title-mod-head2 .h-one{
         text-align: center;
         margin: 0 auto;
@@ -112,6 +114,7 @@
     }
 
 </style>
+
 <div ng-controller="titleController">
 
     <!-- style1 html -->
@@ -121,10 +124,10 @@
             <div class="title-mod-img" ng-hide="params.media_img.is_mod_hide">
                 <div ng-if="params.media_img.text.length == 0">YOUR LOGO</div>
                 <a ng-if="editorMode" href="javascript::void(0)">
-                    <img ng-if="params.media_img.text.length > 0" src="{{params.media_img.text}}">
+                    <div ng-style="titleImg"></div>
                 </a>
                 <a target="{{params.media_img.target ? params.media_img.target : '_blank'}}" ng-if="!editorMode" ng-href="{{params.media_img.href}}">
-                    <img ng-if="params.media_img.text.length > 0" src="{{params.media_img.text}}">
+                    <div ng-style="titleImg"></div>
                 </a>
             </div>
             <div class="title-mod-head1">
@@ -147,10 +150,10 @@
             <div class="title-mod2-img-two" ng-hide="params.media_img.is_mod_hide">
                 <div ng-if="params.media_img.text.length == 0">YOUR LOGO</div>
                 <a ng-if="editorMode" href="javascript::void(0)">
-                    <img ng-if="params.media_img.text.length > 0" src="{{params.media_img.text}}">
+                    <div ng-style="titleImg"></div>
                 </a>
                 <a target="{{params.media_img.target ? params.media_img.target : '_blank'}}" ng-if="!editorMode" ng-href="{{params.media_img.href}}">
-                    <img ng-if="params.media_img.text.length > 0" src="{{params.media_img.text}}">
+                    <div ng-style="titleImg"></div>
                 </a>
             </div>
             <div class="title-mod-head2">
