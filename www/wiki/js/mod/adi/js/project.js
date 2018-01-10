@@ -24,6 +24,12 @@ define([
                             "cover": "/wiki/js/mod/adi/assets/images/projectTwo.png"
 						},
 					},
+					{
+						"design": {
+                            "text":"style3",
+                            "cover": "/wiki/js/mod/adi/assets/images/projectThree.png"
+						},
+					},
 				],
 				params_template: {
 					design:{
@@ -116,6 +122,11 @@ define([
 			
 			wikiblock.init(initObj);
 			$scope.params.multiText_desc.text = $sce.trustAsHtml($scope.params.multiText_desc.text);
+			$scope.projectImg = {
+				"background-image"    : 'url('+ $scope.params.image_picture.text +')',
+				"background-size"     : "cover",
+				"background-position" : "center center",
+			}
         }]);
     }
 
