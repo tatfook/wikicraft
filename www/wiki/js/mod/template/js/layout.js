@@ -110,13 +110,13 @@ define([
 						require:true,
 						text:"style1",
 					},
-					urlmatch: {
-						is_leaf:true,
-						editable:true,
-						type:"_text_",
-						name:"urlmatch",
-						//order:-1,
-					},
+					//urlmatch: {
+						//is_leaf:true,
+						//editable:true,
+						//type:"_text_",
+						//name:"urlmatch",
+						////order:-1,
+					//},
 					rows:{
 						is_leaf: true,
 						type: "list",
