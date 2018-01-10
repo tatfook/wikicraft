@@ -29,17 +29,12 @@ define([
                 util.http("POST", 'http://keepwork.com/api/wiki/models/website/getDetailInfo', {
                     username: params[1],
                     sitename: params[2]
-                    // pagename: params[3],
-                    // userId: $rootScope.user && $rootScope.user._id,
                 }, function (data) {
                     var currentScope = [];
                     data = data || {};
                 
                     currentScope.userinfo = data.userinfo;
                     currentScope.siteinfo = data.siteinfo;
-
-                    console.log('*************************************')
-                    console.log(currentScope)
 
                     render(currentScope);
                 });
@@ -128,11 +123,13 @@ define([
                             return;
                         }
                         if($scope.editorMode){
-                            util.post('http://keepwork.com/api/wiki/models/website_comment/create', $scope.comment, function (data) {
-                                $scope.comment.content = "";
-                                console.log(data);
-                                $scope.getCommentList();
-                            });
+                            // util.post('http://keepwork.com/api/wiki/models/website_comment/create', $scope.comment, function (data) {
+                            //     $scope.comment.content = "";
+                            //     console.log(data);
+                            //     $scope.getCommentList();
+                            // });
+                            $scope.comment.content = "";
+                            return
 
                         } else {
                             util.post(config.apiUrlPrefix + 'website_comment/create', $scope.comment, function (data) {
@@ -146,12 +143,13 @@ define([
 
                 $scope.getCommentList = function () {
                     if($scope.editorMode) {
-                        util.post('http://keepwork.com/api/wiki/models/website_comment/getByPageUrl', {
-                            url: path,
-                            pageSize:10000000
-                        }, function (data) {
-                            $scope.commentObj = data;
-                        });
+                        // util.post('http://keepwork.com/api/wiki/models/website_comment/getByPageUrl', {
+                        //     url: path,
+                        //     pageSize:10000000
+                        // }, function (data) {
+                        //     $scope.commentObj = data;
+                        // });
+                        $scope.commentObj = {}
 
                     } else {
                         util.post(config.apiUrlPrefix + 'website_comment/getByPageUrl', { url: util.parseUrl().pathname, pageSize:10000000 }, function (data) {
@@ -187,7 +185,8 @@ define([
                 styles:[
                     {
                         design: {
-                            text: 'style1'
+                            text: 'style1',
+                            cover: '/wiki/js/mod/adi/assets/images/comment.png'
                         }
                     }
                 ],
@@ -195,7 +194,7 @@ define([
                     design: {
                         is_leaf: true,
                         require: true,
-                        is_mod_hide: true,
+                        is_mod_hide: false,
                         name: '样式',
                         text: 'style1'
                     },
@@ -204,9 +203,9 @@ define([
                         type         : "none",
                         editable     : true,
                         is_card_show : false,
-                        is_mod_hide  : false,
-                        name         : "历史评论",
-                        text         : '123143243341',
+                        is_mod_hide  : 'false',
+                        name         : "评论",
+                        text         : '',
                         require      : true,
 					}
                 }

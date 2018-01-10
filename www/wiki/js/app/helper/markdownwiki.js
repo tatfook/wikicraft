@@ -13,7 +13,7 @@ define([
 		"@include":"@wiki/js/include",
 		"@mod":"@wiki/js/mod",
 		"@toc":"@wiki/js/toc",
-	}
+    }
     var mdwikiMap = {
         count: 0,    // markdownwiki 数量
     };
@@ -31,7 +31,6 @@ define([
         return mdwikiMap[mdwikiName];
     }
 
-
     // 获得模块路径
     function getModPath(cmdName) {
         var wikiModulePath = config.wikiModPath;
@@ -42,13 +41,28 @@ define([
 			cmdName = shortCmdMap[cmdName];
 		}
         if (cmdName.indexOf('@') >= 0) {
+            cmdName = adiShortCmdTranslate(cmdName);
             wikiModulePath += cmdName.replace('@', '');
         } else {
             wikiModulePath = cmdName;
         }
         wikiModulePath += (cmdName.lastIndexOf('/') > 0 ? ".js" : "/render.js"); // 当cmdName 为 @test 或/test  取该模块目录下的render.js文件
-
         return wikiModulePath;
+    }
+
+    /**
+     * Translate shortCmd to full cmd for cmds which like @adi/js/project
+     * input
+     *      @project
+     * output
+     *      @adi/js/project
+     */
+    function adiShortCmdTranslate(cmd) {
+        var result = cmd;
+        if ( (/^\@[^\/]+$/.test(cmd)) ) {
+            result = '@adi/js/' + cmd.replace(/^\@/,'');
+        }
+        return result;
     }
 
     // 默认渲染

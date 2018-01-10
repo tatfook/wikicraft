@@ -1,7 +1,7 @@
 define([
     'app',
     'helper/util',
-	'text!wikimod/adi/html/picture.html',
+	'text!wikimod/adi/html/project.html',
 ], function (app, util, htmlContent) {
 
     function registerController(wikiblock) {
@@ -15,13 +15,13 @@ define([
 					{
 						"design": {
                             "text":"style1",
-                            "cover": "http://git.keepwork.com/gitlab_rls_official/keepworkimages/raw/master/official_images/img_1515412091391.jpeg"
+                            "cover": "/wiki/js/mod/adi/assets/images/projectOne.png"
 						},
 					},
 					{
 						"design": {
                             "text":"style2",
-                            "cover": "http://git.keepwork.com/gitlab_rls_official/keepworkimages/raw/master/official_images/img_1515412082984.jpeg"
+                            "cover": "/wiki/js/mod/adi/assets/images/projectTwo.png"
 						},
 					},
 				],
@@ -30,8 +30,8 @@ define([
 						is_leaf      : true,
 						type         : "text",
 						editable     : false,
-						is_card_show : false,
-						is_mod_hide  : true,
+						is_card_show : true,
+						is_mod_hide  : false,
 						name         : "样式",
 						text         : "style1",
 						require      : true,
@@ -77,7 +77,7 @@ define([
                         is_card_show : true,
                         is_mod_hide  : false,
                         name         : "按钮",
-                        text         : "更多照片",
+                        text         : "查看更多",
                         href         : "",
                     	require      : true,
 					},
