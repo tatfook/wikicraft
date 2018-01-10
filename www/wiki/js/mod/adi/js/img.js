@@ -51,6 +51,9 @@ define([
             }
 
             wikiblock.init(initObj);
+            $scope.photoStyle = {
+                'background-image': 'url(' + $scope.params.media_img.text + ')'
+            }
             
         }]);
     }
