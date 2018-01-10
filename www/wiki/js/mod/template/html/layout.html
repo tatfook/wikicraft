@@ -16,7 +16,7 @@
 			<!--<span>{{committer_name + "于" + committed_date + "更新"}}</span>-->
 			<!--[><span><a>{{$rootScope.pageinfo.username}}</a></span><]-->
 		<!--</div>-->
-		<div ng-repeat="row in params.rows.list track by $index" ng-class="row.class" ng-style='row.style'>
+		<div ng-repeat="row in params.rows.list track by $index" ng-class="row.class" ng-style='row.style' class="clearfix">
 			<div ng-repeat="col in row.cols.list track by $index" ng-class="col.class" ng-style='col.style'>
 				<div id="{{col.$kp_id}}"></div>
 			</div>

@@ -1102,7 +1102,7 @@ define([
                     block.blockCache = mdwiki.getBlockCache(block.content, token);
 					block.blockCache.block = block;
                     block.isTemplate = block.blockCache.isTemplate;
-                    if (block.blockCache.isTemplate && mdwiki.templateMatch(block.blockCache.wikiBlock)) {
+                    if (mdwiki.options.use_template && block.blockCache.isTemplate && mdwiki.templateMatch(block.blockCache.wikiBlock)) {
                         mdwiki.template = block;
                     }
                     blockList.push(block);
