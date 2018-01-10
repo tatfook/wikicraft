@@ -6,59 +6,73 @@
             margin-top: 40px;
         }
     }
-    .world3D{
+
+    /* style1 */
+    .style1{
         display: flex;
         background-color: #F9F9F9;
         box-shadow: 0 0 5px 0 rgba(44,62,80,.35);
         padding:0;
         position: relative;
     }
-    .world3D h4{
+
+    .style1 h4{
         margin-top:0;
     }
+
     @media (min-width:769px) {
-        .world3D .img>img{
+        .style1 .img>img{
             width: 300px;
             height: 200px;
         }
     }
-    .world3D .text{
+
+    .style1 .text{
         max-height: 200px;
         padding: 20px;
     }
-    .world3D .inner p{
+
+    .style1 .inner p{
         line-height: 40px;
     }
-    .world3D .inner .col-xs-6{
+
+    .style1 .inner .col-xs-6{
         padding-left:0;
     }
-    .world3D .inner .col-xs-12{
+
+    .style1 .inner .col-xs-12{
         margin-bottom: 25px;
         padding:0;
     }
-    .world3D .inner .icon{
+
+    .style1 .inner .icon{
         vertical-align: text-bottom;
         font-size: 17px;
         margin-right: 10px;
         width: 24px;
         height: 17px;
     }
-    .world3D .inner .glyphicon-star{
+
+    .style1 .inner .glyphicon-star{
         color: #FD3265;
     }
-    .world3D .inner .info{
+
+    .style1 .inner .info{
         color: #666;
     }
-    .world3D .info{
+
+    .style1 .info{
         font-size: 12px;
         font-weight: normal;
         color: #999;
     }
-    .world3D .btn-default{
+
+    .style1 .btn-default{
         background-color: transparent;
         border:1px solid #656565;
     }
-    .world3D .mask{
+
+    .style1 .mask{
         width:100%;
         height:100%;
         position: absolute;
@@ -66,7 +80,8 @@
         top:0;
         background-color: rgba(0,0,0,.3);
     }
-    .world3D .model-main{
+
+    .style1 .model-main{
         position: absolute;
         background-color: #FFF;
         width: 390px;
@@ -76,57 +91,80 @@
         padding: 20px 58px 30px;
         text-align: center;
     }
-    .world3D .model-main .close-icon{
+
+    .style1 .model-main .close-icon{
         position: absolute;
         right: 5px;
         top: 5px;
     }
-    .world3D .model-main .btn-default{
+
+    .style1 .model-main .btn-default{
         font-size: 16px;
         padding: 8px 37px;
         border: 1px solid #3977AD;
         color: #333;
     }
-    .world3D .model-main p{
+
+    .style1 .model-main p{
         line-height: 30px;
     }
+
+    /* @media css */
+    @media (max-width: 992px) {
+        .style1 .inner{
+            padding-right:0;
+        }
+    }
+    @media (max-width: 768px){
+        .style1{
+            display: block;
+        }
+        .style1 .img{
+            text-align: center;
+        }
+    }
+
     /* style2 css */
-    .world4D{
+    .style2{
         max-width: 1190px;
         margin: 0 auto;
     }
-    .world4D .world-head .world-div1 .worldName , .world4D .world-head .world-div1 .useName{
+
+    .style2 .world-head .world-name,
+    .style2 .world-head .username {
         float: left;
         margin-right: 15px;
     }
-    .world4D .world-head .world-div2 .worldBtn{
-        float:right;
+
+    .style2 .world-head .world-btn {
+        float: right;
         width: 150px;
         margin-left: 30px;
         text-align: center;
+        margin-top: 0;
     } 
-    .world4D .world-head .world-div2 .worldBtn img {
-        float: left;
-        margin-top:6.2px;
-        margin-left: 15px;
+
+    .style2 .world-head .world-btn img {
+        margin-right: 15px;
     }
-    .world4D .world-body .world-img2 , .world4D .world-body .world-text{
+
+    .style2 .world-body .world-img,
+    .style2 .world-body .world-text{
         float: left;
     }
-    .world-img2{
+
+    .style2 .world-img{
         float: left;
         height: 314px;
         width: 431px;
         overflow: hidden;
     }
-    .world-img2 img{
+
+    .style2 .world-img img{
         height: 100%;
-        /* max-width: unset;
-        position: relative;
-        left: -50%;
-        top: -50%; */
     }
-    .world4D .world-body .world-text{
+
+    .style2 .world-body .world-text{
         width: 675px;
         height: 275px;
         -webkit-line-clamp: 1;  
@@ -137,57 +175,69 @@
         margin-left: 30px;
         font-size: 16px;
     }
-    .world-btn2{
+
+    .style2 .world-btn{
         text-align: center;
     }
-    .world-btn2 span{
+
+    .style2 .world-btn span{
         display: inline-block;
         margin-top: 1px
     }
-    .world-span1{
+
+    .style2 .world-span1{
         color: #999;
     }
-    .world-span2{
+
+    .style2 .world-span2{
         color: #999;
     }
+
     /* style3 css */
-    .world5D{
+    .style3{
         margin: 0 auto;
         max-width: 1040px;
     }
-    .world-img3{
+
+    .style3 .world-img{
         float: left;
         height: 314px;
         width: 431px;
         overflow: hidden;
     }
-    .world-img3 img{
+
+    .style3 .world-img img{
         height: 100%;
         /* position: relative;
         left: -50%;
         top: -50%; */
     }
-    .world-text3{
+
+    .style3 .world-text{
         float:left;
         margin-left: 30px;
     }
-    .world-btn3{
+
+    .style3 .world-btn{
         width: 150px;
         float: left;
         margin-right: 30px;
+        margin-top: 0px;
     }
-    .world-btn3 img{
-        float: left;
-        margin-top:6.2px;
-        margin-left: 15px;
+
+    .style3 .world-btn img{
+        margin-right: 15px;
     }
-    .worldName2{
+
+    .style3 .world-name{
         margin-top:0;
     }
-    .worldUse2{
+
+    .style3 .username{
         margin-top: 5px;
     }
-    .world-work2{
+
+    .style3 .world-work{
         margin-top: 15px;
         height:197.73px;
         width: 545px;
@@ -199,50 +249,43 @@
         white-space: normal; 
         
     }
-    .world-work-span1{
+
+    .style3 .world-work-span1{
         font-size: 20px;
         color: #999;
     }
-    .world-work-span2{
+
+    .style3 .world-work-span2{
         color: #999;
     }
 
     .world-clear-pointer a{
         cursor: default !important;
     }
-
-
-    /* @media css */
-    @media (max-width: 992px) {
-        .world3D .inner{
-            padding-right:0;
-        }
-    }
-    @media (max-width: 768px){
-        .world3D{
-            display: block;
-        }
-        .world3D .img{
-            text-align: center;
-        }
-    }
 </style>
-<div ng-controller="paracraftWorldController">
-    <div ng-class="{true:'world-clear-pointer'}[editorMode]" ng-if='params.design.text=="style1"' class="world3D container">
-        <div ng-hide="params.logoUrl.is_mod_hide" class="img">
-            <img ng-src="{{getImageUrl(params.logoUrl) || imgsPath + '3DWorld.jpg'}}" alt="">
+
+<div ng-controller="paracraftWorldController" class="container">
+    <div ng-class="{true:'world-clear-pointer'}[editorMode]" ng-if='params.design.text=="style1"' class="style1">
+        <div ng-hide="params.media_logo.is_mod_hide" class="img">
+            <img ng-src="{{params.media_logo.text.length == 0 && imgsPath + '3DWorld.jpg' || params.media_logo.text}}" alt="">
         </div>
         <div class="text">
-            <h4 ng-hide="params.worldName.is_mod_hide">{{params.worldName.text}}<p ng-hide="params.updateDate.is_mod_hide" class="info pull-right">{{params.updateDate.text + " 版本：" + params.version.text}}</p></h4>
+            <h4 ng-hide="params.link_world_url.is_mod_hide">
+                {{params.link_world_name.text}}
+                <p ng-hide="params.link_update_date.is_mod_hide" class="info pull-right">
+                    {{params.link_update_date.text + " 版本：" + params.link_version.text}}
+                </p>
+            </h4>
             <div class="inner clearfix">
-                <p ng-hide="params.username.is_mod_hide">作者：{{params.username.text}}</p>
+                <p ng-hide="params.link_username.is_mod_hide">作者：{{params.link_username.text}}</p>
                 <div class="col-xs-12">
-                    <div class="col-xs-6 info"><img ng-src="{{imgsPath + 'icon/world3D_eye.png'}}" class="icon" alt="">浏览量 {{viewTimes}}</div>
-                    <div ng-hide="params.filesTotals.is_mod_hide" class="col-xs-6 info" ng-bind="'大小' + getSize(params.filesTotals.text)"></div>
+                    <div class="col-xs-6 info">
+                        <img ng-src="{{imgsPath + 'icon/world3D_eye.png'}}" class="icon" alt="">浏览量 {{viewTimes}}</div>
+                    <div ng-hide="params.link_files_totals.is_mod_hide" class="col-xs-6 info" ng-bind="'大小' + getSize(params.link_files_totals.text)"></div>
                 </div>
                 <div class="col-xs-12">
-                    <div class="col-xs-6" ng-hide="params.worldUrl.is_mod_hide">
-                        <a ng-if="!editorMode" class="btn btn-block btn-default" target="{{params.worldUrl.target ? params.worldUrl.target : '_blank'}}" href="{{params.worldUrl.text}}">下载</a>
+                    <div class="col-xs-6" ng-hide="params.link_world_url.is_mod_hide">
+                        <a ng-if="!editorMode" class="btn btn-block btn-default" target="{{params.link_world_url.target ? params.link_world_url.target : '_blank'}}" href="{{params.link_world_url.text}}">下载</a>
                         <a ng-if="editorMode" href="javascript::void(0)" class="btn btn-block btn-default">下载</a>
                     </div>
                     <div class="col-xs-6">
@@ -259,75 +302,66 @@
             <div class="btn btn-lg btn-default" ng-click="clickDownload()">点击下载</div>
         </div>
     </div>
+
     <div ng-class="{true:'world-clear-pointer'}[editorMode]" ng-if='params.design.text=="style2"'>
-        <div class="world4D container">
+        <div class="style2 container">
             <div class="world-head clearfix">
-                <div class="world-div1">
-                    <h2 ng-hide="params.worldName.is_mod_hide" class="worldName"><a>{{params.worldName.text}}</a></h2>
-                    <h3 ng-hide="params.username.is_mod_hide" class="useName">作者：{{params.username.text}}</h3>
+                <div>
+                    <h2 ng-hide="params.link_world_name.is_mod_hide" class="world-name"><a>{{params.link_world_name.text}}</a></h2>
+                    <h3 ng-hide="params.link_username.is_mod_hide" class="username">作者：{{params.link_username.text}}</h3>
                 </div>
-                <div class="world-div2">
-                    <div class="worldBtn">
-                        <a class="btn btn-block btn-primary world-btn2" ng-if="!editorMode" ng-click="checkEngine()">进入</a>
-                        <a class="btn btn-block btn-primary world-btn2" ng-if="editorMode">进入</a>
-                    </div>
-                    <div ng-hide="params.worldUrl.is_mod_hide" class="worldBtn">
-                        <img src="{{params.btnLogo.text}}" alt="">
-                        <a class="btn btn-block btn-default world-btn2" ng-if="!editorMode" target="{{params.worldUrl.target ? params.worldUrl.target : '_blank'}}" href="{{params.worldUrl.text}}">下载</a>
-                        <a class="btn btn-block btn-default world-btn2" ng-if="editorMode" href="javascript::void(0)">下载</a>
-                    </div>
+                <div ng-hide="params.link_world_url.is_mod_hide">
+                    <a class="btn btn-block btn-primary world-btn" ng-if="!editorMode" ng-click="checkEngine()">进入</a>
+                    <a class="btn btn-block btn-primary world-btn" ng-if="editorMode">进入</a>
+                    
+                    <a class="btn btn-block btn-default world-btn" ng-if="!editorMode" target="{{params.link_world_url.target ? params.link_world_url.target : '_blank'}}" href="{{params.link_world_url.text}}">
+                        <img ng-src="{{downloadImg}}" alt="">
+                        下载
+                    </a>
+                    <a class="btn btn-block btn-default world-btn" ng-if="editorMode" href="javascript::void(0)">
+                        <img ng-src="{{downloadImg}}" alt="">
+                        下载
+                    </a>
                 </div>
             </div>
             <div class="world-body clearfix">
-                <div ng-hide="params.logoUrl.is_mod_hide" class="world-img2">
-                    <img ng-src="{{getImageUrl(params.logoUrl) || imgsPath + 'paracraftWorld.png'}}" alt="">
+                <div ng-hide="params.media_logo.is_mod_hide" class="world-img">
+                    <img ng-src="{{params.media_logo.text.length == 0 && imgsPath + '3DWorld.jpg' || params.media_logo.text}}" alt="">
                 </div>
-                <div ng-hide="params.desc.is_mod_hide" class="world-text">
+                <div ng-hide="params.link_desc.is_mod_hide" class="world-text">
                     <span class="world-span1">作品简介：</span><br>
-                        <span class="world-span2" ng-if="params.desc.text.length == 0">
-                            从来都记忆模糊，记不得都去了哪些地方，看了哪些风景，遇到哪些人。尽管同学说，去<br>
-                            旅行不在于记忆，而在于当时餐，午餐，晚餐。或许吃得不好，可是却依旧为对方擦去嘴角<br>
-                            的油渍。风景如何，其实并不重要。于记忆，而在于当时餐，午餐，晚餐。或许吃得不<br>
-                            好，可是却依旧为对方擦去嘴角的油渍。风景如何，其实并不重要。于记忆，而在于当时<br>
-                            餐，午餐，晚餐。或许吃得不好，可是却依旧为对方擦去嘴角的油渍。风景如何，其实并<br>
-                            不重要。于记忆，而在于当时餐，午餐，晚餐。或许吃得不好，可是却依旧为对方擦去嘴<br>
-                            角的油渍。风景如何，其实并不重要。吃得不好，可是却依旧为对方擦去嘴角的油渍。风<br>
-                            景如何，其实并不重要。晚餐。或许吃得不好，可是却依旧为对方擦去嘴角的油渍。风景<br>
-                            如何，其实并不重要。于记忆，而在于当时餐，午餐，晚餐。或许吃得不好，可是却依旧<br>
-                            为对方擦去嘴角的油渍。风景如何，其实并不重要。
-                        </span>
-                        <span ng-if="params.desc.text.length > 0">{{params.desc.text}}</span>
+                        <span ng-bind-html="params.link_desc.text"></span>
                 </div>
             </div>
         </div>
     </div>
+
     <div ng-class="{true:'world-clear-pointer'}[editorMode]" ng-if='params.design.text=="style3"'>
-        <div class="world5D clearfix container">
-            <div ng-hide="params.logoUrl.is_mod_hide" class="world-img3">
-                <img ng-src="{{getImageUrl(params.logoUrl) || imgsPath + 'paracraftWorld.png'}}" alt="">
+        <div class="style3 clearfix container">
+            <div ng-hide="params.media_logo.is_mod_hide" class="world-img">
+                <img ng-src="{{params.media_logo.text.length == 0 && imgsPath + '3DWorld.jpg' || params.media_logo.text}}" alt="">
             </div>
-            <div class="world-text3">
+            <div class="world-text">
                 <div class="clearfix">
-                    <h2 ng-hide="params.worldName.is_mod_hide" class="worldName2"><a>{{params.worldName.text}}</a></h2>
-                    <h3 ng-hide="params.username.is_mod_hide" class="worldUse2">作者：{{params.username.text}}</h3>
+                    <h2 ng-hide="params.link_world_name.is_mod_hide" class="world-name"><a>{{params.link_world_name.text}}</a></h2>
+                    <h3 ng-hide="params.link_username.is_mod_hide" class="username">作者：{{params.link_username.text}}</h3>
                 </div>
-                <div ng-hide="params.desc.is_mod_hide" class="world-work2">
-                    <span class="world-work-span1">作品简介：</span><br>
-                    <span ng-if="params.desc.text.length == 0" class="world-work-span2">
-                        从来都记忆模糊，记不得都去了哪些地方，看了哪些风景，遇到哪些人。尽管同学说，去<br>
-                        旅行不在于记忆，而在于当时餐，午餐，晚餐。或许吃得不好，可是却依旧为对方擦去嘴角<br>
-                        的油渍。风景如何，其实并不重要。
-                    </span>
-                    <span ng-if="params.desc.text.length > 0">{{params.desc.text}}</span>
+                <div ng-hide="params.link_desc.is_mod_hide" class="world-work">
+                    <span class="world-work-span1">作品简介：</span>
+                    <br>
+                    <span ng-bind-html="params.link_desc.text"></span>
                 </div>
-                <div ng-hide="params.worldUrl.is_mod_hide" class="world-btn3">
-                    <img src="{{params.btnLogo.text}}" alt="">
-                    <a class="btn btn-block btn-default" ng-if="!editorMode" target="{{params.worldUrl.target ? params.worldUrl.target : '_blank'}}" href="{{params.worldUrl.text}}">下载</a>
-                    <a class="btn btn-block btn-default" ng-if="editorMode" href="javascript::void(0)">下载</a>
-                </div>
-                <div class="world-btn3">
-                    <a class="btn btn-block btn-primary" ng-if="!editorMode" ng-click="checkEngine()">进入</a>
-                    <a class="btn btn-block btn-primary" ng-if="editorMode">进入</a>
+                <div ng-hide="params.link_world_url.is_mod_hide">
+                    <a class="btn btn-block btn-default world-btn" ng-if="!editorMode" target="{{params.link_world_url.target ? params.link_world_url.target : '_blank'}}" href="{{params.link_world_url.text}}">
+                        <img ng-src="{{downloadImg}}" alt="">
+                        下载
+                    </a>
+                    <a class="btn btn-block btn-default world-btn" ng-if="editorMode" href="javascript::void(0)">
+                        <img ng-src="{{downloadImg}}" alt="">
+                        下载
+                    </a>
+                    <a class="btn btn-block btn-primary world-btn" ng-if="!editorMode" ng-click="checkEngine()">进入</a>
+                    <a class="btn btn-block btn-primary world-btn" ng-if="editorMode">进入</a>
                 </div>
             </div>
         </div>
