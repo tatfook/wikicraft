@@ -1,9 +1,10 @@
 define([
     'app',
 	'helper/util',
+	'markdown-it',
 	'helper/mdconf',
     'text!wikimod/adi/html/paracraft.html',
-], function (app, util, mdconf, htmlContent) {
+], function (app, util, markdown_it, mdconf, htmlContent) {
 	var initObj;
 
     function registerController(wikiblock) {
@@ -246,6 +247,13 @@ define([
 					return parseInt(size / 1024 / 1024) + "M";
 				}
 			}
+
+			var md = new markdown_it({
+				html: true,
+				langPrefix: 'code-'
+			})
+
+			$scope.params.multiText_desc.text = md.render($scope.params.multiText_desc.text);
 		}]);
     }
 
