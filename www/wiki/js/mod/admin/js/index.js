@@ -1005,6 +1005,7 @@ define([
 
             $scope.clickEditMod = function(x) {
                 $scope.wikiQuery = x;
+                $scope.wikiQuery.oldWikiCmdName = angular.copy($scope.wikiQuery.wikiCmdName);
             }
 
             $scope.clickDeleteMod = function(x){
