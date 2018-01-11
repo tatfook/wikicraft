@@ -3645,7 +3645,7 @@ define([
                     col2Width=parseInt(col2.width(),10);
                     startX=event.clientX;
                     $(".CodeMirror").on("mousemove",mousemoveEvent);
-                    $(".result-html").on("mousemove",mousemoveEvent);
+                    $("#preview").on("mousemove",mousemoveEvent);
                     $(".code-view").on("mouseup",mouseupEvent);
                 });
 
@@ -3667,9 +3667,9 @@ define([
 
                 var mouseupEvent = function(){
                     $(".CodeMirror").off("mousemove",mousemoveEvent);
-                    $(".result-html").off("mousemove",mousemoveEvent);
+                    $("#preview").off("mousemove",mousemoveEvent);
                     $(".CodeMirror").off("mouseup",mouseupEvent);
-                    $(".result-html").off("mouseup",mouseupEvent);
+                    $("#preview").off("mouseup",mouseupEvent);
                 };
                 return editor;
 				//}}}
