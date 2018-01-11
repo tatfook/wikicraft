@@ -315,7 +315,7 @@
     }
 </style>
 
-<div ng-controller="paracraftWorldController" class="container">
+<div ng-controller="paracraftWorldController">
     <div ng-class="{true:'world-clear-pointer'}[editorMode]" ng-if='params.design.text=="style1"' class="style1">
         <div class="img">
             <a ng-if="editorMode"
@@ -393,9 +393,9 @@
                         <a ng-if="!editorMode"
                            ng-hide="params.link_world_url.is_mod_hide"
                            class="btn btn-block btn-default"
-                           ng-class="{true:'world-clear-pointer'}[params.link_world_url.href.length == 0]"
+                           ng-class="{true:'world-clear-pointer'}[params.link_world_url.text.length == 0]"
                            target="{{params.link_world_url.target ? params.link_world_url.target : '_blank'}}"
-                           ng-href="{{params.link_world_url.href}}">
+                           ng-href="{{params.link_world_url.text}}">
                             下载
                         </a>
                     </div>
