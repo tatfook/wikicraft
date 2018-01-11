@@ -298,7 +298,7 @@
         </div>
         <div class="text">
             <h4 ng-hide="params.link_world_url.is_mod_hide">
-                <a ng-if="editorMode" ng-click="viewEditorClick(params.link_world_url, $event)"  href="javascript::void(0)">{{params.link_world_name.text}}</a>
+                <a ng-if="editorMode" ng-click="viewEditorClick(params.link_world_name, $event)"  href="javascript::void(0)">{{params.link_world_name.text}}</a>
                 <a ng-if="!editorMode"
                    ng-class="{true:'world-clear-pointer'}[params.link_world_name.href.length == 0]"
                    target="{{params.link_world_name.target ? params.link_world_name.target : '_blank'}}"
