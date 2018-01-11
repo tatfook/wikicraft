@@ -55,7 +55,7 @@ define([
         var options = options || {};
         options.title = options.title || 'Datatree Editor';
         options.showLocation = typeof options.showLocation === 'boolean' ? options.showLocation : true;
-        options.datatree = options.datatree || [{__inner__id: defaultUUID}];
+        options.datatree = options.datatree && options.datatree.length ? options.datatree : [{__inner__id: defaultUUID}];
         options.keys = options.keys || [];
 
         $scope.title = options.title;
