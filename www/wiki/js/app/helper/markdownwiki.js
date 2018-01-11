@@ -498,7 +498,7 @@ define([
 				self.setDesignList = moduleEditorParams.setDesignList;
 
 				self.blockCache.adiObj = obj;
-				obj.scope.params = angular.copy(self.modParams);
+				obj.scope.params = self.modParams;
 				//console.log(self.modParams);
 
 				//console.log(self.modParams);
