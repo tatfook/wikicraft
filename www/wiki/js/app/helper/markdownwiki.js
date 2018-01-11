@@ -466,16 +466,20 @@ define([
 					if (self.blockCache.domNode) {
 						self.blockCache.domNode.addClass("active");
                     }
-                    var modToLine = self.blockCache.block.textPosition.to;
-                    editor.setCursor({
-                        "line": modToLine-1,
-                        "ch": 0
-                    });
                     moduleEditorParams.setEditorObj(obj);
 					//console.log(params_template);
 					// moduleEditorParams.is_show = true;
 					moduleEditorParams.show_type = "editor";
 					// $("#moduleEditorContainer").show();
+                    var modToLine = self.blockCache.block.textPosition.to;
+                    editor = editor || mdwiki.editor;
+                    if (!editor) {
+                        return;
+                    }
+                    editor.setCursor({
+                        "line": modToLine-1,
+                        "ch": 0
+                    });
 				};
 
 
