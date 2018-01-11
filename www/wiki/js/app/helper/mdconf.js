@@ -157,7 +157,9 @@ define([
 			lines.push(line);
 		}
 
-		if (lines.length == 1 && !lines[0].match(/^[-+#] .*/)) {
+		if (lines.length == 0) {
+			return "";
+		} else if (lines.length == 1 && !lines[0].match(/^[-+#] .*/)) {
 			return lines[0];
 		} else {
 			for (var i = 0; i < lines.length; i++) {
