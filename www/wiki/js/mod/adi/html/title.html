@@ -10,25 +10,28 @@
 
     /* style1 css */
 
-    .title-mod{
+    .style1 .title-mod{
         height: 150px;
     }
-    .title-mod .title-mod-img, .title-mod .title-mod-head1{
+    .style1 .title-mod .title-mod-img, .style1 .title-mod .title-mod-head{
         float: left;
     }
-    .title-mod .title-mod-img{
+    .style1 .title-mod .title-mod-head{
+        width: 80%;
+    }
+    .style1 .title-mod .title-mod-img{
         font-size: 20px;
         text-align: center;
         margin-top:31px;
         margin-bottom: 30px;
     }
-    .title-mod .title-mod-img div{
+    .style1 .title-mod .title-mod-img div{
         width: 89px;
         height: 89px;
         overflow: hidden;
     }
-    .title-mod .title-mod-head1 .h1{
-        width: 300px;
+    .style1 .title-mod .title-mod-head .h1{
+        width: auto;
         padding: 0;
         margin-top: 44px;
         margin-bottom: 0;
@@ -42,8 +45,8 @@
         -webkit-box-orient: vertical;  
         white-space: normal; 
     }
-    .title-mod .title-mod-head1 .h2{
-        width: 300px;
+    .style1 .title-mod .title-mod-head .h2{
+        width: auto;
         font-size: 24px;
         font-family: "Microsoft YaHei";
         margin-left: 18px;
@@ -64,33 +67,31 @@
 
     /* style1 css 伪类 */
 
-    .h1 a:link  , .h1 a:visited ,
-    .h1 a:hover , .h1 a:active{
+    .style1 .h1 a{
         color:#0f2639;
     }
-    .h2 a:link  , .h2 a:visited ,
-    .h2 a:hover , .h2 a:active{
+    .style1 .h2 a{
         color:#0f2639;
     }
 
     /* style2 css */
 
-    .title-mod2{
-        height: 200px;
+    .style2 .title-mod{
+        height: auto;
         padding-top: 20px;
     }
-    .title-mod2 .title-mod2-img-two{
+    .style2 .title-mod .title-mod-img-two{
         width:89px;
         height:89px;
         overflow: hidden;
         text-align: center;
         margin: 0 auto;
     }
-    .title-mod2 .title-mod2-img-two div{
+    .style2 .title-mod .title-mod-img-two div{
         width:89px;
         height:89px;
     }
-    .title-mod2 .title-mod-head2 .h-one{
+    .style2 .title-mod .title-mod-head .h-one{
         text-align: center;
         margin: 0 auto;
         font-size: 32px;
@@ -98,7 +99,7 @@
         margin-top: 11px;
         margin-bottom: 8px;
     }
-    .title-mod2 .title-mod-head2 .h-two{
+    .style2 .title-mod .title-mod-head .h-two{
         text-align: center;
         margin: 0 auto;
         font-size: 24px;
@@ -106,22 +107,19 @@
     
     /* style2 css 伪类 */
 
-    .h-one a:link  , .h-one a:visited ,
-    .h-one a:hover , .h-one a:active{
+    .style2 .h-one a{
         color:#0f2639;
     }
-    .h-two a:link  , .h-two a:visited ,
-    .h-two a:hover , .h-two a:active{
+    .style2 .h-two a{
         color:#0f2639; 
     }
 
 </style>
 
-<div ng-controller="titleController">
+<div ng-controller="titleController" ng-class="{true:'title-clear-pointer'}[editorMode]">
 
     <!-- style1 html -->
-
-    <div ng-class="{true:'title-clear-pointer'}[editorMode]" ng-if='params.design.text=="style1"'>
+    <div ng-if='params.design.text=="style1"' class="style1">
         <div class="title-mod container">
             <div class="title-mod-img" ng-hide="params.media_img.is_mod_hide">
                 <div ng-if="params.media_img.text.length == 0">YOUR LOGO</div>
@@ -137,7 +135,7 @@
                     <div ng-style="titleImg"></div>
                 </a>
             </div>
-            <div class="title-mod-head1">
+            <div class="title-mod-head">
                 <h1 class="h1"
                     ng-hide="params.link_title.is_mod_hide">
                     <a ng-if="editorMode"
@@ -163,10 +161,9 @@
     </div>
 
     <!-- style2 html -->
-
-    <div ng-if='params.design.text=="style2"'>
-        <div ng-class="{true:'title-clear-pointer'}[editorMode]" class="title-mod2 container">
-            <div class="title-mod2-img-two" ng-hide="params.media_img.is_mod_hide">
+    <div ng-if='params.design.text=="style2"' class="style2">
+        <div ng-class="{true:'title-clear-pointer'}[editorMode]" class="title-mod container">
+            <div class="title-mod-img-two" ng-hide="params.media_img.is_mod_hide">
                 <div ng-if="params.media_img.text.length == 0">YOUR LOGO</div>
                 <a ng-if="editorMode"
                    ng-click="viewEditorClick(params.media_img,$event)"
@@ -180,7 +177,7 @@
                     <div ng-style="titleImg"></div>
                 </a>
             </div>
-            <div class="title-mod-head2">
+            <div class="title-mod-head">
                 <h1 class="h-one" ng-hide="params.link_title.is_mod_hide">
                     <a ng-if="editorMode"
                        ng-click="viewEditorClick(params.link_title,$event)"
