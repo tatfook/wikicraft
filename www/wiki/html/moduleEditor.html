@@ -43,16 +43,15 @@
         float: left;
         margin: 25px 0;
         margin-right: 50px;
-        border: 1px solid #DDD;
         background-color: #FFF;
     }
 
-    .module-editor .attr-item.active{
-        border-color: #0088FF;
+    .module-editor .attr-item.active .attr-content{
+        border-color: #F16C24;
     }
 
     .module-editor .attr-item.active .header{
-        background-color: #0088FF;
+        background-color: #F16C24;
     }
 
     .module-editor .attr-item .header {
@@ -69,11 +68,14 @@
     .module-editor .attr-item .header.mod-hide {
         background-color: #FFF;
         color: #333;
-        border-bottom: 1px solid #DDD;
+        border: 1px solid #DDD;
     }
 
     .module-editor .attr-content {
         padding: 0 24px;
+        height: 170px;
+        border: 1px solid #DDD;
+        border-top-color: transparent;
     }
 
     .module-editor .attr-item .switch {
