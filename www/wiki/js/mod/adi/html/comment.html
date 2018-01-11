@@ -1,6 +1,6 @@
 <style>
     .comment{
-        padding: 0 15px;
+        padding: 0;
     }
     .comment .info{
         font-size: 12px;
@@ -49,7 +49,7 @@
 </style>
 
 <div ng-controller="commentController" class="comment">
-    <div class="container" ng-hide="params.multiText_desc.is_mod_hide">
+    <div ng-hide="params.multiText_desc.is_mod_hide">
         <h3>我要评论</h3>
         <div class="comments-box">
             <div class="comment-item clearfix" ng-repeat="comment in commentObj.commentList">
@@ -68,7 +68,7 @@
             <button class="btn btn-default" ng-click="submitComment()">提交</button>
         </div>
     </div>
-    <div class="container text-center shutup-comment" ng-hide="!params.multiText_desc.is_mod_hide">
+    <div class="text-center shutup-comment" ng-hide="!params.multiText_desc.is_mod_hide">
         评论功能已关闭
     </div>
 </div>
