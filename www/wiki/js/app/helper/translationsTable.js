@@ -3018,6 +3018,56 @@ define([], function () {
             "_key": "喜欢",
             "zh-cn": "喜欢",
             "en": "favorite"
+        },
+        {
+            "_key": "本窗口打开",
+            "zh-cn": "本窗口打开",
+            "en": "target_self"
+        },
+        {
+            "_key": "新窗口打开",
+            "zh-cn": "新窗口打开",
+            "en": "target_blank"
+        },
+        {
+            "_key": "属性",
+            "zh-cn": "属性",
+            "en": "attribute"
+        },
+        {
+            "_key": "样式",
+            "zh-cn": "样式",
+            "en": "design"
+        },
+        {
+            "_key": "知识库中暂无相关推荐内容",
+            "zh-cn": "知识库中暂无相关推荐内容",
+            "en": "No content recommend in knowledge base"
+        },
+        {
+            "_key": "开",
+            "zh-cn": "开",
+            "en": "On"
+        },
+        {
+            "_key": "关",
+            "zh-cn": "关",
+            "en": "Off"
+        },
+        {
+            "_key": "设置",
+            "zh-cn": "设置",
+            "en": "Setting"
+        },
+        {
+            "_key": "打开菜单编辑器",
+            "zh-cn": "打开菜单编辑器",
+            "en": "Open Menu Editor"
+        },
+        {
+            "_key": "打开绘图板",
+            "zh-cn": "打开绘图板",
+            "en": "Open Diagram"
         }
     ];
 
