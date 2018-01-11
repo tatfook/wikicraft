@@ -239,7 +239,7 @@ define([
 				{
 					design:{
 						text:"style3",
-						cover:"http://git.keepwork.com/gitlab_rls_official/keepworkimages/raw/master/official_images/img_1515574526094.png",
+						cover:"http://git.keepwork.com/gitlab_rls_official/keepworkimages/raw/master/official_images/img_1515574564150.png",
 					},
 					urlmatch: {
 						text:"",
@@ -278,7 +278,7 @@ define([
 				{
 					design:{
 						text:"style4",
-						cover:"http://git.keepwork.com/gitlab_rls_official/keepworkimages/raw/master/official_images/img_1515574564150.png",
+						cover:"http://git.keepwork.com/gitlab_rls_official/keepworkimages/raw/master/official_images/img_1515574526094.png",
 					},
 					urlmatch: {
 						text:"",
