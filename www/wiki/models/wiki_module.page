@@ -20,6 +20,7 @@ function wiki_module:ctor()
 	self:addfield("classifyName", "string")  -- 分类名
 	self:addfield("content", "string", false, 4000)       -- 内容
 	self:addfield("wikiCmdName", "string")   -- 命令名  -- unique
+	self:addfield("oldWikiCmdName", "string")
 	self:addfield("logoUrl", "string")       -- logo url 
 	self:addfield("desc", "string")          -- 描述
 	self:addfield("flag", "number", false,0, 0)          -- 1 官方推荐
@@ -35,16 +36,20 @@ function wiki_module:api_upsert(params)
 	local err, params = self:validateQuery(params)
 	self:db():findOne({['+wikiCmdName']={params.wikiCmdName}}, resume)
 	local err, data = yield()
-	
-	if data then 
+
+	if not err and data then 
 		params.useCount = nil
 		params.favoriteCount = nil
 	else 
 		params.useCount = 0
 		params.favoriteCount = 0
 	end
-	self:db():insertOne({['+wikiCmdName'] = {params.wikiCmdName}}, params, resume)
-	
+
+	local oldWikiCmdName = params.oldWikiCmdName;
+	params.oldWikiCmdName = nil;
+
+	self:db():insertOne({['+wikiCmdName'] = {oldWikiCmdName}}, params, resume)
+
 	return errors:wrap(yield())
 end
 
