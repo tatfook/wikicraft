@@ -33,8 +33,6 @@
     }
     .style1 .picture-body .picture-img img{
         width:100%;
-        height:100%;
-        overflow: hidden;
     }
     .style1 .picture-body .picture-span{
         margin-left: 70px;
@@ -47,10 +45,7 @@
     .style1 .picture-body .picture-span .span-one > span{
         display: block;
         width: 576px;
-        height: 493px;
         margin-bottom: 46px;
-        overflow: hidden;
-        overflow-y: auto;
     }
     .style1 .picture-body .picture-span > h1{
         width: 576px;
@@ -164,15 +159,14 @@
     .style3 .picture-body .picture-img{
         float: right;
         width:490px;
-        height:701px;
-        text-align: center;
-        line-height: 250px;
-        background: rgb(227, 224, 224);
     }
-    .style3 .picture-body .projectImg{
+    .style .picture-body .picture-body img{
+        width: 100%;
+    }
+    /* .style3 .picture-body .projectImg{
         width:490px;
         height:701px;
-    }
+    } */
     .style3 .picture-body .picture-span{
         margin-right: 70px;
         float: left;
@@ -196,10 +190,7 @@
     .style3 .picture-body .picture-span .span-one > span{
         display: block;
         width: 576px;
-        height: 493px;
         margin-bottom: 46px;
-        overflow: hidden;
-        overflow-y: auto;
     }
     .style3 .picture-body .picture-span .span-one > span a{
         white-space: pre-wrap;
@@ -229,18 +220,19 @@
             <div class="picture-body clearfix">
                 <div class="picture-img">
                     <div ng-hide="params.image_picture.is_mod_hide">
-                        <div ng-if="params.image_picture.text.length == 0">YOUR PICTURE</div>
-                        <a ng-if="editorMode && params.image_picture.text.length > 0"
+                        <a ng-if="editorMode"
                         ng-click="viewEditorClick(params.image_picture, $event)"
                         href="javascript::void(0)">
-                            <div class="projectImg" ng-style="projectImg"></div>
+                            <!-- <div class="projectImg" ng-style="projectImg"></div> -->
+                            <img ng-src="{{params.image_picture.text}}">
                         </a>
-                        <a ng-if="!editorMode && params.image_picture.text.length > 0"
+                        <a ng-if="!editorMode"
                         ng-class="{true : 'clear-pointer'}[params.image_picture.href.length == 0]"
                         target="{{params.image_picture.target ? params.image_picture.target : '_blank' }}"
                         ng-href="{{params.image_picture.href}}"
                         ng-class="{true : 'clear-pointer'}[params.image_picture.href.length == 0]">
-                            <div class="projectImg" ng-style="projectImg"></div>
+                            <!-- <div class="projectImg" ng-style="projectImg"></div> -->
+                            <img ng-src="{{params.image_picture.text}}">
                         </a>
                     </div>
                 </div>
@@ -394,17 +386,21 @@
     <div ng-if='params.design.text=="style3"' class="style3">
         <div class="picture-one container">
             <div class="picture-body clearfix">
-                <div ng-hide="params.image_picture.is_mod_hide" class="picture-img">
+                <div class="picture-img">
                     <a ng-if="editorMode"
+                       ng-hide="params.image_picture.is_mod_hide"
                        ng-click="viewEditorClick(params.image_picture, $event)"
                        href="javascript::void(0)">
-                        <div class="projectImg" ng-style="projectImg"></div>
+                        <!-- <div class="projectImg" ng-style="projectImg"></div> -->
+                        <img ng-src="{{params.image_picture.text}}">
                     </a>
                     <a ng-if="!editorMode"
+                       ng-hide="params.image_picture.is_mod_hide"
                        target="{{params.image_picture.target ? params.image_picture.target : '_blank' }}"
                        ng-href="{{params.image_picture.href}}"
                        ng-class="{true : 'clear-pointer'}[params.image_picture.href.length == 0]">
-                        <div class="projectImg" ng-style="projectImg"></div>
+                        <!-- <div class="projectImg" ng-style="projectImg"></div> -->
+                        <img ng-src="{{params.image_picture.text}}">
                     </a>
                 </div>
                 <div class="picture-span">

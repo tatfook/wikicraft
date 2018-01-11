@@ -21,14 +21,14 @@ define([
 					},
 					{
 						"design": {
-                            "text":"style2",
-                            "cover": "/wiki/js/mod/adi/assets/images/projectTwo.png"
+                            "text":"style3",
+                            "cover": "/wiki/js/mod/adi/assets/images/projectThree.png"
 						},
 					},
 					{
 						"design": {
-                            "text":"style3",
-                            "cover": "/wiki/js/mod/adi/assets/images/projectThree.png"
+                            "text":"style2",
+                            "cover": "/wiki/js/mod/adi/assets/images/projectTwo.png"
 						},
 					},
 				],
