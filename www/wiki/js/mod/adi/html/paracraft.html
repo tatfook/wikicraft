@@ -1,12 +1,4 @@
 <style>
-    @media (min-width:1025px) {
-        .paracraft {
-            width: 1000px;
-            margin: 0 auto;
-            margin-top: 40px;
-        }
-    }
-
     /* style1 */
     .style1{
         display: flex;
@@ -33,6 +25,7 @@
         .style1 .img{
             width: 300px;
             height: 200px;
+            overflow: hidden;
         }
 
         .style1 .img img{
@@ -162,12 +155,10 @@
     .style2 .world-head .world-name{
         font-size: 18px;
         color: #327ab7;
-        width: 75px;
         height: 20px;
     }
 
     .style2 .world-head .username{
-        width: 85px;
         height: 20px;
     }
 
@@ -199,7 +190,8 @@
     }
 
     .style2 .world-img img{
-        height: 100%;
+        min-height: 100%;
+        min-width: 100%;
     }
 
     .style2 .world-body .world-text{
@@ -249,7 +241,8 @@
     }
 
     .style3 .world-img img{
-        height: 100%;
+        min-height: 100%;
+        min-height: 100%;
     }
 
     .style3 .world-text{
