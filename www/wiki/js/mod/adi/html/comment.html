@@ -52,7 +52,6 @@
     <div class="container" ng-hide="params.multiText_desc.is_mod_hide">
         <h3>我要评论</h3>
         <div class="comments-box">
-            <div class="no_comment text-center" ng-if="!commentObj.commentList">暂无评论</div>
             <div class="comment-item clearfix" ng-repeat="comment in commentObj.commentList">
                 <img ng-src="{{comment.userInfo.portrait ||  imgsPath + 'default_portrait.png'}}">
                 <div class="text">

@@ -20,7 +20,11 @@ define([
                 return outputDate;
             }
 
-            var path = util.parseUrl().pathname;
+            var editModeHref = window.location.href;
+            var editPath = editModeHref.substr(editModeHref.indexOf('#')+1)
+
+            var path = editModeHref.indexOf('#') === -1 ? util.parseUrl().pathname : editPath;
+            console.log(path)
             var params = path.split("/");
             var urlObj = $rootScope.urlObj;
 
@@ -57,7 +61,7 @@ define([
 
                 
                 $scope.comment = { 
-                    url: util.parseUrl().pathname, 
+                    url: path, 
                     websiteId: currentScope.siteinfo._id, 
                     userId: $scope.user && $scope.user._id 
                 };
@@ -107,7 +111,7 @@ define([
                 }
 
                 $scope.getCommentList = function () {
-                    util.post(config.apiUrlPrefix + 'website_comment/getByPageUrl', { url: util.parseUrl().pathname, pageSize:10000000 }, function (data) {
+                    util.post(config.apiUrlPrefix + 'website_comment/getByPageUrl', { url: path, pageSize:10000000 }, function (data) {
                         $scope.commentObj = data;
                     });
                     
