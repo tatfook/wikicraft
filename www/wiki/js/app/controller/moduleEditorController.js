@@ -316,6 +316,7 @@ define([
             clearTimeout(method.stickTimer);
             method.stickTimer = setTimeout(function () {
                 method.call(context);
+				util.$apply();
             },500);
         }
 
@@ -329,14 +330,17 @@ define([
                 //console.log(paramsTemplate, modParams);
                 modParams = moduleEditorParams.wikiBlock.formatModParams("", paramsTemplate, modParams, false);
 				//console.log(modParams);
+
                 moduleEditorParams.wikiBlock.applyModParams(modParams);
                 // setFakeIconPosition();
+
                 //config.shareMap.moduleEditorParams = undefined;
             }
         }
         
         $scope.applyAttrChange = function (text) {
             throttle(applyAttrChange);
+			util.$apply();
         }
 
 		$scope.click_apply_design = function(index) {
