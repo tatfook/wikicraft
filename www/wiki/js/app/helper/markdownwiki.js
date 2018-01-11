@@ -239,7 +239,7 @@ define([
 			blockCache:blockCache,
             modName: wikiBlock.modName,
             cmdName: wikiBlock.cmdName,
-            modParams: wikiBlock.modParams || {},
+            modParams: wikiBlock.modParams,
             editorMode: mdwiki.options.editorMode,
 			mode: mdwiki.mode,
 			containerId: blockCache.containerId,
