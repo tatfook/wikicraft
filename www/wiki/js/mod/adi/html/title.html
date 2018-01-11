@@ -136,7 +136,7 @@
                 <div ng-if="params.media_img.text.length == 0">YOUR LOGO</div>
                 <a ng-if="editorMode"
                    href="javascript::void(0)"
-                   ng-click="viewEditorClick(params.link_title,$event)">
+                   ng-click="viewEditorClick(params.media_img,$event)">
                     <div ng-style="titleImg"></div>
                 </a>
                 <a target="{{params.media_img.target ? params.media_img.target : '_blank'}}"
