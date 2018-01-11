@@ -52,7 +52,7 @@ define([
                         is_mod_hide  : false,
                         name         : "picture",
                         text         : config.wikiModPath + 'adi/assets/imgs/pictureMod.png',
-                        href         : config.wikiModPath + 'adi/assets/imgs/pictureMod.png',
+                        href         : "",
                     	require      : true,
 					},
 					link_headline:{
@@ -122,10 +122,12 @@ define([
 
 			
 			wikiblock.init(initObj);
+
 			var md = new markdown_it({
 				html: true,
 				langPrefix: 'code-'
 			})
+			
 			$scope.params.multiText_desc.text = md.render($scope.params.multiText_desc.text);
 			$scope.projectImg = {
 				"background-image"    : 'url('+ $scope.params.image_picture.text +')',
