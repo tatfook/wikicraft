@@ -467,6 +467,7 @@ define([
 						self.blockCache.domNode.addClass("active");
                     }
                     moduleEditorParams.setEditorObj(obj);
+                    setFakeIconPosition();
 					//console.log(params_template);
 					// moduleEditorParams.is_show = true;
 					moduleEditorParams.show_type = "editor";
@@ -524,7 +525,7 @@ define([
 
                 //console.log(moduleEditorParams, self);
                 var fakeIconDom = [];
-                function setFakeIconPosition(){
+                var setFakeIconPosition = function(){
                     fakeIconDom = fakeIconDom.length > 0 ? fakeIconDom : $(".mod-container.active .fake-icon");
                     if (fakeIconDom.length <= 0) {
                         setTimeout(function(){
