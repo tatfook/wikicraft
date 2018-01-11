@@ -1,20 +1,22 @@
 define([
     'app',
 	'helper/util',
+	'markdown-it',
 	'helper/mdconf',
     'text!wikimod/adi/html/paracraft.html',
-], function (app, util, mdconf, htmlContent) {
+], function (app, util, markdown_it, mdconf, htmlContent) {
 	var initObj;
 
     function registerController(wikiblock) {
         app.registerController("paracraftWorldController", ['$scope','$sce', function ($scope, $sce) {
-			$scope.imgsPath   = config.wikiModPath + 'adi/assets/imgs/';
-			$scope.showModal  = false;
-			$scope.editorMode = wikiblock.editorMode;
+			$scope.imgsPath    = config.wikiModPath + 'adi/assets/imgs/';
+			$scope.showModal   = false;
+			$scope.editorMode  = wikiblock.editorMode;
+			$scope.downloadImg = $scope.imgsPath + 'down.png'
 
 			var token = localStorage.getItem("satellizer_token");
 
-			var params_text = wikiblock.blockCache.block.content.replace(/```@adi\/js\/paracraft/, "");
+			var params_text = wikiblock.blockCache.block.content.replace(/```@paracraft/, "");
 			params_text = params_text.replace(/```/, "");
 
 			var isJSON = true;
@@ -90,17 +92,18 @@ define([
 						text     : "style1",
 						require  : true,
 					},
-					logoUrl : {
+					media_logo : {
 						is_leaf       : true,
-						type          : "menu",
+						type          : "media",
+						mediaType     : "image",
 						editable      : true,
 						is_card_show  : true,
 						is_mod_hide   : false, 
 						name          : "LOGO",  
-						text          : [],
+						text          : "",
 						require       : true,
 					},
-					version : {
+					link_version : {
 						is_leaf       : true,
 						type          : "link",
 						editable      : true,
@@ -109,8 +112,9 @@ define([
 						name          : "版本",
 						text          : "",
 						require       : true,
+						href		  : "",
 					},
-					opusId : {
+					link_opus_id : {
 						is_leaf       : true,
 						type          : "link",
 						editable      : true,
@@ -119,18 +123,22 @@ define([
 						name          : "世界ID",
 						text          : "",
 						require       : true,
+						href		  : "",
 					},
-					desc : {
+					multiText_desc : {
 						is_leaf       : true,
-						type          : "link",
+						type          : "multiText",
 						editable      : true,
 						is_card_show  : true,
 						is_mod_hide   : false, 
 						name          : "描述",
-						text          : "",
+						text          : "从来都记忆模糊，记不得都去了哪些地方，看了哪些风景，遇到哪些人。尽管同学说，去\n\
+旅行不在于记忆，而在于当时餐，午餐，晚餐。或许吃得不好，可是却依旧为对方擦去嘴角\n\
+的油渍。风景如何，其实并不重要。",
 						require       : true,
+						href		  : "",
 					},
-					worldUrl : {
+					link_world_url : {
 						is_leaf       : true,
 						type          : "link",
 						editable      : true,
@@ -139,8 +147,9 @@ define([
 						name          : "世界下载地址",
 						text          : "",
 						require       : true,
+						href		  : "",
 					},
-					filesTotals : {
+					link_files_totals : {
 						is_leaf       : true,
 						type          : "link",
 						editable      : true,
@@ -149,8 +158,9 @@ define([
 						name          : "文件大小",
 						text          : "",
 						require       : true,
+						href		  : "",
 					},
-					username : {
+					link_username : {
 						is_leaf       : true,
 						type          : "link",
 						editable      : true,
@@ -159,8 +169,9 @@ define([
 						name          : "用户名",
 						text          : "",
 						require       : true,
+						href		  : "",
 					},
-					updateDate : {
+					link_update_date : {
 						is_leaf       : true,
 						type          : "link",
 						editable      : true,
@@ -169,8 +180,9 @@ define([
 						name          : "更新时间",
 						text          : "",
 						require       : true,
+						href		  : "",
 					},
-					worldName : {
+					link_world_name : {
 						is_leaf       : true,
 						type          : "link",
 						editable      : true,
@@ -179,25 +191,17 @@ define([
 						name          : "世界名称",
 						text          : "",
 						require       : true,
-					},
-					btnLogo:{
-						is_leaf       : true,
-						type          : "link",
-						editable      : false,
-						is_card_show  : true,
-						is_mod_hide   : false, 
-						name          : "btnLogo",
-						text          : config.wikiModPath + 'adi/assets/imgs/down.png',
-						require       : true,
-					},
+						href		  : "",
+					}
 				}
             }
 
 			wikiblock.init(initObj);
+
 			$scope.checkEngine = function () {
                 $scope.showModal=true;
 
-                window.open("paracraft:// usertoken=\"" + token + "\" cmd/loadworld " + $scope.params.worldUrl.text);
+                window.open("paracraft:// usertoken=\"" + token + "\" cmd/loadworld " + $scope.params.link_world_url.text);
 			}
 			
 			$scope.clickDownload = function() {
@@ -211,30 +215,30 @@ define([
 
 			$scope.viewTimes = 0;
             var viewTimesUrl = "/api/mod/worldshare/models/worlds/getOneOpus";
-            var params       = {opusId: $scope.params.opusId.text};
+            var params       = {link_opus_id: $scope.params.link_opus_id.text};
 
             util.http("POST", viewTimesUrl, params, function (response) {
                 $scope.viewTimes = response.viewTimes;
             }, function (response) { });
 
-			$scope.getImageUrl = function (logoUrl) {
-				if(!logoUrl || !logoUrl.text || !logoUrl.text[0] || !logoUrl.text[0].url){
-					return undefined;
-				}
+			// $scope.getImageUrl = function (logoUrl) {
+			// 	if(!logoUrl || !logoUrl.text || !logoUrl.text[0] || !logoUrl.text[0].url){
+			// 		return undefined;
+			// 	}
 
-				var url = logoUrl.text[0].url;
+			// 	var url = logoUrl.text[0].url;
 
-                if (!url)
-                    return undefined;
+            //     if (!url)
+            //         return undefined;
 
-                if (url.indexOf("http") == 0)
-                    return url + "?ver=" + $scope.params.version.text;
+            //     if (url.indexOf("http") == 0)
+            //         return url + "?ver=" + $scope.params.version.text;
 
-                if (url[0] == '/')
-                    url = url.substring(1);
+            //     if (url[0] == '/')
+            //         url = url.substring(1);
 
-                return $scope.imgsPath + url + "?ver=" + $scope.params.version.text;
-			}
+            //     return $scope.imgsPath + url + "?ver=" + $scope.params.version.text;
+			// }
 			
 			$scope.getSize = function(size){
 				if (size <= 1048576) {
@@ -243,6 +247,13 @@ define([
 					return parseInt(size / 1024 / 1024) + "M";
 				}
 			}
+
+			var md = new markdown_it({
+				html: true,
+				langPrefix: 'code-'
+			})
+
+			$scope.params.multiText_desc.text = md.render($scope.params.multiText_desc.text);
 		}]);
     }
 

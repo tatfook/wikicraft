@@ -1,31 +1,35 @@
 <style>
-    .photo-clear-pointer a{
+    .photo-clear-pointer{
         cursor : default;
     }
-    .photo-clear a {
-        color: black;
-    }
-    .photo-div1{
+    .photo-container1 {
         width:100%;
         height:600px;
+        overflow: hidden;
     }
-    .photo-div2{
+    .photo-container2 {
         width:100%;
         height:800px;
+        overflow: hidden;
     }
-
+    .photo-container1, .photo-container2{
+        background-position: center center;
+        background-size: cover;
+    }
 </style>
 <div ng-controller="photoController">
-    <div ng-class="{true:'photo-clear-pointer',false:'photo-clear'}[editorMode]" ng-if='params.design.text=="style1"'>
-        <div class="photo-body" ng-hide="params.media_imgOne.is_mod_hide">
-            <a ng-if="editorMode" href="javascript::void(0)"><div class="photo-div1" ng-style="imgOneStyle"></div></a>
-            <a ng-if="!editorMode" target="{{params.media_imgOne.target ? params.media_imgOne.target : '_blank'}}" href="{{params.media_imgOne.href}}"><div class="photo-div1" ng-style="imgOneStyle"></div></a>
-        </div>
-    </div>
-    <div ng-class="{true:'photo-clear-pointer',false:'photo-clear'}[editorMode]" ng-if='params.design.text=="style2"'>
-        <div class="photo-body2" ng-hide="params.media_imgTwo.is_mod_hide">
-            <a ng-if="editorMode" href="javascript::void(0)"><div class="photo-div2" ng-style="imgTwoStyle"></div></a>
-            <a ng-if="!editorMode" target="{{params.media_imgOne.target ? params.media_imgOne.target : '_blank'}}" href="{{params.media_imgOne.href}}"><div class="photo-div2" ng-style="imgTwoStyle"></div></a>
-        </div>
-    </div>
+    <a href="{{editorMode ? '' : params.media_img.href}}">
+        <div ng-class="{true:'photo-clear-pointer'}[params.media_img.href.length == 0]"
+             ng-hide="params.media_img.is_mod_hide"
+             class="photo-container1"
+             ng-if="params.design.text === 'style1'"
+             ng-style="{{photoStyle}}"></div>
+    </a>
+    <a href="{{editorMode ? '' : params.media_img.href}}">
+        <div ng-class="{true:'photo-clear-pointer'}[params.media_img.href.length == 0]"
+             class="photo-container2"
+             ng-if="params.design.text === 'style2'"
+             ng-hide="params.media_img.is_mod_hide"
+             ng-style="{{photoStyle}}"></div>
+    </a>
 </div>

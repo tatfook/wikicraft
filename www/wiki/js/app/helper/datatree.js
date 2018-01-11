@@ -37,20 +37,72 @@ define([], function () {
         };
     }
 
-    datatree.addSiblingInflattenedDataBeforeItem = function(item, flattenedData) {
-        flattenedData.splice(flattenedData.indexOf(item), 0, {
+    datatree.addSiblingInflattenedDataBeforeItem = function(item, flattenedData, newItem) {
+        var newItem = newItem || {
             __inner__id: datatree.uuid(),
             name: '',
             __inner__parent__id: item.__inner__parent__id
-        });
+        };
+
+        flattenedData.splice(flattenedData.indexOf(item), 0, newItem);
+
+        return newItem;
     }
-    
-    datatree.addSiblingInflattenedDataAfterItem = function(item, flattenedData) {
-        flattenedData.splice(flattenedData.indexOf(item) + 1, 0, {
+
+    datatree.addSiblingInflattenedDataAfterItem = function(item, flattenedData, newItem) {
+        var newItem = newItem || {
             __inner__id: datatree.uuid(),
             name: '',
             __inner__parent__id: item.__inner__parent__id
-        });
+        };
+
+        // get next sibling item
+        
+        // if not get parent next sibling item
+        // and go on...
+        //      if get any, insert before the item you have found
+        // or until non,
+        //      insert at the bottom of the list
+
+        var closetSibling = findClosetSibling(item, flattenedData);
+        if (closetSibling) {
+            return datatree.addSiblingInflattenedDataBeforeItem(closetSibling, flattenedData, newItem);
+        }
+
+        // insert at the bottom of the list
+        flattenedData.push(newItem);
+        return newItem;
+
+        //find item's next sibling or item's parent's next sibling or go on ... 
+        function findClosetSibling(item, flattenedData) {
+            var nextSiblingItem = findNextSibling(item, flattenedData);
+            if (nextSiblingItem) return nextSiblingItem;
+
+            var parentItem = datatree.findParentItemInflattenedData(item, flattenedData);
+            if (parentItem) return findClosetSibling(parentItem, flattenedData);
+
+            return;
+        }
+
+        function findNextSibling(item, flattenedData) {
+            var siblings = flattenedData.filter(function(xItem) {
+                return areTheySiblings(item, xItem);
+            });
+            var nextSiblingItem = siblings[siblings.indexOf(item) + 1];
+            return nextSiblingItem;
+        }
+
+        function areTheySiblings(item, xItem) {
+            if (!item.__inner__parent__id && !xItem.__inner__parent__id) return true;
+            if (item.__inner__parent__id === xItem.__inner__parent__id) return true;
+            return false;
+        }
+    }
+
+    datatree.findParentItemInflattenedData = function(item, flattenedData) {
+        return flattenedData.filter(function(xItem) {
+            return xItem.__inner__id === item.__inner__parent__id;
+        })[0];
     }
 
     datatree.addChildOfItemInflattenedData = function(item, flattenedData) {

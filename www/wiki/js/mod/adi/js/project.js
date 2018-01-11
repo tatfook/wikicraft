@@ -1,8 +1,9 @@
 define([
-    'app',
+	'app',
+	'markdown-it',
     'helper/util',
 	'text!wikimod/adi/html/project.html',
-], function (app, util, htmlContent) {
+], function (app, markdown_it, util, htmlContent) {
 
     function registerController(wikiblock) {
         app.registerController("pictureTextController", ['$scope','$sce', function ($scope, $sce) {
@@ -16,6 +17,12 @@ define([
 						"design": {
                             "text":"style1",
                             "cover": "/wiki/js/mod/adi/assets/images/projectOne.png"
+						},
+					},
+					{
+						"design": {
+                            "text":"style3",
+                            "cover": "/wiki/js/mod/adi/assets/images/projectThree.png"
 						},
 					},
 					{
@@ -45,7 +52,7 @@ define([
                         is_mod_hide  : false,
                         name         : "picture",
                         text         : config.wikiModPath + 'adi/assets/imgs/pictureMod.png',
-                        href         : config.wikiModPath + 'adi/assets/imgs/pictureMod.png',
+                        href         : "",
                     	require      : true,
 					},
 					link_headline:{
@@ -88,18 +95,18 @@ define([
 						is_card_show : true,
 						is_mod_hide  : false,
 						name         : "文字说明",
-						text         : "&nbsp;&nbsp;&nbsp;&nbsp;一个人去旅行，而且是去故乡的山水间徜徉。\
+						text         : "一个人去旅行，而且是去故乡的山水间徜徉。\
 临行之前，面对太多的疑问和不解：为何是一个人？\
 也有善意的提醒：何不去远方！\
 昆明呀——赶一个花海；三亚呀——赴一个蓝天碧海。\
 只是微笑地固执自己的坚持，不做任何解释。\
 没有人明白，这一次是一个告别，或者一个永远的告别，以后我会去到很多很繁华或苍凉，辽远或偏僻的地方，而会常常想起这一次的旅行，想起那座山，那个城，那些人……\
-<br><br>\
-&nbsp;&nbsp;&nbsp;&nbsp;有时我们选择改变，并非经过深思熟虑，而更像是听见了天地间冥冥中的呼唤，呼唤你前往另一个地方，过上另一种生活。\
+\n\n\
+有时我们选择改变，并非经过深思熟虑，而更像是听见了天地间冥冥中的呼唤，呼唤你前往另一个地方，过上另一种生活。\
 你并不一定会从此拥有更美好的人生，可你仍然感谢天地和人世所带来的这些变化和发生。\
 不然你大概会一直好奇和不甘吧——家门前的那条小路，到底通向了什么样的远方呢？。\
-<br><br>\
-&nbsp;&nbsp;&nbsp;&nbsp;对于旅行，从来都记忆模糊。\
+\n\n\
+对于旅行，从来都记忆模糊。\
 记不得都去了哪些地方，看了哪些风景，遇到哪些人。\
 尽管同学说，去旅行不在于记忆，而在于当时的那份心情。\
 可是旅行的彼时那刻我的心情一直是好的吗？一直有记日记的习惯，可是，旅行回来，都懒得写日记来记录，可见内心底对旅行是多么的淡漠。\
@@ -115,7 +122,18 @@ define([
 
 			
 			wikiblock.init(initObj);
-			$scope.params.multiText_desc.text = $sce.trustAsHtml($scope.params.multiText_desc.text);
+
+			var md = new markdown_it({
+				html: true,
+				langPrefix: 'code-'
+			})
+			
+			$scope.params.multiText_desc.text = md.render($scope.params.multiText_desc.text);
+			$scope.projectImg = {
+				"background-image"    : 'url('+ $scope.params.image_picture.text +')',
+				"background-size"     : "cover",
+				"background-position" : "center center",
+			}
         }]);
     }
 
@@ -125,4 +143,5 @@ define([
             return htmlContent;
 		}
     }
+    
 });

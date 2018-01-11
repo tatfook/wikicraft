@@ -330,8 +330,10 @@ define([
                 //console.log(paramsTemplate, modParams);
                 modParams = moduleEditorParams.wikiBlock.formatModParams("", paramsTemplate, modParams, false);
 				//console.log(modParams);
-				moduleEditorParams.wikiBlock.applyModParams(modParams);
-                setFakeIconPosition();
+
+                moduleEditorParams.wikiBlock.applyModParams(modParams);
+                // setFakeIconPosition();
+
                 //config.shareMap.moduleEditorParams = undefined;
             }
         }
@@ -481,7 +483,7 @@ define([
             }
 
 			moduleEditorParams.setEditorObj = function(obj) {
-                setFakeIconPosition();
+                // setFakeIconPosition();
                 moduleEditorParams = config.shareMap.moduleEditorParams || {};
                 
                 var blockLineNumFrom = moduleEditorParams.wikiBlock.blockCache.block.textPosition.from;

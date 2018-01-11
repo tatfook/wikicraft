@@ -20,45 +20,29 @@ define([
                 return outputDate;
             }
 
-            if($scope.editorMode) {
-                var path = '/ukinll/first';
-                var params = path.split("/");
-                var urlObj = $rootScope.urlObj;
-                console.log(params)
+            var editModeHref = window.location.href;
+            var editPath = editModeHref.substr(editModeHref.indexOf('#')+1)
 
-                util.http("POST", 'http://keepwork.com/api/wiki/models/website/getDetailInfo', {
-                    username: params[1],
-                    sitename: params[2]
-                }, function (data) {
-                    var currentScope = [];
-                    data = data || {};
-                
-                    currentScope.userinfo = data.userinfo;
-                    currentScope.siteinfo = data.siteinfo;
+            var path = editModeHref.indexOf('#') === -1 ? util.parseUrl().pathname : editPath;
+            console.log(path)
+            var params = path.split("/");
+            var urlObj = $rootScope.urlObj;
 
-                    render(currentScope);
-                });
+            util.http("POST", config.apiUrlPrefix + "website/getDetailInfo", {
+                username: params[1],
+                sitename: params[2],
+                pagename: params[3],
+                userId: $rootScope.user && $rootScope.user._id,
+            }, function (data) {
+                var currentScope = [];
+                data = data || {};
+            
+                currentScope.userinfo = data.userinfo;
+                currentScope.siteinfo = data.siteinfo;
 
-            } else {
-                var path = util.parseUrl().pathname;
-                var params = path.split("/");
-                var urlObj = $rootScope.urlObj;
-
-                util.http("POST", config.apiUrlPrefix + "website/getDetailInfo", {
-                    username: params[1],
-                    sitename: params[2],
-                    pagename: params[3],
-                    userId: $rootScope.user && $rootScope.user._id,
-                }, function (data) {
-                    var currentScope = [];
-                    data = data || {};
-                
-                    currentScope.userinfo = data.userinfo;
-                    currentScope.siteinfo = data.siteinfo;
-
-                    render(currentScope);
-                });
-            }
+                render(currentScope);
+            });
+            
 
             function render(currentScope) {
                 var goLogin = function() {
@@ -75,19 +59,13 @@ define([
                     });
                 }
 
-                if($scope.editorMode) {
-                    $scope.comment = { 
-                        url: '/ukinll/first', 
-                        websiteId: currentScope.siteinfo._id, 
-                        userId: 18943 
-                    };
-                } else {
-                    $scope.comment = { 
-                        url: util.parseUrl().pathname, 
-                        websiteId: currentScope.siteinfo._id, 
-                        userId: $scope.user && $scope.user._id 
-                    };
-                }
+                
+                $scope.comment = { 
+                    url: path, 
+                    websiteId: currentScope.siteinfo._id, 
+                    userId: $scope.user && $scope.user._id 
+                };
+                
 
                 $scope.submitComment = function () {
                     $scope.comment.content = util.stringTrim($scope.comment.content);
@@ -122,55 +100,28 @@ define([
                             $scope.$apply();
                             return;
                         }
-                        if($scope.editorMode){
-                            // util.post('http://keepwork.com/api/wiki/models/website_comment/create', $scope.comment, function (data) {
-                            //     $scope.comment.content = "";
-                            //     console.log(data);
-                            //     $scope.getCommentList();
-                            // });
+                    
+                        util.post(config.apiUrlPrefix + 'website_comment/create', $scope.comment, function (data) {
                             $scope.comment.content = "";
-                            return
-
-                        } else {
-                            util.post(config.apiUrlPrefix + 'website_comment/create', $scope.comment, function (data) {
-                                $scope.comment.content = "";
-                                console.log(data);
-                                $scope.getCommentList();
-                            });
-                        }
+                            console.log(data);
+                            $scope.getCommentList();
+                        });
+                        
                     }
                 }
 
                 $scope.getCommentList = function () {
-                    if($scope.editorMode) {
-                        // util.post('http://keepwork.com/api/wiki/models/website_comment/getByPageUrl', {
-                        //     url: path,
-                        //     pageSize:10000000
-                        // }, function (data) {
-                        //     $scope.commentObj = data;
-                        // });
-                        $scope.commentObj = {}
-
-                    } else {
-                        util.post(config.apiUrlPrefix + 'website_comment/getByPageUrl', { url: util.parseUrl().pathname, pageSize:10000000 }, function (data) {
-                            $scope.commentObj = data;
-                        });
-                    }
+                    util.post(config.apiUrlPrefix + 'website_comment/getByPageUrl', { url: path, pageSize:10000000 }, function (data) {
+                        $scope.commentObj = data;
+                    });
+                    
                 }
 
                 $scope.deleteComment = function (comment) {
-                    if($scope.editorMode) {
-                        util.post('http://keepwork.com/api/wiki/models/website_comment/deleteById', 
-                            comment,
-                            function (data) {
-                                $scope.getCommentList()
-                            }
-                        )
-                    } else {
-                        util.post(config.apiUrlPrefix + 'website_comment/deleteById', comment, function (data) {
-                            $scope.getCommentList();
-                        })
-                    }
+                    util.post(config.apiUrlPrefix + 'website_comment/deleteById', comment, function (data) {
+                        $scope.getCommentList();
+                    })
+                    
                 }
 
                 function init() {

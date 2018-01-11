@@ -1,8 +1,9 @@
 define([
     'app',
+    'markdown-it',
     'helper/util',
     'text!wikimod/adi/html/text.html'
-], function(app, util, htmlContent) {
+], function(app, markdown_it, util, htmlContent) {
     function registerController (wikiblock) {
         app.registerController("textController", ['$scope','$sce', function ($scope,$sce) {
             $scope.editorMode = wikiblock.editorMode;
@@ -52,10 +53,17 @@ define([
                         name         : "文字说明",
                         text         : '一个人去旅行，而且是去故乡的山水间徜徉。临行之前，面对太多的疑问和不解：为何是一个人？也有善意的提醒：何不去远方！昆明呀——赶一个花海；三亚呀——赴一个蓝天碧海。只是微笑地固执自己的坚持，不做任何解释。没有人明白，这一次是一个告别，或者一个永远的告别，以后我会去到很多很繁华或苍凉，辽远或偏僻的地方，而会常常想起这一次的旅行，想起那座山，那个城，那些人……',
                         require      : true,
+                        href: '',
+                        target:'_blank'
 					}
                 }
             })
-            $scope.params.multiText_desc.text = $sce.trustAsHtml($scope.params.multiText_desc.text);
+            var md = new markdown_it({
+                html: true,
+                langPrefix: 'code-',
+            })
+            $scope.params.multiText_desc.text = md.render($scope.params.multiText_desc.text);
+            $scope.targetIf = $scope.params.multiText_desc.href.length == 0
         }])
     }
     

@@ -295,11 +295,13 @@ define([
 					//modParams = angular.toJson(modParams, 4);
 					modParams = mdconf.jsonToMd(modParams);
                 }
+                var oldCursorPosition = editor.getCursor();
 				//console.log(modParams, pos);
                 editor.replaceRange(modParams + '\n', {line: pos.from + 1, ch: 0}, {
                     line: pos.to - 1,
                     ch: 0
                 });
+                editor.setCursor(oldCursorPosition);
             },
 
 			formatModParams: function(key, datas, data, hideDefauleValue) {
@@ -420,6 +422,10 @@ define([
 					return undefined;
 				}
 				config.services.$rootScope.viewEditorClick = function(obj, $event) {
+                    var isCodeView = moduleEditorParams && moduleEditorParams.show_type;
+                    if (!isCodeView) {
+                        return;
+                    }
 					var self = getSelf(obj);	
 					if (!self || !self.blockCache) {
 						return;
@@ -459,12 +465,22 @@ define([
                     $(".mod-container.active").removeClass("active");
 					if (self.blockCache.domNode) {
 						self.blockCache.domNode.addClass("active");
-					}
+                    }
                     moduleEditorParams.setEditorObj(obj);
+                    setFakeIconPosition();
 					//console.log(params_template);
 					// moduleEditorParams.is_show = true;
 					moduleEditorParams.show_type = "editor";
 					// $("#moduleEditorContainer").show();
+                    var modToLine = self.blockCache.block.textPosition.to;
+                    editor = editor || mdwiki.editor;
+                    if (!editor) {
+                        return;
+                    }
+                    editor.setCursor({
+                        "line": modToLine-1,
+                        "ch": 0
+                    });
 				};
 
 
@@ -507,7 +523,24 @@ define([
 					return;
 				}
 
-				//console.log(moduleEditorParams, self);
+                //console.log(moduleEditorParams, self);
+                var fakeIconDom = [];
+                var setFakeIconPosition = function(){
+                    fakeIconDom = fakeIconDom.length > 0 ? fakeIconDom : $(".mod-container.active .fake-icon");
+                    if (fakeIconDom.length <= 0) {
+                        setTimeout(function(){
+                            setFakeIconPosition();
+                        });
+                        return;
+                    }
+                    var boxWidth = $("#preview").width();
+                    var leftDistance = boxWidth/2;
+                    var scaleSize = config.services.$rootScope.scaleSelect.scaleValue;
+                    fakeIconDom.css({
+                        "left" : leftDistance / scaleSize
+                    });
+                    fakeIconDom = [];
+                }
 
 				if (moduleEditorParams && moduleEditorParams.wikiBlockStartPost != undefined) {
 					//var oldWikiBlock = moduleEditorParams.wikiBlock;
@@ -524,10 +557,11 @@ define([
 							moduleEditorParams.wikiBlock = self;
 							moduleEditorParams.updateEditorObj(self.format_params_template);
 						}
-						console.log("更新wikiblock", moduleEditorParams);
+                        console.log("更新wikiblock", moduleEditorParams);
 					}
-				}
-
+                }
+                
+                setFakeIconPosition();
 
 				var containerId = "#" + self.containerId;
 				if (!self.blockCache.block.isTemplate) {
@@ -801,7 +835,7 @@ define([
             return md;
         };
 
-		mdwiki.cursorActivity = function() {
+		mdwiki.cursorActivity = function(cm) {
 			var cur_line = mdwiki.editor.getCursor().line;
 			var blockList = mdwiki.blockList || [], curBlock = undefined;
 			for (var i = 0; i < blockList.length; i++) {
@@ -827,10 +861,12 @@ define([
 				}
 
 			} else {
+                console.log(cm);
                 // 非wiki mod todo
                 var moduleEditorParams = config.shareMap.moduleEditorParams || {};
                 moduleEditorParams.activeContainerId = "";
-				moduleEditorParams.show_type = "knowledge";
+                moduleEditorParams.show_type = "knowledge";
+                console.log("markwnwiki---line 838");
 				moduleEditorParams.setKnowledge("");
 				util.$apply();
 			}

@@ -16,13 +16,13 @@ define([
 					{
 						"design": {
                             "text":"style1",
-                            "cover":"/wiki/js/mod/adi/assets/images/titleLeft.png"
+                            "cover":"http://git.keepwork.com/gitlab_rls_official/keepworkimages/raw/master/official_images/img_1515414255990.jpeg"
 						},
 					},
 					{
 						"design": {
                             "text":"style2",
-                            "cover":"/wiki/js/mod/adi/assets/images/titleCenter.png"
+                            "cover":"http://git.keepwork.com/gitlab_rls_official/keepworkimages/raw/master/official_images/img_1515414270193.jpeg"
 						},
 					},
 				],
@@ -75,6 +75,11 @@ define([
             }
 
 			wikiblock.init(initObj);
+			$scope.titleImg = {
+				"background-image"    : 'url('+ $scope.params.media_img.text +')',
+				"background-size"     : "cover",
+				"background-position" : "center center",
+			}
 		}]);
     }
 
