@@ -63,7 +63,7 @@
             <a class='textContent' 
                 ng-if="editorMode"
                 ng-hide="params.multiText_desc.is_mod_hide" 
-                ng-bind-html="params.multiText_desc.text"
+                ng-bind-html="multiText_desc_md"
                 ng-click="viewEditorClick(params.multiText_desc, $event)"
                 target="{{params.multiText_desc.target}}"
                 ng-href="{{params.multiText_desc.href}}">
@@ -72,7 +72,7 @@
                 ng-if="!editorMode"
                 ng-hide="params.multiText_desc.is_mod_hide" 
                 ng-class="{true:'multi-text-no-href'}[!params.multiText_desc.href.length]"
-                ng-bind-html="params.multiText_desc.text"
+                ng-bind-html="multiText_desc_md"
                 target="{{params.multiText_desc.target}}"
                 ng-href="{{params.multiText_desc.href}}">
             </a>
@@ -100,7 +100,7 @@
             <a class='textContent' 
                 ng-if="editorMode"
                 ng-hide="params.multiText_desc.is_mod_hide" 
-                ng-bind-html="params.multiText_desc.text"
+                ng-bind-html="multiText_desc_md"
                 ng-click="viewEditorClick(params.multiText_desc, $event)"
                 target="{{params.multiText_desc.target}}"
                 ng-href="{{params.multiText_desc.href}}">
@@ -108,7 +108,7 @@
             <a class='textContent' 
                 ng-if="!editorMode"
                 ng-hide="params.multiText_desc.is_mod_hide" 
-                ng-bind-html="params.multiText_desc.text"
+                ng-bind-html="multiText_desc_md"
                 target="{{params.multiText_desc.target}}"
                 ng-href="{{params.multiText_desc.href}}">
             </a>
