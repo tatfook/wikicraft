@@ -1,0 +1,59 @@
+<style>
+    .modal-multi-text {
+        width: 750px;
+    }
+
+    .modal-multi-text .modal-header {
+        padding: 9px 30px;
+        background-color: #3977AD;
+        color: #FFF;
+    }
+
+    .modal-multi-text .modal-header h4 {
+        font-weight: normal;
+    }
+
+    .modal-multi-text .modal-header .close {
+        color: #FFF;
+        text-shadow: none;
+        font-weight: normal;
+        font-size: 24px;
+        opacity: 1;
+    }
+
+    .modal-multi-text .modal-body {
+        padding: 40px 30px 25px;
+        ;
+    }
+
+    .modal-multi-text .modal-body textarea {
+        padding: 0;
+        height: 216px;
+        outline: none;
+        border: none;
+    }
+
+    .modal-multi-text .btn {
+        margin-top: 20px;
+        width: 120px;
+        height: 30px;
+        padding: 0;
+    }
+
+    .modal-multi-text .btn-default{
+        background-color: #DDD;
+        color: #999;
+    }
+</style>
+<div class="modal-header">
+    <button type="button" class="close" ng-click="cancel()">&times;</button>
+    <h4 class="modal-title">文本</h4>
+</div>
+<div class="modal-body clearfix">
+    <textarea placeholder="书写内容（可以使用markdown语法）:" autofocus ng-model="multiText">{{multiText}}</textarea>
+    <button class="btn pull-right" 
+        ng-class="{true:'btn-default', false:'btn-primary'}[!multiText]" 
+        ng-disabled="!multiText"
+        ng-click="finishEdit()"
+    >确认</button>
+</div>

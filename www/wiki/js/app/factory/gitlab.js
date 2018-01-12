@@ -280,6 +280,11 @@ define([
             }, errcb);
         }
 
+		gitlab.getSingleCommit = function(data, cb, errcb) {
+            var url = '/projects/' + this.projectId + '/repository/commits/' + data.sha;
+			this.httpRequest("GET", url, data, cb, errcb);
+		}
+
         // commit
         gitlab.listCommits = function (data, cb, errcb) {
             //data.ref_name = data.ref_name || 'master';
@@ -334,6 +339,16 @@ define([
             });
         }
 
+		gitlab.getFile = function(params, cb, errcb) {
+            var self = this;
+            params.path = self.getLongPath(params).substring(1);
+            var url = self.getFileUrlPrefix() + _encodeURIComponent(params.path);
+            params.ref = params.ref || self.lastCommitId;
+            self.httpRequest("GET", url, params, function (data) {
+                data.content = data.content && Base64.decode(data.content);
+                cb && cb(data);
+            }, errcb);
+		}
         // 获取文件
         gitlab.getContent = function (params, cb, errcb) {
             var self = this;
@@ -451,8 +466,8 @@ define([
             if (content.length > 1) {
                 var imgType = content[0];
                 content = content[1];
-                imgType = imgType.match(/image\/([\w]+)/);
-                imgType = imgType && imgType[1];
+                imgType = imgType.match(/(image|video)\/([\w]+)/);
+                imgType = imgType && imgType[2];
                 if (imgType) {
                     path = path + '.' + imgType;
                 }
@@ -471,6 +486,32 @@ define([
 				var imgUrl = self.getRawContentUrlPrefix({sha:"master", path:path, token:"visitortoken"}); 
                 cb && cb(imgUrl);
             }, errcb);
+        }
+
+        // 获得文件列表
+        gitlab.getImageList = function (cb, errcb) {
+            var self = this;
+            var url = '/projects/' + self.projectId + '/repository/tree';
+            var path = '/'+ self.dataSource.username +'_images'
+
+            var params = {};
+            params.path = path.substring(1);
+            params.recursive = false
+            params.isFetchAll = true;
+            self.httpRequest("GET", url, params, function (data) {
+                console.log('gitlab.getImageList: ', data);
+                data && data.forEach && data.forEach(function(item) {
+                    item.url = self.getRawContentUrlPrefix({sha:"master", path:'/'+item.path, token:"visitortoken"})
+                });
+                cb && cb(data);
+            }, errcb);
+        }
+
+        gitlab.removeImage = function (url, cb, errcb) {
+            var self = this;
+            var path_partials = url.split('/');
+            var path = '/' + path_partials.splice(path_partials.length - 2, 2).join('/');
+            self.deleteFile({path: path}, cb, errcb);
         }
 
 		gitlab.uploadFile = function(params, cb, errcb) {

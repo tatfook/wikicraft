@@ -17,6 +17,7 @@ define([
     'text!html/wikiEditor.html',
     'controller/editWebsiteController',
     'controller/bigfileController',
+	'controller/moduleEditorController',
     'codemirror/mode/markdown/markdown',
     // 代码折叠
     'codemirror/addon/fold/foldgutter',
@@ -33,9 +34,8 @@ define([
     'codemirror/addon/search/jump-to-line',
     'codemirror/addon/scroll/annotatescrollbar',
     'codemirror/addon/display/fullscreen',
-    'bootstrap-treeview',
-    'qiniu',
-], function (app, /*html2canvas,*/ markdownit, toMarkdown, CodeMirror, markdownwiki, util, storage, dataSource, mdconf, qiniu, htmlContent, editWebsiteHtmlContent, bigfileContent) {
+    'bootstrap-treeview'
+], function (app, /*html2canvas,*/ markdownit, toMarkdown, CodeMirror, markdownwiki, util, storage, dataSource, mdconf, qiniu, htmlContent, editWebsiteHtmlContent, bigfileContent, moduleEditorContent) {
     var otherUserinfo = undefined;
     var pageSuffixName = config.pageSuffixName;
     var mdwiki = markdownwiki({editorMode: true, breaks: true, isMainMd:true});
@@ -619,6 +619,8 @@ define([
             $scope.showView=true;
             $scope.full=false;
             $scope.opens={};
+
+            var fakeIconDom = [];
             var dropFiles = {};
             var isBigfileModalShow = false;
             var isConfirmDialogShow = false;
@@ -1229,6 +1231,9 @@ define([
 							return ;	
 						}
 
+						var moduleEditorParams = config.shareMap.moduleEditorParams;
+						moduleEditorParams.show_type = "knowledge";
+						moduleEditorParams.setKnowledge("");
                         setEditorValue(page, content);
 					}
                     getCurrentPageContent(page, function (data) {
@@ -1255,9 +1260,14 @@ define([
                     var currentDataSource = dataSource.getDataSource(page.username, page.sitename);
                     //console.log(currentDataSource);
                     if (currentDataSource) {
-                        currentDataSource.getRawContent({path: url + pageSuffixName}, function (data) {
+                        //currentDataSource.getRawContent({path: url + pageSuffixName}, function (data) {
+                        currentDataSource.getFile({path: url + pageSuffixName}, function (data) {
                             //console.log(data);
-                            cb && cb(data);
+                            cb && cb(data.content);
+							currentDataSource.getSingleCommit({sha:data.last_commit_id}, function(data){
+								page.committer_name = data.committer_name;
+								page.committed_date = data.committed_date;
+							})
                         }, errcb);
                     } else {
                         //console.log("----------data source uninit-------------");
@@ -1413,7 +1423,11 @@ define([
             }//}}}
 
 
-            $scope.openWikiBlock = function () {//{{{
+            $scope.openWikiBlock = function (insertLine, type) {//{{{
+                $scope.insertMod = {
+                    "insertLine": insertLine,
+                    "type": type
+                };
                 function formatWikiCmd(text) {
                     var lines = text.split('\n');
                     var startPos = undefined, endPos = undefined;
@@ -1443,28 +1457,38 @@ define([
                         return newText;
                     } catch (e) {
                         console.log(e);
-                        return lines.slice(0, startPos + 1).join('\n') + '\n' + lines.slice(endPos).join('\n');
+                        return lines.slice(0, startPos + 1).join('\n') + '\n' + paramsText + '\n' + lines.slice(endPos).join('\n');
                     }
                 }
 
-                //console.log('openWikiBlock');
                 modal('controller/wikiBlockController', {
                     controller: 'wikiBlockController',
                     size: 'lg',
                     backdrop:true
                 }, function (wikiBlock) {
-                    //console.log(wikiBlock);
                     var wikiBlockContent = formatWikiCmd(wikiBlock.content);
                     var cursor = editor.getCursor();
-                    var content = editor.getLine(cursor.line);
-                    if (content.length > 0) {
-                        wikiBlockContent = '\n' + wikiBlockContent;
-                    }
-                    editor.replaceSelection(wikiBlockContent);
+                    var toInsertLine = ($scope.insertMod.insertLine >= 0) ? $scope.insertMod.insertLine : cursor.line;
+                    var content = editor.getLine(toInsertLine);
+                    wikiBlockContent = '\n' + wikiBlockContent + '\n';
+                    editor.replaceRange(wikiBlockContent, {
+                        "line": toInsertLine,
+                        "ch": 0
+                    });
                 }, function (result) {
                     console.log(result);
                 });
             }//}}}
+
+            $rootScope.insertMod = function(type){
+                var moduleEditorParams = config.shareMap.moduleEditorParams || {};
+                var modPositon = moduleEditorParams.wikiBlock.blockCache.block.textPosition;
+                if (type == "before") {
+                    $scope.openWikiBlock(modPositon.from, type);
+                }else {
+                    $scope.openWikiBlock(modPositon.to, type);
+                }
+            }
 
             $scope.openGitFile = function () {//{{{
                 if (!currentPage || !currentPage.url) {
@@ -2583,6 +2607,11 @@ define([
                 storage.indexedDBSetItem(config.pageStoreName, currentPage, cb, errcb); // 每次改动本地保存
             }//}}}
 
+			function initModuleEditor() {
+				util.html("#moduleEditor", moduleEditorContent);
+				// $("#moduleEditorContainer").hide();
+			}
+
             function initEditor() {
                 //console.log("initEditor");
 				//{{{
@@ -2590,6 +2619,8 @@ define([
                     console.log("init editor failed");
                     return;
                 }
+
+				initModuleEditor();
 
                 var winWidth = $(window).width();
                 if (winWidth<992){
@@ -2733,6 +2764,7 @@ define([
                         },
                     }
                 });
+                $rootScope.editor = editor;
 				//}}}
                 //var viewEditorTimer = undefined;//{{{
                 //$('body').on('focus', '[contenteditable]', function () {
@@ -2765,6 +2797,7 @@ define([
                 //});
 
                 mdwiki.setEditor(editor);
+				config.shareMap.mdwiki = mdwiki;
 
                 var scrollTimer = undefined, changeTimer = undefined;
 					var isScrollPreview = false;
@@ -2812,7 +2845,13 @@ define([
                     //return result;
                 //};
 
+				editor.on("cursorActivity", function(cm){
+					mdwiki.cursorActivity();					
+				});
+
                 editor.on("change", function (cm, changeObj) {
+                    var moduleEditorParams = config.shareMap.moduleEditorParams || {};
+                    var isStopRender = moduleEditorParams.renderMod == "editorToCode";
                     changeCallback(cm, changeObj);
 
                     if (currentPage && currentPage.url) {
@@ -2820,18 +2859,26 @@ define([
                     }
 
                     renderTimer && clearTimeout(renderTimer);
-                    renderTimer = setTimeout(function () {
+                    renderTimer = setTimeout((function (isStopRender) {
+                        renderAutoSave();
+                        //if (isStopRender){
+                            //moduleEditorParams.renderMod = undefined;
+                            //return;
+                        //}
                         var text = editor.getValue();
                         //if((!currentSite || currentSite.sensitiveWordLevel & 1) <= 0){
                             //text = filterSensitive(text) || text;
                         //}
                         mdwiki.render(text);
-                        renderAutoSave();
+
+                        //var toLineInfo = changeObj && editor.lineInfo(changeObj.to.line);
+                        //moduleEditorParams.show_type = "knowledge";
+                        //moduleEditorParams.setKnowledge(toLineInfo ? toLineInfo.text:"");
 
                         timer = undefined;
-                    }, 100);
+                    })(isStopRender));
                 });
-                mdwiki.bindRenderContainer(".result-html");
+                mdwiki.bindRenderContainer(".result-html", ".tpl-header-container");
                 editor.focus();
                 setEditorHeight();
 //}}}
@@ -3036,10 +3083,13 @@ define([
                     setTimeout(function () {
                         var wikiEditorContainer = $('#wikiEditorContainer')[0];
                         var wikiEditorPageContainer = $('#wikiEditorPageContainer')[0];
+                        var attEditHeight = $("#moduleEditorContainer").height();
                         var height = (wikiEditorPageContainer.clientHeight - wikiEditorContainer.offsetTop) + 'px';
-                        editor.setSize('auto', height);
+                        var noAttEditHeight = (wikiEditorPageContainer.clientHeight - wikiEditorContainer.offsetTop - attEditHeight) + 'px';
+                        editor.setSize('auto', noAttEditHeight);
                         $('#wikiEditorContainer').css('height', height);
                         $('.full-height').css('height', height);
+                        $('.full-noAttr-height').css('height', noAttEditHeight);
 
                         var w = $("#__mainContent__");
                         w.css("min-height", "0px");
@@ -3280,6 +3330,7 @@ define([
                     var scaleSize=getScaleSize();
                     $scope.scales[$scope.scales.length-1].scaleValue=scaleSize;
                     $scope.scaleSelect=$scope.scales[$scope.scales.length-1];//比例的初始状态为 “适合宽度”
+                    $rootScope.scaleSelect = $scope.scaleSelect;
                     util.$apply();
                 }
 
@@ -3594,7 +3645,7 @@ define([
                     col2Width=parseInt(col2.width(),10);
                     startX=event.clientX;
                     $(".CodeMirror").on("mousemove",mousemoveEvent);
-                    $(".result-html").on("mousemove",mousemoveEvent);
+                    $("#preview").on("mousemove",mousemoveEvent);
                     $(".code-view").on("mouseup",mouseupEvent);
                 });
 
@@ -3616,9 +3667,9 @@ define([
 
                 var mouseupEvent = function(){
                     $(".CodeMirror").off("mousemove",mousemoveEvent);
-                    $(".result-html").off("mousemove",mousemoveEvent);
+                    $("#preview").off("mousemove",mousemoveEvent);
                     $(".CodeMirror").off("mouseup",mouseupEvent);
-                    $(".result-html").off("mouseup",mouseupEvent);
+                    $("#preview").off("mouseup",mouseupEvent);
                 };
                 return editor;
 				//}}}

@@ -229,8 +229,8 @@ local function getCalllbackUrl()
 		host = "121.14.117.251:8900"
 	end
 
-	--return "http://" .. request:GetHost() .. "/api/wiki/models/qiniu/callback"
-	return "http://" .. host .. "/api/wiki/models/qiniu/callback"
+	return "http://" .. request:GetHost() .. "/api/wiki/models/qiniu/callback"
+	-- return "http://" .. host .. "/api/wiki/models/qiniu/callback"
 end
 
 -- 七牛上传回调

@@ -143,16 +143,16 @@ end
 
 function worlds:api_getOneOpus(params)
 	local err, query = self:validateQuery(params);
-	--LOG.std(nil,"debug","queryapi_getOneOpus",query);
 
 	if(not query.opusId) then
 		return {error = {id = -1} , msg = "opusId is not set"};
 	end
 
 	self:db():findOne({_id=query.opusId},resume);
-	local err,opusResponse = yield(true);
+	local err, opusResponse = yield(true);
 
-	if(not opusResponse.viewTimes) then
+	if(not opusResponse or not opusResponse.viewTimes) then
+		opusResponse = {};
 		opusResponse.viewTimes = 0;
 	end
 

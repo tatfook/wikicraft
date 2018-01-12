@@ -959,7 +959,7 @@ define([
                     });
                 }
 
-                $scope.clickDelete = function(x, tableName) {
+                $scope.clickDeleteSensitiveWord = function(x, tableName) {
                     var deleteConfirm = confirm("确定删除该项么？");
 
                     if(deleteConfirm){
@@ -983,86 +983,70 @@ define([
 /********** 在线统计|留存分析|新用户分析|支付情况|服务器监控|开始 **********/
             $scope.serverCurrentPage = 1;			
 
-            $scope.clickMenuItem = function(menuItem) {
-                if(menuItem != "wikicmd"){
-                    alert("功能开发中...")
-                    return;
-                }
-                
-                $scope.query = {};
-                $scope.selectMenuItem = menuItem;
-
-                var tableName;
-
-                if(menuItem == "wikicmd"){
-                    tableName = "wiki_module";
-                }
-
-                $scope.clickQuery(tableName);
+            $scope.clickServerMenuItem = function(){
+                alert("功能开发中...")
+                return;
             }
-
-            $scope.clickQuery = function(tableName) {
-                for (var key in $scope.query) {
-                    if ($scope.query[key] == "") {
-                        $scope.query[key] = undefined;
-                    }
-                }
-                
-                util.post(config.apiUrlPrefix + "tabledb/query", {
-                    tableName : tableName,
-                    page      : $scope.serverCurrentPage,
-                    pageSize  : $scope.pageSize,
-                    query     : $scope.query,
-                }, function(data){
-                    data = data || {};
-                    $scope.data = data.data || [];
-                    $scope.totalItems = data.total || 0;
-                    //console.log($scope.datas);
-                });
-            }
-
 /********** 在线统计|留存分析|新用户分析|支付情况|服务器监控|结束 **********/
 
 
 
 /********** wikicmd开始 **********/
-            $scope.wikiPageSize = 15;
+            $scope.wikiPageSize      = 15;
             $scope.wikicmdTotalItems = 0;
-            $scope.wikiCurrentPage = 1;
-            $scope.wikiData = [];
+            $scope.wikiCurrentPage   = 1;
+            $scope.wikiData          = [];
+            $scope.wikiQuery         = {};
 
-            $scope.clickEdit = function(x) {
-                $scope.query = x;
+            $scope.clickCmd = function() {
+                $scope.selectMenuItem = "wikicmd";
+                $scope.queryWikiModule();
+            }
+
+            $scope.clickEditMod = function(x) {
+                $scope.wikiQuery = x;
+                $scope.wikiQuery.oldWikiCmdName = angular.copy($scope.wikiQuery.wikiCmdName);
+            }
+
+            $scope.clickDeleteMod = function(x){
+                util.post(config.apiUrlPrefix + 'tabledb/delete', {tableName:"wiki_module", query:{_id : x._id}}, function(data){
+                    Message.info("删除成功");
+                    $scope.wikiQuery = {};
+                    $scope.queryWikiModule();
+                });
             }
 
             $scope.clickUpsertWikicmd = function() {
-                util.post(config.apiUrlPrefix + 'wiki_module/upsert', $scope.query, function(data){
+                util.post(config.apiUrlPrefix + 'wiki_module/upsert', $scope.wikiQuery, function(data){
                     if (data) {
-                        Message.info("添加成功");
-                        $scope.wikiData.push(data);
-                        $scope.wikicmdTotalItems++;
+                        Message.info("更新成功");
+                        $scope.wikiQuery = {};
+                        $scope.queryWikiModule();
                     } else {
-                        Message.info("添加失败");
+                        Message.info("操作失败");
                     }
                 });
             }
-    
-            $scope.insertAll = function () {
-                var length = mods.length;
-                console.log(length);
-                for (var i=0; i<length; i++){
-                    util.post(config.apiUrlPrefix + 'wiki_module/upsert', mods[i], function(data){
-                        if (data) {
-                            Message.info("添加成功");
-                            $scope.wikiData.push(data);
-                            $scope.wikicmdTotalItems++;
-                        } else {
-                            Message.info("添加失败");
-                            console.log(mods[i]);
-                        }
-                    });
+
+            $scope.queryWikiModule = function() {
+                for (var key in $scope.wikiQuery) {
+                    if ($scope.wikiQuery[key] == "") {
+                        $scope.wikiQuery[key] = undefined;
+                    }
                 }
-            }
+
+                util.post(config.apiUrlPrefix + "tabledb/query", {
+                    tableName : "wiki_module",
+                    page      : $scope.wikiCurrentPage,
+                    pageSize  : $scope.wikiPageSize,
+                    query     : $scope.wikiQuery,
+                }, function(data){
+                    data = data || {};
+
+                    $scope.wikiData   = data.data || [];
+                    $scope.wikicmdTotalItems = data.total || 0;
+                });
+            };
 /********** wikicmd结束 **********/
 
         }]);

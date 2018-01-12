@@ -3,101 +3,18 @@ define([
     'helper/util',
     'markdown-it',
 ], function (util, markdownit) {
-	var delimit = "$";
 	var mdconf = {};
 
-	function parseMd(text) {
-		var textLineList = text.split('\n');
-		var md = markdownit();
-		var tokens = md.parse(text, {});
-		var blockList = [];
-		var stack = 0;
-		var maxValue = 99999999;
-		var block = {
-			from: maxValue,
-		   	to: 0,
-			lines:[],
+	function isEmptyObject(obj) {
+		if (!obj) {
+			return true;
 		}
 
-		for (var i = 0; i < tokens.length; i++) {
-			var token = tokens[i];
-			if (token.type.indexOf('_open') >= 0) {
-				stack++;
-			}
-			if (token.type.indexOf('_close') >= 0) {
-				stack--;
-			}
-
-			block.tag = token.tag || block.tag;
-
-			// 获取文本位置
-			block.from = block.from == maxValue && token.map ? token.map[0] : block.from;
-			block.to = token.map ? token.map[1] : block.to;
-
-			if (stack == 0) {
-				for (var j = block.from; j < block.to; j++) {
-					block.lines.push(textLineList[j]);
-				}
-				blockList.push(block);
-				// 重置初始状态
-				block = {
-					from: maxValue,
-				   	to: 0,
-					lines: [],
-				}
-			}
-		}
-		//console.log(blockList);
-		return blockList;
-	}
-
-	function specialCharEscape(str, ch) {
-		ch = ch || '\\|';
-
-		var ret = "";
-		for (var i = 0; i < str.length; i++) {
-			console.log(str[i], ch.indexOf(str[i]));
-			if (ch.indexOf(str[i]) >= 0) {
-				ret += '\\' + str[i];
-			} else {
-				ret += str[i];
-			}
-		}
-		return ret;
-	}
-
-	function specialCharUnescape(str, ch) {
-		ch = ch || "\\|";
-
-		var ret = "";
-		for (var i = 0; i < str.length; i++) {
-			if (str[i] == "\\" && str[i+1] && ch.indexOf(str[i+1]) >=0) {
-				ret += str[i+1];
-				i++;
-			} else {
-				ret += str[i];
-			}
+		for (var k in obj) {
+			return false;
 		}
 
-		return ret;
-	}
-
-	function split(str, delim) {
-		var list = [];
-		var start = 0;
-
-		for (var i = 0; i < str.length; i++) {
-			if (str[i] == delim && str[i-1] != "\\") {
-				list.push(str.substring(start, i));
-				start = i + 1;
-			}
-		}
-
-		if (start == str.length) {
-			list.push("");
-		}
-
-		return list;
+		return true;
 	}
 
 	mdconf.toMod = function(text) {
@@ -124,178 +41,241 @@ define([
 		return text;
 	}
 
-	mdconf.toJson = function(text) {
-		var blocks = parseMd(text);
-		
-		var keys = [];
+	// md 转json对象
+	mdconf.mdToJson = function(text) {
+		var temp_lines = text.trim().split("\n");
+		var lines = [];
+		var line = "";
 		var conf = {};
+		var curConf = conf;
 
-		var topDepth = 0;
-		var isExistKey = false;
-
-		for (var i = 0; i < blocks.length; i++) {
-			var block = blocks[i];
-			
-			if (/^[hH][1-6$]/.test(block.tag)) {
-				var depth = parseInt(block.tag[1]);
-				while(topDepth-- >= depth) {
-					keys.pop();
-				}
-				topDepth =depth;
-
-				var line = block.lines[0] || "";
-				var key = line.replace(/^[ #]*/, "");
-				if (key) {
-					keys.push(key);
-					isExistKey = true;
-				}
-				continue;
+		var getObj = function(key) {
+			if (!key) {
+				return conf;
 			}
-			
-			if (!isExistKey) {
-				continue;
-			}
+			var keys = key.split(".");
+			var tmpConf = conf;
+			for (var i = 0; i < keys.length; i++){
+				tmpConf[keys[i]] = tmpConf[keys[i]] || {};
 
-			var curConf = conf;
-			var curKey = keys[0];
-			for (var j = 1; j < keys.length; j++) {
-				curConf[curKey] = curConf[curKey] || {};
-				curConf = curConf[curKey];
-				curKey = keys[j];
-			}
-
-			if (block.tag == "ul") {
-				var lines = block.lines;
-				var isObject = undefined;
-				for (var j = 0; j < lines.length; j++) {
-					var line = lines[j];
-					line = line.replace(/^[-* ]*/, "").trim();
-					if (!line) {
-						continue;
+				if (keys[i].match(/\d+/)) {
+					var tmp = parseInt(keys[i]);
+					tmpConf.length = tmpConf.length || -1;
+					if (tmpConf.length <= tmp) {
+						tmpConf.length = tmp + 1;
 					}
-
-					var delim = line.indexOf(":");
-					if (isObject == undefined) {
-						if (delim > 0) {
-							isObject = true;
-							curConf[curKey] = {};
-						} else {
-							isObject = false;
-							curConf[curKey] = [];
-						}
-					}
-					
-					delim = delim < 0 ? line.length : delim;
-					var key = line.substring(0, delim).trim();
-					var value = line.substring(delim+1).trim();
-
-					if (isObject) {
-						curConf[curKey][key] = value;
-					} else {
-						curConf[curKey].push(key);
-					}
-				}
-
-				isExistKey = false;
-			}
-
-			if (block.tag == "table") {
-				var lines = block.lines;
-				var line = lines[0];
-				var fieldList = line.split("|");
 				
-				curConf[curKey] = [];
-				
-				for (var j = 2; j < lines.length-1; j++) {
-					line = lines[j];
-					var valueList = split(line, "|");
-					var tempConf = {};
-
-					for (var k = 1; k < valueList.length-1; k++) {
-						tempConf[fieldList[k]] = valueList[k].trim();
-					}
-
-					curConf[curKey].push(tempConf);
 				}
-				isExistKey = false;
+				tmpConf = tmpConf[keys[i]];
+			}
+
+			return tmpConf;
+		}
+
+		var confConvert = function(c) {
+			if (typeof(c) != "object") {
+				return c;
+			}
+
+			var nc = c.length ? [] : {};
+
+			if (c.length) {
+				for (var i = 0; i < c.length; i++) {
+					nc.push(confConvert(c[i+""]));
+				}
+			} else {
+				for (var key in c) {
+					nc[key] = confConvert(c[key]);
+				}
+			}
+
+			return nc;
+		}
+
+		var _mdToJson = function(line) {
+			var temp = line.match(/^([-+#]) (.*)/);
+			var flag = temp[1];
+			var content = line.substring(flag.length +1).trim();	
+			var key, value;
+
+			if (flag == "#") {
+				curConf = getObj(content);
+			}
+
+			if (flag == "+" || flag == "-") {
+				temp = content.indexOf(":");
+
+				if (temp > 0) {
+					key = content.substring(0, temp).trim(); 
+					value = content.substring(temp + 1).trim();
+				} else {
+					curConf.length = curConf.length || 0;
+					key = curConf.length + "";
+					value = content.trim();
+					curConf.length = curConf.length + 1;
+				}
+
+				if (value == "true") {
+					value = true;
+				} else if (value == "false") {
+					value = false;
+				} else {
+					value = value;
+				}
+
+				curConf[key] = value;
 			}
 		}
 
-		//console.log(conf);	
-		return conf;
+		var is_comment = false;
+		var line = "";
+		for (var i = 0; i < temp_lines.length; i++) {
+			if (temp_lines[i].match(/^<!--.*-->\s*$/)) {
+				continue;
+			}
+			if (temp_lines[i].match(/^<!--/)) {
+				is_comment = true;
+				continue;
+			}
+			if (is_comment) {
+				if (temp_lines[i].match(/-->\s*$/)) {
+					is_comment = false;
+				}
+				continue;
+			}
+			if (!temp_lines[i].match(/^[-+#] .*/)) {
+				line += (line ? "\n" : "") + temp_lines[i];
+				continue;
+			}
+			if (line) {
+				lines.push(line);
+			}
+			line = temp_lines[i];
+		}
+
+		if (line) {
+			lines.push(line);
+		}
+
+		if (lines.length == 0) {
+			return "";
+		} else if (lines.length == 1 && !lines[0].match(/^[-+#] .*/)) {
+			return lines[0];
+		} else {
+			for (var i = 0; i < lines.length; i++) {
+				_mdToJson(lines[i]);
+			}
+		}
+		
+		return confConvert(conf);
 	}
 
-	mdconf.toMd = function(obj, depth, isTable) {
-		var self = this;
+	mdconf.filter = function(key) {
+		if (key && key.indexOf("$") == 0){
+			return true;
+		}
+
+		return false;
+	}
+	// json对象转markdown文本
+	mdconf.jsonToMd = function(obj) {
 		var text = "";
-		var head = ["#", "##", "###", "####", "#####", "######"];
-		depth = depth || 0;
+		var value;
 
-		if (obj.length == undefined) {
-			// table
-			// 优先写非对象值
-			for (var key in obj) {
-				var value = obj[key];
-				if (typeof(value) == "object") {
-					continue;
-				}
-
-				if (isTable) {
-					text += "|" + value;
-				} else {
+		// 非对象直接写入
+		if (typeof(obj) != "object") {
+			text += obj + "\n";
+			return text;
+		}
+		
+		var _jsonToMd = function(obj, key_prefix) {
+			key_prefix = key_prefix ? key_prefix + "." : "";
+			if (obj.length == undefined) {
+				// 单对象对应列表
+				for (var key in obj) {
+					// 优先写非对象值
+					value = obj[key];
+					if (value == undefined || mdconf.filter(key) || typeof(value) == "object") {
+						continue;
+					}
 					text += "- " + key + " : " + value + "\n";
 				}
-			}
-
-			if (isTable) {
-				text += "|\n";
-			} else {
 				for (var key in obj) {
-					var value = obj[key];
-
-					if (typeof(value) != "object") {
+					// 写对象值
+					value = obj[key];
+					if (mdconf.filter(key)|| typeof(value) != "object" || isEmptyObject(value)) {
 						continue;
 					}
 
-					text += "\n\n" + head[depth] + " " + key + "\n\n";
-					text += self.toMd(value, depth+1);
+					text += "\n# " + key_prefix + key + "\n";
+					_jsonToMd(value, key_prefix + key)
 				}
-			}
-
-		} else {
-			// list
-			var isFirst = true;
-			for (var i = 0; i < obj.length; i++) {
-				var value = obj[i];
-
-				if (typeof(value) == "object") {
-					// 表
-					if (value.length == undefined) {
-						// 不支持数组嵌套数组
-						if (isFirst) {
-							var tableHead = "";
-							var tableDelimit = "";
-							for (var field in value) {
-								tableHead += "|" + field;
-								tableDelimit += "|:--:";
-							}
-							text +=  tableHead + "|\n" + tableDelimit + "|\n";
-							isFirst = false;
-						}
-						text += self.toMd(value, undefined, true);
+			} else {
+				for (var i = 0; i < obj.length; i++) {
+					value = obj[i];
+					if (value == undefined) {
+						continue;
 					}
+					if (typeof(value) != "object") {
+						text += "- " + obj[i] + "\n";
+						continue;
+					} 
 
-					continue;
-				}
-				
-				text += "- " + value + "\n\1";
+					text += "\n# " + key_prefix + i + "\n";
+					_jsonToMd(value, key_prefix + i)
+				}		
 			}
 		}
 
-		//text += "\n";
+		_jsonToMd(obj);
 		return text;
 	}
 
+	mdconf.test = function() {
+		var obj = undefined, text = undefined;
+		//obj = "hello world"
+		//text = mdconf.jsonToMd(obj);
+		//console.log(text);
+		//console.log(angular.toJson(mdconf.mdToJson(text)));
+		//console.log(mdconf.mdToJson(text));
+
+		//obj = {key:"value"}
+		//text = mdconf.jsonToMd(obj);
+		//console.log(text);
+		//console.log(angular.toJson(mdconf.mdToJson(text)));
+		//console.log(mdconf.mdToJson(text));
+
+		//obj = ["list1", "list2"]
+		//text = mdconf.jsonToMd(obj);
+		//console.log(text);
+		//console.log(angular.toJson(mdconf.mdToJson(text)));
+		//console.log(mdconf.mdToJson(text));
+
+		//obj = [["list1", "list2"], ["list3", "list4"]]
+		//text = mdconf.jsonToMd(obj);
+		//console.log(text);
+		//console.log(angular.toJson(mdconf.mdToJson(text)));
+		//console.log(mdconf.mdToJson(text));
+
+		//obj = {key:"value", list:["list1", "list2"]}
+		//text = mdconf.jsonToMd(obj);
+		//console.log(text);
+		//console.log(angular.toJson(mdconf.mdToJson(text)));
+		//console.log(mdconf.mdToJson(text));
+
+		//obj = {key:"value", list:[{key1:"value1"},{key2:"value2"}]}
+		//text = mdconf.jsonToMd(obj);
+		//console.log(text);
+		//console.log(angular.toJson(mdconf.mdToJson(text)));
+		//console.log(mdconf.mdToJson(text));
+
+		//obj = {key:"value", list:[{key1:"value1"},{key2:"value2", list:["list1"]}]}
+		//text = mdconf.jsonToMd(obj);
+		//console.log(text);
+		//console.log(angular.toJson(mdconf.mdToJson(text)));
+		//console.log(mdconf.mdToJson(text));
+
+	}
 
 	return mdconf;
 })

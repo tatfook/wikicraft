@@ -61,9 +61,12 @@ define([
     //'directive/directive', // 不支持打包 动态加载
     'directive/moduleDirective',
     'directive/userpage',
+    'directive/tplheader',
     'directive/wikiImage',
     'directive/wikiLink',
     'directive/wikiUISelect',
+    'directive/wikiHtml',
+    'directive/ngOn',
 
     // factory
     'factory/account',
@@ -73,7 +76,10 @@ define([
     'factory/modal',
     'factory/confirmDialog',
     'factory/realnameVerifyModal',
+    'factory/datatreeEditorModal',
+    'factory/assetsManagerModal',
     'factory/loadingInterceptor',
+    'factory/selfDefinedModal',
 ], function () {
     return {};
 });

@@ -30,6 +30,17 @@ a:hover {
     height:100%;
 }
 
+.modal-position-center .modal-dialog {
+    margin: 0 auto;
+    height: 100%;
+    display: flex;
+    align-items: center;
+}
+
+.modal-position-center .modal-content {
+    margin: 0 auto;
+}
+
 .modal-xxl > .modal-content {
     height:100%;
     display:flex;
@@ -110,3 +121,18 @@ textarea{
     font-size: 145px;
     line-height: 1;
 }
+
+/*module editor css begin*/
+.kp_module_editor_input_tag {
+
+}
+
+.kp_module_editor_input_tag:hover {
+	background: gray;
+	cursor: pointer;
+}
+
+.kp_wiki_module {
+
+}
+/*module editor css end*/

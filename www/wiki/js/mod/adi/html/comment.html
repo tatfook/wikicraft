@@ -1,0 +1,74 @@
+<style>
+    .comment{
+        padding: 0;
+    }
+    .comment .info{
+        font-size: 12px;
+        color: #999;
+        margin-bottom: 5px;
+    }
+    .comment .comment-item{
+        margin: 15px 0;
+        position: relative;
+    }
+    .comment .comment-item > img{
+        width: 80px;
+        height: 80px;
+        object-fit: cover;
+        float: left;
+    }
+    .comment .comment-item .text{
+        padding-left: 90px;
+        position: relative;
+        min-height: 80px;
+        padding-right: 30px;
+    }
+    .comment .comment-input{
+        display: flex;
+        align-items: flex-end;
+    }
+    .comment .comment-input textarea{
+        margin-right: 15px;
+    }
+    .comment h4{
+        margin: 0;
+    }
+    .comment .delete-btn{
+        position: absolute;
+        right: 0;
+        top: 0;
+    }
+    .no_comment {
+        padding: 30px;
+        color:#999;
+    }
+    .shutup-comment {
+        border: 1px solid #999999;
+        padding: 60px;
+    }
+</style>
+
+<div ng-controller="commentController" class="comment">
+    <div ng-hide="params.multiText_desc.is_mod_hide">
+        <h3>我要评论</h3>
+        <div class="comments-box">
+            <div class="comment-item clearfix" ng-repeat="comment in commentObj.commentList">
+                <img ng-src="{{comment.userInfo.portrait ||  imgsPath + 'default_portrait.png'}}">
+                <div class="text">
+                    <h4>{{comment.userInfo.username || "未知用户"}}</h4>
+                    <p class="info">{{dateToStandard(comment.updateTime)}}</p>
+                    <p>{{comment.content}}</p>
+                </div>
+                <a class="delete-btn" ng-show="user._id == comment.userId" ng-click="deleteComment(comment)">删除</a>
+                <a class="delete-btn" ng-show="{{editorMode}}" ng-click="deleteComment(comment)">删除</a>
+            </div>
+        </div>
+        <div class="comment-input">
+            <textarea rows="3" ng-model="comment.content"></textarea>
+            <button class="btn btn-default" ng-click="submitComment()">提交</button>
+        </div>
+    </div>
+    <div class="text-center shutup-comment" ng-hide="!params.multiText_desc.is_mod_hide">
+        评论功能已关闭
+    </div>
+</div>

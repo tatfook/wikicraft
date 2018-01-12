@@ -1,0 +1,35 @@
+<style>
+    .photo-clear-pointer{
+        cursor : default;
+    }
+    .photo-container1 {
+        width:100%;
+        height:600px;
+        overflow: hidden;
+    }
+    .photo-container2 {
+        width:100%;
+        height:800px;
+        overflow: hidden;
+    }
+    .photo-container1, .photo-container2{
+        background-position: center center;
+        background-size: cover;
+    }
+</style>
+<div ng-controller="photoController">
+    <a href="{{editorMode ? '' : params.media_img.href}}">
+        <div ng-class="{true:'photo-clear-pointer'}[params.media_img.href.length == 0]"
+             ng-hide="params.media_img.is_mod_hide"
+             class="photo-container1"
+             ng-if="params.design.text === 'style1'"
+             ng-style="{{photoStyle}}"></div>
+    </a>
+    <a href="{{editorMode ? '' : params.media_img.href}}">
+        <div ng-class="{true:'photo-clear-pointer'}[params.media_img.href.length == 0]"
+             class="photo-container2"
+             ng-if="params.design.text === 'style2'"
+             ng-hide="params.media_img.is_mod_hide"
+             ng-style="{{photoStyle}}"></div>
+    </a>
+</div>
