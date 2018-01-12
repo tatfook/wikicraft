@@ -14,13 +14,13 @@
 
 define([
     'app',
-    'qiniu',
+    // 'qiniu',
     'angular',
     'helper/util',
     'helper/dataSource',
     'bluebird',
     'text!html/partial/assetsManagerModal.html',
-], function (app, qiniu, angular, util, dataSource, Promise, htmlContent) {
+], function (app, angular, util, dataSource, Promise, htmlContent) {
     app.registerController("assetsManagerModalController", ['$scope', '$sce', 'options', 'gitlab', function ($scope, $sce, options, gitlab) {
         var toggleNavCount = 0;
         var qiniuFileUploadedCallbacks = [];
