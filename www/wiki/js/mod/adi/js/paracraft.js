@@ -253,7 +253,9 @@ define([
 				langPrefix: 'code-'
 			})
 
-			$scope.params.multiText_desc.text = md.render($scope.params.multiText_desc.text);
+			$scope.$watch('params', function(){
+				$scope.multiText_desc_md = md.render($scope.params.multiText_desc.text);
+			})
 		}]);
     }
 
