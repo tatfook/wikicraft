@@ -37,6 +37,7 @@ define([
         $scope.choosedItems = [];
 
         $scope.$watch('$viewContentLoaded', function() {
+            getQiniuUploader();
         });
 
         openMyImages();
@@ -242,7 +243,7 @@ define([
             } else {
                 getNewQiniuUploader(function(uploader) {
                     $scope.qiniuUploader = uploader;
-                    cb(uploader);
+                    cb && cb(uploader);
                 }, errcb);
             }
         }
@@ -312,6 +313,9 @@ define([
             if (!(files && files.length)) return Promise.reject('No files to upload!');
 
             var urls = [];
+
+            config.loading.show();
+
             return Promise.each(files, function(file) {
                 return new Promise(function(resolve, reject) {
                     uploadImageFile(file, function(url){
@@ -325,10 +329,12 @@ define([
             }).then(function() {
                 resetFilePickerInput();
                 myImagesAddImages(urls);
+                config.loading.hide();
                 return urls;
             }).catch(function(e) {
                 resetFilePickerInput();
                 $scope.imageFilesPickerInput = "";
+                config.loading.hide();
                 throw e;
             })
         }
@@ -378,11 +384,6 @@ define([
                 };
                 qiniuFileUploadedCallbacks.push(callbackFn);
                 uploader.addFile(file);
-
-                //todo: check uploader is inited?
-                setTimeout(function() {
-                    uploader.start();
-                }, 300);
             });
         }
 
@@ -452,6 +453,7 @@ define([
                     template: htmlContent,
                     controller: 'assetsManagerModalController',
                     size: 'lg',
+                    backdrop: 'static',
                     windowClass: 'image-manager-popup' + ((options && options.modalPositionCenter) ? ' modal-position-center' : ''),
                     resolve: {
                         options: options
