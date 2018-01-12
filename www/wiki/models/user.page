@@ -543,6 +543,8 @@ function user:api_login(params)
 		return errors:wrap("密码错误")
 	end
 
+	request.username = userinfo.username
+	request.userid = userinfo._id
 	local siteDataSourceDB = models.site_data_source:new()
 	userinfo.defaultSiteDataSource = siteDataSourceDB:api_getSiteDataSource({username=userinfo.username, sitename=userinfo.defaultDataSourceSitename}).data
 	userinfo.dataSource = siteDataSourceDB:api_getByUsername({username=userinfo.username}).data
@@ -626,6 +628,9 @@ function user:api_register(params)
 	if not userinfo then
 		return errors:wrap(errors.SERVER_INNER_ERROR)
 	end
+
+	request.username = userinfo.username
+	request.userid = userinfo._id
 
 	local siteDataSourceDB = models.site_data_source:new()
 
