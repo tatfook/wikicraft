@@ -198,6 +198,10 @@ define([
 
 			wikiblock.init(initObj);
 
+			if($scope.params.media_logo.is_mod_hide && $scope.params.link_version.is_mod_hide && $scope.params.link_opus_id.is_mod_hide && $scope.params.multiText_desc.is_mod_hide && $scope.params.link_world_url.is_mod_hide && $scope.params.link_files_totals.is_mod_hide && $scope.params.link_username.is_mod_hide && $scope.params.link_update_date.is_mod_hide && $scope.params.link_world_name.is_mod_hide){
+				$scope.params.viewTimes.is_mod_hide = true;
+			}
+
 			$scope.checkEngine = function () {
                 $scope.showModal=true;
 
