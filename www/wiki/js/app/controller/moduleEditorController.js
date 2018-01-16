@@ -135,7 +135,9 @@ define([
         // 打开绘图板
         $scope.openBoard = function(data){
             // 画板
-            config.services.selfDefinedModal(data.options, data.success, data.error);
+            var scope = config.shareMap.moduleEditorParams.wikiBlock.scope;
+
+            config.services.selfDefinedModal(scope.options, scope.success, scope.error);
         }
 
         // 多行文本弹窗
