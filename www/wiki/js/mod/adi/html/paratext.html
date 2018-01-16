@@ -1,0 +1,33 @@
+<style>
+    *{
+        margin: 0;
+        padding: 0;
+    }
+    .clear-pointer, .clear-pointer a{
+        cursor : default !important;
+    }
+    .style1 .text{
+        width: 100%;
+        white-space: pre-wrap;
+    }
+    .style1 .text a{
+        color: black;
+    }
+</style>
+<div ng-controller="paratextController" ng-class="{true : 'clear-pointer'}[editorMode]">
+    <div ng-if='params.design.text=="style1"' class="style1 container">
+        <div class="text">
+            <a ng-if="editorMode"
+               ng-hide="params.multiText_desc.is_mod_hide"
+               ng-click="viewEditorClick(params.multiText_desc, $event)"
+               href="javascript::void(0)"
+               ng-bind-html="multiText_desc_md"></a>
+            <a ng-if="!editorMode"
+               ng-hide="params.multiText_desc.is_mod_hide"
+               target="{{params.multiText_desc.target ? params.multiText_desc.target : '_blank'}}"
+               ng-href="{{params.multiText_desc.href}}"
+               ng-class="{true : 'clear-pointer'}[params.multiText_desc.href.length == 0]"
+               ng-bind-html="multiText_desc_md"></a>
+        </div>
+    </div>
+</div>
