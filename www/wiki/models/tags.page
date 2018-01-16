@@ -1,0 +1,87 @@
+<?npl
+--[[
+Title: tags of pages
+Author: ZhengJiabiao
+Date: 2018/1
+]]
+include_once("./abstract/base.page")
+include_once("./user.page")
+
+local tags = inherit(models.abstract.base, gettable("models.tags"))
+tags.db_name = "tags"
+
+
+function tags:ctor()
+    self:addfield("title", "string", false, 30)
+    self:addfield("creator", "string", false)
+    self:addfield("createDate", "string", false, 64)
+end
+
+
+--记录后端分析用数据
+-- todo:检测用户登录状态
+function tags:api_upsert(params)
+    -- ensureAuthenticated()
+    if (not params.title) or (not params.username) then
+        return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+    end
+
+    if #params.title > 30 then
+        return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+    end
+
+    local isOk = sensitiveWordFilter({title=params.title})
+    if (not isOk) then
+        return errors:wrap("含有非法字符")
+    end
+
+    --查询用户是否存在
+    local userDB = models.user:new()
+    userDB:db():findOne({["+username"]={params.username}}, resume)
+    local _, userinfo = yield()
+
+    if (not userinfo) then
+        return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+    end
+
+    params.creator = params.username
+    params.username = nil   --只保存creator
+    params.createDate = params.createDate or ParaGlobal.GetDateFormat("yyyy-MM-dd")
+
+    self:db():insertOne({["+title"] = {params.title}}, params, resume)
+    local err, tagInfo = yield()
+
+    return errors:wrap(err)
+end
+
+
+--通过title查询
+function tags:api_getByName(params)
+    if (not params.title) then
+        return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+    end
+
+    self:db():findOne({["+title"]={params.title}}, resume)
+    
+    return errors:wrap(yield())
+end
+
+
+--通过Id查询
+function tags:api_getById(params)
+    if (not params._id) then
+        return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+    end
+
+    self:db():findOne({_id=params._id}, resume)
+    
+    return errors:wrap(yield())
+end
+
+
+--通过Id删除
+function tags:api_deleteById(params)
+    -- ensureAuthenticated()
+    self:db():deleteOne({_id=params._id}, resume)
+    return errors:wrap(yield())
+end
