@@ -523,8 +523,8 @@
                                 <button class="btn menu-btn" ng-click="openMenuEditor(data.data)" translate="打开菜单编辑器"></button>
                             </div>
                             <!-- 绘图板编辑 -->
-                            <div ng-if="data.type == 'diagram'" class="center-center">
-                                <button class="btn menu-btn" ng-click="openBoard(data.data)" translate="打开绘图板"></button>
+                            <div ng-if="data.type == 'modal'" class="center-center">
+                                <button class="btn menu-btn" ng-click="openModal(data.data)" translate="{{data.button_name}}"></button>
                             </div>
                             <!-- 多行文本 -->
                             <div ng-if="data.type == 'multiText'">

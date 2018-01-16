@@ -164,11 +164,12 @@
 				params_template : {
                     diagram_board:{
                         is_leaf      : true,
-						type         : "diagram",
+						type         : "modal",
                         editable     : true,
 						is_card_show : true,
 						is_mod_hide  : false,
                         name         : "绘图板",
+                        button_name  : "打开绘图板",
                         svg          : "",
                         compress     : "",
                     	require      : true,
