@@ -9,48 +9,39 @@
     jscolor.dir = "/wiki/js/mod/adi/assets/images/";
 
     var initEditor = function (wikiBlock, callback) {
-        console.log(wikiBlock);
-        // if (!mxClient.isBrowserSupported()) {
-        //     document.querySelector("#mx-client").innerHTML("Browser is not supported!");
-        // }
+        if (!mxClient.isBrowserSupported()) {
+            if(typeof("callback") == "function"){
+                callback(false);
+            }
+        }
 
-        // var mxClientHeight = $(window).height();
-        // var mxClientWidth  = $("#mx-client").outerWidth();
+        var boardEditorContainer = document.querySelector("#mx-client");
+        var boardEditorHeight    = window.innerHeight;
+        var boardEditorWidth     = window.innerWidth;
 
-        // $("#mx-client").css({
-        //     "width"  : mxClientWidth + "px",
-        //     "height" : mxClientHeight + "px",
-        // });
+        boardEditorContainer.style.height = boardEditorHeight + "px";
+        boardEditorContainer.style.width  = boardEditorWidth + "px";
 
-        // mxResources.loadDefaultBundle = false;
+        getThemes(function (themes) {
+            var boardEditor = new Board(new Editor(urlParams['chrome'] == '0', themes), boardEditorContainer); //初始化画板编辑器
+            var compress    = wikiBlock.modParams.diagram_board.compress;
 
-        // var bundle = mxResources.getDefaultBundle(RESOURCE_BASE, mxLanguage) || mxResources.getSpecialBundle(RESOURCE_BASE, mxLanguage);
+            if(typeof(compress) == "string" && compress.length > 4){
+                // if (data && data.replace(/[\ \r\n]+/g, "").length > 0 && data.replace(/[\ \r\n]+/g, "") != "blank") {
+                //     doc = ui.editor.graph.getDecompressData(data);
 
-        // mxUtils.getAll([bundle, STYLE_PATH + '/default.xml'], function (xhr) {
-        //     mxResources.parse(xhr[0].getText());
+                //     ui.editor.setGraphXml(doc.documentElement);
+                // }
+            }
 
-        //     var themes = new Object();
-        //     themes[Graph.prototype.defaultThemeName] = xhr[1].getDocumentElement();
+            if(typeof(callback) == "function"){
+                callback(true, boardEditor);
+            }
 
-        //     var ui = new Board(new Editor(urlParams['chrome'] == '0', themes), document.querySelector("#mx-client"));
-
-        //     if (data && data.replace(/[\ \r\n]+/g, "").length > 0 && data.replace(/[\ \r\n]+/g, "") != "blank") {
-        //         doc = ui.editor.graph.getDecompressData(data);
-
-        //         ui.editor.setGraphXml(doc.documentElement);
-        //     }
-
-        //     if (typeof (callback) == "function") {
-        //         callback(ui);
-        //     }
-
-        // }, function () {
-        //     document.querySelector("#mx-client").innerHTML = '<center style="margin-top:10%;">Error loading resource files. Please check browser console.</center>';
-        // });
+        }, callback);
     }
 
     var initPreview = function (wikiBlock, callback) {
-        console.log(wikiBlock);
         // if (!mxClient.isBrowserSupported()) {
         //     return "Browser is not supported!";
         // }
@@ -94,6 +85,56 @@
         // });
     }
 
+    function convertMxToSvg(boardEditor, mxData, callback){
+        if(mxData){
+            var graphContainer = document.createElement("div");
+
+            getThemes(function(themes){
+                var graph   = new Graph(graphContainer, null, null, null, themes);
+                var decoder = new mxCodec(mxData);
+                var node    = mxData.documentElement;
+
+                graph.centerZoom = false;
+                graph.setTooltips(false);
+                graph.setEnabled(false);
+
+                decoder.decode(node, graph.getModel());
+
+                var svg = graphContainer.querySelector("svg");
+                svg.style.backgroundImage = null;
+
+                if(typeof(callback) == "function"){
+                    callback(svg);
+                }
+            });
+        }else{
+            if(typeof(callback) == "function"){
+                callback(false);
+            }
+        }
+    }
+
+    function getThemes(successCallback, failCallback){
+        mxResources.loadDefaultBundle = false;
+
+        var bundle = mxResources.getDefaultBundle(RESOURCE_BASE, mxLanguage) || mxResources.getSpecialBundle(RESOURCE_BASE, mxLanguage);
+
+        mxUtils.getAll([bundle, STYLE_PATH + '/default.xml'], function (xhr) {
+            var i18n  = xhr[0].getText();
+            var theme = xhr[1].getDocumentElement(); 
+
+            mxResources.parse(i18n);
+
+            if(typeof(successCallback) == "function"){
+                successCallback({"default" : theme});
+            }
+        }, function () {
+            if(typeof(failCallback) == "function"){
+                failCallback(false);
+            }
+        });
+    }
+
     function registerController(wikiBlock) {
         app.registerController("boardController", ['$scope', '$uibModal', '$sce', function ($scope, $uibModal, $sce) {
             $scope.editorMode = wikiBlock.editorMode;
@@ -129,7 +170,7 @@
 						is_mod_hide  : false,
                         name         : "绘图板",
                         svg          : "",
-                        compressData : "",
+                        compress     : "",
                     	require      : true,
                     },
                 }
@@ -153,15 +194,26 @@
             }
 
             $scope.error   = function(){},
-            $scope.success = function(ui){
-                var compressData = ui.getCurrentCompressData().replace("<diagram version=\"0.0.1\">", "").replace("</diagram>", "");
 
-                console.log(compressData);
+            $scope.success = function(boardEditor){
+                var compressData = boardEditor.getCurrentCompressData();
+                var mxData       = boardEditor.editor.getGraphXml();
+
+                convertMxToSvg(boardEditor, mxData, function(svg){
+                    if(svg){
+                        console.log(svg);
+                        // console.log(wikiBlock.modParams);
+
+                        
+
+                        // $scope.params.diagram_board.compress = "http://www.baidu.com";
+                        // $scope.params.diagram_board.svg      = "http://www.qq.com";
+
+                        // $scope.applyAttrChange();
+                    }
+                });
+
                 // var diagram_board = mdconf.jsonToMd({"diagram_board":{"data":compressData}});
-
-                // if(compressData){
-                //     wikiBlock.applyModParams(diagram_board);
-                // }
             }
 
             console.log($scope.params);
@@ -169,16 +221,14 @@
 
         app.registerController("boardEditorController", ['$scope', '$uibModalInstance', 'wikiBlock', function ($scope, $uibModalInstance, wikiBlock) {
             $scope.close = function () {
-                $uibModalInstance.close($scope.ui);
+                $uibModalInstance.close($scope.boardEditor);
             }
 
             $scope.$watch('$viewContentLoaded', function(){
-                setTimeout(function () {
-                    initEditor(wikiBlock, function (ui) {
-                        $scope.ui = ui;
-                        $scope.$apply();
-                    });
-                }, 0)
+                initEditor(wikiBlock, function (beSuccess, boardEditor) {
+                    $scope.boardEditor = boardEditor;
+                    $scope.$apply();
+                });
             });
         }]);
     }

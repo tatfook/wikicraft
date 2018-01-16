@@ -137,6 +137,10 @@ define([
             // 画板
             var scope = config.shareMap.moduleEditorParams.wikiBlock.scope;
 
+            scope.applyAttrChange = function(){
+                throttle(applyAttrChange);
+            }
+
             config.services.selfDefinedModal(scope.options, scope.success, scope.error);
         }
 
