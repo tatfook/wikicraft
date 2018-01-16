@@ -4,8 +4,9 @@
     'text!wikimod/adi/html/board.html',
     'pako',
     'helper/mdconf',
+    'helper/dataSource',
     '/wiki/js/mod/adi/assets/board.min.js?bust=3',
-], function (app, util, htmlContent, pako, mdconf) {
+], function (app, util, htmlContent, pako, mdconf, dataSource) {
     jscolor.dir = "/wiki/js/mod/adi/assets/images/";
 
     var initEditor = function (wikiBlock, callback) {
@@ -24,7 +25,7 @@
 
         getThemes(function (themes) {
             var boardEditor = new Board(new Editor(urlParams['chrome'] == '0', themes), boardEditorContainer); //初始化画板编辑器
-            var compress    = wikiBlock.modParams.diagram_board.compress;
+            var compress    = wikiBlock.modParams.modal_board.compress;
 
             if(typeof(compress) == "string" && compress.length > 4){
                 // if (data && data.replace(/[\ \r\n]+/g, "").length > 0 && data.replace(/[\ \r\n]+/g, "") != "blank") {
@@ -100,11 +101,10 @@
 
                 decoder.decode(node, graph.getModel());
 
-                var svg = graphContainer.querySelector("svg");
-                svg.style.backgroundImage = null;
+                graphContainer.querySelector("svg").style.backgroundImage = null;
 
                 if(typeof(callback) == "function"){
-                    callback(svg);
+                    callback(graphContainer.innerText);
                 }
             });
         }else{
@@ -136,11 +136,11 @@
     }
 
     function registerController(wikiBlock) {
-        app.registerController("boardController", ['$scope', '$uibModal', '$sce', function ($scope, $uibModal, $sce) {
+        app.registerController("boardController", ['$scope', '$uibModal', '$sce', 'Account', function ($scope, $uibModal, $sce, Account) {
             $scope.editorMode = wikiBlock.editorMode;
 
             if (wikiBlock.editorMode) {
-                var boardData = (wikiBlock.modParams.diagram_board && wikiBlock.modParams.diagram_board.data) ? wikiBlock.modParams.diagram_board.data : "";
+                var boardData = (wikiBlock.modParams.modal_board && wikiBlock.modParams.modal_board.data) ? wikiBlock.modParams.modal_board.data : "";
 
                 if (typeof(boardData) == "string" && boardData.length == 0 || boardData == "blank") {
                     $scope.preview = $sce.trustAsHtml("<div class=\"mx-client-start\">点击此处开始编辑</div>");
@@ -162,7 +162,7 @@
                 scope  : $scope,
 				styles : [],
 				params_template : {
-                    diagram_board:{
+                    modal_board:{
                         is_leaf      : true,
 						type         : "modal",
                         editable     : true,
@@ -201,14 +201,31 @@
                 var mxData       = boardEditor.editor.getGraphXml();
 
                 convertMxToSvg(boardEditor, mxData, function(svg){
+                    console.log(svg)
+
                     if(svg){
-                        console.log(svg);
+                        var defaultSiteDataSource = Account.getUser().defaultSiteDataSource;
+
+                        var currentDataSource = dataSource.getDataSource(defaultSiteDataSource.username, defaultSiteDataSource.projectName);
+                        
+                        // currentDataSource.writeFile({
+                        //     path           : "board/" + Date.now() + ".md",
+                        //     commit_message : "upload svg",
+                        //     content        : svg,
+                        //     isShowLoading  : true,
+                        // }, function(data){
+                        //     console.log(data);
+                        // }, function(data){
+                        //     console.log(data);
+                        // });
+
+                        // console.log(svg);
                         // console.log(wikiBlock.modParams);
 
                         
 
-                        // $scope.params.diagram_board.compress = "http://www.baidu.com";
-                        // $scope.params.diagram_board.svg      = "http://www.qq.com";
+                        // $scope.params.modal_board.compress = "http://www.baidu.com";
+                        // $scope.params.modal_board.svg      = "http://www.qq.com";
 
                         // $scope.applyAttrChange();
                     }
