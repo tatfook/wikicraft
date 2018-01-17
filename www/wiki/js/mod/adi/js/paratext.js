@@ -35,7 +35,7 @@ define([
                 "templateUrl"    : config.wikiModPath + 'adi/html/richText.html',
                 "controller"     : "paratextEditorController",
                 "size"           : "full",
-                "openedClass"    : "mx-client-modal",
+                // "openedClass"    : "mx-client-modal",
                 "backdrop"       : "static",
                 "keyboard"       : false,
                 "resolve"        : {
@@ -66,12 +66,12 @@ define([
             console.log(22222)
             $scope.richText = function () {
                 console.log(6666666666)
-                $scope.$close($scope.editor.$txt.html());
+                // $scope.$close($scope.editor.$txt.html());
             }
             console.log(3333333)
             $scope.close = function () {
                 console.log(777777777)
-                $uibModalInstance.close($scope.boardEditor);
+                // $uibModalInstance.close($scope.boardEditor);
             }
             console.log(444444444)
             $scope.$watch('$viewContentLoaded', init);
