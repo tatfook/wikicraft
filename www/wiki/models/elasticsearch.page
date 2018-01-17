@@ -15,9 +15,9 @@ local elasticsearch = inherit(models.abstract.base, gettable("models.elasticsear
 -- todo:修改host读取途径
 function elasticsearch:connect(params)
     local params = params or {}
-    self.host = params.host or "localhost"
-    self.port = params.port or 9200
-    self.index = params.index or "keepwork"
+    self.host = params.host or KEEPWORK["config"]["default"]["wiki"]["es_setting"]["host"]
+    self.port = params.port or KEEPWORK["config"]["default"]["wiki"]["es_setting"]["port"]
+    self.index = params.index or KEEPWORK["config"]["default"]["wiki"]["es_setting"]["index"]
     self.url = format("http://%s:%d/%s/", self.host, self.port, self.index)
 end
 

@@ -261,7 +261,7 @@ end
 
 function skills:insert_to_es(params)
     local es = models.elasticsearch:new()
-    es:connect({index="test1"})
+    es:connect()
 
     local skill = {
         type = "skill",
@@ -277,7 +277,7 @@ end
 
 function skills:update_to_es(params)
     local es = models.elasticsearch:new()
-    es:connect({index="test1"})
+    es:connect()
 
     local skill = {
         type = "skill",
@@ -289,13 +289,13 @@ function skills:update_to_es(params)
 end
 
 
-function skills:api_test()
-    local params = {
-        type = "skills",
-        username = "chatalove52",
-        title = "golang",
-        level = 3,
-        works = {"baidu","qq","163"}
-    }
-    return self:api_update(params)
-end
+-- function skills:api_test()
+--     local params = {
+--         type = "skills",
+--         username = "chatalove52",
+--         title = "golang",
+--         level = 1,
+--         works = {"baidu","qq","163","weibo"}
+--     }
+--     return self:api_update(params)
+-- end
