@@ -129,6 +129,7 @@ function elasticsearch:api_search(params)
         return errors:wrap(errors.REQUEST_PARAMS_ERROR)
     end
 
+    local type_of_search_result = params.type or "page"
     local params = self:params_wrapper(params)
     local location = self:locator(params)
     local search_in = location .. "_search"
@@ -157,24 +158,73 @@ function elasticsearch:api_search(params)
 
     -- 封装返回数据
     if (rcode == 200) then
-        wrapped_result = {
-            timed_out = result.data.data.timed_out,
-            took = result.data.data.took,
-            total = result.data.data.hits.total,
-            status = rcode
-        }
-
-        local hits = {}
-        for i, hit in ipairs(result.data.data.hits.hits) do
-            hit._source._score = hit._score
-            hit._source.highlight = hit.highlight
-            hits[#hits + 1] = hit._source
+        if (type_of_search_result == "page") then
+            wrapped_result = self:wrap_page_result(result)
         end
-        wrapped_result.hits = hits
+
+        if (type_of_search_result == "skill") then
+            wrapped_result = self:wrap_skill_result(result)
+        end
+
     else
         wrapped_result = result.data.data
     end
 
+    return wrapped_result
+end
+
+
+function elasticsearch:wrap_page_result(result)
+    local wrapped_result = {}
+    local rcode = result.data.rcode
+
+    -- 封装返回数据
+    wrapped_result = {
+        timed_out = result.data.data.timed_out,
+        took = result.data.data.took,
+        total = result.data.data.hits.total,
+        status = rcode
+    }
+
+    local hits = {}
+    for i, hit in ipairs(result.data.data.hits.hits) do
+        hit._source._score = hit._score
+        hit._source.highlight = hit.highlight
+        hits[#hits + 1] = hit._source
+    end
+    
+    wrapped_result.hits = hits
+    return wrapped_result
+end
+
+
+function elasticsearch:wrap_skill_result(result)
+    local wrapped_result = {}
+    local rcode = result.data.rcode
+
+    -- 封装返回数据
+    wrapped_result = {
+        timed_out = result.data.data.timed_out,
+        took = result.data.data.took,
+        total = result.data.data.hits.total,
+        status = rcode
+    }
+
+    local hits = {}
+    for i, hit in ipairs(result.data.data.hits.hits) do
+        local work = {}
+        for j, work_link in ipairs(hit._source.works) do
+            work = {
+                access_url = work_link,
+                username = hit._source.username,
+                skill = hit._source.title
+            }
+
+            hits[#hits + 1] = work
+        end
+    end
+
+    wrapped_result.hits = hits
     return wrapped_result
 end
 
@@ -201,6 +251,10 @@ function elasticsearch:params_wrapper(params)
 
     if (not new_params.type) or (new_params.type == "page") then
         new_params.fields = {'tags', 'content', 'username', 'sitename', 'pagename'}
+    end
+
+    if (new_params.type == "skill") then
+        new_params.fields = {"title"}
     end
 
     return new_params

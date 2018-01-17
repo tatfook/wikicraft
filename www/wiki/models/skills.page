@@ -306,12 +306,12 @@ function skills:delete_in_es(params)
     return es:deleteOne(skill)
 end
 
-function skills:api_test()
-    local params = {
-        username = "chatalove52",
-        title = "golang",
-        level = 1,
-        works = {"baidu","qq","163","weibo"}
-    }
-    return self:api_delete(params)
-end
+-- function skills:api_test()
+--     local params = {
+--         username = "user1",
+--         title = "npl",
+--         level = 1,
+--         works = {"www.baidu.com","qq.com","163.com","weibo.com"}
+--     }
+--     return self:api_insert(params)
+-- end

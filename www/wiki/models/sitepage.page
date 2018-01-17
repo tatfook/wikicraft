@@ -110,11 +110,10 @@ function sitepage:api_insertOrUpdateToES(params)
 end
 
 
--- todo:移除markdown语法
+-- todo:移除markdown语法,调用md转字符串接口
 function sitepage:content_handler(content)
-    -- local tags = {}  -- todo：提取tags
-    content = string.gsub(content, "[#%-%|%*{}:%s]", '')
-    content = string.gsub(content, "!-%[[%w%W]-%]%([%w%W]-%)", '')
+    -- content = string.gsub(content, "[#%-%|%*{}:%s]", '')
+    -- content = string.gsub(content, "!-%[[%w%W]-%]%([%w%W]-%)", '')
     return content
 end
 
