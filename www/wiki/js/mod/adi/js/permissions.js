@@ -5,15 +5,12 @@ define([
 ], function (app, util, htmlContent) {
 
     function registerController(wikiBlock) {
-
         app.registerController("permissionsController", ['$scope','$sce', 'Account', 'modal', function ($scope, $sce, Account, modal) {
             var containerId, container, containerHeight;
 
             $scope.modParams  = wikiBlock.modParams;
             $scope.editorMode = wikiBlock.editorMode;
             $scope.isVip      = false;
-
-            console.log($scope.modParams);
 
             wikiBlock.init({
                 scope  : $scope,
@@ -33,41 +30,27 @@ define([
 				}
             });
 
-            var getShowHeight = function () {
-                console.log($scope.user.vipInfo.endDate);
-                // {
-                // ["vipLevel"]=0,
-                // ["username"]="testv2",
-                // ["startDate"]="2017-12-07",
-                // ["isValid"]=true,
-                // ["endDate"]="2018-02-07",
-                // }
-                if (!containerElement || ($scope.user && $scope.user.vipInfo.endDate)){
-                    return "auto";
-                }
-
-                console.log()
-                return "85px";
-            }
-
-            var readable = function () {
+            var shield = function () {
                 var mdwiki = config.shareMap["mdwiki"];
 
-                containerId = mdwiki.getMdWikiContentContainerId();
-                container   = $("#"+ containerId);
-
-                // container
-                console.log(container);
-                console.log("----------");
-                for(var x in container){
-                    console.log(container[x]);
+                if(!$scope.params.text_permissions.$kp_datas.is_mod_hide){
+                    if($scope.isVip){
+                        document.querySelector("#" + wikiBlock.containerId).style.display = "none";
+                    }else{
+                        containerId = mdwiki.getMdWikiContentContainerId();
+                        container   = $("#"+ containerId);
+        
+                        var innerElement = container[0];
+        
+                        for(var i=0;i < innerElement.childNodes.length;i++){
+                            innerElement.childNodes[i].style.display = "none";
+                        }
+        
+                        document.querySelector("#" + wikiBlock.containerId).style.display = "block";
+                    }
+                }else{
+                    document.querySelector("#" + wikiBlock.containerId).style.display = "none";
                 }
-
-                // container.css({
-                //     "height"   : getShowHeight(),
-                //     "position" : "relative",
-                //     "overflow" : "hidden"
-                // });
             };
 
             var init = function () {
@@ -76,7 +59,7 @@ define([
                 if(wikiBlock.editorMode){
 
                 }else{
-                    readable();
+                    shield();
                 }
             };
 
