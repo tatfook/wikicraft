@@ -1,0 +1,149 @@
+<style>
+    *{
+        margin: 0;
+        padding: 0;
+    }
+    a{
+        color:#3977AD;
+    }
+
+    /* style1 css */
+    .style1 {
+        height: 110px;
+        width: 100%;
+    }
+    .style1 .qq-mod {
+        position: fixed;
+        right: 10px;
+        top: 10px;
+    }
+    .style1 .qq-mod .qq-mod-img {
+        text-align: center;
+    }
+    .style1 .qq-mod .qq-mod-img a{
+        width: 71px;
+        height: 71px;
+    }
+    .style1 .qq-mod .qq-mod-head {
+        text-align: center;
+     }
+    .style1 .qq-mod .qq-mod-head p {
+        margin-top: 6px;
+        margin-bottom: 0;
+    }
+    .style1 .qq-mod .qq-mod-head a {
+        font-size: 14px;
+        color: #3977ad;
+    } 
+
+    .clear-pointer, .clear-pointer a{
+        cursor : default !important;
+    }
+
+    /* style2 css */
+    .style2 {
+        height: 90px;
+        width: 100%;
+    }
+    .style2 .qq-mod {
+        position: fixed;
+        right: 10px;
+        top: 10px;
+        width: 150px;
+        height: 80px;
+        vertical-align:bottom;
+    }
+    .style2 .qq-mod .qq-mod-img {
+        margin-top: 10px;
+        float: left;
+        text-align: center;
+    }
+    .style2 .qq-mod .qq-mod-img a{
+        width: 50px;
+        height: 50px;
+    }
+    .style2 .qq-mod .qq-mod-head {
+        text-align: center;
+        float: left;
+        margin-left: 8px;
+        margin-top: 37px;   
+    }
+    .style2 .qq-mod .qq-mod-head a {
+        padding: 3px 10px;
+        border: 1px solid #3977AD;
+        border-radius: 10px;
+        font-size: 14px;
+        color: #3977ad;
+    }
+
+</style>
+
+<div ng-controller="qqController" ng-class="{true:'clear-pointer'}[editorMode]">
+
+    <!-- style1 html -->
+    <div ng-if='params.design.text=="style1"' class="style1">
+        <div class="qq-mod">
+            <div class="qq-mod-img" ng-hide="params.media_img.is_mod_hide">
+                <div ng-if="params.media_img.text.length == 0">QQ_icon</div>
+                <a  ng-if="editorMode"
+                    href="http://wpa.qq.com/msgrd?V=3&Uin='+565538224+'&Site=qq&Menu=yes"
+                    ng-click="viewEditorClick(params.media_img,$event)">
+                    <img ng-src="{{params.media_img.text}}">
+                </a>
+                <a  ng-class="{true:'clear-pointer'}[!params.media_img.href.length]"
+                    ng-if="!editorMode"
+                    target="{{params.media_img.target ? params.media_img.target : '_blank'}}"
+                    ng-href="{{params.media_img.href}}">
+                </a>
+            </div>
+            <div class="qq-mod-head" ng-hide="params.link_title.is_mod_hide">
+                <p>
+                    <a  ng-if="editorMode"
+                        href="javascript::void(0)"
+                        ng-click="viewEditorClick(params.link_title,$event)">
+                        {{params.link_title.text}}
+                    </a>
+                    <a  ng-class="{true:'clear-pointer'}[!params.link_title.href.length]"
+                        ng-if="!editorMode"
+                        target="{{params.link_title.target ? params.link_title.target : '_blank'}}"
+                        ng-href="{{params.link_title.href}}">
+                        {{params.link_title.text}}
+                    </a>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- style2 html -->
+    <div ng-if='params.design.text=="style2"' class="style2">
+        <div ng-class="{true:'clear-pointer'}[editorMode]" class="qq-mod">
+            <div class="qq-mod-img" ng-hide="params.media_img_two.is_mod_hide">
+                <div ng-if="params.media_img_two.text.length == 0">QQ_icon</div>
+                <a  ng-if="editorMode"
+                    href="http://wpa.qq.com/msgrd?V=3&Uin='+565538224+'&Site=qq&Menu=yes"
+                    ng-click="viewEditorClick(params.media_img_two,$event)">
+                    <img ng-src="{{params.media_img_two.text}}">
+                </a>
+                <a  ng-class="{true:'clear-pointer'}[!params.media_img_two.href.length]"
+                    ng-if="!editorMode"
+                    target="{{params.media_img_two.target ? params.media_img_two.target : '_blank'}}"
+                    ng-href="{{params.media_img_two.href}}">
+                </a>
+            </div>
+            <div class="qq-mod-head" ng-hide="params.link_title.is_mod_hide"> 
+                <a  ng-if="editorMode"
+                    href="javascript::void(0)"
+                    ng-click="viewEditorClick(params.link_title,$event)">
+                    {{params.link_title.text}}
+                </a>
+                <a  ng-class="{true:'clear-pointer'}[!params.link_title.href.length]"
+                    ng-if="!editorMode"
+                    target="{{params.link_title.target ? params.link_title.target : '_blank'}}"
+                    ng-href="{{params.link_title.href}}">
+                    {{params.link_title.text}}
+                </a>
+            </div>  
+        </div>
+    </div>
+
+</div>
