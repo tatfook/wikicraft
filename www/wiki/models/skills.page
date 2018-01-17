@@ -12,6 +12,8 @@ include_once("./user.page")
 local skills = inherit(models.abstract.base, gettable("models.skills"))
 skills.db_name = "skills"
 
+local es = models.elasticsearch:new()
+es:connect()
 
 function skills:ctor()
     self:addfield("title", "string", false, 30)
@@ -254,15 +256,24 @@ function skills:api_delete(params)
         return errors:wrap(errors.REQUEST_PARAMS_ERROR)
     end
 
-    self:db():deleteOne({["+username+title"]={params.username, params.title}}, resume)
-    return errors:wrap(yield())
+    self:db():findOne({["+username+title"]={params.username, params.title}}, resume)
+    local _, skill = yield()
+
+    if (skill) then
+        self:db():deleteOne({_id=skill._id}, resume)
+        local err, result = yield()
+
+        params.id = skill._id
+        self:delete_in_es(params)
+
+        return errors:wrap(err, result)
+    end
+
+    return errors:wrap(nil)
 end
 
 
 function skills:insert_to_es(params)
-    local es = models.elasticsearch:new()
-    es:connect()
-
     local skill = {
         type = "skill",
         id = params.id,
@@ -276,9 +287,6 @@ end
 
 
 function skills:update_to_es(params)
-    local es = models.elasticsearch:new()
-    es:connect()
-
     local skill = {
         type = "skill",
         id = params.id,
@@ -289,13 +297,21 @@ function skills:update_to_es(params)
 end
 
 
--- function skills:api_test()
---     local params = {
---         type = "skills",
---         username = "chatalove52",
---         title = "golang",
---         level = 1,
---         works = {"baidu","qq","163","weibo"}
---     }
---     return self:api_update(params)
--- end
+function skills:delete_in_es(params)
+    local skill = {
+        type = "skill",
+        id = params.id,
+    }
+
+    return es:deleteOne(skill)
+end
+
+function skills:api_test()
+    local params = {
+        username = "chatalove52",
+        title = "golang",
+        level = 1,
+        works = {"baidu","qq","163","weibo"}
+    }
+    return self:api_delete(params)
+end
