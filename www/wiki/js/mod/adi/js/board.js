@@ -42,50 +42,6 @@
         }, callback);
     }
 
-    var initPreview = function (wikiBlock, callback) {
-        // if (!mxClient.isBrowserSupported()) {
-        //     return "Browser is not supported!";
-        // }
-
-        // var container = document.createElement("div");
-
-        // mxResources.loadDefaultBundle = false;
-
-        // var bundle = mxResources.getDefaultBundle(RESOURCE_BASE, mxLanguage) || mxResources.getSpecialBundle(RESOURCE_BASE, mxLanguage);
-
-        // mxUtils.getAll([bundle, STYLE_PATH + '/default.xml'], function (xhr) {
-        //     mxResources.parse(xhr[0].getText());
-
-        //     var themes = new Object();
-        //     themes[Graph.prototype.defaultThemeName] = xhr[1].getDocumentElement();
-
-        //     var graph = new Graph(container, null, null, null, themes);
-
-        //     var mxGraphModelData;
-
-        //     if (wikiBlock.modParams.diagram_board && wikiBlock.modParams.diagram_board.data) {
-        //         var data = "<diagram version=\"0.0.1\">" + wikiBlock.modParams.diagram_board.data + "</diagram>";
-        //         mxGraphModelData = graph.getDecompressData(data);
-        //     }
-
-        //     var decoder = new mxCodec(mxGraphModelData);
-        //     var node    = mxGraphModelData.documentElement;
-
-        //     graph.centerZoom = false;
-        //     graph.setTooltips(false);
-        //     graph.setEnabled(false);
-
-        //     decoder.decode(node, graph.getModel());
-
-        //     var svg = container.querySelector("svg");
-        //     svg.style.backgroundImage = null;
-
-        //     if (typeof (callback) == "function") {
-        //         callback(container.innerHTML);
-        //     }
-        // });
-    }
-
     function convertMxToSvg(boardEditor, mxData, callback){
         if(mxData){
             var graphContainer = document.createElement("div");
@@ -104,7 +60,7 @@
                 graphContainer.querySelector("svg").style.backgroundImage = null;
 
                 if(typeof(callback) == "function"){
-                    callback(graphContainer.innerText);
+                    callback(graphContainer.innerHTML);
                 }
             });
         }else{
@@ -136,27 +92,8 @@
     }
 
     function registerController(wikiBlock) {
-        app.registerController("boardController", ['$scope', '$uibModal', '$sce', 'Account', function ($scope, $uibModal, $sce, Account) {
+        app.registerController("boardController", ['$scope', '$uibModal', '$sce', 'Account', '$http', function ($scope, $uibModal, $sce, Account, $http) {
             $scope.editorMode = wikiBlock.editorMode;
-
-            if (wikiBlock.editorMode) {
-                var boardData = (wikiBlock.modParams.modal_board && wikiBlock.modParams.modal_board.data) ? wikiBlock.modParams.modal_board.data : "";
-
-                if (typeof(boardData) == "string" && boardData.length == 0 || boardData == "blank") {
-                    $scope.preview = $sce.trustAsHtml("<div class=\"mx-client-start\">点击此处开始编辑</div>");
-                    $scope.$apply();
-                } else {
-                    initPreview(wikiBlock, function (svg) {
-                        $scope.preview = $sce.trustAsHtml(svg);
-                        $scope.$apply();
-                    });
-                }
-            } else {
-                initPreview(wikiBlock, function (svg) {
-                    $scope.preview = $sce.trustAsHtml(svg);
-                    $scope.$apply();
-                });
-            }
 
             wikiBlock.init({
                 scope  : $scope,
@@ -177,6 +114,28 @@
                 }
             });
 
+            if (wikiBlock.editorMode) {
+                console.log($scope.params);
+                if ($scope.params.modal_board.svg.length >= 4 && $scope.params.modal_board.compress.length >= 4) {
+                    $scope.$watch("params", function(){
+                        util.get($scope.params.modal_board.svg, {}, function(data){
+                            console.log(data);
+
+                            // $scope.preview = $sce.trustAsHtml("");
+                            // $scope.$apply();
+                        })
+                    })
+                } else {
+                    $scope.preview = $sce.trustAsHtml("<div class=\"mx-client-start\">点击此处开始编辑</div>");
+                    $scope.$apply();
+                }
+            } else {
+                initPreview(wikiBlock, function (svg) {
+                    $scope.preview = $sce.trustAsHtml(svg);
+                    $scope.$apply();
+                });
+            }
+
             $scope.options = {
                 "animation"      : true,
                 "ariaLabeledBy"  : "title",
@@ -194,47 +153,57 @@
                 }
             }
 
-            $scope.error   = function(){},
+            $scope.error   = function(){};
 
             $scope.success = function(boardEditor){
                 var compressData = boardEditor.getCurrentCompressData();
                 var mxData       = boardEditor.editor.getGraphXml();
 
                 convertMxToSvg(boardEditor, mxData, function(svg){
-                    console.log(svg)
-
                     if(svg){
                         var defaultSiteDataSource = Account.getUser().defaultSiteDataSource;
 
                         var currentDataSource = dataSource.getDataSource(defaultSiteDataSource.username, defaultSiteDataSource.projectName);
                         
-                        // currentDataSource.writeFile({
-                        //     path           : "board/" + Date.now() + ".md",
-                        //     commit_message : "upload svg",
-                        //     content        : svg,
-                        //     isShowLoading  : true,
-                        // }, function(data){
-                        //     console.log(data);
-                        // }, function(data){
-                        //     console.log(data);
-                        // });
+                        new Promise(function(resolve, reject){
+                            var svgPath = "/board/" + Date.now() + ".svg";
 
-                        // console.log(svg);
-                        // console.log(wikiBlock.modParams);
+                            currentDataSource.writeFile({
+                                path           : svgPath,
+                                commit_message : "upload svg",
+                                content        : svg,
+                                isShowLoading  : true,
+                            }, function(data){
+                                $scope.params.modal_board.svg = currentDataSource.rawBaseUrl + "/" + currentDataSource.username +
+                                             "/" + currentDataSource.projectName + "/raw/master" + svgPath;
 
-                        
+                                resolve(data);
+                            }, function(data){});
+                        }).then(function(data){
+                            console.log(data)
 
-                        // $scope.params.modal_board.compress = "http://www.baidu.com";
-                        // $scope.params.modal_board.svg      = "http://www.qq.com";
+                            var compressPath = "/board/" + Date.now() + ".diagram";
 
-                        // $scope.applyAttrChange();
+                            return new Promise(function(resolve, reject){
+                                currentDataSource.writeFile({
+                                    path           : compressPath,
+                                    commit_message : "upload compress",
+                                    content        : compressData,
+                                    isShowLoading  : true,
+                                }, function(data){
+                                    $scope.params.modal_board.compress = currentDataSource.rawBaseUrl + "/" + currentDataSource.username +
+                                                 "/" + currentDataSource.projectName + "/raw/master" + compressPath;
+                                    
+                                    resolve(data);
+                                    $scope.applyAttrChange();
+                                }, function(data){});
+                            })
+                        }).then(function(data){
+                            console.log(data);
+                        });
                     }
                 });
-
-                // var diagram_board = mdconf.jsonToMd({"diagram_board":{"data":compressData}});
             }
-
-            console.log($scope.params);
         }])
 
         app.registerController("boardEditorController", ['$scope', '$uibModalInstance', 'wikiBlock', function ($scope, $uibModalInstance, wikiBlock) {
