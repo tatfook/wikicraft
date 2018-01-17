@@ -434,7 +434,7 @@ define([
             });
 
             swiper[type].destroy && swiper[type].destroy(true, true);
-            
+
             swiper[type] = new Swiper("#"+swiperContainerId,{
                 nextButton: '#' + swiperContainerId + ' .swiper-button-next',
                 prevButton: '#' + swiperContainerId + ' .swiper-button-prev',
@@ -443,8 +443,11 @@ define([
                 calculateHeight:true,
                 scrollbarHide: false,
                 slidesPerView: 'auto',
+                loop: false,
+                speed: 0,
+                grabCursor: true,
                 mousewheelControl: true,
-                resistanceRatio: 0,         // 不可脱离边缘
+                resistance: false,         // 不可脱离边缘
                 noSwiping: true,            // 在slide上增加类名 "swiper-no-swiping"，该slide无法拖动
             });
         }
