@@ -50,7 +50,7 @@ end
 
 -- 插入一条数据
 function elasticsearch:insertOne(params)
-    if (not params.type) or (params.id) then
+    if (not params.type) then
         return errors:wrap(errors.REQUEST_PARAMS_ERROR)
     end
 

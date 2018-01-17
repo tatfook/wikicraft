@@ -21,7 +21,7 @@ end
 
 --记录后端分析用数据
 -- todo:检测用户登录状态
-function tags:api_upsert(params)
+function tags:api_insert(params)
     -- ensureAuthenticated()
     if (not params.title) or (not params.username) then
         return errors:wrap(errors.REQUEST_PARAMS_ERROR)

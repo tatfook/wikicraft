@@ -6,6 +6,7 @@ Date: 2018/1
 Desc: skills in profiles,only to be used in backend data analyse.
 ]]
 include_once("./abstract/base.page")
+include_once("./elasticsearch.page")
 include_once("./user.page")
 
 local skills = inherit(models.abstract.base, gettable("models.skills"))
@@ -48,21 +49,28 @@ function skills:fields_length_validator(params, fields_length)
 end
 
 
-function skills:api_upsert(params)
+function skills:api_insert(params)
     -- ensureAuthenticated()
-    local skill, params_error = self:upsert_validator(params)
+    local skill, params_error = self:insert_validator(params)
 
     if (params_error) then
         return errors:wrap(errors.REQUEST_PARAMS_ERROR)
     end
 
     self:db():insertOne({["+username+title"] = {skill.username, skill.title}}, skill, resume)
-    return errors:wrap(yield())
+    local err, result = yield()
+
+    if result then
+        params.id = result._id
+        self:insert_to_es(params)
+    end
+
+    return errors:wrap(err, result)
 end
 
-function skills:upsert_validator(params)
+function skills:insert_validator(params)
     local clean_data = {}
-    local required_fields = {"username", "title", "level"}
+    local required_fields = {"username", "title", "level", "works"}
     local params_error = self:required_fields_validator(params, required_fields)
 
     if (not params_error) then
@@ -103,21 +111,28 @@ function skills:upsert_validator(params)
 end
 
 
-function skills:api_updateLevel(params)
+function skills:api_update(params)
     -- ensureAuthenticated()
-    local skill, params_error = self:update_level_validator(params)
+    local skill, params_error = self:update_validator(params)
 
     if (params_error) then
         return errors:wrap(errors.REQUEST_PARAMS_ERROR)
     end
 
     self:db():updateOne({["+username+title"]={skill.username, skill.title}}, {level=skill.level}, resume)
-    return errors:wrap(yield())
+    local err, result = yield()
+
+    if (result) and (params.works) then
+        params.id = result._id
+        self:update_to_es(params)
+    end
+
+    return errors:wrap(err, result)
 end
 
-function skills:update_level_validator(params)
+function skills:update_validator(params)
     local clean_data = {}
-    local required_fields = {"username", "title", "level"}
+    local required_fields = {"username", "title"}
     local params_error = self:required_fields_validator(params, required_fields)
 
     if (not params_error) then
@@ -131,7 +146,7 @@ function skills:update_level_validator(params)
         clean_data = {
             title = params.title,
             username = params.username,
-            level = params.level
+            level = params.level,
         }
     end
 
@@ -241,4 +256,46 @@ function skills:api_delete(params)
 
     self:db():deleteOne({["+username+title"]={params.username, params.title}}, resume)
     return errors:wrap(yield())
+end
+
+
+function skills:insert_to_es(params)
+    local es = models.elasticsearch:new()
+    es:connect({index="test1"})
+
+    local skill = {
+        type = "skill",
+        id = params.id,
+        username = params.username,
+        title = params.title,
+        works = params.works
+    }
+
+    return es:insertOne(skill)
+end
+
+
+function skills:update_to_es(params)
+    local es = models.elasticsearch:new()
+    es:connect({index="test1"})
+
+    local skill = {
+        type = "skill",
+        id = params.id,
+        works = params.works
+    }
+
+    return es:updateOne(skill)
+end
+
+
+function skills:api_test()
+    local params = {
+        type = "skills",
+        username = "chatalove52",
+        title = "golang",
+        level = 3,
+        works = {"baidu","qq","163"}
+    }
+    return self:api_update(params)
 end
