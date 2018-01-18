@@ -32,8 +32,8 @@ define([
 
             var shield = function () {
                 var mdwiki = config.shareMap["mdwiki"];
-
-                if(!$scope.params.text_permissions.$kp_datas.is_mod_hide){
+                
+                if(!$scope.params.text_permissions.is_mod_hide){
                     if($scope.isVip){
                         document.querySelector("#" + wikiBlock.containerId).style.display = "none";
                     }else{
