@@ -3,8 +3,9 @@ define([
     'wangEditor',
     'helper/util',
 	'text!wikimod/adi/html/paratext.html',
+    'pako',
     'helper/mdconf',
-], function (app, wangEditor, util, htmlContent, mdconf) {
+], function (app, wangEditor, util, htmlContent, pako, mdconf) {
     function registerController(wikiBlock) {
         app.registerController("paratextController", ['$scope', '$uibModal', '$sce', function ($scope, $uibModal, $sce) {
             $scope.editorMode = wikiBlock.editorMode;
@@ -45,37 +46,46 @@ define([
                 }
             }
             
-
-            $scope.error   = function(){};
-
-            $scope.success = function(boardEditor){
-                var compressData = boardEditor.getCurrentCompressData();
-                var mxData       = boardEditor.editor.getGraphXml();
+            $scope.modalBody = $sce.trustAsHtml("<h1>点击编辑内容qwq</h1>")
+            $scope.success = function(paratextEditor){
+                // $scope.paratextEditor = paratextEditor;
+                // $scope.$apply($scope.paratextEditor);
+                console.log("测试效果")
+                console.log(paratextEditor)
+                console.log("测试效果")
+                $scope.$apply();
             }
-
+            // $scope.error   = function(){};
+            // // console.log(boardEditor)
+            // $scope.success = function(Editor){
+            //     console.log(Editor)
+            // }
+            // console.log($scope.success)
 		}])
 		app.registerController("paratextEditorController", ['$scope', '$uibModalInstance', 'wikiBlock', function ($scope, $uibModalInstance, wikiBlock) {
-            console.log(111111)
-            function init() {
+            
+            $scope.init = function() {
                 wangEditor.config.printLog = false;
                 $scope.editor = new wangEditor('richTextEditor');
                 $scope.editor.create()
 
                 $scope.editor.$txt.html(wikiBlock.modParams);
             }
-            console.log(22222)
             $scope.richText = function () {
-                console.log(6666666666)
-                // $scope.$close($scope.editor.$txt.html());
+                var paratextEditor = $scope.editor.$txt.html();
+                $scope.paratextEditor = paratextEditor;
+                $scope.$close($scope.paratextEditor);
+                // console.log($scope.editor.$txt.html())
+                // console.log(paratextEditor)
             }
-            console.log(3333333)
+            
             $scope.close = function () {
                 console.log(777777777)
-                // $uibModalInstance.close($scope.boardEditor);
+                $uibModalInstance.close($scope.boardEditor);
             }
-            console.log(444444444)
-            $scope.$watch('$viewContentLoaded', init);
-            console.log(555555555)
+          
+            $scope.$watch('$viewContentLoaded', $scope.init);
+            
         }]);
     }
 
