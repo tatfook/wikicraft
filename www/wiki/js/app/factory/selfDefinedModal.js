@@ -18,7 +18,7 @@ define([
                     resolve(res);
                 }, function(error) {
                     if(typeof(errorCallback) == "function"){
-                        errorCallback(res);
+                        errorCallback(error);
                     }
 
                     reject(error);
