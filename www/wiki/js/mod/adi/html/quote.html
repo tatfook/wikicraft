@@ -1,0 +1,61 @@
+<style>
+    
+    *{
+        margin: 0;
+        padding: 0;
+    }
+    .include-mod{
+        background-color: #dedede;
+        color: #333;
+        height: 110px;
+        line-height: 110px;
+        text-align: center;
+        font-size: 16px;
+        width:100%;
+        cursor: pointer;
+    }
+    .editIntake{
+        /* height:300px;  */
+        width:100%;
+    }
+    .viewIntake{
+        height:560px; 
+    } 
+    .title-info{
+        text-indent: 38px;
+        line-height: 38px;
+        color:#a7a7a7;
+        height:38px;
+        width:100%;
+        font-size: 12px;
+        font-family:  "微软雅黑 Light";
+        background-color: #f5f5f5;
+        border-bottom: 3px dashed #ddd;
+    }
+    .title-info span:last-child{
+        text-indent: 20px;
+    }  
+</style>
+<div ng-controller="includeController" ng-class="{true:'title-clear-pointer'}[editorMode]" class="style1">
+    <div ng-if='params.design.text=="style1"'>
+        <div class="include-mod" ng-if="params.link_include.href.length == 0">
+                配置引用文件
+        </div>
+        <div class="include" ng-if="params.link_include.href.length > 4">
+            <div class="title-info" ng-if="editorMode">
+                <span>引用</span>
+                <span>{{params.link_include.href}}</span>
+            </div>
+            <iframe ng-if="editorMode"  class="editIntake" 
+                    ng-src="{{pageUrl}}" scrolling="yes" 
+                    frameborder="0" width="100%" id="external-frame" 
+                    onload="setIframeHeight(this)"             
+                    >
+            </iframe>
+            <iframe ng-if="!editorMode" class="viewIntake" 
+                    ng-src="{{pageUrl}}" scrolling="yes" 
+                    frameborder="0" width="100%">
+            </iframe>
+        </div>
+    </div>
+</div>
