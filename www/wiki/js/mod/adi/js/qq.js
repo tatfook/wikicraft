@@ -14,7 +14,7 @@ define([
                     {
                         "design": {
                             "text":"style1",
-                            "cover":config.wikiModPath + 'adi/assets/images/qqOne.png'                         
+                            "cover":"/wiki/js/mod/adi/assets/images/qqOne.png"                         
                         },                        
                     },
                     {
@@ -36,6 +36,16 @@ define([
                         text         : "style1", 
                         require      : true, 
                     },
+                    qq_number:{
+						is_leaf      : true, 
+						type         : "text",   
+						editable     : true, 
+						is_mod_hide  : false,  
+						is_card_show : true,
+						name         : "QQ调用",   
+						text         : "565538224", 
+						require      : true, 
+					},
                     media_img:{
                         is_leaf      : true, 
 						type         : "media",   
@@ -52,7 +62,7 @@ define([
                         is_leaf      : true, 
                         type         : "media",   
                         mediaType    : "image",
-                        editable     : true, 
+                        editable     : false, 
                         is_mod_hide  : false,  
                         is_card_show : true,
                         name         : "图像",   
@@ -71,31 +81,10 @@ define([
 						href         : "",
 						require      : true, 
                     },
-                    qq_number:{
-						is_leaf      : true, 
-						type         : "text",   
-						editable     : true, 
-						is_mod_hide  : false,  
-						is_card_show : true,
-						name         : "QQ调用",   
-						text         : "565538224", 
-						require      : true, 
-					},
                 }
             }
 
-            wikiblock.init(initObj);
-            console.log($scope.params.design)
-            // if($scope.params.design.text = "style1"){
-            //     $scope.params.media_img_two.editablen = false;
-            // }
-            
-            $scope.qqImg = {
-				"background-image"    : 'url('+ $scope.params.media_img.text +')',
-				"background-size"     : "cover",
-				"background-position" : "center center",
-			}
-            
+            wikiblock.init(initObj);            
         }]);
     }
 
