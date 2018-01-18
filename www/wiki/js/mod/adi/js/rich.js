@@ -43,6 +43,7 @@ define([
                 }
             }
 
+            
             $scope.success = function(html){
                 $scope.params.modal_rich.data = html;
                 $scope.applyAttrChange();
