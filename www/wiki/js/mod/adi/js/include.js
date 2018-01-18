@@ -1,42 +1,12 @@
 define([
     'app',
     'helper/util',
-    'text!wikimod/adi/html/quote.html',
+    'text!wikimod/adi/html/include.html',
 ], function (app, util, htmlContent) {
     function registerController(wikiblock) {
-        app.registerController("includeController", ['$scope','$sce', function ($scope, $sce) {	
+        app.registerController("includeController", ['$scope','$sce', function ($scope, $sce) {
 			$scope.editorMode = wikiblock.editorMode;
-			/* var viewHeight = $(".result-html").height();
-			var editHeight= $(".wikiEditor").height();
-			if($scope.editorMode){
-				$("Intake").css({
-					"height" : viewHeight + "px",
-				});
-			}else{
-				$("Intake").css({
-					"height" : editHeight + "px",
-				});
-			} */
-			
-			 /* $('.editIntake').load(function(){
-				var a=$('.editIntake').contents();
-			}) */
-			document.domain = "caibaojian.com";
-			function setIframeHeight(iframe) {
-			if (iframe) {
-			var iframeWin = iframe.contentWindow || iframe.contentDocument.parentWindow;
-			if (iframeWin.document.body) {
-			//iframe.height = iframeWin.document.documentElement.scrollHeight || iframeWin.document.body.scrollHeight;
-			$(".editIntake").css("height",iframeWin.document.body.scrollHeight); 
-			}
-			}
-			};
-			
-			window.onload = function () {
-			setIframeHeight(document.getElementById('external-frame'));
-			};
-			
-			
+
 			wikiblock.init({
 				scope  : $scope,
 				styles : [
@@ -72,6 +42,40 @@ define([
 				}
 			});
 			
+			$scope.setExternalIframeHeight = function(){
+				setTimeout(function(){
+					var iFrame = document.querySelector('.intake');
+
+					if (iFrame) {
+						if($scope.editorMode){
+							var preview = document.querySelector("#preview");
+
+							if(preview){
+								iFrame.style.height = (parseInt(preview.style.height) + 100) + "px";
+							}
+						}else{
+							iFrame.style.height = (window.screen.height - 310) + "px";
+						}
+					}
+				}, 0);
+			};
+
+			$scope.setInnerIframeHeight = function(){
+				setTimeout(function(){
+					var iFrame = document.querySelector('.intake');
+
+					iFrame.style.height = (iFrame.contentWindow.outerHeight + 600) + "px";
+				}, 0);
+			}
+
+			if($scope.params.link_include.href.length > 4){
+				if($scope.params.link_include.href.indexOf(config.hostname) > 0){
+					$scope.$watch("$veieContentLoaded", $scope.setInnerIframeHeight);
+				}else{
+					$scope.$watch("$viewContentLoaded", $scope.setExternalIframeHeight);
+				}
+			}
+
 			$scope.pageUrl = $sce.trustAsResourceUrl($scope.params.link_include.href);
 		}]);
     }

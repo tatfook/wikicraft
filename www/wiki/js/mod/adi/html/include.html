@@ -1,5 +1,4 @@
 <style>
-    
     *{
         margin: 0;
         padding: 0;
@@ -14,13 +13,12 @@
         width:100%;
         cursor: pointer;
     }
-    .editIntake{
-        /* height:300px;  */
+    .intake{
         width:100%;
     }
-    .viewIntake{
+    /* .viewIntake{
         height:560px; 
-    } 
+    }  */
     .title-info{
         text-indent: 38px;
         line-height: 38px;
@@ -39,22 +37,20 @@
 <div ng-controller="includeController" ng-class="{true:'title-clear-pointer'}[editorMode]" class="style1">
     <div ng-if='params.design.text=="style1"'>
         <div class="include-mod" ng-if="params.link_include.href.length == 0">
-                配置引用文件
+            配置引用文件
         </div>
         <div class="include" ng-if="params.link_include.href.length > 4">
             <div class="title-info" ng-if="editorMode">
                 <span>引用</span>
                 <span>{{params.link_include.href}}</span>
             </div>
-            <iframe ng-if="editorMode"  class="editIntake" 
+            <iframe ng-if="editorMode" class="intake" 
                     ng-src="{{pageUrl}}" scrolling="yes" 
-                    frameborder="0" width="100%" id="external-frame" 
-                    onload="setIframeHeight(this)"             
-                    >
+                    frameborder="0">
             </iframe>
-            <iframe ng-if="!editorMode" class="viewIntake" 
+            <iframe ng-if="!editorMode" class="intake" 
                     ng-src="{{pageUrl}}" scrolling="yes" 
-                    frameborder="0" width="100%">
+                    frameborder="0">
             </iframe>
         </div>
     </div>
