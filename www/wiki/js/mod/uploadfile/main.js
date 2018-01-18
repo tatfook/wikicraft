@@ -7,7 +7,7 @@ define([
         app.registerController("fileUploadController", function($scope,Account,gitlab) {
             $scope.imgsPath1 = config.wikiModPath + 'uploadfile/';
             
-            var server_host = "121.14.117.219";
+            var server_host = "120.132.120.168";
             var server_port = 80;
             var server_name = "ConverterServer";
 
