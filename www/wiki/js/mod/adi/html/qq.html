@@ -88,16 +88,15 @@
     <div ng-if='params.design.text=="style1"' class="style1">
         <div class="qq-mod">
             <div class="qq-mod-img" ng-hide="params.media_img.is_mod_hide">
-                <div ng-if="params.media_img.text.length == 0">QQ_icon</div>
                 <a  ng-if="editorMode"
                     href="javascript::void(0)"
                     ng-click="viewEditorClick(params.media_img,$event)">
                     <img ng-src="{{params.media_img.text}}">
                 </a>
-                <a  ng-class="{true:'clear-pointer'}[!params.media_img.href.length]"
+                <a  ng-class="{true:'clear-pointer'}[!params.text_qq.text.length]"
                     ng-if="!editorMode"
                     target="{{params.media_img.target ? params.media_img.target : '_blank'}}"
-                    ng-href="{{'http://wpa.qq.com/msgrd?v=3&uin='+params.qq_number.text+'&site=qq&menu=yes'}}">
+                    ng-href="{{getQQUrl()}}">
                     <img ng-src="{{params.media_img.text}}">
                 </a>
             </div>
@@ -122,18 +121,17 @@
     <!-- style2 html -->
     <div ng-if='params.design.text=="style2"' class="style2">
         <div ng-class="{true:'clear-pointer'}[editorMode]" class="qq-mod">
-            <div class="qq-mod-img" ng-hide="params.media_img_two.is_mod_hide">
-                <div ng-if="params.media_img_two.text.length == 0">QQ_icon</div>
+            <div class="qq-mod-img" ng-hide="params.media_img.is_mod_hide">
                 <a  ng-if="editorMode"
                     href="javascript::void(0)"
-                    ng-click="viewEditorClick(params.media_img_two,$event)">
-                    <img ng-src="{{params.media_img_two.text}}">
+                    ng-click="viewEditorClick(params.media_img,$event)">
+                    <img ng-src="{{params.media_img.text}}">
                 </a>
-                <a  ng-class="{true:'clear-pointer'}[!params.media_img_two.href.length]"
+                <a  ng-class="{true:'clear-pointer'}[!params.text_qq.text.length]"
                     ng-if="!editorMode"
-                    target="{{params.media_img_two.target ? params.media_img_two.target : '_blank'}}"
-                    ng-href="{{'http://wpa.qq.com/msgrd?v=3&uin='+params.qq_number.text+'&site=qq&menu=yes'}}">
-                    <img ng-src="{{params.media_img_two.text}}">
+                    target="{{params.media_img.target ? params.media_img.target : '_blank'}}"
+                    ng-href="{{getQQUrl()}}">
+                    <img ng-src="{{params.media_img.text}}">
                 </a>
             </div>
             <div class="qq-mod-head" ng-hide="params.link_title.is_mod_hide"> 

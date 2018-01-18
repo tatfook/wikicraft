@@ -8,7 +8,7 @@ define([
         app.registerController("qqController", ['$scope','$sce', function ($scope, $sce) {
             $scope.editorMode = wikiblock.editorMode;
 
-            initObj = {
+            wikiblock.init({
                 scope  : $scope,
                 styles : [
                     {
@@ -36,14 +36,14 @@ define([
                         text         : "style1", 
                         require      : true, 
                     },
-                    qq_number:{
+                    text_qq:{
 						is_leaf      : true, 
 						type         : "text",   
 						editable     : true, 
 						is_mod_hide  : false,  
 						is_card_show : true,
 						name         : "QQ调用",   
-						text         : "565538224", 
+						text         : "", 
 						require      : true, 
 					},
                     media_img:{
@@ -54,21 +54,9 @@ define([
 						is_mod_hide  : false,  
 						is_card_show : true,
                         name         : "图像",   
-                        text         : config.wikiModPath + 'adi/assets/imgs/qqMod.png', 
+                        text         : "", 
                         href         : "", 
                     	require      : true, 
-                    },
-                    media_img_two:{
-                        is_leaf      : true, 
-                        type         : "media",   
-                        mediaType    : "image",
-                        editable     : false, 
-                        is_mod_hide  : false,  
-                        is_card_show : true,
-                        name         : "图像",   
-                        text         : config.wikiModPath + 'adi/assets/imgs/qqModTwo.png', 
-                        href         : "", 
-                        require      : true, 
                     },
 				   	link_title:{
 						is_leaf      : true, 
@@ -82,9 +70,41 @@ define([
 						require      : true, 
                     },
                 }
+            });
+
+            $scope.qqUrl = "http://wpa.qq.com/msgrd?v=3&uin=" + $scope.params.text_qq.text + "&site=qq&menu=yes";
+
+            $scope.getQQUrl = function(){
+                return $scope.params.text_qq.text.length == 0 ? "" : $scope.qqUrl;
             }
 
-            wikiblock.init(initObj);            
+            $scope.$watch("params", function(){
+                var imgOne = config.wikiModPath + 'adi/assets/imgs/qqMod.png';
+                var imgTwo = config.wikiModPath + 'adi/assets/imgs/qqModTwo.png'
+
+                var defaultImgs = [imgOne, imgTwo];
+
+                var currentImgText = $scope.params.media_img.text;
+
+                for(var x in defaultImgs){
+                    if(currentImgText == defaultImgs[x]){
+                        currentImgText = "";
+                        break;
+                    }
+                }
+
+                if($scope.params.design.text == "style1"){
+                    $scope.params.media_img.text = currentImgText.length == 0 ? imgOne : $scope.params.media_img.text;
+                    console.log($scope.params.media_img.text);
+                }
+
+                if($scope.params.design.text == "style2"){
+                    $scope.params.media_img.text = currentImgText.length == 0 ? imgTwo : $scope.params.media_img.text;
+                    console.log($scope.params.media_img.text);
+                }
+            })
+
+                     
         }]);
     }
 
