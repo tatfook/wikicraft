@@ -130,31 +130,41 @@
     .module-editor .link-dropdown .dropdown-menu {
         min-width: unset;
         width: 120px;
-        padding: 5px 7px;
+        padding: 0;
         line-height: 1;
         font-size: 14px;
         margin-top: 4px;
         cursor: pointer;
     }
 
-    .module-editor .link-dropdown .btn-default {
+    .module-editor .link-dropdown .dropdown-menu li{
+        padding: 5px 7px;
+    }
+
+    .module-editor .link-dropdown .dropdown-menu li:hover{
+        background-color: #D9EDFF;
+    }
+
+    .module-editor .link-dropdown .btn {
         width: 120px;
         height: 25px;
         padding: 0 7px;
         font-size: 14px;
-        color: #999;
+        border: 1px solid;
         text-align: left;
         position: relative;
-        border-color: #DDD;
         box-shadow: none;
         background-color: transparent;
     }
 
-    .module-editor .link-dropdown.open .btn-default {
-        border-color: #3977AD;
+    .module-editor .link-dropdown .btn-primary{
         color: #3977AD;
-        background-color: transparent;
-        box-shadow: none;
+        border-color: #3977AD;
+    }
+
+    .module-editor .link-dropdown .btn-primary[disabled]{
+        color: #999;
+        border-color: #DDD;
     }
 
     .module-editor .link-dropdown .glyphicon-chevron-down {
@@ -490,7 +500,7 @@
 
                                 <input type="text" class="card-input" ng-change="applyAttrChange()" ng-model="data.data.href" placeholder="链接">
                                 <div class="dropdown link-dropdown">
-                                    <button id="dLabel-text" class="btn btn-default" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+                                    <button id="dLabel-text" class="btn btn-primary" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
                                         ng-disabled="!data.data.href || data.data.href == ''">
                                         {{getLinkTarget(data.data) | translate}}
                                         <span class="glyphicon glyphicon-chevron-down"></span>
@@ -554,7 +564,7 @@
                                     </div> -->
                                 </div>
                                 <div class="dropdown link-dropdown">
-                                    <button id="dLabel-multi-text" class="btn btn-default" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+                                    <button id="dLabel-multi-text" class="btn btn-primary" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
                                         ng-disabled="!data.data.href || data.data.href == ''">
                                         {{getLinkTarget(data.data) | translate}}
                                         <span class="glyphicon glyphicon-chevron-down"></span>
