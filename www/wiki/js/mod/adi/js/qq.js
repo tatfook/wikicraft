@@ -70,6 +70,16 @@ define([
 						text         : "客服中心", 
 						href         : "",
 						require      : true, 
+                    },
+                    qq_number:{
+						is_leaf      : true, 
+						type         : "text",   
+						editable     : true, 
+						is_mod_hide  : false,  
+						is_card_show : true,
+						name         : "QQ调用",   
+						text         : "565538224", 
+						require      : true, 
 					},
                 }
             }
