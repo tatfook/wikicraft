@@ -1,36 +1,36 @@
 <style>
     
-    *{
+    .title{
         margin: 0;
         padding: 0;
     }
-    a{
+    .title a{
         color:#0f2639; 
     }
 
     /* style1 css */
 
-    .style1 .title-mod{
+    .title .style1 .title-mod{
         height: 150px;
     }
-    .style1 .title-mod .title-mod-img, .style1 .title-mod .title-mod-head{
+    .title .style1 .title-mod .title-mod-img,.title .style1 .title-mod .title-mod-head{
         float: left;
     }
-    .style1 .title-mod .title-mod-head{
+    .title .style1 .title-mod .title-mod-head{
         width: 80%;
     }
-    .style1 .title-mod .title-mod-img{
+    .title .style1 .title-mod .title-mod-img{
         font-size: 20px;
         text-align: center;
         margin-top:31px;
         margin-bottom: 30px;
     }
-    .style1 .title-mod .title-mod-img div{
+    .title .style1 .title-mod .title-mod-img div{
         width: 89px;
         height: 89px;
         overflow: hidden;
     }
-    .style1 .title-mod .title-mod-head .h1{
+    .title .style1 .title-mod .title-mod-head .h1{
         width: auto;
         padding: 0;
         margin-top: 44px;
@@ -45,7 +45,7 @@
         -webkit-box-orient: vertical;  
         white-space: normal; 
     }
-    .style1 .title-mod .title-mod-head .h2{
+    .title .style1 .title-mod .title-mod-head .h2{
         width: auto;
         font-size: 24px;
         font-family: "Microsoft YaHei";
@@ -67,31 +67,31 @@
 
     /* style1 css 伪类 */
 
-    .style1 .h1 a{
+    .title .style1 .h1 a{
         color:#0f2639;
     }
-    .style1 .h2 a{
+    .title .style1 .h2 a{
         color:#0f2639;
     }
 
     /* style2 css */
 
-    .style2 .title-mod{
+    .title .style2 .title-mod{
         height: auto;
         padding-top: 20px;
     }
-    .style2 .title-mod .title-mod-img-two{
+    .title .style2 .title-mod .title-mod-img-two{
         width:89px;
         height:89px;
         overflow: hidden;
         text-align: center;
         margin: 0 auto;
     }
-    .style2 .title-mod .title-mod-img-two div{
+    .title .style2 .title-mod .title-mod-img-two div{
         width:89px;
         height:89px;
     }
-    .style2 .title-mod .title-mod-head .h-one{
+    .title .style2 .title-mod .title-mod-head .h-one{
         text-align: center;
         margin: 0 auto;
         font-size: 32px;
@@ -99,7 +99,7 @@
         margin-top: 11px;
         margin-bottom: 8px;
     }
-    .style2 .title-mod .title-mod-head .h-two{
+    .title .style2 .title-mod .title-mod-head .h-two{
         text-align: center;
         margin: 0 auto;
         font-size: 24px;
@@ -107,25 +107,25 @@
     
     /* style2 css 伪类 */
 
-    .style2 .h-one a{
+    .title .style2 .h-one a{
         color:#0f2639;
     }
-    .style2 .h-two a{
+    .title .style2 .h-two a{
         color:#0f2639; 
     }
-    .insert-h1 {
+    .title .insert-h1 {
         display: block;
         height: 50px;
         width: 100%;
     }
-    .insert-hOne {
+    .title .insert-hOne {
         display: block;
         height: 55px;
         width: 100%;
     }
 </style>
 
-<div ng-controller="titleController" ng-class="{true:'title-clear-pointer'}[editorMode]">
+<div ng-controller="titleController" ng-class="{true:'title-clear-pointer'}[editorMode]" class="title">
 
     <!-- style1 html -->
     <div ng-if='params.design.text=="style1"' class="style1">
