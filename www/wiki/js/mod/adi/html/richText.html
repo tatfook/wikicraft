@@ -1,5 +1,5 @@
 <style>
-    .style1{
+    .rich .style1{
         text-align: center;
         height: 150px;
         background-color: rgba(228, 227, 227, 0.845);
@@ -8,8 +8,8 @@
     }
 </style>
 
-<div ng-controller="richController">
-    <div ng-if="params.modal_rich.data.length == 0" class="style1">
+<div ng-controller="richController" class="rich">
+    <div ng-hide="!editorMode" ng-if="params.modal_rich.data.length == 0" class="style1">
         <span>点击编辑-富文本</span>
     </div>
     <div ng-if="params.modal_rich.data.length > 0" data-ng-bind-html="params.modal_rich.data"></div>

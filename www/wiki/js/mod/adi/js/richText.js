@@ -3,7 +3,7 @@ define([
     'wangEditor',
     'helper/util',
     'helper/mdconf',
-	'text!wikimod/adi/html/rich.html',
+	'text!wikimod/adi/html/richText.html',
 ], function (app, wangEditor, util, mdconf, htmlContent) {
     function registerController(wikiBlock) {
         app.registerController("richController", ['$scope', '$uibModal', '$sce', function ($scope, $uibModal, $sce) {
