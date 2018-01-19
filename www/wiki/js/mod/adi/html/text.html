@@ -1,23 +1,23 @@
 <style>
-    .textContainerLeft{
+    .text-mod .style1 .textContainerLeft{
         text-align: left;
         width: 100%;
     }
-    .textContainerCenter{
+    .text-mod .style1 .textContainerCenter{
         text-align: center;
         width: 100%;
     }
-    .textTitle{
+    .text-mod .style1 .textTitle{
         margin-top: 40px;
     }
-    .textTitle > a {
+    .text-mod .style1 .textTitle > a {
         font-weight: bold;
         font-size: 32px;
         width: 100%;
         color: #0f2639;
         font-family: 'Microsoft YaHei','Hiragino Sans GB',Helvetica,Arial,'Lucida Grande',sans-serif;
     }
-    .textContent {
+    .text-mod .style1 .textContent {
         font-size: 16px;
         line-height: 30px;
         text-indent: 28px;
@@ -26,23 +26,23 @@
         color: #0f2639 !important;
         font-family: 'Microsoft YaHei','Hiragino Sans GB',Helvetica,Arial,'Lucida Grande',sans-serif;
     }
-    .textContent :hover {
+    .text-mod .style1 .textContent :hover {
         color: #0f2639;
     }
-    .clear-pointer a{
+    .text-clear-pointer a{
         cursor: default !important;
     }
-    .text-no-href a{
+    .text-mod .style1 .text-no-href a{
         cursor: default;
     }
-    .multi-text-no-href > p {
+    .text-mod .style1 .multi-text-no-href > p {
         cursor: default;
     }
 </style>
 
-<div ng-controller="textController">
-    <div class="container">
-        <div class="textContainerLeft" ng-if="params.design.text == 'left'" ng-class="{true:'clear-pointer'}[editorMode]">
+<div ng-controller="textController" class="text-mod">
+    <div class="container style1">
+        <div class="textContainerLeft" ng-if="params.design.text == 'left'" ng-class="{true:'text-clear-pointer'}[editorMode]">
             <h1 ng-if="editorMode"
                 ng-hide="params.title.is_mod_hide" 
                 class='textTitle' 
@@ -79,7 +79,7 @@
         </div>
         <div class="textContainerCenter" 
             ng-if="params.design.text == 'center'" 
-            ng-class="{true:'clear-pointer'}[editorMode]">
+            ng-class="{true:'text-clear-pointer'}[editorMode]">
             <h1 ng-if="editorMode" 
                 ng-hide="params.title.is_mod_hide" 
                 class='textTitle' 
