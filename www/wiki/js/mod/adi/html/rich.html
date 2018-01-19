@@ -1,9 +1,16 @@
 <style>
+    .style1{
+        text-align: center;
+        height: 150px;
+        background-color: rgba(228, 227, 227, 0.845);
+        font-size: 32px;
+        line-height: 150px;
+    }
 </style>
 
 <div ng-controller="richController">
-    <div ng-if="params.modal_rich.data.length == 0">
-        <h1>点击编辑内容qwq</h1>
+    <div ng-if="params.modal_rich.data.length == 0" class="style1">
+        <span>点击编辑-富文本</span>
     </div>
     <div ng-if="params.modal_rich.data.length > 0" data-ng-bind-html="params.modal_rich.data"></div>
 </div>
