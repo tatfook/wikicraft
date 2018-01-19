@@ -10,7 +10,6 @@ define([
     'highlight',
 ], function (util, dataSource, mdconf, markdownit, hljs) {
 	var shortCmdMap = {
-		"@include":"@wiki/js/include",
 		"@mod":"@wiki/js/mod",
 		"@toc":"@wiki/js/toc",
     }
