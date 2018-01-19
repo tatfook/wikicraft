@@ -1,0 +1,67 @@
+<?npl
+--[[
+Title: validators
+Author: ZhengJiabiao
+Date: 2018/1
+Desc: validators
+]]
+
+local validators = inherit(nil, gettable("models.validators"));
+
+function validators.required_fields_validator(params, required_fields)
+    local is_params_error = false
+    local message
+
+    for i, field_name in ipairs(required_fields) do
+        if (not params[field_name]) then
+            is_params_error = true
+            message = format('parameter "%s" is required', field_name) 
+            break
+        end
+    end
+    
+    return is_params_error, message
+end
+
+
+function validators.fields_length_validator(params, fields_length)
+    local is_params_error = false
+    local message
+
+    for field_name, length in pairs(fields_length) do
+        if (#params[field_name] > length) then
+            is_params_error = true
+            message = format('parameter "%s" is too long', field_name) 
+            break
+        end
+    end
+
+    return is_params_error, message
+end
+
+
+function validators:add_validators(validator, params, condition)
+    if (not validator) or (not params) or (not condition) then
+        error("validator error, please check the validator,parameters or condition you added")
+    end
+
+    self.validators_to_run = self.validators_to_run or {}
+    self.validators_to_run[(#self.validators_to_run) + 1] = {
+        validator = validator,
+        params = params,
+        condition = condition
+    }
+end
+
+
+function validators:get_validate_result()
+    local is_params_error = false
+    local message
+
+    for i, v in ipairs(self.validators_to_run) do
+        is_params_error, message = v.validator(v.params, v.condition)
+        if (is_params_error) then break end
+    end
+
+    return is_params_error, message
+end
