@@ -1,90 +1,86 @@
 <style>
-    *{
-        margin: 0;
-        padding: 0;
-    }
-    .clearfix {
-        clear: both;
-    }
-    .clear-pointer, .clear-pointer a{
+    .qq .clear-pointer, .clear-pointer a{
         cursor : default !important;
     }
     
     /* style1 css */
-    .style1 {
+    .qq .style1 {
         z-index: 1000;
         height: 120px;
         width: 100%;
     }
-    .style1 .qq-mod {
-        position: absolute;
+    .qq .style1 .qq-mod {
+        position: fixed;
         right: 10px;
         top:15%;
         height: 100px;
     }
-    .style1 .qq-mod .qq-mod-img {
+    .qq .style1 .qq-mod .qq-mod-img {
         width: 70px;
         height: 70px;
         text-align: center;
     }
-    .style1 .qq-mod .qq-mod-img a img{
+    .qq .style1 .qq-mod .qq-mod-img a img{
         width: 70px;
         height: 70px;
         border-radius: 50%;
     }
-    .style1 .qq-mod .qq-mod-head {
+    .qq .style1 .qq-mod .qq-mod-head {
         text-align: center;
         height: 20px;
         width: 70px;
      }
-    .style1 .qq-mod .qq-mod-head p {
+     .qq .style1 .qq-mod .qq-mod-head p {
         margin-top: 6px;
         margin-bottom: 0;
         overflow: hidden;
     	text-overflow: ellipsis;
     	white-space: nowrap;
     }
-    .style1 .qq-mod .qq-mod-head a {
+    .qq .style1 .qq-mod .qq-mod-head a {
         text-decoration: none;
         font-size: 14px;
         color: #3977ad;
     } 
-    .style1 .qq-mod .qq-mod-head a:hover {
+    .qq .style1 .qq-mod .qq-mod-head a:hover {
         color: #000;
     }
 
     /* style2 css */
-    .style2 {
+    .qq .style2 {
         z-index: 1000;
         height: 90px;
         width: 100%;
     }
-    .style2 .qq-mod {
+    .qq .style2 .qq-mod {
         position: fixed;
         right: 10px;
         top: 15%;
         width: 150px;
         height: 80px;
     }
-    .style2 .qq-mod .qq-mod-img {
+    .qq .style2 .qq-mod .qq-mod-img {
         float: left;
         margin-top: 10px;
         width: 50px;
         height: 50px;
         text-align: center;
     }
-    .style2 .qq-mod .qq-mod-img a img{
+    .qq .style2 .qq-mod .qq-mod-img a img{
         width: 50px;
         height: 50px;
     }
-    .style2 .qq-mod .qq-mod-head {
+    /* .qq .qq-mod .clearfix {
+        clear: both;
+    } */
+    .qq .style2 .qq-mod .qq-mod-head {
         float: right;
         height: 20px;
         margin-left: 8px;
         margin-top: 36px;   
         text-align: center;
     }
-    .style2 .qq-mod .qq-mod-head a {
+    .qq .style2 .qq-mod .qq-mod-head a {
         padding: 3px 10px;
         border: 1px solid #3977AD;
         border-radius: 10px;
@@ -92,12 +88,12 @@
         text-decoration: none;
         color: #3977ad;
     }
-    .style2 .qq-mod .qq-mod-head a :hover {
+    .qq .style2 .qq-mod .qq-mod-head a :hover {
         color: #000;
     }
 </style>
 
-<div ng-controller="qqController" ng-class="{true:'clear-pointer'}[editorMode]">
+<div ng-controller="qqController" ng-class="{true:'clear-pointer'}[editorMode]" class="qq">
 
     <!-- style1 html -->
     <div ng-if='params.design.text=="style1"' class="style1">
@@ -115,7 +111,6 @@
                     <img ng-src="{{params.media_img.text}}">
                 </a>
             </div>
-            <div class="clearfix"></div>
             <div class="qq-mod-head" ng-hide="params.link_title.is_mod_hide">
                 <p>
                     <a  ng-if="editorMode"
@@ -150,6 +145,7 @@
                     <img ng-src="{{params.media_img.text}}">
                 </a>
             </div>
+            <!-- <div class="clearfix"></div> -->
             <div class="qq-mod-head" ng-hide="params.link_title.is_mod_hide"> 
                 <a  ng-if="editorMode"
                     href="javascript::void(0)"
