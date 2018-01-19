@@ -1,0 +1,70 @@
+<style>
+    *{
+        margin: 0;
+        padding: 0;
+    }
+    .clear-pointer, .clear-pointer a{
+        cursor : default !important;
+    }
+    
+    /* style1 css */
+
+    /* style2 css */
+    
+</style>
+
+<div ng-controller="mix_layerController" ng-class="{true:'clear-pointer'}[editorMode]">
+
+    <!-- style1 html -->
+    <div ng-if='params.design.text=="style1"' class="style1">
+        <div class="mix_layer-mod">                        
+
+                <h1 ng-hide="params.link_title.is_mod_hide">
+                    <a ng-if="editorMode"
+                       ng-click="viewEditorClick(params.link_title,$event)"
+                       href="javascript::void(0)">
+                       {{params.link_title.text}}
+                    </a>
+                    <a target="{{params.link_title.target ? params.link_title.target : '_blank'}}"
+                       ng-if="!editorMode"
+                       ng-class="{true:'clear-pointer'}[!params.link_title.href.length]"
+                       ng-href="{{params.link_title.href}}">
+                       {{params.link_title.text}}
+                    </a>
+                </h1>
+
+                <h2 ng-hide="params.link_subtitle.is_mod_hide">
+                    <a ng-if="editorMode" 
+                       href="javascript::void(0)"
+                       ng-click="viewEditorClick(params.link_subtitle,$event)">
+                       {{params.link_subtitle.text}}
+                    </a>
+                    <a target="{{params.link_subtitle.target ? params.link_subtitle.target : '_blank'}}"
+                       ng-if="!editorMode"
+                       ng-class="{true:'clear-pointer'}[!params.link_subtitle.href.length]"
+                       ng-href="{{params.link_subtitle.href}}">
+                       {{params.link_subtitle.text}}
+                    </a>
+                </h2>
+                
+                <div class="contents" ng-hide="params.multiText_content.is_mod_hide">
+                    <a  ng-if="editorMode" 
+                        href="javascript::void(0)"
+                        ng-click="viewEditorClick(params.multiText_content,$event)">
+                        {{params.multiText_content.text}}
+                    </a>
+                    <a  target="{{params.multiText_content.target ? params.multiText_content.target : '_blank'}}"
+                        ng-if="!editorMode"
+                        ng-class="{true:'clear-pointer'}[!params.multiText_content.href.length]"
+                        ng-href="{{params.multiText_content.href}}">
+                        {{params.multiText_content.text}}
+                    </a>
+                </div>
+
+        </div>
+    </div>
+
+
+    <!-- style2 html -->
+
+</div>
