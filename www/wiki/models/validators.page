@@ -3,12 +3,53 @@
 Title: validators
 Author: ZhengJiabiao
 Date: 2018/1
-Desc: validators
+Desc: package of validators
 ]]
+
+
+-----------------------------------------------------------
+-- usages:
+-- local required_fields = {"title", "username"}
+-- local fields_length = {desc=30,username=30}
+-- local are_they_sensitive_fields = {"username"}
+-- local fields_ranges = {age={gte=18}}
+-- local validators = models.validators:new()
+-- local validate_tasks = {
+--     {
+--         validator = validators.required_fields_validator,
+--         condition = required_fields
+--     },
+--     {
+--         validator = validators.fields_length_validator,
+--         condition = fields_length
+--     },
+--     {
+--         validator = validators.check_users_existence_validator,
+--         condition = nil
+--     },
+--     {
+--         validator = validators.sensitive_words_validator,
+--         condition = are_they_sensitive_fields
+--     },
+    -- {
+    --     validator = validators.number_range_validator,
+    --     condition = fields_ranges
+    -- }
+-- }
+-- validators:add_validate_tasks(validate_tasks, params)
+-- local is_params_error, error_msg = validators:get_validate_result()
+------------------------------------------------------------------
+
+
+include_once("./user.page")
 
 local validators = inherit(nil, gettable("models.validators"));
 
+
 function validators.required_fields_validator(params, required_fields)
+    if (not params) or (not required_fields) then
+        error("required_fields_validator errors : params to be validated and required_fields required!")
+    end
     local is_params_error = false
     local message
 
@@ -19,17 +60,27 @@ function validators.required_fields_validator(params, required_fields)
             break
         end
     end
-    
+
     return is_params_error, message
 end
 
 
-function validators.fields_length_validator(params, fields_length)
+function validators.fields_length_validator(params, fields_lengths)
+    if (not params) or (not fields_lengths) then
+        error("fields_length_validator errors : params to be validated and fields_lengths required!")
+    end
     local is_params_error = false
     local message
+    local length = 0
 
-    for field_name, length in pairs(fields_length) do
-        if (#params[field_name] > length) then
+    for field_name, limit in pairs(fields_lengths) do
+        if (type(params[field_name]) == "string") or ((type(params[field_name]) == "table")) then
+            length = #(params[field_name])
+        elseif (type(params[field_name]) == "number") then
+            length = #tostring(params[field_name])
+        end
+
+        if (length > limit) then
             is_params_error = true
             message = format('parameter "%s" is too long', field_name) 
             break
@@ -40,11 +91,94 @@ function validators.fields_length_validator(params, fields_length)
 end
 
 
-function validators:add_validators(validator, params, condition)
-    if (not validator) or (not params) or (not condition) then
-        error("validator error, please check the validator,parameters or condition you added")
+function validators.number_range_validator(params, fields_ranges)
+    if (not params) or (not fields_ranges) then
+        error("number_range_validator errors : params to be validated and fields_ranges required!")
+    end
+    local is_params_error = false
+    local message
+
+    for field_name, range in pairs(fields_ranges) do
+        if (range.gt) then
+            if (not (params[field_name] > range.gt)) then
+                is_params_error = true
+                message = format("%s must be greater than %d", field_name, range.gt)
+                break
+            end
+        end
+        if (range.lt) then
+            if (not (params[field_name] < range.lt)) then
+                is_params_error = true
+                message = format("%s must be less than %d", field_name, range.lt)
+                break
+            end
+        end
+        if (range.gte) then
+            if (not (params[field_name] >= range.gte)) then
+                is_params_error = true
+                message = format("%s must be greater than or equal to %d", field_name, range.gte)
+                break
+            end
+        end
+        if (range.lte) then
+            if (not (params[field_name] <= range.lte)) then
+                is_params_error = true
+                message = format("%s must be greater than or equal to %d", field_name, range.lte)
+                break
+            end
+        end
+    end
+    return is_params_error, message
+end
+
+
+function validators.sensitive_words_validator(params, fields_to_check)
+    if (not params) or (not fields_to_check) then
+        error("sensitive_words_validator errors : params to be validated and fields_to_check required!")
+    end
+    local is_params_error = false
+    local message
+
+    local params_to_check = {}
+    for i, field_name in ipairs(fields_to_check) do
+        params_to_check[field_name] = params[field_name]
     end
 
+    local not_sensitive = sensitiveWordFilter(params_to_check)
+    if (not not_sensitive) then
+        is_params_error = true
+        msg = "sensitive words included"
+    end
+    return is_params_error, message
+end
+
+
+function validators.check_users_existence_validator(params)
+    if (not params.username) then
+        error("check_users_existence_validator errors : username required!")
+    end
+    local is_params_error = false
+    local message
+    local User = models.user:new()
+    User:db():findOne({["+username"]={params.username}}, resume)
+    local _, exist_user = yield()
+
+    if (not exist_user) then
+        is_params_error = true
+        message = "user not exist"
+    end
+    return is_params_error, message
+end
+
+
+function validators:add_validate_tasks(validate_tasks, params)
+    for i, task in ipairs(validate_tasks) do
+        self:add_one_validate_task(task.validator, params, task.condition)
+    end
+end
+
+
+function validators:add_one_validate_task(validator, params, condition)
     self.validators_to_run = self.validators_to_run or {}
     self.validators_to_run[(#self.validators_to_run) + 1] = {
         validator = validator,

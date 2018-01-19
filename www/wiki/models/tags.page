@@ -44,9 +44,10 @@ end
 
 
 function tags:insert_validator(params)
-    local tag
+    local clean_data
     local required_fields = {"title", "username"}
-    local fields_length = {title=30,username=30}
+    local fields_lengths = {title=30, username=30}
+    local are_they_sensitive_fields = {"title"}
     local validators = models.validators:new()
     local validate_tasks = {
         {
@@ -55,38 +56,28 @@ function tags:insert_validator(params)
         },
         {
             validator = validators.fields_length_validator,
-            condition = fields_length
+            condition = fields_lengths
+        },
+        {
+            validator = validators.check_users_existence_validator,
+            condition = nil
+        },
+        {
+            validator = validators.sensitive_words_validator,
+            condition = are_they_sensitive_fields
         }
     }
-    for i, task in ipairs(validate_tasks) do
-        validators:add_validators(task.validator, params, task.condition)
-    end
+    validators:add_validate_tasks(validate_tasks, params)
     local is_params_error, msg = validators:get_validate_result()
 
     if (not is_params_error) then
-        local not_sensitive = sensitiveWordFilter({title=params.title})
-        if (not not_sensitive) then
-            is_params_error = true
-            msg = "sensitive words included"
-        end
-    end
-    if (not is_params_error) then
-        local User = models.user:new()
-        User:db():findOne({["+username"]={params.username}}, resume)
-        local _, exist_user = yield()
-        if (not exist_user) then
-            is_params_error = true
-            msg = "user not exist"
-        end
-    end
-    if (not is_params_error) then
-        tag = {
+        clean_data = {
             title = params.title,
             creator = params.username,
             createDate = ParaGlobal.GetDateFormat("yyyy-MM-dd")
         }
     end
-    return tag, is_params_error, msg
+    return clean_data, is_params_error, msg
 end
 
 
