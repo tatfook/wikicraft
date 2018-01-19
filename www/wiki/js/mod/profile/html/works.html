@@ -1,0 +1,96 @@
+<style>
+    .user-works .works-list {
+        padding: 0 20px;
+        border: 1px solid #F2F2F2;
+        margin: 20px 0 40px;
+    }
+
+    .user-works .works-item {
+        display: flex;
+        border-bottom: 1px solid #F2F2F2;
+        color: #666;
+        padding: 20px 0;
+        position: relative;
+    }
+
+    .user-works .works-item:last-child {
+        border-bottom: none;
+    }
+
+    .user-works .works-item>img {
+        width: 120px;
+        height: 100px;
+        object-fit: cover;
+    }
+
+    .user-works .work-detail {
+        margin-left: 7px;
+        flex: 1;
+    }
+
+    .user-works .work-detail h4 {
+        margin: 0;
+        color: #333;
+    }
+
+    .user-works .work-detail p {
+        margin: 0;
+    }
+
+    .user-works .work-detail>.p-link,
+    .user-works .work-detail>.p-desc {
+        margin: 8px 0;
+    }
+
+    .user-works .work-detail>.p-tags>span {
+        padding: 1.5px 10px;
+        background-color: #E0F1FF;
+        margin-right: 12px;
+    }
+
+    .user-works .work-other-msg {
+        position: absolute;
+        right: 0;
+        top: 23px;
+        color: #999;
+    }
+
+    .user-works .work-other-msg>span {
+        margin-left: 10px;
+    }
+
+    .user-works .work-other-msg img {
+        margin-right: 6px;
+        vertical-align: sub;
+    }
+</style>
+<div class="user-works" ng-controller="worksCtrl">
+    <h4 class="title">
+        我的作品
+        <span class="pull-right">
+            <i class="iconfont icon-tianjia"></i>
+            <i class="iconfont icon-bianji"></i>
+        </span>
+    </h4>
+    <div class="works-list">
+        <div class="works-item" ng-repeat="work in works track by $index">
+            <img ng-src="{{work.logoUrl}}">
+            <div class="work-detail">
+                <h4>{{work.title}}</h4>
+                <p class="p-link">
+                    <a ng-href="{{work.workLink}}" target="_blank">{{work.workLink}}</a>
+                </p>
+                <p class="p-desc">{{work.desc}}</p>
+                <p class="p-tags">
+                    <span ng-repeat="tag in work.tags track by $index">{{tag}}</span>
+                </p>
+            </div>
+            <div class="work-other-msg">
+                <span>
+                    <img ng-src="{{imgsPath+'icon/wiki_pageview.png'}}">{{work.visitCount}}</span>
+                <span>
+                    <img ng-src="{{imgsPath+'icon/wiki_pageview.png'}}">{{work.favoriteCount}}</span>
+            </div>
+        </div>
+    </div>
+</div>

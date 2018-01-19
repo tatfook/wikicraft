@@ -1,0 +1,62 @@
+<style>
+    .user-certification .ellipsis-1 {
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+    }
+
+    .user-certification .certifications-list {
+        padding: 12px 20px;
+        border: 1px solid #F2F2F2;
+        font-size: 16px;
+        color: #666;
+        margin: 24px 0 43px;
+    }
+
+    .user-certification table {
+        margin: 0;
+        border: none;
+    }
+
+    .user-certification table>tbody>tr>td {
+        border: none;
+        display: inline-block;
+        height: 32px;
+        line-height: 32px;
+        padding: 0;
+    }
+
+    .user-certification td.title {
+        width: 30%;
+    }
+
+    .user-certification td.link {
+        width: 50%;
+        padding: 0 5px;
+    }
+
+    .user-certification td.time {
+        width: 20%;
+        font-size: 14px;
+        color: #999;
+        text-align: right;
+    }
+</style>
+<div class="user-certification" ng-controller="certificationCtrl">
+    <h4 class="title">
+        我的认证
+        <span class="pull-right">
+            <i class="iconfont icon-tianjia"></i>
+            <i class="iconfont icon-bianji"></i>
+        </span>
+    </h4>
+    <div class="certifications-list">
+        <table>
+            <tr class="certification-item" ng-repeat="certification in certifications">
+                <td class="title ellipsis-1">{{certification.title}}</td>
+                <td class="link ellipsis-1">{{certification.link}}</td>
+                <td class="time ellipsis-1">{{certification.time}}</td>
+            </tr>
+        </table>
+    </div>
+</div>
