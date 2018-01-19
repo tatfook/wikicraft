@@ -3,31 +3,46 @@
         margin: 0;
         padding: 0;
     }
-
+    .clearfix {
+        clear: both;
+    }
+    .clear-pointer, .clear-pointer a{
+        cursor : default !important;
+    }
+    
     /* style1 css */
     .style1 {
         z-index: 1000;
-        height: 110px;
+        height: 120px;
         width: 100%;
     }
     .style1 .qq-mod {
-        position: fixed;
+        position: absolute;
         right: 10px;
         top:15%;
+        height: 100px;
     }
     .style1 .qq-mod .qq-mod-img {
+        width: 70px;
+        height: 70px;
         text-align: center;
     }
-    .style1 .qq-mod .qq-mod-img a{
-        width: 71px;
-        height: 71px;
+    .style1 .qq-mod .qq-mod-img a img{
+        width: 70px;
+        height: 70px;
+        border-radius: 50%;
     }
     .style1 .qq-mod .qq-mod-head {
         text-align: center;
+        height: 20px;
+        width: 70px;
      }
     .style1 .qq-mod .qq-mod-head p {
         margin-top: 6px;
         margin-bottom: 0;
+        overflow: hidden;
+    	text-overflow: ellipsis;
+    	white-space: nowrap;
     }
     .style1 .qq-mod .qq-mod-head a {
         text-decoration: none;
@@ -36,9 +51,6 @@
     } 
     .style1 .qq-mod .qq-mod-head a:hover {
         color: #000;
-    }
-    .clear-pointer, .clear-pointer a{
-        cursor : default !important;
     }
 
     /* style2 css */
@@ -55,16 +67,19 @@
         height: 80px;
     }
     .style2 .qq-mod .qq-mod-img {
-        margin-top: 10px;
         float: left;
+        margin-top: 10px;
+        width: 50px;
+        height: 50px;
         text-align: center;
     }
-    .style2 .qq-mod .qq-mod-img a{
+    .style2 .qq-mod .qq-mod-img a img{
         width: 50px;
         height: 50px;
     }
     .style2 .qq-mod .qq-mod-head {
-        float: left;
+        float: right;
+        height: 20px;
         margin-left: 8px;
         margin-top: 36px;   
         text-align: center;
@@ -100,6 +115,7 @@
                     <img ng-src="{{params.media_img.text}}">
                 </a>
             </div>
+            <div class="clearfix"></div>
             <div class="qq-mod-head" ng-hide="params.link_title.is_mod_hide">
                 <p>
                     <a  ng-if="editorMode"
