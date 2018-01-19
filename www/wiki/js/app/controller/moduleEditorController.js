@@ -48,7 +48,7 @@ define([
 				});
 			}
         }
-			
+
 		// 转换数据格式
 		function get_order_list(obj){
 			//console.log(obj);
@@ -132,10 +132,15 @@ define([
             });
         }
 
-        // 打开绘图板
-        $scope.openBoard = function(data){
-            // 画板
-            config.services.selfDefinedModal(data.options, data.success, data.error);
+        // 打开自定义Modal
+        $scope.openModal = function(data){
+            var scope = config.shareMap.moduleEditorParams.wikiBlock.scope;
+
+            scope.applyAttrChange = function(){
+                throttle(applyAttrChange);
+            }
+
+            config.services.selfDefinedModal(scope.options, scope.success, scope.error);
         }
 
         // 多行文本弹窗
@@ -434,7 +439,7 @@ define([
             });
 
             swiper[type].destroy && swiper[type].destroy(true, true);
-            
+
             swiper[type] = new Swiper("#"+swiperContainerId,{
                 nextButton: '#' + swiperContainerId + ' .swiper-button-next',
                 prevButton: '#' + swiperContainerId + ' .swiper-button-prev',
@@ -443,8 +448,11 @@ define([
                 calculateHeight:true,
                 scrollbarHide: false,
                 slidesPerView: 'auto',
+                loop: false,
+                speed: 0,
+                grabCursor: true,
                 mousewheelControl: true,
-                resistanceRatio: 0,         // 不可脱离边缘
+                resistance: false,         // 不可脱离边缘
                 noSwiping: true,            // 在slide上增加类名 "swiper-no-swiping"，该slide无法拖动
             });
         }

@@ -124,11 +124,16 @@
                     "ariaLabeledBy"  : "title",
                     "ariaDescribedBy": "body",
                     "template"       : "<div id='mx-client'><div class='mx-client-close' ng-click='close()'>关闭</div></div>",
-                    "controller"     : "mxController",
+                    "controller"     : "boardEditorController",
                     "size"           : "lg",
                     "openedClass"    : "mx-client-modal",
                     "backdrop"       : "static",
                     "keyboard"       : false,
+                    "resolve"        : {
+                        "wikiBlock" : function(){
+                            return wikiBlock;
+                        }
+                    }
                 })
                 .result.then(function (ui) {
                     var compressData = ui.getCurrentCompressData();
@@ -142,7 +147,7 @@
             };
         }])
 
-        app.registerController("mxController", ['$scope', '$uibModalInstance', function ($scope, $uibModalInstance) {
+        app.registerController("boardEditorController", ['$scope', '$uibModalInstance', 'wikiBlock', function ($scope, $uibModalInstance, wikiBlock) {           
             $scope.close = function () {
                 $uibModalInstance.close($scope.ui);
             }
