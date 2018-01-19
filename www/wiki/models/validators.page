@@ -40,9 +40,6 @@ Desc: package of validators
 -- local is_params_error, error_msg = validators:get_validate_result()
 ------------------------------------------------------------------
 
-
-include_once("./user.page")
-
 local validators = inherit(nil, gettable("models.validators"));
 
 
@@ -153,14 +150,13 @@ function validators.sensitive_words_validator(params, fields_to_check)
 end
 
 
-function validators.check_users_existence_validator(params)
-    if (not params.username) then
-        error("check_users_existence_validator errors : username required!")
+function validators.check_users_existence_validator(params, user_instance)
+    if (not params.username) or (not user_instance) then
+        error("check_users_existence_validator errors : username and user_instance required!")
     end
     local is_params_error = false
     local message
-    local User = models.user:new()
-    User:db():findOne({["+username"]={params.username}}, resume)
+    user_instance:db():findOne({["+username"]={params.username}}, resume)
     local _, exist_user = yield()
 
     if (not exist_user) then

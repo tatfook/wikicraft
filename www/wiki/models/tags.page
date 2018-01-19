@@ -47,22 +47,20 @@ function tags:insert_validator(params)
     local clean_data
     local required_fields = {"title", "username"}
     local fields_lengths = {title=30, username=30}
+    local user_instance = models.user:new()
     local are_they_sensitive_fields = {"title"}
     local validators = models.validators:new()
     local validate_tasks = {
         {
             validator = validators.required_fields_validator,
             condition = required_fields
-        },
-        {
+        }, {
             validator = validators.fields_length_validator,
             condition = fields_lengths
-        },
-        {
+        }, {
             validator = validators.check_users_existence_validator,
-            condition = nil
-        },
-        {
+            condition = user_instance
+        }, {
             validator = validators.sensitive_words_validator,
             condition = are_they_sensitive_fields
         }
