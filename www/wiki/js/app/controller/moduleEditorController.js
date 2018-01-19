@@ -48,7 +48,7 @@ define([
 				});
 			}
         }
-			
+
 		// 转换数据格式
 		function get_order_list(obj){
 			//console.log(obj);
@@ -132,10 +132,15 @@ define([
             });
         }
 
-        // 打开绘图板
-        $scope.openBoard = function(data){
-            // 画板
-            config.services.selfDefinedModal(data.options, data.success, data.error);
+        // 打开自定义Modal
+        $scope.openModal = function(data){
+            var scope = config.shareMap.moduleEditorParams.wikiBlock.scope;
+
+            scope.applyAttrChange = function(){
+                throttle(applyAttrChange);
+            }
+
+            config.services.selfDefinedModal(scope.options, scope.success, scope.error);
         }
 
         // 多行文本弹窗
