@@ -44,7 +44,7 @@ define([
 			
 			$scope.setExternalIframeHeight = function(){
 				setTimeout(function(){
-					var iFrame = document.querySelector('.intake');
+					var iFrame = document.querySelector('#' + $scope.currentIframe);
 
 					if (iFrame) {
 						if($scope.editorMode){
@@ -62,19 +62,37 @@ define([
 
 			$scope.setInnerIframeHeight = function(){
 				setTimeout(function(){
-					var iFrame = document.querySelector('.intake');
+					var iFrame = document.querySelector('#' + $scope.currentIframe);
 
-					iFrame.style.height = (iFrame.contentWindow.outerHeight + 600) + "px";
+					var setHeightInterval = setInterval(function(){
+						setNow();
+					}, 100);
+
+					var setTimes = 0;
+
+					function setNow(){
+						if(iFrame.offsetHeight != iFrame.contentWindow.document.body.offsetHeight){
+							iFrame.style.height = iFrame.contentWindow.document.body.offsetHeight + "px";
+						}else{
+							if(setTimes <= 50){
+								setTimes++
+							}else{
+								clearInterval(setHeightInterval);
+							}
+						}
+					}
 				}, 0);
 			}
 
 			if($scope.params.link_include.href.length > 4){
 				if($scope.params.link_include.href.indexOf(config.hostname) > 0){
-					$scope.$watch("$veieContentLoaded", $scope.setInnerIframeHeight);
+					$scope.$watch("$viewContentLoaded", $scope.setInnerIframeHeight);
 				}else{
 					$scope.$watch("$viewContentLoaded", $scope.setExternalIframeHeight);
 				}
 			}
+
+			$scope.currentIframe = "__INCLUDE__" + Date.now();
 
 			$scope.pageUrl = $sce.trustAsResourceUrl($scope.params.link_include.href);
 		}]);
