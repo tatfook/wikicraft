@@ -10,6 +10,7 @@
     optimizeCss: 'standard',
     removeCombined:true,
     optimizeAllPluginResources: true,  // text 插件配置
+	generateSourceMaps: true,
 	skipDirOptimize: true,
     modules:[
         {
