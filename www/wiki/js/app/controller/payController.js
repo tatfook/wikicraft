@@ -29,16 +29,26 @@ define([
             $scope.ideal_money         = 0;
             $scope.goods               = {};
             $scope.page                = "user";
-            $scope.otherUserinfo       = {}
+            $scope.otherUserinfo       = {};
             $scope.alipayNotice        = null;
             $scope.goods.price         = 0;
             $scope.goods.exchange_rate = 0;
             $scope.additional          = {};
 
-            console.log(queryArgs.redirect);
-
             validateF({ "app_name": queryArgs.app_name }, "$scope.app_name");
             validateF({ "app_goods_id": queryArgs.app_goods_id }, "$scope.app_goods_id");
+
+            if(queryArgs.out_trade_no){
+                var trade = {};
+                trade.order_no = queryArgs.out_trade_no;
+
+                $scope.otherUserinfo.username = queryArgs.username;
+                $scope.body = "支付结果";
+                $scope.alipayCallback = true;
+
+                reset = false;
+                getTrade(trade);
+            }
 
             if (Account.isAuthenticated() && Account.user) {
                 $scope.otherUserinfo.username = Account.user.username;
@@ -139,7 +149,8 @@ define([
 
             $scope.alipayClient = function () {
                 var params = {
-                    "channel"   : "alipay_pc_direct",
+                    "channel"   : "alipay_wap",
+                    'redirect'  : "http://" + location.host + "/wiki/pay?username=" + $scope.otherUserinfo.username,
                 };
 
                 createCharge(params, function (charge) {
@@ -149,10 +160,29 @@ define([
 
             $scope.wechatClient = function () {
                 var params = {
-                    "channel": "wx_pub",
+                    "channel": "wx_wap",
                 };
 
-                createCharge(params);
+                if(confirm("使用微信H5支付，必须安装微信后才能继续，请问是否安装了微信客户端？")){
+                    createCharge(params, function (charge) {
+                        if(charge && charge.credential && charge.credential.wx_wap){
+                            var ifr = document.createElement("iframe"); 
+                            ifr.setAttribute('src', charge.credential.wx_wap); 
+                            ifr.setAttribute('style', 'display:none');
+                            document.body.appendChild(ifr);
+
+                            getTrade(charge);
+
+                            setTimeout(function(){
+                                document.body.removeChild(ifr);
+                            }, 1500);
+                        }
+                    });
+                }else{
+                    if(confirm("请问是否进入微信客户端安装页？")){
+                        location.href = "http://weixin.qq.com";
+                    }
+                }
             }
 
             $scope.alipayQR = function () {
@@ -325,32 +355,37 @@ define([
 
             function getTrade(charge) {
                 $http.post(config.apiUrlPrefix + "pay/getTradeOne", { username: $scope.otherUserinfo.username, trade_no: charge.order_no }, { isShowLoading: false }).then(function (response) {
-
-                    if (response && response.data && response.data.data && response.data.data.status == "Finish") {
-						Account.reloadUser(); // 充值完成 用户信息需要更新, 本应只更新相关信息即可, 但此处可能无法识别更新那块，可提供完成回调机制
-                        $scope.page = "success";
-                        if ($scope.returnUrl) {
-                            var sec = 5;
-                            function returnUrl(i) {
-                                if (i == 5) {
-                                    window.location.href = $scope.returnUrl;
-                                } else {
-                                    i++;
-
-                                    setTimeout(function () {
-                                        returnUrl(i);
-                                    }, 1000);
+                    if(response && response.status){
+                        if (response.status == 200 && response.data && response.data.data && response.data.data.status == "Finish") {
+                            Account.reloadUser(); // 充值完成 用户信息需要更新, 本应只更新相关信息即可, 但此处可能无法识别更新那块，可提供完成回调机制
+                            $scope.page = "success";
+                            if ($scope.returnUrl) {
+                                var sec = 5;
+                                function returnUrl(i) {
+                                    if (i == 5) {
+                                        window.location.href = $scope.returnUrl;
+                                    } else {
+                                        i++;
+    
+                                        setTimeout(function () {
+                                            returnUrl(i);
+                                        }, 1000);
+                                    }
                                 }
+    
+                                returnUrl(0);
                             }
-
-                            returnUrl(0);
+                        } else if (response.status == 404
+                                   || response.status == 503
+                                   || response.data && response.data.data && response.data.data.status == "Fail") {
+                            $scope.page = "fail";
+                        } else {
+                            if (!reset) {
+                               setTimeout(function () { getTrade(charge) }, 3000);
+                            }
                         }
-                    } else if (response && response.data && response.data.data && response.data.data.status == "Fail") {
-                        $scope.page = "fail";
-                    } else {
-                        if (!reset) {
-                           setTimeout(function () { getTrade(charge) }, 3000);
-                        }
+                    }else{
+                        alert("网络错误！");
                     }
                 })
             }
