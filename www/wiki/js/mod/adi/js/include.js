@@ -37,6 +37,7 @@ define([
 						name         : "引用",   
 						label        : "选择或输入URL",
 						href         : "",
+						require      : true, 
 					},
 				}
 			});
