@@ -114,7 +114,7 @@
     }
 
     /* style4 css */
-    .mix-layer .style6 a{
+    /* .mix-layer .style6 a{
         color: azure;
     }
     .mix-layer .style6 .mix-img{
@@ -147,10 +147,10 @@
     }
     .mix-layer .style6 .mix-div > span a{
         font-size: 16px;
-    }
+    } */
 
     /* style5 css */
-    .mix-layer .style8 .mix a{
+    /* .mix-layer .style8 .mix a{
         color: azure;
     }
     .mix-layer .style8 .mix{
@@ -189,15 +189,17 @@
     }
     .mix-layer .style8 .mix .mix-div > span a{
         font-size: 16px;
-    }
+    } */
 
     /* style6 css */
     .mix-layer .style6 a{
         color: aliceblue;
     }
     .mix-layer .style6 .mix-img{
-        width: 1140px;
-        height: 669.9px;
+        width: 100%;
+        height: 694px;
+        background-size: cover;
+        background-position: center;
     }
     .mix-layer .style6 .mix-div{
         float: right;
@@ -232,8 +234,10 @@
         color: aliceblue;
     }
     .mix-layer .style7 .mix-img{
-        width: 1140px;
-        height: 669.9px;
+        width: 100%;
+        height: 694px;
+        background-size: cover;
+        background-position: center;
     }
     .mix-layer .style7 .mix-div{
         float: left;
@@ -268,12 +272,14 @@
         color: aliceblue;
     }
     .mix-layer .style8 .mix{
-        width: 1140px;
-        height: 669.9px;
+        width: 100%;
+        height: 694px;
     }
     .mix-layer .style8 .mix .mix-img{
-        width: 1140px;
-        height: 669.9px;
+        width: 100%;
+        height: 694px;
+        background-size: cover;
+        background-position: center;
     }
     .mix-layer .style8 .mix .mix-div{
         text-align: center;
@@ -310,8 +316,10 @@
         color: aliceblue;
     }
     .mix-layer .style9 .mix-img{
-        width: 1140px;
-        height: 669.9px;
+        width: 100%;
+        height: 694px;
+        background-size: cover;
+        background-position: center;
     }
     .mix-layer .style9 .mix-div{
         float: right;
@@ -373,7 +381,7 @@
     </div>
 
     <!-- style6 html -->
-    <div ng-if='params.design.text=="style6"' class="style6 container">
+    <div ng-if='params.design.text=="style6"' class="style6 clearfix">
         <div class="mix-div">
             <h2>
                 <a ng-if="editorMode"
@@ -437,7 +445,7 @@
     </div>
 
     <!-- style7 html -->
-    <div ng-if='params.design.text=="style7"' class="style7 container">
+    <div ng-if='params.design.text=="style7"' class="style7 clearfix">
         <div class="mix-div">
             <h2>
                 <a ng-if="editorMode"
@@ -501,7 +509,7 @@
     </div>
 
     <!-- style8 html -->
-    <div ng-if='params.design.text=="style8"' class="style8 container">
+    <div ng-if='params.design.text=="style8"' class="style8 clearfix">
         <div class="mix">
             <div class="mix-div">
                 <h2>
@@ -567,7 +575,7 @@
     </div>
 
     <!-- style9 html -->
-    <div ng-if='params.design.text=="style9"' class="style9 container">
+    <div ng-if='params.design.text=="style9"' class="style9 clearfix">
         <div class="mix-div">
             <h2>
                 <a ng-if="editorMode"
