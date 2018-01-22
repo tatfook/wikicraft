@@ -1,20 +1,23 @@
 /*
  * @Author: ZhangKaitlyn 
  * @Date: 2018-01-19
- * @Last Modified by: mikey.zhaopeng
- * @Last Modified time: 2018-01-19 20:10:42
+ * @Last Modified by: none
+ * @Last Modified time: 2018-01-22 10:48:28
  */
 define([
     'app',
     'helper/util',
+    'helper/markdownwiki',
     'text!wikimod/profile/html/controls.html'
-], function (app, util, htmlContent) {
+], function (app, util, markdownwiki, htmlContent) {
     function registerController(wikiBlock) {
-        app.registerController("profileControlCtrl", ['$scope','$rootScope', function ($scope, $rootScope) {
+        app.registerController("profileControlCtrl", ['$scope','$rootScope', '$timeout', function ($scope, $rootScope, $timeout) {
             var initView = function(){
-                console.log($rootScope.subMdContent);
-                console.log($("#profileMain"));
-                util.html("#profileMain", $rootScope.subMdContent);
+                $timeout(function(){
+                    var md = markdownwiki({breaks: true});
+                    var subHtml = md.render($rootScope.subMdContent);
+                    util.html("#profileMain", subHtml);
+                }, 0);
             }
             $scope.$watch('$viewContentLoaded', initView());
         }]);

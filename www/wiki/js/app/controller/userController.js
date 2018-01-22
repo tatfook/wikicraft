@@ -28,7 +28,7 @@ define([
                 if (topContentReg.test(content)) {
                     topContent.push(content,"\n");
                 } else if(subContentReg.test(content)){
-                    subContent.push(content,"");
+                    subContent.push(content,"\n");
                 }
             });
             return {
@@ -46,11 +46,10 @@ define([
                 console.log(mdContent);
                 var md = markdownwiki({breaks: true, isMainMd:true});
                 var topHtml = md.render(mdContent.topContent);
-                var subHtml = md.render(mdContent.subContent);
                 util.html("#user-maincontent", topHtml);
             
-                $rootScope.subMdContent = subHtml;
-                console.log($rootScope.subMdContent);
+                $rootScope.subMdContent = mdContent.subContent;
+                
             }, function(err){
                 console.log(err);
             });
