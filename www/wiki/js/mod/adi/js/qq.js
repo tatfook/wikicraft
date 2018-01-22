@@ -5,7 +5,7 @@ define([
 ], function (app, util, htmlContent) {
 
     function registerController(wikiblock) {
-        app.registerController("qqController", ['$scope','$sce', function ($scope, $sce) {
+        app.registerController("qqController", ['$scope', '$sce', function ($scope, $sce) {
             $scope.editorMode = wikiblock.editorMode;
 
             wikiblock.init({
@@ -36,16 +36,6 @@ define([
                         text         : "style1", 
                         require      : true, 
                     },
-                    // text_qq:{
-					// 	is_leaf      : true, 
-					// 	type         : "text",   
-					// 	editable     : true, 
-					// 	is_mod_hide  : false,  
-					// 	is_card_show : true,
-					// 	name         : "QQ调用",   
-					// 	text         : "", 
-					// 	require      : true, 
-                    // },
                     input_qq: {
                         is_leaf      : true, 
 						type         : "input",   
@@ -91,7 +81,7 @@ define([
 
             $scope.$watch("params", function(){
                 var imgOne = config.wikiModPath + 'adi/assets/imgs/qqMod.png';
-                var imgTwo = config.wikiModPath + 'adi/assets/imgs/qqModTwo.png'
+                var imgTwo = config.wikiModPath + 'adi/assets/imgs/qqModTwo.png';
 
                 var defaultImgs = [imgOne, imgTwo];
 
