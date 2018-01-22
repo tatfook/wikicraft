@@ -24,7 +24,7 @@ function skills:ctor()
     self:addfield("usersLiked", "table", false, 10000)
 end
 
--- todo:skills existence validation
+
 function skills:api_insert(params)
     -- ensureAuthenticated()
     local skill, is_params_error, message = self:insert_validator(params)
@@ -33,10 +33,11 @@ function skills:api_insert(params)
     end
     self:db():insertOne({["+username+title"] = {skill.username, skill.title}}, skill, resume)
     local err, result = yield()
-    if result then
+    if (result) then
         params.id = result._id
         self:insert_to_es(params)
     end
+    result.likedCount = result.likedCount or 0
     result.usersLiked = nil
     return errors:wrap(err, result)
 end
@@ -74,9 +75,9 @@ function skills:insert_validator(params)
         clean_data = {
             title = params.title,
             username = params.username,
-            level = params.level,
-            usersLiked = {},
-            likedCount = 0
+            level = params.level
+            -- usersLiked = {},
+            -- likedCount = 0
         }
     end
 
@@ -96,6 +97,7 @@ function skills:api_update(params)
         params.id = result._id
         self:update_to_es(params)
     end
+    result.likedCount = result.likedCount or 0
     result.usersLiked = nil
     return errors:wrap(err, result)
 end
@@ -216,6 +218,7 @@ function skills:api_getByUsername(params)
     if (skills) then
         for i, skill in ipairs(skills) do
             skill.usersLiked = skill.usersLiked or {}
+            skill.likedCount = skill.likedCount or #(skill.usersLiked)
             skill.doesVisitorLike = self:is_visitor_in_usersLiked(params.visitor, skill.usersLiked)
             skill.usersLiked = nil  -- do not show usersLiked unless necessary
         end
@@ -248,6 +251,7 @@ function skills:api_getUsersLiked(params)
         end
         result.usersLiked = usersLiked
         result.doesVisitorLike = doesVisitorLike
+        result.likedCount = result.likedCount or 0
     end
     return errors:wrap(err, result)
 end
@@ -334,12 +338,12 @@ function skills:delete_in_es(params)
     return es:deleteOne(skill)
 end
 
-function skills:api_test()
-    local params = {
-        username = "chatalove52",
-        title = "lua1",
-        level = 4,
-        works = {"www.baidu.com","qq.com","163.com","weibo.com"}
-    }
-    return self:api_update(params)
-end
+
+-- function skills:api_test()
+--     local params = {
+--         username = "user1",
+--         title = "npl",
+--         visitor = "visitor1"
+--     }
+--     return self:api_getUsersLiked(params)
+-- end
