@@ -8,7 +8,9 @@ define([
     function registerController(wikiblock) {
         app.registerController("pictureTextController", ['$scope','$sce', function ($scope, $sce) {
 
-			$scope.editorMode = wikiblock.editorMode;
+			$scope.editorMode   = wikiblock.editorMode;
+			$scope.stitching    = config.wikiModPath + 'adi/assets/imgs/stitching.png';
+			$scope.projectImage = config.wikiModPath + 'adi/assets/imgs/pictureMod.png';
 
             initObj = {
 				scope  : $scope,
@@ -31,6 +33,18 @@ define([
                             "cover": "/wiki/js/mod/adi/assets/images/projectTwo.png"
 						},
 					},
+					{
+						"design": {
+                            "text":"style4",
+                            "cover": ""
+						},
+					},
+					{
+						"design": {
+                            "text":"style5",
+                            "cover": ""
+						},
+					},
 				],
 				params_template: {
 					design:{
@@ -51,7 +65,7 @@ define([
 						is_card_show : true,
                         is_mod_hide  : false,
                         name         : "picture",
-                        text         : config.wikiModPath + 'adi/assets/imgs/pictureMod.png',
+                        text         : "",
                         href         : "",
                     	require      : true,
 					},
@@ -137,6 +151,46 @@ define([
 				"background-size"     : "cover",
 				"background-position" : "center center",
 			}
+			$scope.$watch("params", function(){
+                var imgOne = config.wikiModPath + 'adi/assets/imgs/pictureMod.png';
+                var imgTwo = config.wikiModPath + 'adi/assets/imgs/stitching.png'
+
+                var defaultImgs = [imgOne, imgTwo];
+
+                var currentImgText = $scope.params.image_picture.text;
+
+                for(var x in defaultImgs){
+                    if(currentImgText == defaultImgs[x]){
+                        currentImgText = "";
+                        break;
+                    }
+                }
+
+                if($scope.params.design.text == "style1"){
+                    $scope.params.image_picture.text = currentImgText.length == 0 ? imgOne : $scope.params.image_picture.text;
+                    console.log($scope.params.image_picture.text);
+                }
+
+                if($scope.params.design.text == "style2"){
+                    $scope.params.image_picture.text = currentImgText.length == 0 ? imgOne : $scope.params.image_picture.text;
+                    console.log($scope.params.image_picture.text);
+				}
+
+				if($scope.params.design.text == "style3"){
+                    $scope.params.image_picture.text = currentImgText.length == 0 ? imgOne : $scope.params.image_picture.text;
+                    console.log($scope.params.image_picture.text);
+				}
+				
+				if($scope.params.design.text == "style4"){
+                    $scope.params.image_picture.text = currentImgText.length == 0 ? imgTwo : $scope.params.image_picture.text;
+                    console.log($scope.params.image_picture.text);
+				}
+				
+				if($scope.params.design.text == "style5"){
+                    $scope.params.image_picture.text = currentImgText.length == 0 ? imgTwo : $scope.params.image_picture.text;
+                    console.log($scope.params.image_picture.text);
+                }
+            })
         }]);
     }
 
