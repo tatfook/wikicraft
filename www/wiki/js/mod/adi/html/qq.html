@@ -56,8 +56,10 @@
     }
     .qq .style2 .qq-mod {
         position: fixed;
-        margin-top: 1%;
-        margin-left: 86%;
+        top: 15%;
+        right: 10px;
+        /* margin-top: 1%;
+        margin-left: 86%; */
         width: 150px;
         height: 80px;
     }
@@ -133,7 +135,7 @@
 
     <!-- style2 html -->
     <div ng-if='params.design.text=="style2"' class="style2">
-        <div ng-class="{true:'clear-pointer'}[editorMode]" class="qq-mod">
+        <div ng-class="{true:'clear-pointer'}[editorMode]" class="qq-mod" ng-style="topStyle">
             <div class="qq-mod-img" ng-hide="params.media_img.is_mod_hide">
                 <a  ng-if="editorMode"
                     href="javascript::void(0)"
