@@ -15,11 +15,10 @@ define([
 ], function (app, util, storage, datasource, markdownwiki, markdownit, htmlContent, echartsRadar) {
     //console.log("load userController file");
 
-    app.registerController('userController', ['$rootScope', '$scope','Account','Message', 'modal', function ($rootScope, $scope, Account, Message, modal) {
+    app.registerController('userController', ['$rootScope', '$scope', '$timeout', 'Account','Message', 'modal', function ($rootScope, $scope, $timeout, Account, Message, modal) {
         const UserSystemProjectName = "keepworkdatasource";
         const ProfileDataFileName = "profile.md";
         var splitMainContent = function(origionContent){
-            console.log(origionContent);
             origionContent = origionContent.split("```");
             var topContent= [],subContent = [];
             var topContentReg = /^@profile\/js\/(headerinfo|controls)/i;
@@ -43,7 +42,6 @@ define([
             userDataSource.getFile({path: profileDataPath}, function (data) {
                 var content = data.content || "";
                 var mdContent = splitMainContent(content);
-                console.log(mdContent);
                 var md = markdownwiki({breaks: true, isMainMd:true});
                 var topHtml = md.render(mdContent.topContent);
                 util.html("#user-maincontent", topHtml);
@@ -64,6 +62,7 @@ define([
                 DataSource.init(systemSource);
                 var userSystemDataSource = DataSource.getDefaultDataSource();
                 console.log(userSystemDataSource);
+                $rootScope.userDataSource = userSystemDataSource;
                 getUserProfileData(userSystemDataSource);
             });
         }
@@ -85,7 +84,7 @@ define([
                     return ;
                 }
                 // 用户信息
-                $scope.userinfo = data.userinfo;
+                $rootScope.userinfo = data.userinfo;
                 // $scope.selfOrganizationList = data.selfOrganizationObj.siteList;
                 // $scope.selfOrganizationCount = data.selfOrganizationObj.siteList.length;
                 // $scope.joinOrganizationList = data.joinOrganizationObj.siteList;
