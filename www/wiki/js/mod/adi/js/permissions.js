@@ -16,16 +16,17 @@ define([
                 scope  : $scope,
 				styles : [],
 				params_template : {
-                    text_permissions:{
+                    switch_permissions:{
                         is_leaf      : true,
-						type         : "text",
+						type         : "switch",
                         editable     : true,
 						is_card_show : true,
 						is_mod_hide  : false,
                         name         : "阅读权限",
                         text         : "",
                         require      : true,
-                        module_kind  : "vip"
+                        module_kind  : "vip",
+                        desc         : "只限VIP阅读完成内容"
                     },
 				}
             });
@@ -33,7 +34,7 @@ define([
             var shield = function () {
                 var mdwiki = config.shareMap["mdwiki"];
                 
-                if(!$scope.params.text_permissions.is_mod_hide){
+                if(!$scope.params.switch_permissions.is_mod_hide){
                     if($scope.isVip){
                         document.querySelector("#" + wikiBlock.containerId).style.display = "none";
                     }else{
