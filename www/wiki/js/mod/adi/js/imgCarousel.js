@@ -6,18 +6,6 @@ define([
     function registerController(wikiblock) {
         app.registerController("carouselController", ['$scope','$sce', function ($scope, $sce) {
             $scope.editorMode = wikiblock.editorMode;
-            $scope.myInterval = 2000;
-            $scope.noWrapSlides = false;
-            $scope.active = 0;
-            var slides = $scope.slides = [];
-            var addSlide = function () {
-            slides.push({ image: '/wiki/js/mod/adi/assets/images/imgTwo.png',id: 0});
-            slides.push({ image: '/wiki/js/mod/adi/assets/images/1.png',id: 1});
-            slides.push({ image: '/wiki/js/mod/adi/assets/images/2.png',id: 2});
-            slides.push({ image: '/wiki/js/mod/adi/assets/images/3.png',id: 3});
-            slides.push({ image: '/wiki/js/mod/adi/assets/images/4.png',id: 4});
-            }
-            addSlide();
             initObj = {
                 scope  : $scope,
                 styles : [
@@ -103,7 +91,19 @@ define([
             }
 
             wikiblock.init(initObj);
-            
+        
+            $scope.myInterval = 2000;
+            $scope.noWrapSlides = false;
+            $scope.active = 0;
+            var slides = $scope.slides = [];
+            var addSlide = function () {
+            slides.push({ image:$scope.params.carousel_img_Two.text,id: 0});
+            slides.push({ image:$scope.params.carousel_img_Three.text,id: 1});
+            slides.push({ image:$scope.params.carousel_img_Four.text,id: 2});
+            slides.push({ image:$scope.params.carousel_img_Five.text,id: 3});
+            slides.push({ image:$scope.params.carousel_img_Six.text,id: 4});
+            }
+            addSlide();
             
         }]);
     }
