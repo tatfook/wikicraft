@@ -36,13 +36,13 @@
 </style>
 <div ng-controller="includeController" ng-class="{true:'title-clear-pointer'}[editorMode]" class="style1">
     <div ng-if='params.design.text=="style1"'>
-        <div class="include-mod" ng-if="params.link_include.href.length == 0">
+        <div class="include-mod" ng-if="params.url.href.length == 0">
             配置引用文件
         </div>
-        <div class="include" ng-if="params.link_include.href.length > 4">
+        <div class="include" ng-if="params.url.href.length > 4">
             <div class="title-info" ng-if="editorMode">
                 <span>引用</span>
-                <span>{{params.link_include.href}}</span>
+                <span>{{params.url.href}}</span>
             </div>
             <iframe ng-if="editorMode" class="intake" id="{{currentIframe}}"
                     ng-src="{{pageUrl}}" scrolling="yes" 
