@@ -42,7 +42,7 @@ define([
 						name         : "样式",
 						text         : "style1",
 						require      : true,
-					},
+                    },
 					image_picture:{
                         is_leaf      : true,
 						type         : "media",

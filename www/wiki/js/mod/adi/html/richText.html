@@ -1,0 +1,16 @@
+<style>
+    .rich .style1{
+        text-align: center;
+        height: 150px;
+        background-color: rgba(228, 227, 227, 0.845);
+        font-size: 32px;
+        line-height: 150px;
+    }
+</style>
+
+<div ng-controller="richController" class="rich container">
+    <div ng-hide="!editorMode" ng-if="params.modal_rich.data.length == 0" class="style1">
+        <span>点击编辑-富文本</span>
+    </div>
+    <div ng-if="params.modal_rich.data.length > 0" data-ng-bind-html="params.modal_rich.data"></div>
+</div>

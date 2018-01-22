@@ -46,8 +46,47 @@
         background-color: #FFF;
     }
 
+    .module-editor .attr-content-switch {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .module-editor .attr-content-input {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .module-editor .attr-content-input label {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        white-space: nowrap;
+        align-items: center;
+        font-weight: 400;
+    }
+
+    .module-editor .attr-content-input input {
+        margin-left: 10px;
+    }
+
+    .module-editor .attr-content-url {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .module-editor .attr-content-url-inner {
+        width: 100%;
+    }
+
+    .module-editor .attr-content-url .link-select{
+        padding-top: 10px;
+    }
+
     .module-editor .attr-item.active .attr-content {
-        border-color: #F16C24;
+        border-color: #F16C24;dd
     }
 
     .module-editor .attr-item.active .header {
@@ -489,7 +528,26 @@
                                 {{(!data.data.is_mod_hide) ? "开" : "关" | translate}}
                             </div>
                         </div>
-                        <div class="attr-content">
+                        <div class="attr-content attr-content-{{data.type}}">
+                            <div ng-if="data.type == 'switch'">
+                                {{ data.desc }}
+                            </div>
+                            <div ng-if="data.type == 'input'">
+                                <label>
+                                    <span>{{ data.label }}</span>
+                                    <input id="{{data.id}}" type="text" ng-change="applyAttrChange()" ng-model="data.data.text">
+                                </label>
+                            </div>
+                            <div class="attr-content-{{data.type}}-inner" ng-if="data.type == 'url'">
+                                <div>{{ data.label }}</div>
+                                <ui-select class="link-select card-input" ng-model="data.data.href" reset-search-input="false" on-select="urlSelected($item, $model, data.data, 'href')">
+                                    <ui-select-match allow-clear="false" placeholder="{{data.data.href}}">{{data.data.href}}</ui-select-match>
+                                    <ui-select-choices repeat="file in (filelist | filter: $select.search) track by $index" refresh-delay="0" refresh="userInputLink($select, data.data)"
+                                        position="up">
+                                        <span ng-bind="file.url"></span>
+                                    </ui-select-choices>
+                                </ui-select>
+                            </div>
                             <div ng-if="data.type == '_text_'">
                                 <input id="{{data.id}}" class="card-input" type="text" ng-change="applyAttrChange()" ng-model="data.data.text" placeholder="文本">
                             </div>
