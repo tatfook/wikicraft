@@ -1,0 +1,43 @@
+<style>
+       .carousel-indicators{
+           z-index: 10;
+           bottom:0 !important;
+       }
+       .carousel-indicators li{
+           border:0 !important;
+           background-color: #cfd2d3 !important;
+           height:5px !important;
+           width:40px !important;
+           border-radius: 0 !important;
+           margin-left:10px !important;
+       }
+       .carousel-indicators .active{
+        background-color: #f9ce4a !important;
+       }
+        .displayBar{
+           position: absolute;
+           height:30px;
+           width: 100%;
+           margin: 0 auto;
+           background-color: #333;
+           opacity: 0.6;
+           z-index: 3;
+           bottom: 0;
+           left:0;
+       }
+       .carouselImg{
+           height:600px;
+           width:100%;
+           background-position: center center;
+           background-size: cover;
+       }
+       
+   </style>
+   <div ng-controller="carouselController">
+       <div uib-carousel active="active" interval="myInterval" no-wrap="noWrapSlides">
+           <div uib-slide ng-repeat="slide in slides" index="slide.id">
+               <img ng-src="{{slide.image}}" class="carouselImg">
+           </div>
+           <div class="displayBar"></div>
+       </div> 
+   </div>
