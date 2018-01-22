@@ -1,22 +1,50 @@
 <style>
-    *{
+    .mix-layer{
         margin: 0;
         padding: 0;
+    }
+    .mix-layer a{
+        color: black
     }
     .clear-pointer, .clear-pointer a{
         cursor : default !important;
     }
     
     /* style1 css */
+    .mix-layer .style1{
+
+    }
 
     /* style2 css */
+
     
+    /* style3 css */
+
+
+    /* style4 css */
+
+
+    /* style5 css */
+
+
+    /* style6 css */
+
+
+    /* style7 css */
+
+
+    /* style8 css */
+
+
+    /* style9 css */
+
+
 </style>
 
-<div ng-controller="mix_layerController" ng-class="{true:'clear-pointer'}[editorMode]">
+<div ng-controller="mix_layerController" class="mix-layer" ng-class="{true:'clear-pointer'}[editorMode]">
 
     <!-- style1 html -->
-    <div ng-if='params.design.text=="style1"' class="style1">
+    <div ng-if='params.design.text=="style1"' class="style1 container">
         <div class="mix_layer-mod">                        
 
                 <h1 ng-hide="params.link_title.is_mod_hide">
@@ -66,5 +94,44 @@
 
 
     <!-- style2 html -->
+
+    <div ng-if='params.design.text=="style2"' class="style2">
+
+    </div>
+
+    <!-- style3 html -->
+    <div ng-if='params.design.text=="style3"' class="style3">
+
+    </div>
+
+    <!-- style4 html -->
+    <div ng-if='params.design.text=="style4"' class="style4">
+
+    </div>
+
+    <!-- style5 html -->
+    <div ng-if='params.design.text=="style5"' class="style5">
+
+    </div>
+
+    <!-- style6 html -->
+    <div ng-if='params.design.text=="style6"' class="style6">
+
+    </div>
+
+    <!-- style7 html -->
+    <div ng-if='params.design.text=="style7"' class="style7">
+
+    </div>
+
+    <!-- style8 html -->
+    <div ng-if='params.design.text=="style8"' class="style8">
+
+    </div>
+
+    <!-- style9 html -->
+    <div ng-if='params.design.text=="style9"' class="style9">
+
+    </div>
 
 </div>
