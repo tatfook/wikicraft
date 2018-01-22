@@ -28,16 +28,15 @@ define([
 						text         : "style1", 
 						require      : true, 
 					},
-					link_include:{
+					url:{
 						is_leaf      : true, 
-						type         : "link",   
+						type         : "url",   
 						editable     : true, 
 						is_mod_hide  : false,  
 						is_card_show : true,
 						name         : "引用",   
-						text         : "", 
+						label        : "选择或输入URL",
 						href         : "",
-						require      : true, 
 					},
 				}
 			});
@@ -84,8 +83,8 @@ define([
 				}, 0);
 			}
 
-			if($scope.params.link_include.href.length > 4){
-				if($scope.params.link_include.href.indexOf(config.hostname) > 0){
+			if($scope.params.url.href.length > 4){
+				if($scope.params.url.href.indexOf(config.hostname) > 0){
 					$scope.$watch("$viewContentLoaded", $scope.setInnerIframeHeight);
 				}else{
 					$scope.$watch("$viewContentLoaded", $scope.setExternalIframeHeight);
@@ -94,7 +93,7 @@ define([
 
 			$scope.currentIframe = "__INCLUDE__" + Date.now();
 
-			$scope.pageUrl = $sce.trustAsResourceUrl($scope.params.link_include.href);
+			$scope.pageUrl = $sce.trustAsResourceUrl($scope.params.url.href);
 		}]);
     }
 
