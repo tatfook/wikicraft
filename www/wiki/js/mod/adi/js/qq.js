@@ -5,8 +5,21 @@ define([
 ], function (app, util, htmlContent) {
 
     function registerController(wikiblock) {
-        app.registerController("qqController", ['$scope', '$sce', function ($scope, $sce) {
+        app.registerController("qqController", ['$scope', '$rootScope', '$sce', function ($scope, $rootScope, $sce) {
             $scope.editorMode = wikiblock.editorMode;
+            $scope.topStyle   = {};
+
+            if($scope.editorMode){
+                $scope.topStyle = {top: 'unset'};
+            }else{
+                if($rootScope.qqArray){
+                    $scope.topStyle.top = (($rootScope.qqArray.length + 1) * 15) + "%";
+
+                    $rootScope.qqArray.push('qq-mod');
+                }else{
+                    $rootScope.qqArray = ['qq-mod'];
+                }
+            }
 
             wikiblock.init({
                 scope  : $scope,
@@ -44,7 +57,7 @@ define([
                         is_mod_hide  : false,  
                         name         : "QQ调用",   
                         label        : "QQ号", 
-                        text         : "232222332", 
+                        text         : "", 
 
                     },
                     media_img:{
@@ -113,9 +126,6 @@ define([
         render: function (wikiblock) {
             registerController(wikiblock);
             return htmlContent;
-        },
-        initObj: function(){
-            return initObj;
         }
     }
 });

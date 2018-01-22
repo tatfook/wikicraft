@@ -11,8 +11,10 @@
     }
     .qq .style1 .qq-mod {
         position: fixed;
-        margin-top: 1%;
-        margin-left: 93%;
+        right: 10px;
+        top: 15%;
+        /* margin-top: 1%; */
+        /* margin-left: 93%; */
         height: 100px;
     }
     .qq .style1 .qq-mod .qq-mod-img {
@@ -97,7 +99,7 @@
 
     <!-- style1 html -->
     <div ng-if='params.design.text=="style1"' class="style1">
-        <div class="qq-mod">
+        <div class="qq-mod" ng-style="topStyle">
             <div class="qq-mod-img" ng-hide="params.media_img.is_mod_hide">
                 <a  ng-if="editorMode"
                     href="javascript::void(0)"
