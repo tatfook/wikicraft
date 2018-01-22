@@ -26,9 +26,9 @@ end
 
 function tags:api_insert(params)
     -- self:ensureAuthenticated()
-    local tag, is_params_error, msg = self:insert_validator(params)
+    local tag, is_params_error, message = self:insert_validator(params)
     if (is_params_error) then
-        return response:status(404):send({error={message=msg,status=404}})
+        return response:status(404):send({error={message=message,status=404}})
     end
     self:db():findOne({["+title"] = {tag.title}}, resume)
     local err, result = yield()
@@ -46,8 +46,8 @@ end
 function tags:insert_validator(params)
     local clean_data
     local required_fields = {"title", "username"}
-    local fields_lengths = {title=30, username=30}
-    local user_instance = models.user:new()
+    local fields_length = {title=30, username=30}
+    local user_model_instance = models.user:new()
     local are_they_sensitive_fields = {"title"}
     local validators = models.validators:new()
     local validate_tasks = {
@@ -56,17 +56,17 @@ function tags:insert_validator(params)
             condition = required_fields
         }, {
             validator = validators.fields_length_validator,
-            condition = fields_lengths
+            condition = fields_length
         }, {
-            validator = validators.check_users_existence_validator,
-            condition = user_instance
+            validator = validators.users_existence_validator,
+            condition = user_model_instance
         }, {
             validator = validators.sensitive_words_validator,
             condition = are_they_sensitive_fields
         }
     }
     validators:add_validate_tasks(validate_tasks, params)
-    local is_params_error, msg = validators:get_validate_result()
+    local is_params_error, message = validators:get_validate_result()
 
     if (not is_params_error) then
         clean_data = {
@@ -75,7 +75,7 @@ function tags:insert_validator(params)
             createDate = ParaGlobal.GetDateFormat("yyyy-MM-dd")
         }
     end
-    return clean_data, is_params_error, msg
+    return clean_data, is_params_error, message
 end
 
 

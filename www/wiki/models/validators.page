@@ -3,16 +3,16 @@
 Title: validators
 Author: ZhengJiabiao
 Date: 2018/1
-Desc: package of validators
+Desc: validators to validate parameters
 ]]
 
 
------------------------------------------------------------
+---------------------------------------------------------------
 -- usages:
 -- local required_fields = {"title", "username"}
--- local fields_length = {desc=30,username=30}
+-- local fields_length = {desc=30,username=30, field_name=limit_length}
 -- local are_they_sensitive_fields = {"username"}
--- local fields_ranges = {age={gte=18}}
+-- local fields_ranges = {age={gte=18, lte=60}}
 -- local validators = models.validators:new()
 -- local validate_tasks = {
 --     {
@@ -31,14 +31,14 @@ Desc: package of validators
 --         validator = validators.sensitive_words_validator,
 --         condition = are_they_sensitive_fields
 --     },
-    -- {
-    --     validator = validators.number_range_validator,
-    --     condition = fields_ranges
-    -- }
+--     {
+--         validator = validators.number_range_validator,
+--         condition = fields_ranges
+--     }
 -- }
 -- validators:add_validate_tasks(validate_tasks, params)
 -- local is_params_error, error_msg = validators:get_validate_result()
-------------------------------------------------------------------
+---------------------------------------------------------------
 
 local validators = inherit(nil, gettable("models.validators"));
 
@@ -53,7 +53,7 @@ function validators.required_fields_validator(params, required_fields)
     for i, field_name in ipairs(required_fields) do
         if (not params[field_name]) then
             is_params_error = true
-            message = format('parameter "%s" is required', field_name) 
+            message = format('%s is required', field_name) 
             break
         end
     end
@@ -62,15 +62,15 @@ function validators.required_fields_validator(params, required_fields)
 end
 
 
-function validators.fields_length_validator(params, fields_lengths)
-    if (not params) or (not fields_lengths) then
-        error("fields_length_validator errors : params to be validated and fields_lengths required!")
+function validators.fields_length_validator(params, fields_length)
+    if (not params) or (not fields_length) then
+        error("fields_length_validator errors : params to be validated and fields_length required!")
     end
     local is_params_error = false
     local message
     local length = 0
 
-    for field_name, limit in pairs(fields_lengths) do
+    for field_name, limit in pairs(fields_length) do
         if (type(params[field_name]) == "string") or ((type(params[field_name]) == "table")) then
             length = #(params[field_name])
         elseif (type(params[field_name]) == "number") then
@@ -79,7 +79,7 @@ function validators.fields_length_validator(params, fields_lengths)
 
         if (length > limit) then
             is_params_error = true
-            message = format('parameter "%s" is too long', field_name) 
+            message = format('%s is too long', field_name) 
             break
         end
     end
@@ -88,14 +88,14 @@ function validators.fields_length_validator(params, fields_lengths)
 end
 
 
-function validators.number_range_validator(params, fields_ranges)
-    if (not params) or (not fields_ranges) then
-        error("number_range_validator errors : params to be validated and fields_ranges required!")
+function validators.number_range_validator(params, fields_range)
+    if (not params) or (not fields_range) then
+        error("number_range_validator errors : params to be validated and fields_range required!")
     end
     local is_params_error = false
     local message
 
-    for field_name, range in pairs(fields_ranges) do
+    for field_name, range in pairs(fields_range) do
         if (range.gt) then
             if (not (params[field_name] > range.gt)) then
                 is_params_error = true
@@ -120,7 +120,7 @@ function validators.number_range_validator(params, fields_ranges)
         if (range.lte) then
             if (not (params[field_name] <= range.lte)) then
                 is_params_error = true
-                message = format("%s must be greater than or equal to %d", field_name, range.lte)
+                message = format("%s must be less than or equal to %d", field_name, range.lte)
                 break
             end
         end
@@ -150,15 +150,14 @@ function validators.sensitive_words_validator(params, fields_to_check)
 end
 
 
-function validators.check_users_existence_validator(params, user_instance)
-    if (not params.username) or (not user_instance) then
-        error("check_users_existence_validator errors : username and user_instance required!")
+function validators.users_existence_validator(params, user_model_instance)
+    if (not params.username) or (not user_model_instance) then
+        error("users_existence_validator errors : username and user_model_instance required!")
     end
     local is_params_error = false
     local message
-    user_instance:db():findOne({["+username"]={params.username}}, resume)
+    user_model_instance:db():findOne({["+username"]={params.username}}, resume)
     local _, exist_user = yield()
-
     if (not exist_user) then
         is_params_error = true
         message = "user not exist"
@@ -187,11 +186,10 @@ end
 function validators:get_validate_result()
     local is_params_error = false
     local message
-
     for i, v in ipairs(self.validators_to_run) do
         is_params_error, message = v.validator(v.params, v.condition)
         if (is_params_error) then break end
     end
-
+    self.validators_to_run = {}
     return is_params_error, message
 end
