@@ -36,16 +36,27 @@ define([
                         text         : "style1", 
                         require      : true, 
                     },
-                    text_qq:{
-						is_leaf      : true, 
-						type         : "text",   
-						editable     : true, 
-						is_mod_hide  : false,  
-						is_card_show : true,
-						name         : "QQ调用",   
-						text         : "", 
-						require      : true, 
-					},
+                    // text_qq:{
+					// 	is_leaf      : true, 
+					// 	type         : "text",   
+					// 	editable     : true, 
+					// 	is_mod_hide  : false,  
+					// 	is_card_show : true,
+					// 	name         : "QQ调用",   
+					// 	text         : "", 
+					// 	require      : true, 
+                    // },
+                    input_qq: {
+                        is_leaf      : true, 
+						type         : "input",   
+                        editable     : true, 
+                        is_card_show : true,
+                        is_mod_hide  : false,  
+                        name         : "QQ调用",   
+                        label        : "QQ号", 
+                        text         : "232222332", 
+
+                    },
                     media_img:{
                         is_leaf      : true, 
 						type         : "media",   
@@ -72,10 +83,10 @@ define([
                 }
             });
 
-            $scope.qqUrl = "http://wpa.qq.com/msgrd?v=3&uin=" + $scope.params.text_qq.text + "&site=qq&menu=yes";
+            $scope.qqUrl = "http://wpa.qq.com/msgrd?v=3&uin=" + $scope.params.input_qq.text + "&site=qq&menu=yes";
 
             $scope.getQQUrl = function(){
-                return $scope.params.text_qq.text.length == 0 ? "" : $scope.qqUrl;
+                return $scope.params.input_qq.text.length == 0 ? "" : $scope.qqUrl;
             }
 
             $scope.$watch("params", function(){

@@ -104,7 +104,7 @@
                     ng-click="viewEditorClick(params.media_img,$event)">
                     <img ng-src="{{params.media_img.text}}">
                 </a>
-                <a  ng-class="{true:'clear-pointer'}[!params.text_qq.text.length]"
+                <a  ng-class="{true:'clear-pointer'}[!params.input_qq.text.length]"
                     ng-if="!editorMode"
                     target="{{params.media_img.target ? params.media_img.target : '_blank'}}"
                     ng-href="{{getQQUrl()}}">
@@ -138,7 +138,7 @@
                     ng-click="viewEditorClick(params.media_img,$event)">
                     <img ng-src="{{params.media_img.text}}">
                 </a>
-                <a  ng-class="{true:'clear-pointer'}[!params.text_qq.text.length]"
+                <a  ng-class="{true:'clear-pointer'}[!params.input_qq.text.length]"
                     ng-if="!editorMode"
                     target="{{params.media_img.target ? params.media_img.target : '_blank'}}"
                     ng-href="{{getQQUrl()}}">
