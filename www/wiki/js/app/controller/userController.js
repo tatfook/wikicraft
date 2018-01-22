@@ -91,16 +91,16 @@ define([
                 // $scope.joinOrganizationCount = data.joinOrganizationObj.siteList.length;
                 // $scope.hotSiteList = data.hotSiteObj.siteList;
                 // $scope.hotSiteTotal=data.hotSiteObj.siteList.length;
-                // $scope.allSiteList = data.allSiteList;
+                $rootScope.allSiteList = data.allSiteList;
                 // $scope.allSiteTotal = data.allSiteList.length;
                 // // 粉丝
-                // $scope.fansList = data.fansObj.userList;
+                $rootScope.fansList = data.fansObj.userList;
                 // $scope.fansCount = data.fansObj.total;
                 // // 关注的用户
-                // $scope.followUserList = data.followObj.followUserObj.userList;
+                $rootScope.followUserList = data.followObj.followUserObj.userList;
                 // $scope.followUserTotal = data.followObj.followUserObj.total;
                 // // 关注的站点
-                // $scope.followSiteList = data.followObj.followSiteObj.siteList;
+                $rootScope.followSiteList = data.followObj.followSiteObj.siteList;
                 // $scope.followSiteTotal = data.followObj.followSiteObj.total;
                 // // 用户动态
                 // $scope.trendsList = data.trendsObj.trendsList;

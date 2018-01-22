@@ -2,7 +2,7 @@
  * @Author: ZhangKaitlyn 
  * @Date: 2018-01-19
  * @Last Modified by: none
- * @Last Modified time: 2018-01-22 14:52:13
+ * @Last Modified time: 2018-01-22 17:30:41
  */
 define([
     'app',
@@ -70,7 +70,7 @@ define([
                     return;
                 }
             }
-            $scope.$watch('$viewContentLoaded', initView());
+            $scope.$watch('$viewContentLoaded', initView($scope.showType));
         }]);
     }
 
