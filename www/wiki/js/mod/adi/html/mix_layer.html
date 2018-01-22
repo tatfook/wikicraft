@@ -3,9 +3,6 @@
         margin: 0;
         padding: 0;
     }
-    .mix-layer a{
-        color: black
-    }
     .clear-pointer, .clear-pointer a{
         cursor : default !important;
     }
@@ -28,7 +25,30 @@
 
 
     /* style6 css */
-
+    .mix-layer .style6 a{
+        color: aliceblue;
+    }
+    .mix-layer .style6 .mix-body{
+        width: 1140px;
+        height: 669.9px;
+    }
+    .mix-layer .style6 .mix-body .mix-div{
+        float: right;
+        text-align: right;
+    }
+    .mix-layer .style6 .mix-body .mix-div > h2{
+        font-size: 32px;
+    }
+    .mix-layer .style6 .mix-body .mix-div > h3{
+        font-size: 24px;
+    }
+    .mix-layer .style6 .mix-body .mix-div > span{
+        word-wrap:break-word;
+        white-space: pre-wrap;
+    }
+    .mix-layer .style6 .mix-body .mix-div > span a{
+        font-size: 16px;
+    }
 
     /* style7 css */
 
@@ -45,51 +65,7 @@
 
     <!-- style1 html -->
     <div ng-if='params.design.text=="style1"' class="style1 container">
-        <div class="mix_layer-mod">                        
 
-                <h1 ng-hide="params.link_title.is_mod_hide">
-                    <a ng-if="editorMode"
-                       ng-click="viewEditorClick(params.link_title,$event)"
-                       href="javascript::void(0)">
-                       {{params.link_title.text}}
-                    </a>
-                    <a target="{{params.link_title.target ? params.link_title.target : '_blank'}}"
-                       ng-if="!editorMode"
-                       ng-class="{true:'clear-pointer'}[!params.link_title.href.length]"
-                       ng-href="{{params.link_title.href}}">
-                       {{params.link_title.text}}
-                    </a>
-                </h1>
-
-                <h2 ng-hide="params.link_subtitle.is_mod_hide">
-                    <a ng-if="editorMode" 
-                       href="javascript::void(0)"
-                       ng-click="viewEditorClick(params.link_subtitle,$event)">
-                       {{params.link_subtitle.text}}
-                    </a>
-                    <a target="{{params.link_subtitle.target ? params.link_subtitle.target : '_blank'}}"
-                       ng-if="!editorMode"
-                       ng-class="{true:'clear-pointer'}[!params.link_subtitle.href.length]"
-                       ng-href="{{params.link_subtitle.href}}">
-                       {{params.link_subtitle.text}}
-                    </a>
-                </h2>
-                
-                <div class="contents" ng-hide="params.multiText_content.is_mod_hide">
-                    <a  ng-if="editorMode" 
-                        href="javascript::void(0)"
-                        ng-click="viewEditorClick(params.multiText_content,$event)">
-                        {{params.multiText_content.text}}
-                    </a>
-                    <a  target="{{params.multiText_content.target ? params.multiText_content.target : '_blank'}}"
-                        ng-if="!editorMode"
-                        ng-class="{true:'clear-pointer'}[!params.multiText_content.href.length]"
-                        ng-href="{{params.multiText_content.href}}">
-                        {{params.multiText_content.text}}
-                    </a>
-                </div>
-
-        </div>
     </div>
 
 
@@ -115,8 +91,56 @@
     </div>
 
     <!-- style6 html -->
-    <div ng-if='params.design.text=="style6"' class="style6">
-
+    <div ng-if='params.design.text=="style6"' class="style6 container">
+            <!-- <div>1062.9 624.6</div> -->
+        <div ng-style="mixLaer" class="mix-body">
+            <div class="mix-div">
+                <h2>
+                    <a ng-if="editorMode"
+                       ng-hide="params.link_title.is_mod_hide"
+                       ng-click="viewEditorClick(params.link_title, $event)"
+                       href="{{params.link_title.href}}">
+                        {{params.link_title.text}}
+                    </a>
+                    <a ng-if="!editorMode"
+                       ng-hide="params.link_title.is_mod_hide"
+                       ng-class="{true : 'project-clear-pointer'}[params.link_title.href.length == 0]"
+                       target="{{params.link_title.target ? params.link_title.target : '_blank'}}"
+                       ng-href="{{params.link_title.href}}">
+                        {{params.link_title.text}}
+                    </a>
+                </h2>
+                <h3>
+                    <a ng-if="editorMode"
+                       ng-hide="params.link_subtitle.is_mod_hide"
+                       ng-click="viewEditorClick(params.link_subtitle, $event)"
+                       href="{{params.link_subtitle.href}}">
+                        {{params.link_subtitle.text}}
+                    </a>
+                    <a ng-if="!editorMode"
+                       ng-hide="params.link_subtitle.is_mod_hide"
+                       ng-class="{true : 'project-clear-pointer'}[params.link_subtitle.href.length == 0]"
+                       target="{{params.link_subtitle.target ? params.link_subtitle.target : '_blank'}}"
+                       ng-href="{{params.link_subtitle.href}}">
+                        {{params.link_subtitle.text}}
+                    </a>
+                </h3>
+                <span>
+                    <a ng-if="editorMode"
+                       ng-click="viewEditorClick(params.multiText_content, $event)"
+                       href="javascript::void(0)">
+                        {{params.multiText_content.text}}
+                    </a>
+                    <a ng-if="!editorMode"
+                       ng-class="{true : 'project-clear-pointer'}[params.multiText_content.href.length == 0]"
+                       target="{{params.multiText_content.target ? params.multiText_content.target : '_blank' }}"
+                       ng-href="{{params.multiText_content.href}}"
+                       ng-class="{true : 'project-clear-pointer'}[params.multiText_content.href.length == 0]">
+                        {{params.multiText_content.text}}
+                    </a>
+                </span>
+            </div>
+        </div>
     </div>
 
     <!-- style7 html -->

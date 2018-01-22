@@ -1,8 +1,9 @@
 define([
     'app',
+    'markdown-it',
     'helper/util',
     'text!wikimod/adi/html/mix_layer.html',
-], function (app, util, htmlContent) {
+], function (app, markdown_it, util, htmlContent) {
 
     function registerController(wikiblock) {
         app.registerController("mix_layerController", ['$scope','$sce', function ($scope, $sce) {
@@ -113,18 +114,41 @@ define([
                     },
                     multiText_content:{
 						is_leaf      : true, 
-						type         : "text",   
+						type         : "multiText",   
 						editable     : true, 
 						is_mod_hide  : false,  
 						is_card_show : true,
 						name         : "内容文字",   
-						text         : "加利福尼亚大学伯克利分校是美国最负盛名且是最顶尖的一所公立研究型大学，位于旧金山东湾伯克利市的山丘上。1868年由加利福尼亚学院以及农业、矿业和机械学院合并而成，1873年迁至圣弗朗西斯科（旧金山）附近的伯克利市。伯克利加大是加利福尼亚大学中最老的一所。它也是美国大学协会（Association of American Universities）创始会员之一。其吉祥物蜕变自加州徽号，故其学生亦常自称“金色小熊”。加州大学伯克利分校与斯坦福大学、麻省理工学院等一同被誉为美国工程科技界的学术领袖。", 
+                        text         : "加利福尼亚大学伯克利分校是美国最负盛名且是最顶尖的一所公立研究型大\
+\n\
+学，位于旧金山东湾伯克利市的山丘上。1868年由加利福尼亚学院以及农\
+\n\
+业、矿业和机械学院合并而成，1873年迁至圣弗朗西斯科（旧金山）附近的\
+\n\
+伯克利市。伯克利加大是加利福尼亚大学中最老的一所。它也是美国大学协\
+\n\
+会（Association of American Universities）创始会员之一。其吉祥物蜕变自\
+\n\
+加州徽号，故其学生亦常自称“金色小熊”。加州大学伯克利分校与斯坦福大\
+\n\
+学、麻省理工学院等一同被誉为美国工程科技界的学术领袖。", 
 						require      : true, 
 					},
 				}
 			}
-			wikiblock.init(initObj);
+            wikiblock.init(initObj);
+            $scope.mixLaer = {
+                "background-image" : 'url(' + $scope.params.media_img.text + ')',
+            }
             
+            var md = new markdown_it({
+				html: true,
+				langPrefix: 'code-'
+			})
+			
+			$scope.$watch('params', function(){
+				$scope.multiText_content = md.render($scope.params.multiText_content.text);
+			})
         }]);
     }
 
