@@ -12,7 +12,9 @@
     .qq .style1 .qq-mod {
         position: fixed;
         right: 10px;
-        top:15%;
+        top: 15%;
+        /* margin-top: 1%; */
+        /* margin-left: 93%; */
         height: 100px;
     }
     .qq .style1 .qq-mod .qq-mod-img {
@@ -54,8 +56,10 @@
     }
     .qq .style2 .qq-mod {
         position: fixed;
-        right: 10px;
         top: 15%;
+        right: 10px;
+        /* margin-top: 1%;
+        margin-left: 86%; */
         width: 150px;
         height: 80px;
     }
@@ -97,14 +101,14 @@
 
     <!-- style1 html -->
     <div ng-if='params.design.text=="style1"' class="style1">
-        <div class="qq-mod">
+        <div class="qq-mod" ng-style="topStyle">
             <div class="qq-mod-img" ng-hide="params.media_img.is_mod_hide">
                 <a  ng-if="editorMode"
                     href="javascript::void(0)"
                     ng-click="viewEditorClick(params.media_img,$event)">
                     <img ng-src="{{params.media_img.text}}">
                 </a>
-                <a  ng-class="{true:'clear-pointer'}[!params.text_qq.text.length]"
+                <a  ng-class="{true:'clear-pointer'}[!params.input_qq.text.length]"
                     ng-if="!editorMode"
                     target="{{params.media_img.target ? params.media_img.target : '_blank'}}"
                     ng-href="{{getQQUrl()}}">
@@ -131,14 +135,14 @@
 
     <!-- style2 html -->
     <div ng-if='params.design.text=="style2"' class="style2">
-        <div ng-class="{true:'clear-pointer'}[editorMode]" class="qq-mod">
+        <div ng-class="{true:'clear-pointer'}[editorMode]" class="qq-mod" ng-style="topStyle">
             <div class="qq-mod-img" ng-hide="params.media_img.is_mod_hide">
                 <a  ng-if="editorMode"
                     href="javascript::void(0)"
                     ng-click="viewEditorClick(params.media_img,$event)">
                     <img ng-src="{{params.media_img.text}}">
                 </a>
-                <a  ng-class="{true:'clear-pointer'}[!params.text_qq.text.length]"
+                <a  ng-class="{true:'clear-pointer'}[!params.input_qq.text.length]"
                     ng-if="!editorMode"
                     target="{{params.media_img.target ? params.media_img.target : '_blank'}}"
                     ng-href="{{getQQUrl()}}">

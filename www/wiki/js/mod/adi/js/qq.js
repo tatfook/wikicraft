@@ -5,8 +5,21 @@ define([
 ], function (app, util, htmlContent) {
 
     function registerController(wikiblock) {
-        app.registerController("qqController", ['$scope','$sce', function ($scope, $sce) {
+        app.registerController("qqController", ['$scope', '$rootScope', '$sce', function ($scope, $rootScope, $sce) {
             $scope.editorMode = wikiblock.editorMode;
+            $scope.topStyle   = {};
+
+            if($scope.editorMode){
+                $scope.topStyle = {top: 'unset'};
+            }else{
+                if($rootScope.qqArray){
+                    $scope.topStyle.top = (($rootScope.qqArray.length + 1) * 15) + "%";
+
+                    $rootScope.qqArray.push('qq-mod');
+                }else{
+                    $rootScope.qqArray = ['qq-mod'];
+                }
+            }
 
             wikiblock.init({
                 scope  : $scope,
@@ -36,16 +49,17 @@ define([
                         text         : "style1", 
                         require      : true, 
                     },
-                    text_qq:{
-						is_leaf      : true, 
-						type         : "text",   
-						editable     : true, 
-						is_mod_hide  : false,  
-						is_card_show : true,
-						name         : "QQ调用",   
-						text         : "", 
-						require      : true, 
-					},
+                    input_qq: {
+                        is_leaf      : true, 
+						type         : "input",   
+                        editable     : true, 
+                        is_card_show : true,
+                        is_mod_hide  : false,  
+                        name         : "QQ调用",   
+                        label        : "QQ号", 
+                        text         : "", 
+
+                    },
                     media_img:{
                         is_leaf      : true, 
 						type         : "media",   
@@ -72,15 +86,15 @@ define([
                 }
             });
 
-            $scope.qqUrl = "http://wpa.qq.com/msgrd?v=3&uin=" + $scope.params.text_qq.text + "&site=qq&menu=yes";
+            $scope.qqUrl = "http://wpa.qq.com/msgrd?v=3&uin=" + $scope.params.input_qq.text + "&site=qq&menu=yes";
 
             $scope.getQQUrl = function(){
-                return $scope.params.text_qq.text.length == 0 ? "" : $scope.qqUrl;
+                return $scope.params.input_qq.text.length == 0 ? "" : $scope.qqUrl;
             }
 
             $scope.$watch("params", function(){
                 var imgOne = config.wikiModPath + 'adi/assets/imgs/qqMod.png';
-                var imgTwo = config.wikiModPath + 'adi/assets/imgs/qqModTwo.png'
+                var imgTwo = config.wikiModPath + 'adi/assets/imgs/qqModTwo.png';
 
                 var defaultImgs = [imgOne, imgTwo];
 
@@ -112,9 +126,6 @@ define([
         render: function (wikiblock) {
             registerController(wikiblock);
             return htmlContent;
-        },
-        initObj: function(){
-            return initObj;
         }
     }
 });
