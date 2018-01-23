@@ -10,9 +10,10 @@ define([
     'helper/markdownwiki',
     'markdown-it',
     'text!html/user.html',
+    'controller/notfoundController',
     'echarts-radar',
     'contribution-calendar'
-], function (app, util, storage, datasource, markdownwiki, markdownit, htmlContent, echartsRadar) {
+], function (app, util, storage, datasource, markdownwiki, markdownit, htmlContent, notFoundHtmlContent, echartsRadar) {
     //console.log("load userController file");
 
     app.registerController('userController', ['$rootScope', '$scope', '$timeout', 'Account','Message', 'modal', function ($rootScope, $scope, $timeout, Account, Message, modal) {
@@ -36,6 +37,47 @@ define([
             }
         };
 
+        var createProfilePages = function(userDataSource, cb, errcb){
+            var pagePrefix = '/'+ userDataSource.keepwrokUsername +'_datas/';
+            var profilePagesList = [
+                {
+                    pagepath: pagePrefix + "profile.md",
+                    contentUrl: "text!html/profiles/profile.md"
+                },
+                {
+                    pagepath: pagePrefix + "site.md",
+                    contentUrl: "text!html/profiles/site.md"
+                },
+                {
+                    pagepath: pagePrefix + "contact.md",
+                    contentUrl: "text!html/profiles/contact.md"
+                }
+            ];
+            var fnList = [];
+            profilePagesList.forEach(function(page){
+                fnList.push(function(userDataSource, page){
+                    return function(cb, errcb){
+                        require([page.contentUrl], function(content){
+                            userDataSource.writeFile({
+                                path: page.pagepath, 
+                                content: content
+                            }, function(){
+                                cb && cb();
+                            }, function(){
+                            });
+                        }, function(){
+                            errcb && errcb();
+                        })
+                    }
+                }(userDataSource, page));
+            });
+            util.sequenceRun(fnList, undefined, function(){
+                cb && cb();
+            }, function(){
+                cb && cb();
+            });
+        }
+
         var getUserProfileData = function(userDataSource){
             var profileDataPath = '/'+ userDataSource.keepwrokUsername +'_datas/' + ProfileDataFileName;
             console.log(profileDataPath);
@@ -47,9 +89,12 @@ define([
                 util.html("#user-maincontent", topHtml);
             
                 $rootScope.subMdContent = mdContent.subContent;
-                
             }, function(err){
                 console.log(err);
+                util.html("#user-maincontent", notFoundHtmlContent);
+                createProfilePages(userDataSource, function(){
+                    getUserProfileData(userDataSource);
+                });
             });
         }
         var getProfileData = function(username){
