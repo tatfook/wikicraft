@@ -22,6 +22,6 @@
     <div ng-hide="!editorMode" ng-dblclick="richClick()" ng-if="params.modal_rich.data.length == 0" class="style1">
         <span>点击编辑-富文本</span>
     </div>
-    <div class="style3" ng-if="params.modal_rich.data.length > 0" ng-dblclick="richClick()">编辑-富文本</div>
+    <div class="style3" ng-hide="!editorMode" ng-if="params.modal_rich.data.length > 0" ng-dblclick="richClick()">编辑-富文本</div>
     <div class="style2" ng-if="params.modal_rich.data.length > 0" data-ng-bind-html="params.modal_rich.data"></div>
 </div>
