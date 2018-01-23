@@ -73,7 +73,11 @@
         </span>
     </h4>
     <div class="works-list">
-        <div class="works-item" ng-repeat="work in works track by $index">
+        <div class="empty-box" ng-hide="works.length>0">
+            <span class="iconfont icon-kongbaiyemian"></span>
+            <p translate="暂无相关内容..."></p>
+        </div>
+        <div class="works-item" ng-repeat="work in works track by $index" ng-show="works.length>0">
             <img ng-src="{{work.logoUrl}}">
             <div class="work-detail">
                 <h4>{{work.title}}</h4>

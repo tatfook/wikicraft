@@ -69,7 +69,11 @@
         {{getModTitle(params.type)}}
     </h4>
     <div class="sites-list">
-        <div class="sites-item" ng-show="params.type != 'concerned'" ng-repeat="site in sites[params.type] track by $index">
+        <div class="empty-box" ng-hide="sites[params.type].length > 0">
+            <span class="iconfont icon-kongbaiyemian"></span>
+            <p translate="暂无相关内容..."></p>
+        </div>
+        <div class="sites-item" ng-show="params.type != 'concerned' && sites[params.type].length > 0" ng-repeat="site in sites[params.type] track by $index">
             <img ng-src="{{site.logoUrl}}">
             <div class="site-detail">
                 <h4>{{site.name}}</h4>
@@ -89,7 +93,7 @@
             </div>
         </div>
 
-        <div class="sites-item" ng-show="params.type == 'concerned'" ng-repeat="site in sites[params.type] track by $index">
+        <div class="sites-item" ng-show="params.type == 'concerned' && sites[params.type].length > 0" ng-repeat="site in sites[params.type] track by $index">
             <img ng-src="{{site.siteinfo.logoUrl}}">
             <div class="site-detail">
                 <h4>{{site.siteinfo.name}}</h4>

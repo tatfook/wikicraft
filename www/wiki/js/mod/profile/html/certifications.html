@@ -51,7 +51,11 @@
         </span>
     </h4>
     <div class="certifications-list">
-        <table>
+        <div class="empty-box" ng-hide="certifications.length>0">
+            <span class="iconfont icon-kongbaiyemian"></span>
+            <p translate="暂无相关内容..."></p>
+        </div>
+        <table ng-show="certifications.length>0">
             <tr class="certification-item" ng-repeat="certification in certifications">
                 <td class="title ellipsis-1">{{certification.title}}</td>
                 <td class="link ellipsis-1">{{certification.link}}</td>
