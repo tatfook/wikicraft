@@ -141,10 +141,10 @@ define([
 				html: true,
 				langPrefix: 'code-'
 			})
-			
-			$scope.$watch('params', function(){
-				$scope.multiText_desc_md = md.render($scope.params.multiText_desc.text);
-			})
+            
+            $scope.multiText_desc2display = function(text) {
+                return md.render(text);
+            }
 
 			$scope.projectImg = {
 				"background-image"    : 'url('+ $scope.params.image_picture.text +')',

@@ -312,13 +312,13 @@
                                ng-hide="params.multiText_desc.is_mod_hide"
                                ng-click="viewEditorClick(params.multiText_desc, $event)"
                                href="javascript::void(0)"
-                               ng-bind-html="multiText_desc_md"></a>
+                               ng-bind-html="multiText_desc2display(params.multiText_desc.text)"></a>
                             <a ng-if="!editorMode"
                                ng-hide="params.multiText_desc.is_mod_hide"
                                target="{{params.multiText_desc.target ? params.multiText_desc.target : '_blank'}}"
                                ng-href="{{params.multiText_desc.href}}"
                                ng-class="{true : 'project-clear-pointer'}[params.multiText_desc.href.length == 0]"
-                               ng-bind-html="multiText_desc_md"></a>
+                               ng-bind-html="multiText_desc2display(params.multiText_desc.text)"></a>
                         </span>
                         <div ng-hide="params.link_more.is_mod_hide" class="picture-btn">
                             <a ng-if="editorMode"
