@@ -87,6 +87,7 @@
         'js-aho-corasick': "lib/js-aho-corasick/aho-corasick",
         'md5': "lib/md5",
         'swiper': "empty:",
+        'echarts-radar': "lib/echarts/echarts-radar",
 
         // 自定义模块
         'app': 'app',
