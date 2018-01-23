@@ -3,86 +3,137 @@
 Title: tags of pages
 Author: ZhengJiabiao
 Date: 2018/1
-Desc: tags in pages,only to be used in backend data analyse.
+Desc: tags in pages,only to be used in backend data analysis
 ]]
 include_once("./abstract/base.page")
 include_once("./user.page")
+include_once("./elasticsearch.page")
+include_once("./validators.page")
 
 local tags = inherit(models.abstract.base, gettable("models.tags"))
 tags.db_name = "tags"
 
+local es = models.elasticsearch:new()
+es:connect({index="kw_tags"})
+
 
 function tags:ctor()
     self:addfield("title", "string", false, 30)
-    self:addfield("creator", "string", false)
+    self:addfield("creator", "string", false, 30)
     self:addfield("createDate", "string", false, 64)
 end
 
 
---记录后端分析用数据
--- todo:检测用户登录状态
 function tags:api_insert(params)
-    -- ensureAuthenticated()
-    if (not params.title) or (not params.username) then
-        return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+    -- self:ensureAuthenticated()
+    local tag, is_params_error, message = self:insert_validator(params)
+    if (is_params_error) then
+        return response:status(404):send({error={message=message,status=404}})
     end
-
-    if #params.title > 30 then
-        return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+    self:db():findOne({["+title"] = {tag.title}}, resume)
+    local err, result = yield()
+    if (not result) then
+        self:db():insertOne({["+title"] = {tag.title}}, tag, resume)
+        err, result = yield()
+        if (result) then
+            self:insert_to_es(result)
+        end
     end
-
-    local isOk = sensitiveWordFilter({title=params.title})
-    if (not isOk) then
-        return errors:wrap("含有非法字符")
-    end
-
-    --查询用户是否存在
-    local userDB = models.user:new()
-    userDB:db():findOne({["+username"]={params.username}}, resume)
-    local _, userinfo = yield()
-
-    if (not userinfo) then
-        return errors:wrap(errors.REQUEST_PARAMS_ERROR)
-    end
-
-    params.creator = params.username
-    params.username = nil   --只保存creator
-    params.createDate = params.createDate or ParaGlobal.GetDateFormat("yyyy-MM-dd")
-
-    self:db():insertOne({["+title"] = {params.title}}, params, resume)
-    local err, tagInfo = yield()
-
-    return errors:wrap(err)
+    return errors:wrap(err, result)
 end
 
 
---通过title查询
-function tags:api_getByName(params)
+function tags:insert_validator(params)
+    local clean_data
+    local required_fields = {"title", "username"}
+    local fields_length = {title=30, username=30}
+    local user_model_instance = models.user:new()
+    local are_they_sensitive_fields = {"title"}
+    local validators = models.validators:new()
+    local validate_tasks = {
+        {
+            validator = validators.required_fields_validator,
+            condition = required_fields
+        }, {
+            validator = validators.fields_length_validator,
+            condition = fields_length
+        }, {
+            validator = validators.users_existence_validator,
+            condition = user_model_instance
+        }, {
+            validator = validators.sensitive_words_validator,
+            condition = are_they_sensitive_fields
+        }
+    }
+    validators:add_validate_tasks(validate_tasks, params)
+    local is_params_error, message = validators:get_validate_result()
+
+    if (not is_params_error) then
+        clean_data = {
+            title = params.title,
+            creator = params.username,
+            createDate = ParaGlobal.GetDateFormat("yyyy-MM-dd")
+        }
+    end
+    return clean_data, is_params_error, message
+end
+
+
+function tags:getByName(params)
     if (not params.title) then
         return errors:wrap(errors.REQUEST_PARAMS_ERROR)
     end
-
     self:db():findOne({["+title"]={params.title}}, resume)
-    
     return errors:wrap(yield())
 end
 
 
---通过Id查询
-function tags:api_getById(params)
+function tags:getById(params)
     if (not params._id) then
         return errors:wrap(errors.REQUEST_PARAMS_ERROR)
     end
-
     self:db():findOne({_id=params._id}, resume)
-    
     return errors:wrap(yield())
 end
 
 
---通过Id删除
-function tags:api_deleteById(params)
-    -- ensureAuthenticated()
-    self:db():deleteOne({_id=params._id}, resume)
-    return errors:wrap(yield())
+function tags:delete(params)
+    -- self:ensureAuthenticated()
+    if (not params.title) then
+        return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+    end
+    self:db():findOne({["+title"]={params.title}}, resume)
+    local err, result = yield()
+    if (result) then
+        self:db():deleteOne({_id=params._id}, resume)
+        err, result = yield()
+        if (result) then
+            self:delete_in_es(params)
+        end
+    end
+    return errors:wrap(err, result)
 end
+
+
+-- insert tags into elasticsearch
+function tags:insert_to_es(params)
+    local tag = {
+        type = "tags",
+        id = params._id,
+        title = params.title,
+        creator = params.creator,
+        createDate = params.createDate
+    }
+    return es:insertOne(tag)
+end
+
+
+-- delete tags in elasticsearch
+function tags:delete_in_es(params)
+    local tag = {
+        type = "tags",
+        id = params._id
+    }
+    return es:deleteOne(params)
+end
+

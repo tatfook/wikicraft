@@ -11,8 +11,7 @@ include_once("./abstract/base.page")
 local elasticsearch = inherit(models.abstract.base, gettable("models.elasticsearch"))
 
 
--- 指定host和port
--- todo:修改host读取途径
+-- set host,port and index
 function elasticsearch:connect(params)
     local params = params or {}
     self.host = params.host or KEEPWORK["config"]["default"]["wiki"]["es_setting"]["host"]
@@ -22,7 +21,7 @@ function elasticsearch:connect(params)
 end
 
 
--- 定位index，type
+-- locate indices，types and generate url
 function elasticsearch:locator(params)
     local _type = ""
     local _id = ""
@@ -48,13 +47,12 @@ function elasticsearch:locator(params)
 end
 
 
--- 插入一条数据
+
 function elasticsearch:insertOne(params)
     if (not params.type) then
         return errors:wrap(errors.REQUEST_PARAMS_ERROR)
     end
 
-    -- 生成与es交互的url
     local location = self:locator(params)
     local insert_to = location
     params.type = nil
@@ -64,7 +62,6 @@ function elasticsearch:insertOne(params)
 end
 
 
--- 只能通过id更新
 function elasticsearch:updateOne(params)
     if (not params.type) or (not params.id) then
         return errors:wrap(errors.REQUEST_PARAMS_ERROR)
@@ -80,7 +77,7 @@ function elasticsearch:updateOne(params)
 end
 
 
--- 只能通过单字段查找
+-- can only find by single field(like id or access_url)
 function elasticsearch:findOne(params)
     if params.id then
         params._id = params.id
@@ -110,7 +107,7 @@ function elasticsearch:findOne(params)
 end
 
 
--- 只能通过id删除
+-- can only find by id
 function elasticsearch:deleteOne(params)
     if (not params.type) or (not params.id) then
         return errors:wrap(errors.REQUEST_PARAMS_ERROR)
@@ -122,146 +119,30 @@ function elasticsearch:deleteOne(params)
 end
 
 
--- 搜索入口 当前限定全文搜索page信息
-function elasticsearch:api_search(params)
-    self:connect()
-    if (not params.q) then
-        return errors:wrap(errors.REQUEST_PARAMS_ERROR)
-    end
-
-    local type_of_search_result = params.type or "page"
-    local params = self:params_wrapper(params)
+function elasticsearch:search(params)
     local location = self:locator(params)
     local search_in = location .. "_search"
     local body = {}
-
-    -- 生成查询表
     body = self:query_generator(params)
 
-    -- 高亮处理
+    -- highlight
     if (params.highlight == 1) then
         body.highlight = {fields = self:highlight_fields_generator(params)}
     end
 
-    -- 排序处理
+    -- sort
     if params.sort then
         body.sort = params.sort      -- array
     end
 
-    -- 分页、返回数量处理
+    -- pagination
     body.size = params.size
     body.from = params.from
 
-    local result = self:sendToES({send_to=search_in, method="GET", form=body})
-    local rcode = result.data.rcode
-    local wrapped_result = {}
-
-    -- 封装返回数据
-    if (rcode == 200) then
-        if (type_of_search_result == "page") then
-            wrapped_result = self:wrap_page_result(result)
-        end
-
-        if (type_of_search_result == "skill") then
-            wrapped_result = self:wrap_skill_result(result)
-        end
-
-    else
-        wrapped_result = result.data.data
-    end
-
-    return wrapped_result
+    return self:sendToES({send_to=search_in, method="GET", form=body})
 end
 
 
-function elasticsearch:wrap_page_result(result)
-    local wrapped_result = {}
-    local rcode = result.data.rcode
-
-    -- 封装返回数据
-    wrapped_result = {
-        timed_out = result.data.data.timed_out,
-        took = result.data.data.took,
-        total = result.data.data.hits.total,
-        status = rcode
-    }
-
-    local hits = {}
-    for i, hit in ipairs(result.data.data.hits.hits) do
-        hit._source._score = hit._score
-        hit._source.highlight = hit.highlight
-        hits[#hits + 1] = hit._source
-    end
-    
-    wrapped_result.hits = hits
-    return wrapped_result
-end
-
-
-function elasticsearch:wrap_skill_result(result)
-    local wrapped_result = {}
-    local rcode = result.data.rcode
-
-    -- 封装返回数据
-    wrapped_result = {
-        timed_out = result.data.data.timed_out,
-        took = result.data.data.took,
-        total = result.data.data.hits.total,
-        status = rcode
-    }
-
-    local hits = {}
-    for i, hit in ipairs(result.data.data.hits.hits) do
-        local work = {}
-        for j, work_link in ipairs(hit._source.works) do
-            work = {
-                access_url = work_link,
-                username = hit._source.username,
-                skill = hit._source.title
-            }
-
-            hits[#hits + 1] = work
-        end
-    end
-
-    wrapped_result.hits = hits
-    return wrapped_result
-end
-
-
--- 过滤参数
-function elasticsearch:params_wrapper(params)
-    -- 过滤不需要的参数
-    local new_params = {
-        q = params.q,
-        type = params.type,
-        highlight = tonumber(params.highlight) or 1,
-        size = tonumber(params.size),
-        from = tonumber(params.from),
-        sort = params.sort,
-        fields = params.fields or {},
-        body = params.body,
-        -- advanced = params.advanced
-    }
-
-    new_params.advanced = 0 -- 暂时禁用高级搜索
-
-    if (not new_params.size) or (new_params.size > 500) then new_params.size = 500 end
-    if (new_params.advanced == 0) then new_params.body = nil end  --暂时禁止直接传入body
-
-    if (not new_params.type) or (new_params.type == "page") then
-        new_params.fields = {'tags', 'content', 'username', 'sitename', 'pagename'}
-    end
-
-    if (new_params.type == "skill") then
-        new_params.fields = {"title"}
-    end
-
-    return new_params
-end
-
-
--- 生成查询表，暂时只用match
 function elasticsearch:query_generator(params)
     local query = {}
 
@@ -285,7 +166,6 @@ function elasticsearch:query_generator(params)
 end
 
 
--- 指定高亮字段
 function elasticsearch:highlight_fields_generator(params)
     local highlight_fields = {}
 
@@ -297,7 +177,6 @@ function elasticsearch:highlight_fields_generator(params)
 end
 
 
--- 批量写操作
 function elasticsearch:bulk(params)
     if (not params.data) then
         params.flag = "elasticsearch:bulk"
@@ -311,7 +190,6 @@ function elasticsearch:bulk(params)
 end
 
 
--- 向ES发送请求
 function elasticsearch:sendToES(params)
     if (not params.send_to) then
         return errors:wrap(errors.REQUEST_PARAMS_ERROR)

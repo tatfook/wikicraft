@@ -7,10 +7,16 @@ Date: 2017/04/13
 include_once("./abstract/base.page")
 include_once("./elasticsearch.page")
 include_once("./website.page")
+include_once("./validators.page")
+
 
 -- 暂时不用
 local sitepage = inherit(models.abstract.base, gettable("models.sitepage"))
 sitepage.db_name = "sitepage"
+
+local es = models.elasticsearch:new()
+es:connect({index="kw_pages"})
+local validators = models.validators:new()
 
 function sitepage:ctor() 
 	self:addfield("username","string")         -- username
@@ -62,7 +68,7 @@ end
 
 function sitepage:api_insertOrUpdateToES(params)
 	local page = {}
-	page.type = "page"
+	page.type = "pages"
 
 	if ((not params.username) or (not params.sitename) or 
 		(not params.pagename) or (not params.access_url ) or
@@ -132,4 +138,72 @@ function sitepage:api_deleteInES(params)
 	end
 
 	return errors:wrap(nil)
+end
+
+
+function sitepage:api_search(params)
+    local clean_params, is_params_error, message = self:search_validator(params)
+    if (is_params_error) then
+        return response:status(404):send({error={message=message,status=404}})
+    end
+    local search_result = es:search(clean_params)
+    local rcode = search_result.data.rcode
+    local wrapped_result = {}
+    if (rcode == 200) then
+        wrapped_result = self:wrap_search_result(search_result)
+    else
+        wrapped_result = result.data.data
+    end
+    return wrapped_result
+end
+
+
+function sitepage:search_validator(params)
+    local clean_data = {}
+    local required_fields = {"q"}
+    local validate_tasks = {
+        {
+            validator = validators.required_fields_validator,
+            condition = required_fields
+        }
+    }
+    validators:add_validate_tasks(validate_tasks, params)
+    local is_params_error, message = validators:get_validate_result()
+    if (not is_params_error) then
+        clean_data = {
+            type = "pages",
+            q = params.q,
+            fields = {'tags', 'content', 'username', 'sitename', 'pagename'},
+            size = tonumber(params.size) or 500,
+            from = tonumber(params.from),
+            sort = params.sort,
+            highlight = tonumber(params.highlight) or 1
+        }
+        if (clean_data.size > 500) then clean_data.size = 500 end
+    end
+    return clean_data, is_params_error, message
+end
+
+
+function sitepage:wrap_search_result(result)
+    local wrapped_result = {}
+    local rcode = result.data.rcode
+
+    -- 封装返回数据
+    wrapped_result = {
+        timed_out = result.data.data.timed_out,
+        took = result.data.data.took,
+        total = result.data.data.hits.total,
+        status = rcode
+    }
+
+    local hits = {}
+    for i, hit in ipairs(result.data.data.hits.hits) do
+        hit._source._score = hit._score
+        hit._source.highlight = hit.highlight
+        hits[#hits + 1] = hit._source
+    end
+    
+    wrapped_result.hits = hits
+    return wrapped_result
 end
