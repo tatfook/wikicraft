@@ -1,5 +1,5 @@
 <style>
-    .clear-pointer, .clear-pointer a{
+    .mix-clear-pointer, .mix-clear-pointer a{
         cursor : default !important;
     }
     
@@ -20,7 +20,7 @@
     }
     .mix-layer .style1 .mix-div > h2{
         font-size: 32px;
-        margin-top: 200px;
+        margin-top: 100px;
         margin-bottom: 10px;
         height: 33px;
     }
@@ -34,7 +34,7 @@
         display: block;
         word-wrap: break-word;
         white-space: pre-wrap;
-        height: 400px;
+        height: 500px;
         overflow: auto;
     }
     .mix-layer .style1 .mix-div > span a{
@@ -46,15 +46,15 @@
         color: azure;
     }
     .mix-layer .style2 .mix-img{
-        width: 1140px;
-        height: 669.9px;
+        width: 100%;
+        height: 694px;
+        background-size: cover;
+        background-position: center;
     }
     .mix-layer .style2 .mix-div{
         text-align: center;
-        width: 1000px;
+        width: 100%;
         float: left;
-        margin-left: 70px;
-        margin-right: 70px;
     }
     .mix-layer .style2 .mix-div > h2{
         font-size: 32px;
@@ -156,25 +156,23 @@
     } 
 
     /* style5 css */
-     .mix-layer .style5 .mix a{
+     .mix-layer .style5 a{
         color: azure;
     }
-    .mix-layer .style8 .mix{
+    .mix-layer .style5{
         width: 100%;
         height: 694px;
     }
-    .mix-layer .style5 .mix .mix-img{
+    .mix-layer .style5 .mix-img{
         width: 100%;
         height: 694px;
         background-size: cover;
         background-position: center;
     }
-    .mix-layer .style5 .mix .mix-div{
+    .mix-layer .style5 .mix-div{
         text-align: center;
-        width: 1000px;
-        float: center;
-        margin-left: 70px;
-        margin-right: 70px;
+        width: 100%;
+        float: left;
     }
     .mix-layer .style5 .mix-div > h2{
         font-size: 32px;
@@ -291,10 +289,8 @@
     }
     .mix-layer .style8 .mix .mix-div{
         text-align: center;
-        width: 1000px;
+        width: 100%;
         float: left;
-        margin-left: 70px;
-        margin-right: 70px;
     }
     .mix-layer .style8 .mix .mix-div > h2{
         font-size: 32px;
@@ -373,7 +369,7 @@
                 </a>
                 <a ng-if="!editorMode"
                    ng-hide="params.link_title.is_mod_hide"
-                   ng-class="{true : 'project-clear-pointer'}[params.link_title.href.length == 0]"
+                   ng-class="{true : 'mix-clear-pointer'}[params.link_title.href.length == 0]"
                    target="{{params.link_title.target ? params.link_title.target : '_blank'}}"
                    ng-href="{{params.link_title.href}}">
                     {{params.link_title.text}}
@@ -388,7 +384,7 @@
                 </a>
                 <a ng-if="!editorMode"
                    ng-hide="params.link_subtitle.is_mod_hide"
-                   ng-class="{true : 'project-clear-pointer'}[params.link_subtitle.href.length == 0]"
+                   ng-class="{true : 'mix-clear-pointer'}[params.link_subtitle.href.length == 0]"
                    target="{{params.link_subtitle.target ? params.link_subtitle.target : '_blank'}}"
                    ng-href="{{params.link_subtitle.href}}">
                     {{params.link_subtitle.text}}
@@ -404,7 +400,7 @@
                    ng-hide="params.multiText_content.is_mod_hide"
                    target="{{params.multiText_content.target ? params.multiText_content.target : '_blank'}}"
                    ng-href="{{params.multiText_content.href}}"
-                   ng-class="{true : 'project-clear-pointer'}[params.multiText_content.href.length == 0]"
+                   ng-class="{true : 'mix-clear-pointer'}[params.multiText_content.href.length == 0]"
                    ng-bind-html="multiText_content"></a>
             </span>
         </div> 
@@ -417,7 +413,7 @@
         </a>
         <a ng-if="!editorMode"
            ng-hide="params.media_img.is_mod_hide"
-           ng-class="{true : 'project-clear-pointer'}[params.media_img.href.length == 0]"
+           ng-class="{true : 'mix-clear-pointer'}[params.media_img.href.length == 0]"
            target="{{params.media_img.target ? params.media_img.target : '_blank'}}"
            ng-href="{{params.media_img.href}}">
             <div ng-style="mixLaer" class="mix-img">
@@ -439,7 +435,7 @@
                     </a>
                     <a ng-if="!editorMode"
                        ng-hide="params.link_title.is_mod_hide"
-                       ng-class="{true : 'project-clear-pointer'}[params.link_title.href.length == 0]"
+                       ng-class="{true : 'mix-clear-pointer'}[params.link_title.href.length == 0]"
                        target="{{params.link_title.target ? params.link_title.target : '_blank'}}"
                        ng-href="{{params.link_title.href}}">
                         {{params.link_title.text}}
@@ -454,7 +450,7 @@
                     </a>
                     <a ng-if="!editorMode"
                        ng-hide="params.link_subtitle.is_mod_hide"
-                       ng-class="{true : 'project-clear-pointer'}[params.link_subtitle.href.length == 0]"
+                       ng-class="{true : 'mix-clear-pointer'}[params.link_subtitle.href.length == 0]"
                        target="{{params.link_subtitle.target ? params.link_subtitle.target : '_blank'}}"
                        ng-href="{{params.link_subtitle.href}}">
                         {{params.link_subtitle.text}}
@@ -470,7 +466,7 @@
                        ng-hide="params.multiText_content.is_mod_hide"
                        target="{{params.multiText_content.target ? params.multiText_content.target : '_blank'}}"
                        ng-href="{{params.multiText_content.href}}"
-                       ng-class="{true : 'project-clear-pointer'}[params.multiText_content.href.length == 0]"
+                       ng-class="{true : 'mix-clear-pointer'}[params.multiText_content.href.length == 0]"
                        ng-bind-html="multiText_content"></a>
                 </span>
             </div> 
@@ -483,7 +479,7 @@
             </a>
             <a ng-if="!editorMode"
                ng-hide="params.media_img.is_mod_hide"
-               ng-class="{true : 'project-clear-pointer'}[params.media_img.href.length == 0]"
+               ng-class="{true : 'mix-clear-pointer'}[params.media_img.href.length == 0]"
                target="{{params.media_img.target ? params.media_img.target : '_blank'}}"
                ng-href="{{params.media_img.href}}">
                 <div ng-style="mixLaer" class="mix-img">
@@ -505,7 +501,7 @@
                 </a>
                 <a ng-if="!editorMode"
                    ng-hide="params.link_title.is_mod_hide"
-                   ng-class="{true : 'project-clear-pointer'}[params.link_title.href.length == 0]"
+                   ng-class="{true : 'mix-clear-pointer'}[params.link_title.href.length == 0]"
                    target="{{params.link_title.target ? params.link_title.target : '_blank'}}"
                    ng-href="{{params.link_title.href}}">
                     {{params.link_title.text}}
@@ -520,7 +516,7 @@
                 </a>
                 <a ng-if="!editorMode"
                    ng-hide="params.link_subtitle.is_mod_hide"
-                   ng-class="{true : 'project-clear-pointer'}[params.link_subtitle.href.length == 0]"
+                   ng-class="{true : 'mix-clear-pointer'}[params.link_subtitle.href.length == 0]"
                    target="{{params.link_subtitle.target ? params.link_subtitle.target : '_blank'}}"
                    ng-href="{{params.link_subtitle.href}}">
                     {{params.link_subtitle.text}}
@@ -536,7 +532,7 @@
                    ng-hide="params.multiText_content.is_mod_hide"
                    target="{{params.multiText_content.target ? params.multiText_content.target : '_blank'}}"
                    ng-href="{{params.multiText_content.href}}"
-                   ng-class="{true : 'project-clear-pointer'}[params.multiText_content.href.length == 0]"
+                   ng-class="{true : 'mix-clear-pointer'}[params.multiText_content.href.length == 0]"
                    ng-bind-html="multiText_content"></a>
             </span>
         </div> 
@@ -549,7 +545,7 @@
         </a>
         <a ng-if="!editorMode"
            ng-hide="params.media_img.is_mod_hide"
-           ng-class="{true : 'project-clear-pointer'}[params.media_img.href.length == 0]"
+           ng-class="{true : 'mix-clear-pointer'}[params.media_img.href.length == 0]"
            target="{{params.media_img.target ? params.media_img.target : '_blank'}}"
            ng-href="{{params.media_img.href}}">
             <div ng-style="mixLaer" class="mix-img">
@@ -571,7 +567,7 @@
                 </a>
                 <a ng-if="!editorMode"
                    ng-hide="params.link_title.is_mod_hide"
-                   ng-class="{true : 'project-clear-pointer'}[params.link_title.href.length == 0]"
+                   ng-class="{true : 'mix-clear-pointer'}[params.link_title.href.length == 0]"
                    target="{{params.link_title.target ? params.link_title.target : '_blank'}}"
                    ng-href="{{params.link_title.href}}">
                     {{params.link_title.text}}
@@ -586,7 +582,7 @@
                 </a>
                 <a ng-if="!editorMode"
                    ng-hide="params.link_subtitle.is_mod_hide"
-                   ng-class="{true : 'project-clear-pointer'}[params.link_subtitle.href.length == 0]"
+                   ng-class="{true : 'mix-clear-pointer'}[params.link_subtitle.href.length == 0]"
                    target="{{params.link_subtitle.target ? params.link_subtitle.target : '_blank'}}"
                    ng-href="{{params.link_subtitle.href}}">
                     {{params.link_subtitle.text}}
@@ -602,7 +598,7 @@
                    ng-hide="params.multiText_content.is_mod_hide"
                    target="{{params.multiText_content.target ? params.multiText_content.target : '_blank'}}"
                    ng-href="{{params.multiText_content.href}}"
-                   ng-class="{true : 'project-clear-pointer'}[params.multiText_content.href.length == 0]"
+                   ng-class="{true : 'mix-clear-pointer'}[params.multiText_content.href.length == 0]"
                    ng-bind-html="multiText_content"></a>
             </span>
         </div> 
@@ -615,7 +611,7 @@
         </a>
         <a ng-if="!editorMode"
            ng-hide="params.media_img.is_mod_hide"
-           ng-class="{true : 'project-clear-pointer'}[params.media_img.href.length == 0]"
+           ng-class="{true : 'mix-clear-pointer'}[params.media_img.href.length == 0]"
            target="{{params.media_img.target ? params.media_img.target : '_blank'}}"
            ng-href="{{params.media_img.href}}">
             <div ng-style="mixLaer" class="mix-img">
@@ -636,7 +632,7 @@
                 </a>
                 <a ng-if="!editorMode"
                    ng-hide="params.link_title.is_mod_hide"
-                   ng-class="{true : 'project-clear-pointer'}[params.link_title.href.length == 0]"
+                   ng-class="{true : 'mix-clear-pointer'}[params.link_title.href.length == 0]"
                    target="{{params.link_title.target ? params.link_title.target : '_blank'}}"
                    ng-href="{{params.link_title.href}}">
                     {{params.link_title.text}}
@@ -651,7 +647,7 @@
                 </a>
                 <a ng-if="!editorMode"
                    ng-hide="params.link_subtitle.is_mod_hide"
-                   ng-class="{true : 'project-clear-pointer'}[params.link_subtitle.href.length == 0]"
+                   ng-class="{true : 'mix-clear-pointer'}[params.link_subtitle.href.length == 0]"
                    target="{{params.link_subtitle.target ? params.link_subtitle.target : '_blank'}}"
                    ng-href="{{params.link_subtitle.href}}">
                     {{params.link_subtitle.text}}
@@ -667,7 +663,7 @@
                    ng-hide="params.multiText_content.is_mod_hide"
                    target="{{params.multiText_content.target ? params.multiText_content.target : '_blank'}}"
                    ng-href="{{params.multiText_content.href}}"
-                   ng-class="{true : 'project-clear-pointer'}[params.multiText_content.href.length == 0]"
+                   ng-class="{true : 'mix-clear-pointer'}[params.multiText_content.href.length == 0]"
                    ng-bind-html="multiText_content"></a>
             </span>
         </div> 
@@ -680,7 +676,7 @@
         </a>
         <a ng-if="!editorMode"
            ng-hide="params.media_img.is_mod_hide"
-           ng-class="{true : 'project-clear-pointer'}[params.media_img.href.length == 0]"
+           ng-class="{true : 'mix-clear-pointer'}[params.media_img.href.length == 0]"
            target="{{params.media_img.target ? params.media_img.target : '_blank'}}"
            ng-href="{{params.media_img.href}}">
             <div ng-style="mixLaer" class="mix-img">
@@ -701,7 +697,7 @@
                 </a>
                 <a ng-if="!editorMode"
                    ng-hide="params.link_title.is_mod_hide"
-                   ng-class="{true : 'project-clear-pointer'}[params.link_title.href.length == 0]"
+                   ng-class="{true : 'mix-clear-pointer'}[params.link_title.href.length == 0]"
                    target="{{params.link_title.target ? params.link_title.target : '_blank'}}"
                    ng-href="{{params.link_title.href}}">
                     {{params.link_title.text}}
@@ -716,7 +712,7 @@
                 </a>
                 <a ng-if="!editorMode"
                    ng-hide="params.link_subtitle.is_mod_hide"
-                   ng-class="{true : 'project-clear-pointer'}[params.link_subtitle.href.length == 0]"
+                   ng-class="{true : 'mix-clear-pointer'}[params.link_subtitle.href.length == 0]"
                    target="{{params.link_subtitle.target ? params.link_subtitle.target : '_blank'}}"
                    ng-href="{{params.link_subtitle.href}}">
                     {{params.link_subtitle.text}}
@@ -732,7 +728,7 @@
                    ng-hide="params.multiText_content.is_mod_hide"
                    target="{{params.multiText_content.target ? params.multiText_content.target : '_blank'}}"
                    ng-href="{{params.multiText_content.href}}"
-                   ng-class="{true : 'project-clear-pointer'}[params.multiText_content.href.length == 0]"
+                   ng-class="{true : 'mix-clear-pointer'}[params.multiText_content.href.length == 0]"
                    ng-bind-html="multiText_content"></a>
             </span>
         </div> 
@@ -745,7 +741,7 @@
         </a>
         <a ng-if="!editorMode"
            ng-hide="params.media_img.is_mod_hide"
-           ng-class="{true : 'project-clear-pointer'}[params.media_img.href.length == 0]"
+           ng-class="{true : 'mix-clear-pointer'}[params.media_img.href.length == 0]"
            target="{{params.media_img.target ? params.media_img.target : '_blank'}}"
            ng-href="{{params.media_img.href}}">
             <div ng-style="mixLaer" class="mix-img">
@@ -765,7 +761,7 @@
                 </a>
                 <a ng-if="!editorMode"
                    ng-hide="params.link_title.is_mod_hide"
-                   ng-class="{true : 'project-clear-pointer'}[params.link_title.href.length == 0]"
+                   ng-class="{true : 'mix-clear-pointer'}[params.link_title.href.length == 0]"
                    target="{{params.link_title.target ? params.link_title.target : '_blank'}}"
                    ng-href="{{params.link_title.href}}">
                     {{params.link_title.text}}
@@ -780,7 +776,7 @@
                 </a>
                 <a ng-if="!editorMode"
                    ng-hide="params.link_subtitle.is_mod_hide"
-                   ng-class="{true : 'project-clear-pointer'}[params.link_subtitle.href.length == 0]"
+                   ng-class="{true : 'mix-clear-pointer'}[params.link_subtitle.href.length == 0]"
                    target="{{params.link_subtitle.target ? params.link_subtitle.target : '_blank'}}"
                    ng-href="{{params.link_subtitle.href}}">
                     {{params.link_subtitle.text}}
@@ -796,7 +792,7 @@
                    ng-hide="params.multiText_content.is_mod_hide"
                    target="{{params.multiText_content.target ? params.multiText_content.target : '_blank'}}"
                    ng-href="{{params.multiText_content.href}}"
-                   ng-class="{true : 'project-clear-pointer'}[params.multiText_content.href.length == 0]"
+                   ng-class="{true : 'mix-clear-pointer'}[params.multiText_content.href.length == 0]"
                    ng-bind-html="multiText_content"></a>
             </span>
         </div> 
@@ -809,7 +805,7 @@
         </a>
         <a ng-if="!editorMode"
            ng-hide="params.media_img.is_mod_hide"
-           ng-class="{true : 'project-clear-pointer'}[params.media_img.href.length == 0]"
+           ng-class="{true : 'mix-clear-pointer'}[params.media_img.href.length == 0]"
            target="{{params.media_img.target ? params.media_img.target : '_blank'}}"
            ng-href="{{params.media_img.href}}">
             <div ng-style="mixLaer" class="mix-img">
@@ -830,7 +826,7 @@
                     </a>
                     <a ng-if="!editorMode"
                     ng-hide="params.link_title.is_mod_hide"
-                    ng-class="{true : 'project-clear-pointer'}[params.link_title.href.length == 0]"
+                    ng-class="{true : 'mix-clear-pointer'}[params.link_title.href.length == 0]"
                     target="{{params.link_title.target ? params.link_title.target : '_blank'}}"
                     ng-href="{{params.link_title.href}}">
                         {{params.link_title.text}}
@@ -845,7 +841,7 @@
                     </a>
                     <a ng-if="!editorMode"
                     ng-hide="params.link_subtitle.is_mod_hide"
-                    ng-class="{true : 'project-clear-pointer'}[params.link_subtitle.href.length == 0]"
+                    ng-class="{true : 'mix-clear-pointer'}[params.link_subtitle.href.length == 0]"
                     target="{{params.link_subtitle.target ? params.link_subtitle.target : '_blank'}}"
                     ng-href="{{params.link_subtitle.href}}">
                         {{params.link_subtitle.text}}
@@ -861,7 +857,7 @@
                     ng-hide="params.multiText_content.is_mod_hide"
                     target="{{params.multiText_content.target ? params.multiText_content.target : '_blank'}}"
                     ng-href="{{params.multiText_content.href}}"
-                    ng-class="{true : 'project-clear-pointer'}[params.multiText_content.href.length == 0]"
+                    ng-class="{true : 'mix-clear-pointer'}[params.multiText_content.href.length == 0]"
                     ng-bind-html="multiText_content"></a>
                 </span>
             </div> 
@@ -874,7 +870,7 @@
             </a>
             <a ng-if="!editorMode"
             ng-hide="params.media_img.is_mod_hide"
-            ng-class="{true : 'project-clear-pointer'}[params.media_img.href.length == 0]"
+            ng-class="{true : 'mix-clear-pointer'}[params.media_img.href.length == 0]"
             target="{{params.media_img.target ? params.media_img.target : '_blank'}}"
             ng-href="{{params.media_img.href}}">
                 <div ng-style="mixLaer" class="mix-img">
@@ -895,7 +891,7 @@
                 </a>
                 <a ng-if="!editorMode"
                    ng-hide="params.link_title.is_mod_hide"
-                   ng-class="{true : 'project-clear-pointer'}[params.link_title.href.length == 0]"
+                   ng-class="{true : 'mix-clear-pointer'}[params.link_title.href.length == 0]"
                    target="{{params.link_title.target ? params.link_title.target : '_blank'}}"
                    ng-href="{{params.link_title.href}}">
                     {{params.link_title.text}}
@@ -910,7 +906,7 @@
                 </a>
                 <a ng-if="!editorMode"
                    ng-hide="params.link_subtitle.is_mod_hide"
-                   ng-class="{true : 'project-clear-pointer'}[params.link_subtitle.href.length == 0]"
+                   ng-class="{true : 'mix-clear-pointer'}[params.link_subtitle.href.length == 0]"
                    target="{{params.link_subtitle.target ? params.link_subtitle.target : '_blank'}}"
                    ng-href="{{params.link_subtitle.href}}">
                     {{params.link_subtitle.text}}
@@ -926,7 +922,7 @@
                    ng-hide="params.multiText_content.is_mod_hide"
                    target="{{params.multiText_content.target ? params.multiText_content.target : '_blank'}}"
                    ng-href="{{params.multiText_content.href}}"
-                   ng-class="{true : 'project-clear-pointer'}[params.multiText_content.href.length == 0]"
+                   ng-class="{true : 'mix-clear-pointer'}[params.multiText_content.href.length == 0]"
                    ng-bind-html="multiText_content"></a>
             </span>
         </div> 
@@ -939,7 +935,7 @@
         </a>
         <a ng-if="!editorMode"
            ng-hide="params.media_img.is_mod_hide"
-           ng-class="{true : 'project-clear-pointer'}[params.media_img.href.length == 0]"
+           ng-class="{true : 'mix-clear-pointer'}[params.media_img.href.length == 0]"
            target="{{params.media_img.target ? params.media_img.target : '_blank'}}"
            ng-href="{{params.media_img.href}}">
             <div ng-style="mixLaer" class="mix-img">
