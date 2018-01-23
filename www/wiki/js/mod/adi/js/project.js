@@ -36,13 +36,13 @@ define([
 					{
 						"design": {
                             "text":"style4",
-                            "cover": ""
+                            "cover": "/wiki/js/mod/adi/assets/images/上文下图.png"
 						},
 					},
 					{
 						"design": {
                             "text":"style5",
-                            "cover": ""
+                            "cover": "/wiki/js/mod/adi/assets/images/上图下文.png"
 						},
 					},
 				],
