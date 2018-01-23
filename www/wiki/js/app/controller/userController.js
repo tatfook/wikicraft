@@ -6,14 +6,13 @@ define([
     'app',
     'helper/util',
     'helper/storage',
-    'helper/datasource',
     'helper/markdownwiki',
     'markdown-it',
     'text!html/user.html',
     'controller/notfoundController',
     'echarts-radar',
     'contribution-calendar'
-], function (app, util, storage, datasource, markdownwiki, markdownit, htmlContent, notFoundHtmlContent, echartsRadar) {
+], function (app, util, storage, markdownwiki, markdownit, htmlContent, notFoundHtmlContent, echartsRadar) {
     //console.log("load userController file");
 
     app.registerController('userController', ['$rootScope', '$scope', '$timeout', 'Account','Message', 'modal', function ($rootScope, $scope, $timeout, Account, Message, modal) {
