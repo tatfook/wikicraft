@@ -6,6 +6,7 @@ define([
     function registerController(wikiblock) {
         app.registerController("carouselController", ['$scope','$sce', function ($scope, $sce) {
             $scope.editorMode = wikiblock.editorMode;
+            $scope.imgs       = [];
 
             initObj = {
                 scope  : $scope,
@@ -96,6 +97,35 @@ define([
             $scope.imgInterval   = 5000;
             $scope.noWrapSlides = false;
             $scope.active       = 0;
+
+            $scope.$watch("params", function(){
+                $scope.imgs = [];
+
+                if(!$scope.params.media_img_one.is_mod_hide){
+                    $scope.imgs.push($scope.params.media_img_one);
+                }
+
+                if(!$scope.params.media_img_two.is_mod_hide){
+                    $scope.imgs.push($scope.params.media_img_two);
+                }
+
+                if(!$scope.params.media_img_three.is_mod_hide){
+                    $scope.imgs.push($scope.params.media_img_three);
+                }
+
+                if(!$scope.params.media_img_four.is_mod_hide){
+                    $scope.imgs.push($scope.params.media_img_four);
+                }
+
+                if(!$scope.params.media_img_five.is_mod_hide){
+                    $scope.imgs.push($scope.params.media_img_five);
+                }
+
+                if($scope.imgs.length==1){
+                    var displayBar=document.querySelector(".displayBar");
+                    displayBar.style.display="none";
+                }
+            })
         }]);
     }
 
