@@ -28,16 +28,18 @@
        .carouselImg{
            height:600px;
            width:100%;
-           background-position: center center;
-           background-size: cover;
+           background-position:center !important;
+           background-size: cover !important;
        }
        
    </style>
    <div ng-controller="carouselController">
-       <div uib-carousel active="active" interval="myInterval" no-wrap="noWrapSlides">
-           <div uib-slide ng-repeat="slide in slides" index="slide.id">
-               <img ng-src="{{slide.image}}" class="carouselImg">
-           </div>
+       <div uib-carousel active="active" interval="imgInterval" no-wrap="noWrapSlides">
+           <div uib-slide ng-style="{background: 'url(' + params.media_img_one.text + ')'}" class="carouselImg" index="0"  ></div>
+           <div uib-slide ng-style="{background: 'url(' + params.media_img_two.text + ')'}" class="carouselImg" index="1"  ></div>
+           <div uib-slide ng-style="{background: 'url(' + params.media_img_three.text + ')'}" class="carouselImg" index="2" ></div>
+           <div uib-slide ng-style="{background: 'url(' + params.media_img_four.text + ')'}" class="carouselImg" index="3" ></div>
+           <div uib-slide ng-style="{background: 'url(' + params.media_img_five.text + ')'}" class="carouselImg" index="4"  ></div>
            <div class="displayBar"></div>
        </div> 
    </div>

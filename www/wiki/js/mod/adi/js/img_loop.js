@@ -6,6 +6,7 @@ define([
     function registerController(wikiblock) {
         app.registerController("carouselController", ['$scope','$sce', function ($scope, $sce) {
             $scope.editorMode = wikiblock.editorMode;
+
             initObj = {
                 scope  : $scope,
                 styles : [
@@ -27,7 +28,7 @@ define([
                         text         : "style1", 
                         require      : true, 
                     },
-                    carousel_img_Two:{
+                    media_img_one:{
                         is_leaf      : true, 
                         type         : "media",   
                         mediaType    : "image",
@@ -39,7 +40,7 @@ define([
                         href         : "", 
                         require      : true, 
                     },
-                    carousel_img_Three:{
+                    media_img_two:{
                         is_leaf      : true, 
                         type         : "media",   
                         mediaType    : "image",
@@ -51,7 +52,7 @@ define([
                         href         : "", 
                         require      : true, 
                     },
-                    carousel_img_Four:{
+                    media_img_three:{
                         is_leaf      : true, 
                         type         : "media",   
                         mediaType    : "image",
@@ -63,7 +64,7 @@ define([
                         href         : "", 
                         require      : true, 
                     },
-                    carousel_img_Five:{
+                    media_img_four:{
                         is_leaf      : true, 
                         type         : "media",   
                         mediaType    : "image",
@@ -75,7 +76,7 @@ define([
                         href         : "", 
                         require      : true, 
                     },
-                    carousel_img_Six:{
+                    media_img_five:{
                         is_leaf      : true, 
                         type         : "media",   
                         mediaType    : "image",
@@ -92,19 +93,9 @@ define([
 
             wikiblock.init(initObj);
         
-            $scope.myInterval = 2000;
+            $scope.imgInterval   = 5000;
             $scope.noWrapSlides = false;
-            $scope.active = 0;
-            var slides = $scope.slides = [];
-            var addSlide = function () {
-            slides.push({ image:$scope.params.carousel_img_Two.text,id: 0});
-            slides.push({ image:$scope.params.carousel_img_Three.text,id: 1});
-            slides.push({ image:$scope.params.carousel_img_Four.text,id: 2});
-            slides.push({ image:$scope.params.carousel_img_Five.text,id: 3});
-            slides.push({ image:$scope.params.carousel_img_Six.text,id: 4});
-            }
-            addSlide();
-            
+            $scope.active       = 0;
         }]);
     }
 
@@ -112,9 +103,6 @@ define([
         render: function (wikiblock) {
             registerController(wikiblock);
             return htmlContent;
-        },
-        initObj: function(){
-            return initObj;
         }
     }
 });
