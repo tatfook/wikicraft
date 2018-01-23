@@ -36,10 +36,10 @@
 </style>
 <div ng-controller="includeController" ng-class="{true:'title-clear-pointer'}[editorMode]" class="style1">
     <div ng-if='params.design.text=="style1"'>
-        <div class="include-mod" ng-if="params.url.href.length == 0">
+        <div class="include-mod" ng-if="params.url.href.length == 0" ng-hide="params.url.is_mod_hide">
             配置引用文件
         </div>
-        <div class="include" ng-if="params.url.href.length > 4">
+        <div class="include" ng-if="params.url.href.length > 4" ng-hide="params.url.is_mod_hide">
             <div class="title-info" ng-if="editorMode">
                 <span>引用</span>
                 <span>{{params.url.href}}</span>
