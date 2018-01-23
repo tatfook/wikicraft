@@ -37,6 +37,7 @@ define([
             }
         };
 
+        // 新注册用户及老用户（个人信息md文件不存在处理）
         var createProfilePages = function(userDataSource, cb, errcb){
             var pagePrefix = '/'+ userDataSource.keepwrokUsername +'_datas/';
             var profilePagesList = [
