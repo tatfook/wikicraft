@@ -6,11 +6,15 @@
         font-size: 32px;
         line-height: 150px;
     }
+    .rich .style2{
+        max-width: 1170px;
+        word-wrap:break-word;
+    }
 </style>
 
-<div ng-controller="richController" class="rich container">
+<div ng-controller="richController" class="rich container" ng-hide="params.modal_rich.is_mod_hide">
     <div ng-hide="!editorMode" ng-if="params.modal_rich.data.length == 0" class="style1">
         <span>点击编辑-富文本</span>
     </div>
-    <div ng-if="params.modal_rich.data.length > 0" data-ng-bind-html="params.modal_rich.data"></div>
+    <div class="style2" ng-if="params.modal_rich.data.length > 0" data-ng-bind-html="params.modal_rich.data"></div>
 </div>
