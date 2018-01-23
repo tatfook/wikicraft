@@ -52,6 +52,9 @@ define([
             $scope.error = function(msg){
                 console.log(msg);
             };
+            $scope.richClick = function(){
+                config.services.selfDefinedModal($scope.options, $scope.success, $scope.error);
+            }
         }])
         
 		app.registerController("richEditorController", ['$scope', '$uibModalInstance', 'wikiBlock', function ($scope, $uibModalInstance, wikiBlock) {
