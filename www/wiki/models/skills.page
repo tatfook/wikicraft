@@ -3,18 +3,22 @@
 Title: skills of users
 Author: ZhengJiabiao
 Date: 2018/1
-Desc: skills in profiles,only to be used in backend data analysis.
+Desc: skills in profiles.
 ]]
+
+
 include_once("./abstract/base.page")
 include_once("./elasticsearch.page")
 include_once("./user.page")
 include_once("./validators.page")
+
 
 local skills = inherit(models.abstract.base, gettable("models.skills"))
 skills.db_name = "skills"
 local validators = models.validators:new()
 local es = models.elasticsearch:new()
 es:connect({index="kw_skills"})
+
 
 function skills:ctor()
     self:addfield("title", "string", false, 30)
@@ -36,9 +40,10 @@ function skills:api_insert(params)
     if (result) then
         params.id = result._id
         self:insert_to_es(params)
+        result.likedCount = result.likedCount or 0
+        result.usersLiked = nil
+        result._id = nil
     end
-    result.likedCount = result.likedCount or 0
-    result.usersLiked = nil
     return errors:wrap(err, result)
 end
 
@@ -96,9 +101,10 @@ function skills:api_update(params)
     if (result) then
         params.id = result._id
         self:update_to_es(params)
+        result.likedCount = result.likedCount or 0
+        result.usersLiked = nil
+        result._id = nil
     end
-    result.likedCount = result.likedCount or 0
-    result.usersLiked = nil
     return errors:wrap(err, result)
 end
 
@@ -146,8 +152,10 @@ function skills:api_like(params)
         if (message) then
             return response:status(404):send({error={message=message,status=404}})
         end
+        result.usersLiked = nil -- do not show usersLiked unless necessary
+        result._id = nil
     end
-    result.usersLiked = nil -- do not show usersLiked unless necessary
+   
     return errors:wrap(err, result)
 end
 
@@ -206,7 +214,7 @@ function skills:like_validator(params)
 end
 
 
-function skills:api_getByUsername(params)
+function skills:api_getLikedStatus(params)
     local required_fields = {"username", "visitor"}
     local is_params_error, message = validators.required_fields_validator(params, required_fields)
     if (is_params_error) then
@@ -221,13 +229,14 @@ function skills:api_getByUsername(params)
             skill.likedCount = skill.likedCount or #(skill.usersLiked)
             skill.doesVisitorLike = self:is_visitor_in_usersLiked(params.visitor, skill.usersLiked)
             skill.usersLiked = nil  -- do not show usersLiked unless necessary
+            skill._id = nil
         end
     end
     return errors:wrap(err, skills)
 end
 
 
-function skills:api_getUsersLiked(params)
+function skills:api_getDetail(params)
     local required_fields = {"username", "title", "visitor"}
     local is_params_error, message = validators.required_fields_validator(params, required_fields)
     if (is_params_error) then
@@ -252,6 +261,7 @@ function skills:api_getUsersLiked(params)
         result.usersLiked = usersLiked
         result.doesVisitorLike = doesVisitorLike
         result.likedCount = result.likedCount or 0
+        result._id = nil
     end
     return errors:wrap(err, result)
 end
@@ -339,7 +349,6 @@ function skills:delete_in_es(params)
 end
 
 
-
 function skills:api_search(params)
     local clean_params, is_params_error, message = self:search_validator(params)
     if (is_params_error) then
@@ -414,14 +423,14 @@ function skills:wrap_search_result(result)
 end
 
 
-
-
 -- function skills:api_test()
 --     local params = {
 --         username = "user1",
 --         title = "npl",
---         visitor = "visitor1"
+--         visitor = "visitor1",
+--         level = 5,
+--         works = {}
 --     }
---     return self:api_getUsersLiked(params)
+--     return self:api_insert(params)
 -- end
 
