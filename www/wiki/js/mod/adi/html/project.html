@@ -227,7 +227,7 @@
         word-wrap:break-word;
         white-space: pre-wrap;
     }
-
+    
 /* style5 css */
     .project-mod .style5 .stitching-span{
         text-align: center;
@@ -554,11 +554,13 @@
         </div>
         <div class="stitching-img">
             <a ng-if="editorMode"
+               ng-hide="params.image_picture.is_mod_hide"
                ng-click="viewEditorClick(params.image_picture, $event)"
                href="javascript::void(0)">
                <img ng-src="{{params.image_picture.text}}">
             </a>
             <a ng-if="!editorMode"
+               ng-hide="params.image_picture.is_mod_hide"
                ng-class="{true : 'clear-pointer'}[params.image_picture.href.length == 0]"
                target="{{params.image_picture.target ? params.image_picture.target : '_blank' }}"
                ng-href="{{params.image_picture.href}}"
@@ -573,11 +575,13 @@
 
         <div class="stitching-img">
             <a ng-if="editorMode"
+               ng-hide="params.image_picture.is_mod_hide"
                ng-click="viewEditorClick(params.image_picture, $event)"
                href="javascript::void(0)">
                <img ng-src="{{params.image_picture.text}}">
             </a>
             <a ng-if="!editorMode"
+               ng-hide="params.image_picture.is_mod_hide"
                ng-class="{true : 'clear-pointer'}[params.image_picture.href.length == 0]"
                target="{{params.image_picture.target ? params.image_picture.target : '_blank' }}"
                ng-href="{{params.image_picture.href}}"
