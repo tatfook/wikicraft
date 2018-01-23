@@ -43,7 +43,7 @@ define([
         
                         var innerElement = container[0];
         
-                        for(var i=0;i < innerElement.childNodes.length;i++){
+                        for(var i=4;i < innerElement.childNodes.length; i++){
                             innerElement.childNodes[i].style.display = "none";
                         }
         
