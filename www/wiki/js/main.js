@@ -66,6 +66,7 @@
 			'md5': libPathPrefix + "md5",
 			'swiper': libPathPrefix + "swiper/swiper.min",
 			'reveal': libPathPrefix + "reveal",
+			'echarts-radar': libPathPrefix + "echarts/echarts-radar",
 			//'html2canvas': libPathPrefix + 'html2canvas/html2canvas.min',
 
 			// 自定义模块

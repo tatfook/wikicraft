@@ -6,27 +6,66 @@ define([
     'app',
     'helper/util',
     'helper/storage',
+    'helper/datasource',
+    'helper/markdownwiki',
+    'markdown-it',
     'text!html/user.html',
+    'echarts-radar',
     'contribution-calendar'
-], function (app, util, storage, htmlContent) {
+], function (app, util, storage, datasource, markdownwiki, markdownit, htmlContent, echartsRadar) {
     //console.log("load userController file");
 
-    app.registerController('userController', ['$scope','Account','Message', 'modal', function ($scope, Account, Message, modal) {
-        
-    }]);
-
-    app.registerController('userMsgCtrl', ['$scope', 'Account', function($scope, Account) {
-        $scope.userinfo = {
-            portrait: "http://git.keepwork.com/gitlab_rls_kaitlyn/keepworkdatasource/raw/master/kaitlyn_images/img_1516090899563.png",
-            displayName: "username",
-            username:"username",
-            joindate: "2016-09-12",
-            location: "深圳",
-            email:"8743927@outlook.com",
-            worksCount: 4,
-            favoriteCount: 12,
-            fansCount: 35,
+    app.registerController('userController', ['$rootScope', '$scope', '$timeout', 'Account','Message', 'modal', function ($rootScope, $scope, $timeout, Account, Message, modal) {
+        const UserSystemProjectName = "keepworkdatasource";
+        const ProfileDataFileName = "profile.md";
+        var splitMainContent = function(origionContent){
+            origionContent = origionContent.split("```");
+            var topContent= [],subContent = [];
+            var topContentReg = /^@profile\/js\/(headerinfo|controls)/i;
+            var subContentReg = /^@profile\/js\/(works|skills|experiences|certifications|contribution|activities)/i;
+            origionContent.forEach(function(content){
+                if (topContentReg.test(content)) {
+                    topContent.push(content,"\n");
+                } else if(subContentReg.test(content)){
+                    subContent.push(content,"\n");
+                }
+            });
+            return {
+                'topContent': "```" + topContent.join('```'),
+                'subContent': "```" + subContent.join('```'),
+            }
         };
+
+        var getUserProfileData = function(userDataSource){
+            var profileDataPath = '/'+ userDataSource.keepwrokUsername +'_datas/' + ProfileDataFileName;
+            console.log(profileDataPath);
+            userDataSource.getFile({path: profileDataPath}, function (data) {
+                var content = data.content || "";
+                var mdContent = splitMainContent(content);
+                var md = markdownwiki({breaks: true, isMainMd:true});
+                var topHtml = md.render(mdContent.topContent);
+                util.html("#user-maincontent", topHtml);
+            
+                $rootScope.subMdContent = mdContent.subContent;
+                
+            }, function(err){
+                console.log(err);
+            });
+        }
+        var getProfileData = function(username){
+            util.post(config.apiUrlPrefix + 'site_data_source/getByUsername', {username: username}, function (data) {
+                var sources = data || [];
+                var systemSource = sources.filter(function(source){
+                    return source.projectName === UserSystemProjectName;
+                });
+                var DataSource = dataSource.getUserDataSource(username);
+                DataSource.init(systemSource);
+                var userSystemDataSource = DataSource.getDefaultDataSource();
+                console.log(userSystemDataSource);
+                $rootScope.userDataSource = userSystemDataSource;
+                getUserProfileData(userSystemDataSource);
+            });
+        }
         function init(userinfo) {
             var username = $scope.urlObj.username.toLowerCase();;
             if (!username && userinfo && userinfo.username) {
@@ -36,6 +75,8 @@ define([
                 console.error("用户名不存在");
                 return;
             }
+            console.log(username);
+            getProfileData(username);
 
             util.post(config.apiUrlPrefix + 'user/getDetailByName', {username:username}, function (data) {
                 if (!data) {
@@ -43,7 +84,29 @@ define([
                     return ;
                 }
                 // 用户信息
-                // $scope.userinfo = data.userinfo;
+                $rootScope.userinfo = data.userinfo;
+                // $scope.selfOrganizationList = data.selfOrganizationObj.siteList;
+                // $scope.selfOrganizationCount = data.selfOrganizationObj.siteList.length;
+                // $scope.joinOrganizationList = data.joinOrganizationObj.siteList;
+                // $scope.joinOrganizationCount = data.joinOrganizationObj.siteList.length;
+                // $scope.hotSiteList = data.hotSiteObj.siteList;
+                // $scope.hotSiteTotal=data.hotSiteObj.siteList.length;
+                $rootScope.allSiteList = data.allSiteList;
+                // $scope.allSiteTotal = data.allSiteList.length;
+                // // 粉丝
+                $rootScope.fansList = data.fansObj.userList;
+                // $scope.fansCount = data.fansObj.total;
+                // // 关注的用户
+                $rootScope.followUserList = data.followObj.followUserObj.userList;
+                // $scope.followUserTotal = data.followObj.followUserObj.total;
+                // // 关注的站点
+                $rootScope.followSiteList = data.followObj.followSiteObj.siteList;
+                // $scope.followSiteTotal = data.followObj.followSiteObj.total;
+                // // 用户动态
+                // $scope.trendsList = data.trendsObj.trendsList;
+                // $scope.trendsCount = data.trendsObj.total;
+                // $scope.active = data.activeObj;
+                // contributionCalendar("contributeCalendar",$scope.active);
             });
         }
         $scope.$watch('$viewContentLoaded', function () {
@@ -57,29 +120,5 @@ define([
             }
         });
     }]);
-
-    app.registerController('worksCtrl', ['$scope', function($scope){
-        $scope.works = [
-            {
-                logoUrl:"http://git.keepwork.com/gitlab_rls_kaitlyn/keepworkdatasource/raw/master/kaitlyn_images/img_1516099391929.jpeg",
-                title:"日常摄影作品",
-                workLink:"/photograph/page01",
-                desc:"介绍日常生活中容易拍摄的照片",
-                tags:["摄影","任务","记录"],
-                visitCount:253,
-                favoriteCount:43
-            },
-            {
-                logoUrl:"http://git.keepwork.com/gitlab_rls_kaitlyn/keepworkdatasource/raw/master/kaitlyn_images/img_1516099391929.jpeg",
-                title:"code",
-                workLink:"/photograph/page01",
-                desc:"介绍日常生活中容易拍摄的照片",
-                tags:["编程","ui"],
-                visitCount:253,
-                favoriteCount:43
-            }
-        ];
-    }]);
-
     return htmlContent;
 });

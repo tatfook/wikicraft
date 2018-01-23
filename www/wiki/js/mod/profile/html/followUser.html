@@ -1,0 +1,52 @@
+<style>
+    .follow-users .follow-users-list {
+        border: 1px solid #F2F2F2;
+        padding: 0 20px;
+        margin: 24px 0 40px;
+    }
+
+    .follow-users .follow-users-item {
+        display: flex;
+        padding: 20px 0;
+        border-bottom: 1px solid #F2F2F2;
+    }
+
+    .follow-users .follow-users-item>img {
+        width: 60px;
+        height: 60px;
+        object-fit: cover;
+        border-radius: 50%;
+        margin-right: 16px;
+    }
+
+    .follow-users .btn-followed {
+        padding: 0;
+        font-size: 14px;
+        border: 1px solid #3977AD;
+        width: 68px;
+        height: 28px;
+        line-height: 28px;
+        color: #3977AD;
+    }
+</style>
+<div class="follow-users" ng-controller="followsUserCtrl">
+    <h4 class="title">
+        关注的作者
+    </h4>
+    <div class="follow-users-list">
+        <div class="follow-users-item" ng-repeat="followUser in fansList track by $index">
+            <img ng-src="{{followUser.userinfo.logoUrl || getImageUrl('default_portrait.png',imgsPath)}}">
+            <div class="follow-user-detail">
+                <h4>{{followUser.userinfo.displayName || followUser.userinfo.username}}</h4>
+                <p class="location">
+                    <i class="iconfont icon-shiliangzhinengduixiang"></i>
+                    {{followUser.userinfo.location || "未知地点"}}
+                </p>
+                <div class="btn btn-followed">已关注</div>
+            </div>
+            <div class="work-other-msg">
+                <img ng-src="work.logoUrl" ng-repeat="work in followUser.userinfo.works" alt="">
+            </div>
+        </div>
+    </div>
+</div>

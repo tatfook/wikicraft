@@ -1,0 +1,110 @@
+<style>
+    .user-header {
+        background-color: #222C33;
+        color: #FFF;
+        text-align: center;
+        padding: 40px 0 20px;
+    }
+
+    .user-header .img-text {
+        display: flex;
+        align-items: center;
+    }
+
+    .user-header .img-text>div {
+        flex: 1;
+        text-align: left;
+    }
+
+    .user-header .img-text .profile {
+        text-align: right;
+        margin-right: 15px;
+    }
+
+    .user-header .profile>img {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+    }
+
+    .user-header .img-text h2 {
+        margin: 0;
+    }
+
+    .user-header .img-text p {
+        font-size: 12px;
+        margin: 0;
+        margin-top: 15px;
+    }
+
+    .user-header .detail-msg {
+        margin: 0;
+        margin-top: 30px;
+    }
+
+    .user-header .detail-msg i {
+        margin: 0 5px 0 20px;
+        font-size: 16px;
+        vertical-align: middle;
+    }
+
+    .user-header .main-msg {
+        margin: 0;
+        margin-top: 28px;
+        font-size: 0;
+    }
+
+    .user-header .main-msg>span {
+        font-size: 14px;
+        padding: 0 13px;
+        border-right: 2px solid #FFF;
+    }
+
+    .user-header .main-msg>span>a {
+        color: #FFF;
+    }
+
+    .user-header .main-msg>span>a:hover {
+        color: #3977AD;
+    }
+
+    .user-header .main-msg>span:last-child {
+        border-right: none;
+    }
+</style>
+<div class="user-header" ng-controller="userMsgCtrl">
+    <div class="img-text">
+        <div class="profile">
+            <img ng-src="{{userinfo.portrait || imgsPath+'wiki_default_profile.jpg'}}" alt="">
+        </div>
+        <div class="text">
+            <h2>{{userinfo.displayName || userinfo.username}}</h2>
+            <p>{{ "注册于" + userinfo.joindate}}</p>
+        </div>
+    </div>
+    <p class="main-msg">
+        <span>
+            <a>{{userinfo.worksCount || 0}} 作品</a>
+        </span>
+        <span>
+            <a>{{userinfo.favoriteCount || 0}} 关注</a>
+        </span>
+        <span>
+            <a>{{userinfo.fansCount || 0}} 粉丝</a>
+        </span>
+    </p>
+    <p class="detail-msg">
+        <span class="location" ng-show="userinfo.location">
+            <i class="iconfont icon-shiliangzhinengduixiang"></i>
+            <span>{{userinfo.location}}</span>
+        </span>
+        <span class="email" ng-show="userinfo.email">
+            <i class="iconfont icon-youxiang"></i>
+            <span>{{userinfo.email}}</span>
+        </span>
+        <span class="homepage">
+            <i class="iconfont icon-lianjie1"></i>
+            <span>{{"http://keepwork.com/" + userinfo.username}}</span>
+        </span>
+    </p>
+</div>

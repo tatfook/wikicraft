@@ -1,0 +1,94 @@
+<style>
+    .user-sites .sites-list {
+        padding: 0 20px;
+        border: 1px solid #F2F2F2;
+        margin: 20px 0 40px;
+    }
+
+    .user-sites .sites-item {
+        display: flex;
+        border-bottom: 1px solid #F2F2F2;
+        color: #666;
+        padding: 20px 0;
+        position: relative;
+    }
+
+    .user-sites .sites-item:last-child {
+        border-bottom: none;
+    }
+
+    .user-sites .sites-item>img {
+        width: 120px;
+        height: 100px;
+        object-fit: cover;
+    }
+
+    .user-sites .site-detail {
+        margin-left: 7px;
+        flex: 1;
+    }
+
+    .user-sites .site-detail h4 {
+        margin: 0;
+        color: #333;
+    }
+
+    .user-sites .site-detail p {
+        margin: 0;
+    }
+
+    .user-sites .site-detail>.p-link,
+    .user-sites .site-detail>.p-desc {
+        margin: 8px 0;
+    }
+
+    .user-sites .site-detail>.p-tags>span {
+        padding: 1.5px 10px;
+        background-color: #E0F1FF;
+        margin-right: 12px;
+    }
+
+    .user-sites .site-other-msg {
+        position: absolute;
+        right: 0;
+        top: 23px;
+        color: #999;
+    }
+
+    .user-sites .site-other-msg>span {
+        margin-left: 10px;
+    }
+
+    .user-sites .site-other-msg img {
+        margin-right: 6px;
+        vertical-align: sub;
+    }
+</style>
+<div class="user-sites" ng-controller="sitesCtrl">
+    <div ng-show="params.type == 'stick' || params.type == 'created' || params.type == 'joined'">
+        <h4 class="title">
+            {{getModTitle(params.type)}}
+        </h4>
+        <div class="sites-list">
+            <div class="sites-item" ng-repeat="site in sites[params.type] track by $index">
+                <img ng-src="{{site.logoUrl}}">
+                <div class="site-detail">
+                    <h4>{{site.name}}</h4>
+                    <p class="p-link">
+                        <a ng-href="{{'/'+ site.username+'/'+site.name}}" target="_blank">{{'/'+ site.username+'/'+site.name}}</a>
+                    </p>
+                    <p class="p-desc">{{site.desc || "暂无简介"}}</p>
+                    <p class="p-tags">
+                        <span ng-repeat="tag in site.tags track by $index">{{tag}}</span>
+                    </p>
+                </div>
+                <div class="site-other-msg">
+                    <span>
+                        <img ng-src="{{imgsPath+'icon/wiki_pageview.png'}}">{{site.visitCount}}</span>
+                    <span>
+                        <img ng-src="{{imgsPath+'icon/wiki_pageview.png'}}">{{site.favoriteCount}}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

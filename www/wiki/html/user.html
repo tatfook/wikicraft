@@ -106,14 +106,15 @@
 <style>
     .user-main-content {
         border: 1px solid #DCDCDC;
-        margin-top: 20px;
+        margin: 20px auto 13px;
         padding: 0
     }
 
     .user-main-content .nav-tabs {
         text-align: center;
         border-bottom: none;
-        border-bottom: 2px solid #DDD;
+        border-bottom: 1px solid #DDD;
+        height: 62px;
     }
 
     .user-main-content .nav-tabs ul {
@@ -140,168 +141,396 @@
     }
 
     .user-main-content .content {
-        padding: 40px 100px;
+        padding: 40px 100px 0;
     }
-</style>
-<!-- 我的作品 -->
-<style>
-    .user-works .title {
+
+    .user-main-content h4.title {
         margin: 0;
         border-left: 4px solid #3977AD;
         padding-left: 10px;
     }
-    .user-works .title .iconfont{
+
+    .user-main-content h4.title .iconfont {
         color: #3977AD;
         font-size: 20px;
         line-height: 1;
         margin-left: 20px;
     }
-    .user-works .works-list{
+</style>
+<!-- 我的作品 -->
+<style>
+    .user-works .works-list {
         padding: 0 20px;
         border: 1px solid #F2F2F2;
         margin: 20px 0 40px;
     }
-    .user-works .works-item{
+
+    .user-works .works-item {
         display: flex;
         border-bottom: 1px solid #F2F2F2;
         color: #666;
         padding: 20px 0;
         position: relative;
     }
-    .user-works .works-item:last-child{
+
+    .user-works .works-item:last-child {
         border-bottom: none;
     }
-    .user-works .works-item > img{
+
+    .user-works .works-item>img {
         width: 120px;
         height: 100px;
         object-fit: cover;
     }
-    .user-works .work-detail{
+
+    .user-works .work-detail {
         margin-left: 7px;
         flex: 1;
     }
-    .user-works .work-detail h4{
+
+    .user-works .work-detail h4 {
         margin: 0;
         color: #333;
     }
-    .user-works .work-detail p{
+
+    .user-works .work-detail p {
         margin: 0;
     }
-    .user-works .work-detail > .p-link, .user-works .work-detail > .p-desc{
+
+    .user-works .work-detail>.p-link,
+    .user-works .work-detail>.p-desc {
         margin: 8px 0;
     }
-    .user-works .work-detail > .p-tags > span{
+
+    .user-works .work-detail>.p-tags>span {
         padding: 1.5px 10px;
         background-color: #E0F1FF;
         margin-right: 12px;
     }
-    .user-works .work-other-msg{
+
+    .user-works .work-other-msg {
         position: absolute;
         right: 0;
         top: 23px;
         color: #999;
     }
-    .user-works .work-other-msg > span{
+
+    .user-works .work-other-msg>span {
         margin-left: 10px;
     }
-    .user-works .work-other-msg img{
+
+    .user-works .work-other-msg img {
         margin-right: 6px;
         vertical-align: sub;
     }
 </style>
+<!-- 我的技能 -->
+<style>
+    .user-skills .skill-radar {
+        min-height: 235px;
+    }
+
+    .user-skills ul {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+    }
+
+    .user-skills .main-skill {
+        border: 1px solid #F2F2F2;
+        padding: 15px 0 20px 20px;
+    }
+
+    .user-skills .v-skill-ul {
+        border-right: 1px solid #F2F2F2;
+        padding-right: 73px;
+    }
+
+    .user-skills .v-li {
+        margin: 10px 0;
+        color: #666;
+        height: 36px;
+    }
+
+    .user-skills span.title {
+        padding: 7px 29px;
+        background-color: #E0F1FF;
+        display: inline-block;
+        border-radius: 36px;
+        font-size: 16px;
+    }
+
+    .user-skills span.level {
+        background-color: #e0f1ff;
+        width: 24px;
+        height: 32px;
+        display: inline-block;
+        text-align: center;
+        margin-left: 10px;
+        line-height: 27px;
+        position: relative;
+        top: -3px;
+    }
+
+    .user-skills span.level:before {
+        content: "";
+        display: inline-block;
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        border-top: none;
+        border-left: 12px solid transparent;
+        border-right: 12px solid transparent;
+        border-bottom: 6px solid #FFF;
+    }
+
+    .user-skills span.icon-icondianzan {
+        width: 36px;
+        height: 36px;
+        background-color: #e0f1ff;
+        color: #FE7532;
+        border-radius: 50%;
+        text-align: center;
+        line-height: 36px;
+        font-size: 20px;
+    }
+
+    .user-skills .other-skill {
+        border: 1px solid #F2F2F2;
+        padding: 30px 20px 20px;
+        margin-bottom: 47px;
+    }
+
+    .user-skills .h-li {
+        float: left;
+        margin-right: 50px;
+        color: #666;
+    }
+
+    .user-skills .h-li span.title {
+        background-color: #E4E4E4;
+        padding: 7px 26px;
+        margin-right: 20px;
+    }
+
+    .user-skills .h-li span.icon-icondianzan {
+        border-radius: 0;
+        width: auto;
+        background-color: transparent;
+    }
+
+    .user-skills .other-skill-footer {
+        text-align: center;
+    }
+
+    .user-skills .btn-primary {
+        width: 420px;
+        max-width: 100%;
+        height: 32px;
+        line-height: 32px;
+        padding: 0;
+        background-color: #7FC4FF;
+        color: #FFF;
+        font-size: 16px;
+        border: none;
+        border-radius: 16px;
+        margin-top: 30px;
+    }
+
+    .user-skills .glyphicon-menu-down {
+        -webkit-text-stroke: 1px #7FC4FF;
+    }
+</style>
+<!-- 我的经历 -->
+<style>
+    .user-experience .ellipsis-1 {
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+    }
+
+    .user-experience .experiences-list {
+        padding: 12px 20px;
+        border: 1px solid #F2F2F2;
+        font-size: 16px;
+        color: #666;
+        margin: 24px 0 43px;
+    }
+
+    .user-experience table {
+        margin: 0;
+        border: none;
+    }
+
+    .user-experience table>tbody>tr>td {
+        border: none;
+        display: inline-block;
+        height: 32px;
+        line-height: 32px;
+        padding: 0;
+    }
+
+    .user-experience td.title {
+        width: 30%;
+    }
+
+    .user-experience td.link {
+        width: 50%;
+        padding: 0 5px;
+    }
+
+    .user-experience td.time {
+        width: 20%;
+        font-size: 14px;
+        color: #999;
+    }
+</style>
+<!-- 我的认证 -->
+<style>
+    .user-certification .ellipsis-1 {
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+    }
+
+    .user-certification .certifications-list {
+        padding: 12px 20px;
+        border: 1px solid #F2F2F2;
+        font-size: 16px;
+        color: #666;
+        margin: 24px 0 43px;
+    }
+
+    .user-certification table {
+        margin: 0;
+        border: none;
+    }
+
+    .user-certification table>tbody>tr>td {
+        border: none;
+        display: inline-block;
+        height: 32px;
+        line-height: 32px;
+        padding: 0;
+    }
+
+    .user-certification td.title {
+        width: 30%;
+    }
+
+    .user-certification td.link {
+        width: 50%;
+        padding: 0 5px;
+    }
+
+    .user-certification td.time {
+        width: 20%;
+        font-size: 14px;
+        color: #999;
+        text-align: right;
+    }
+</style>
+<!-- 活跃度 -->
+<style>
+    .user-activeness .contributeCalendar {
+        position: relative;
+        margin: 20px 0 43px;
+        border: 1px solid #F2F2F2;
+        padding: 20px;
+    }
+
+    .user-activeness .calendar-container {
+        width: 745px;
+        margin: 0 auto;
+        position: relative;
+    }
+
+    .user-activeness .calendar-container:before {
+        content: "";
+        display: inline-block;
+        width: 1px;
+        height: 50px;
+        background-color: #DCDCDC;
+        position: absolute;
+        left: 25px;
+        top: 45px;
+        z-index: 2;
+    }
+
+    .user-activeness .calendar-container:after {
+        content: '';
+        display: inline-block;
+        width: 45px;
+        height: 50px;
+        left: 5px;
+        top: 50px;
+        background-color: #FFF;
+        position: absolute;
+        z-index: 1;
+    }
+
+    .user-activeness .legend {
+        margin: 0;
+        padding: 0;
+        display: inline-block;
+    }
+
+    .user-activeness .legend>li {
+        float: left;
+        width: 10px;
+        height: 10px;
+        list-style: none;
+    }
+
+    .user-activeness .calendar-footer {
+        width: 745px;
+        margin: 0 auto;
+        padding: 15px 60px 0;
+    }
+</style>
+<!-- 活动 -->
+<style>
+    .user-activities .active-row {
+        height: 80px;
+        line-height: 80px;
+    }
+
+    .user-activities .active-row-box {
+        border: 1px solid #F2F2F2;
+        padding: 0 5px;
+        margin: 20px 0 24px;
+    }
+
+    .user-activities .active-row>img {
+        width: 40px;
+        height: 40px;
+        object-fit: cover;
+        border-radius: 50%;
+        margin-right: 10px;
+    }
+
+    .user-activities .activity-footer {
+        text-align: center;
+    }
+
+    .user-activities .btn-primary {
+        width: 420px;
+        max-width: 100%;
+        height: 32px;
+        line-height: 32px;
+        padding: 0;
+        background-color: #7FC4FF;
+        color: #FFF;
+        font-size: 16px;
+        border: none;
+        border-radius: 16px;
+        margin: 18px 0;
+    }
+
+    .user-activities .glyphicon-menu-down {
+        -webkit-text-stroke: 1px #7FC4FF;
+    }
+</style>
 <div ng-controller="userController">
-    <div class="user-header" ng-controller="userMsgCtrl">
-        <div class="img-text">
-            <div class="profile">
-                <img ng-src="{{userinfo.portrait || imgsPath+'wiki_default_profile.jpg'}}" alt="">
-            </div>
-            <div class="text">
-                <h2>{{userinfo.displayName || userinfo.username}}</h2>
-                <p>{{ "注册于" + userinfo.joindate}}</p>
-            </div>
-        </div>
-        <p class="main-msg">
-            <span>
-                <a>{{userinfo.worksCount}} 作品</a>
-            </span>
-            <span>
-                <a>{{userinfo.favoriteCount}} 关注</a>
-            </span>
-            <span>
-                <a>{{userinfo.fansCount}} 粉丝</a>
-            </span>
-        </p>
-        <p class="detail-msg">
-            <span class="location" ng-show="userinfo.location">
-                <i class="iconfont icon-shiliangzhinengduixiang"></i>
-                <span>{{userinfo.location}}</span>
-            </span>
-            <span class="email" ng-show="userinfo.email">
-                <i class="iconfont icon-youxiang"></i>
-                <span>{{userinfo.email}}</span>
-            </span>
-            <span class="homepage">
-                <i class="iconfont icon-lianjie1"></i>
-                <span>{{"http://keepwork.com/" + userinfo.username}}</span>
-            </span>
-        </p>
-    </div>
-
-    <div class="control-bar container clearfix">
-        <div class="item-container">
-            <a class="item" href="/wiki/user_center?userCenterContentType=newWebsite" target="_blank">
-                <img ng-src="{{imgsPath + 'icon/wiki_new_site.png'}}" alt="">
-                <span translate="新建网站">
-                </span>
-            </a>
-            <a class="item" href="/wiki/user_center?userCenterContentType=websiteManager" target="_blank">
-                <img ng-src="{{imgsPath + 'icon/wiki_site_manage.png'}}" alt="">
-                <span translate="网站管理">
-                </span>
-            </a>
-            <a class="item" href="/wiki/wikieditor" target="_blank">
-                <img ng-src="{{imgsPath + 'icon/wiki_editor.png'}}" alt="">
-                <span translate="页面编辑器">
-                </span>
-            </a>
-        </div>
-    </div>
-
-    <div class="container user-main-content">
-        <div class="nav nav-tabs">
-            <ul class="clearfix">
-                <li class="active">个人信息</li>
-                <li>网站</li>
-                <li>社交</li>
-            </ul>
-        </div>
-        <div class="content">
-            <div class="user-works" ng-controller="worksCtrl">
-                <h4 class="title">
-                    我的作品
-                    <span class="pull-right">
-                        <i class="iconfont icon-tianjia"></i>
-                        <i class="iconfont icon-bianji"></i>
-                    </span>
-                </h4>
-                <div class="works-list">
-                    <div class="works-item" ng-repeat="work in works">
-                        <img ng-src="{{work.logoUrl}}">
-                        <div class="work-detail">
-                            <h4>{{work.title}}</h4>
-                            <p class="p-link"><a ng-href="{{work.workLink}}" target="_blank">{{work.workLink}}</a></p>
-                            <p class="p-desc">{{work.desc}}</p>
-                            <p class="p-tags">
-                                <span ng-repeat="tag in work.tags">{{tag}}</span>
-                            </p>
-                        </div>
-                        <div class="work-other-msg">
-                            <span><img ng-src="{{imgsPath+'icon/wiki_pageview.png'}}">{{work.visitCount}}</span>
-                            <span><img ng-src="{{imgsPath+'icon/wiki_pageview.png'}}">{{work.favoriteCount}}</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+    <div id="user-maincontent"></div>
 </div>
