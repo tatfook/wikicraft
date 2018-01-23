@@ -13,8 +13,7 @@
         position: fixed;
         right: 10px;
         top: 15%;
-        /* margin-top: 1%; */
-        /* margin-left: 93%; */
+        padding-top: 10px;
         height: 100px;
     }
     .qq .style1 .qq-mod .qq-mod-img {
@@ -58,21 +57,9 @@
         position: fixed;
         top: 15%;
         right: 10px;
-        /* margin-top: 1%;
-        margin-left: 86%; */
+        padding-top: 10px;
         width: 150px;
         height: 80px;
-    }
-    .qq .style2 .qq-mod .qq-mod-img {
-        float: left;
-        margin-top: 10px;
-        width: 50px;
-        height: 50px;
-        text-align: center;
-    }
-    .qq .style2 .qq-mod .qq-mod-img a img{
-        width: 50px;
-        height: 50px;
     }
     /* .qq .qq-mod .clearfix {
         clear: both;
@@ -94,6 +81,17 @@
     }
     .qq .style2 .qq-mod .qq-mod-head a :hover {
         color: #000;
+    }
+    .qq .style2 .qq-mod .qq-mod-img {
+        float: right;
+        margin-top: 10px;
+        width: 50px;
+        height: 50px;
+        text-align: center;
+    }
+    .qq .style2 .qq-mod .qq-mod-img a img{
+        width: 50px;
+        height: 50px;
     }
 </style>
 
@@ -136,20 +134,6 @@
     <!-- style2 html -->
     <div ng-if='params.design.text=="style2"' class="style2">
         <div ng-class="{true:'clear-pointer'}[editorMode]" class="qq-mod" ng-style="topStyle">
-            <div class="qq-mod-img" ng-hide="params.media_img.is_mod_hide">
-                <a  ng-if="editorMode"
-                    href="javascript::void(0)"
-                    ng-click="viewEditorClick(params.media_img,$event)">
-                    <img ng-src="{{params.media_img.text}}">
-                </a>
-                <a  ng-class="{true:'clear-pointer'}[!params.input_qq.text.length]"
-                    ng-if="!editorMode"
-                    target="{{params.media_img.target ? params.media_img.target : '_blank'}}"
-                    ng-href="{{getQQUrl()}}">
-                    <img ng-src="{{params.media_img.text}}">
-                </a>
-            </div>
-            <!-- <div class="clearfix"></div> -->
             <div class="qq-mod-head" ng-hide="params.link_title.is_mod_hide"> 
                 <a  ng-if="editorMode"
                     href="javascript::void(0)"
@@ -163,6 +147,20 @@
                     {{params.link_title.text}}
                 </a>
             </div>  
+            <!-- <div class="clearfix"></div> -->
+            <div class="qq-mod-img" ng-hide="params.media_img.is_mod_hide">
+                <a  ng-if="editorMode"
+                    href="javascript::void(0)"
+                    ng-click="viewEditorClick(params.media_img,$event)">
+                    <img ng-src="{{params.media_img.text}}">
+                </a>
+                <a  ng-class="{true:'clear-pointer'}[!params.input_qq.text.length]"
+                    ng-if="!editorMode"
+                    target="{{params.media_img.target ? params.media_img.target : '_blank'}}"
+                    ng-href="{{getQQUrl()}}">
+                    <img ng-src="{{params.media_img.text}}">
+                </a>
+            </div>
         </div>
     </div>
 
