@@ -210,7 +210,7 @@ define([
                 
                 $rootScope.getBodyStyle = function () {
                     return {
-                        "padding-top": $rootScope.frameHeaderExist ? "52px" : "0px",
+                        "padding-top": ($rootScope.frameHeaderExist && !$rootScope.isHeaderScroll) ? "52px" : "0px",
                     };
                 }
 
@@ -276,6 +276,7 @@ define([
                 $rootScope.pageinfo = undefined;
                 $rootScope.tplinfo = undefined;
                 if (urlObj.username && urlObj.sitename) {
+                    $rootScope.isHeaderScroll = true;
                     util.http("POST", config.apiUrlPrefix + "website/getDetailInfo", {
                         username: urlObj.username,
                         sitename: urlObj.sitename,
