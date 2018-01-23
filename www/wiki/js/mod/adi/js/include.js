@@ -28,7 +28,7 @@ define([
 						text         : "style1", 
 						require      : true, 
 					},
-					url:{
+					url_img:{
 						is_leaf      : true, 
 						type         : "url",   
 						editable     : true, 
@@ -84,8 +84,8 @@ define([
 				}, 0);
 			}
 
-			if($scope.params.url.href.length > 4){
-				if($scope.params.url.href.indexOf(config.hostname) > 0){
+			if($scope.params.url_img.href.length > 4){
+				if($scope.params.url_img.href.indexOf(config.hostname) > 0){
 					$scope.$watch("$viewContentLoaded", $scope.setInnerIframeHeight);
 				}else{
 					$scope.$watch("$viewContentLoaded", $scope.setExternalIframeHeight);
@@ -94,7 +94,7 @@ define([
 
 			$scope.currentIframe = "__INCLUDE__" + Date.now();
 
-			$scope.pageUrl = $sce.trustAsResourceUrl($scope.params.url.href);
+			$scope.pageUrl = $sce.trustAsResourceUrl($scope.params.url_img.href);
 		}]);
     }
 
