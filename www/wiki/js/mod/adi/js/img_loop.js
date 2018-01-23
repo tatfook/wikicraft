@@ -94,7 +94,7 @@ define([
 
             wikiblock.init(initObj);
         
-            $scope.imgInterval   = 5000;
+            $scope.imgInterval   = 3000;
             $scope.noWrapSlides = false;
             $scope.active       = 0;
 
@@ -120,12 +120,13 @@ define([
                 if(!$scope.params.media_img_five.is_mod_hide){
                     $scope.imgs.push($scope.params.media_img_five);
                 }
-
                 if($scope.imgs.length==1){
                     var displayBar=document.querySelector(".displayBar");
-                    displayBar.style.display="none";
+                    displayBar.style.opacity=0;
                 }
+                
             })
+            
         }]);
     }
 
