@@ -1,7 +1,7 @@
 define([
     'app',
     'helper/util',
-    'text!wikimod/adi/html/imgCarousel.html',
+    'text!wikimod/adi/html/img_loop.html',
 ],function (app, util, htmlContent) {
     function registerController(wikiblock) {
         app.registerController("carouselController", ['$scope','$sce', function ($scope, $sce) {
