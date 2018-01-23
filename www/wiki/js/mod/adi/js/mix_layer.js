@@ -21,49 +21,49 @@ define([
                     {
                         "design": {
                             "text":"style2",
-                            "cover":"config.wikiModPath + 'adi/assets/images/mix2.png'"
+                            "cover":config.wikiModPath + 'adi/assets/images/mix2.png',
                         },
                     },
                     {
                         "design": {
                             "text":"style3",
-                            "cover":"config.wikiModPath + 'adi/assets/images/mix3.png'"
+                            "cover":config.wikiModPath + 'adi/assets/images/mix3.png',
                         },
                     },
                     {
                         "design": {
                             "text":"style4",
-                            "cover":"config.wikiModPath + 'adi/assets/images/mix4.png'"
+                            "cover":config.wikiModPath + 'adi/assets/images/mix4.png',
                         },
                     },
                     {
                         "design": {
                             "text":"style5",
-                            "cover":"config.wikiModPath + 'adi/assets/images/mix5.png'"
+                            "cover":config.wikiModPath + 'adi/assets/images/mix5.png',
                         },
                     },
                     {
                         "design": {
                             "text":"style6",
-                            "cover":"config.wikiModPath + 'adi/assets/images/mix6.png'"
+                            "cover":config.wikiModPath + 'adi/assets/images/mix6.png',
                         },
                     },
                     {
                         "design": {
                             "text":"style7",
-                            "cover":"config.wikiModPath + 'adi/assets/images/mix7.png'"
+                            "cover":config.wikiModPath + 'adi/assets/images/mix7.png',
                         },
                     },
                     {
                         "design": {
                             "text":"style8",
-                            "cover":"config.wikiModPath + 'adi/assets/images/mix8.png'"
+                            "cover":config.wikiModPath + 'adi/assets/images/mix8.png',
                         },
                     },
                     {
                         "design": {
                             "text":"style9",
-                            "cover":"config.wikiModPath + 'adi/assets/images/mix9.png'"
+                            "cover":config.wikiModPath + 'adi/assets/images/mix9.png',
                         },
                     },
 				],
