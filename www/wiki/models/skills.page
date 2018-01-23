@@ -339,6 +339,83 @@ function skills:delete_in_es(params)
 end
 
 
+
+function skills:api_search(params)
+    local clean_params, is_params_error, message = self:search_validator(params)
+    if (is_params_error) then
+        return response:status(404):send({error={message=message,status=404}})
+    end
+    local search_result = es:search(clean_params)
+    local rcode = search_result.data.rcode
+    local wrapped_result = {}
+    if (rcode == 200) then
+        wrapped_result = self:wrap_search_result(search_result)
+    else
+        wrapped_result = result.data.data
+    end
+    return wrapped_result
+end
+
+
+function skills:search_validator(params)
+    local clean_data = {}
+    local required_fields = {"q"}
+    local validate_tasks = {
+        {
+            validator = validators.required_fields_validator,
+            condition = required_fields
+        }
+    }
+    validators:add_validate_tasks(validate_tasks, params)
+    local is_params_error, message = validators:get_validate_result()
+    if (not is_params_error) then
+        clean_data = {
+            type = "skills",
+            q = params.q,
+            fields = {"title"},
+            size = tonumber(params.size) or 500,
+            from = tonumber(params.from),
+            sort = params.sort,
+            highlight = tonumber(params.highlight) or 1
+        }
+        if (clean_data.size > 500) then clean_data.size = 500 end
+    end
+    return clean_data, is_params_error, message
+end
+
+
+function skills:wrap_search_result(result)
+    local wrapped_result = {}
+    local rcode = result.data.rcode
+
+    -- 封装返回数据
+    wrapped_result = {
+        timed_out = result.data.data.timed_out,
+        took = result.data.data.took,
+        total = result.data.data.hits.total,
+        status = rcode
+    }
+
+    local hits = {}
+    for i, hit in ipairs(result.data.data.hits.hits) do
+        local work = {}
+        for j, work_link in ipairs(hit._source.works) do
+            work = {
+                access_url = work_link,
+                username = hit._source.username,
+                skill = hit._source.title
+            }
+
+            hits[#hits + 1] = work
+        end
+    end
+    wrapped_result.hits = hits
+    return wrapped_result
+end
+
+
+
+
 -- function skills:api_test()
 --     local params = {
 --         username = "user1",
@@ -347,3 +424,4 @@ end
 --     }
 --     return self:api_getUsersLiked(params)
 -- end
+
