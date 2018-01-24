@@ -34,8 +34,14 @@
        
    </style>
    <div ng-controller="carouselController">
-       <div uib-carousel active="active" interval="imgInterval" no-wrap="noWrapSlides">
-           <div uib-slide ng-repeat="img in imgs track by $index" ng-style="{background: 'url(' + img.text + ')'}" class="carouselImg" index="$index"></div>
-           <div class="displayBar"></div>
-       </div> 
+        <div uib-carousel active="active" interval="imgInterval" no-wrap="noWrapSlides">
+            <div ng-repeat="img in imgs track by $index"
+                 uib-slide
+                 index="$index">
+                <a ng-href="{{img.href}}">
+                    <div class="carouselImg" ng-style="{background: 'url(' + img.text + ')'}"></div>
+                </a>
+            </div>
+            <div class="displayBar"></div>
+        </div> 
    </div>
