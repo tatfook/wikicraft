@@ -9,25 +9,8 @@ define([
 
 			wikiblock.init({
 				scope  : $scope,
-				styles : [
-					{
-						"design": {
-                            "text":"style1",
-                            "cover":""
-						},
-					}
-				],
+				styles : [],
 				params_template : {
-					design:{
-						is_leaf      : true, 
-						type         : "text",   
-						editable     : false, 
-						is_mod_hide  : false,  
-						is_card_show : true,
-						name         : "样式",   
-						text         : "style1", 
-						require      : true, 
-					},
 					url_img:{
 						is_leaf      : true, 
 						type         : "url",   
