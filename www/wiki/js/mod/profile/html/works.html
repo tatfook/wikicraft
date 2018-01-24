@@ -63,12 +63,141 @@
         margin-right: 6px;
         vertical-align: sub;
     }
+
+    .add-modal {
+        font-size: 16px;
+    }
+
+    .add-modal .modal-body {
+        padding: 20px 78px 20px 15px;
+    }
+
+    .add-modal .form-horizontal .control-label {
+        text-align: right;
+    }
+
+    .add-modal .form-group-md {
+        margin-bottom: 20px;
+    }
+
+    .add-modal .form-group-md .control-label {
+        font-size: 16px;
+        font-weight: nor
+    }
+
+    .add-modal .form-group-md .form-control {
+        padding: 10px 11px;
+        height: 42px;
+    }
+
+    .add-modal .modal-footer .btn {
+        font-size: 16px;
+        width: 80px;
+        height: 42px;
+        margin-left: 17px;
+    }
+
+    .add-modal .modal-footer .btn-default {
+        color: #666;
+    }
+
+    .add-modal .preview-zone {
+        width: 160px;
+        height: 120px;
+        background-color: #FAFAFA;
+        border-radius: 5px;
+        border: 1px solid #DCDCDC;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 10px;
+        position: relative;
+    }
+
+    .add-modal .preview-zone>img {
+        position: absolute;
+    }
+
+    .add-modal .preview-zone .preview {}
+
+    .add-modal .icon-add {
+        display: inline-block;
+        width: 32px;
+        height: 32px;
+        background-color: #AFD9FC;
+        color: #FFF;
+        text-align: center;
+        line-height: 26px;
+        font-size: 32px;
+        border-radius: 50%;
+    }
+
+    .add-modal .upload-zone {
+        display: flex;
+        align-items: flex-end;
+    }
+
+    .add-modal .upload-info {
+        margin-bottom: 0;
+        text-align: center;
+        cursor: pointer;
+        position: relative;
+    }
+
+    .add-modal .upload-info>input {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        opacity: 0;
+        cursor: pointer;
+    }
+
+    .add-modal .info {
+        display: block;
+        font-size: 14px;
+        color: #666;
+        margin-top: 10px;
+    }
+
+    .add-modal .result-img-box{
+        position: absolute;
+        width: 100%;
+        height: 100%;
+    }
+    .add-modal .result-img-box > img{
+        width: 100%;
+        height: 100%;
+    }
+    .add-modal .result-img-box::before{
+        content: "";
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        display: none;
+    }
+
+    .add-modal .preview-zone:hover .result-img-box:before{
+        display: block;
+    }
+
+    .add-modal .upload-info.have-img{
+        display: none;
+    }
+
+    .add-modal .preview-zone:hover .upload-info.have-img{
+        display: block;
+    }
+
+    .add-modal .preview-zone:hover .upload-info.have-img .info{
+        color: #FFF;
+    }
 </style>
 <div class="user-works" ng-controller="worksCtrl">
     <h4 class="title">
         我的作品
         <span class="pull-right">
-            <i class="iconfont icon-tianjia"></i>
+            <i class="iconfont icon-tianjia" ng-click="showModal()"></i>
             <i class="iconfont icon-bianji"></i>
         </span>
     </h4>
@@ -97,4 +226,6 @@
             </div>
         </div>
     </div>
+
+    <div class="add-modal modal-parent"></div>
 </div>
