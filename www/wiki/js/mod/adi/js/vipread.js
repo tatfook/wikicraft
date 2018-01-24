@@ -26,7 +26,7 @@ define([
                         text         : "",
                         require      : true,
                         module_kind  : "vip",
-                        desc         : "只限VIP阅读完成内容"
+                        desc         : "本网页内容，仅限VIP用户浏览全部"
                     },
 				}
             });
