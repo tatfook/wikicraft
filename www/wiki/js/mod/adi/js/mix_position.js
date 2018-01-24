@@ -2,11 +2,11 @@ define([
 	'app',
 	'markdown-it',
     'helper/util',
-	'text!wikimod/adi/html/project.html',
+	'text!wikimod/adi/html/mix_position.html',
 ], function (app, markdown_it, util, htmlContent) {
 
     function registerController(wikiblock) {
-        app.registerController("pictureTextController", ['$scope','$sce', function ($scope, $sce) {
+        app.registerController("mixPositionController", ['$scope','$sce', function ($scope, $sce) {
 
 			$scope.editorMode   = wikiblock.editorMode;
 			$scope.stitching    = config.wikiModPath + 'adi/assets/imgs/stitching.png';

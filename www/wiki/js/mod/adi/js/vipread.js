@@ -1,11 +1,11 @@
 define([
     'app',
     'helper/util',
-    'text!wikimod/adi/html/permissions.html',
+    'text!wikimod/adi/html/vipread.html',
 ], function (app, util, htmlContent) {
 
     function registerController(wikiBlock) {
-        app.registerController("permissionsController", ['$scope','$sce', 'Account', 'modal', function ($scope, $sce, Account, modal) {
+        app.registerController("vipreadController", ['$scope','$sce', 'Account', 'modal', function ($scope, $sce, Account, modal) {
             var containerId, container, containerHeight;
 
             $scope.modParams  = wikiBlock.modParams;
@@ -16,7 +16,7 @@ define([
                 scope  : $scope,
 				styles : [],
 				params_template : {
-                    switch_permissions:{
+                    switch_vipread:{
                         is_leaf      : true,
 						type         : "switch",
                         editable     : true,
@@ -34,7 +34,7 @@ define([
             var shield = function () {
                 var mdwiki = config.shareMap["mdwiki"];
                 
-                if(!$scope.params.switch_permissions.is_mod_hide){
+                if(!$scope.params.switch_vipread.is_mod_hide){
                     if($scope.isVip){
                         document.querySelector("#" + wikiBlock.containerId).style.display = "none";
                     }else{
@@ -43,7 +43,7 @@ define([
         
                         var innerElement = container[0];
         
-                        for(var i=4;i < innerElement.childNodes.length; i++){
+                        for(var i=4; i < innerElement.childNodes.length; i++){
                             innerElement.childNodes[i].style.display = "none";
                         }
         
