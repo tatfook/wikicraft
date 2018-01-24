@@ -25,7 +25,7 @@ Desc: validators to validate parameters
 --     },
 --     {
 --         validator = validators.users_existence_validator,
---         condition = nil
+--         condition = models.user:new()
 --     },
 --     {
 --         validator = validators.sensitive_words_validator,
@@ -150,6 +150,7 @@ function validators.sensitive_words_validator(params, fields_to_check)
 end
 
 
+-- errors if user does not exist
 function validators.users_existence_validator(params, user_model_instance)
     if (not params.username) or (not user_model_instance) then
         error("users_existence_validator errors : username and user_model_instance required!")
@@ -166,8 +167,11 @@ function validators.users_existence_validator(params, user_model_instance)
 end
 
 
+-- return errors message while object exists and mode == 1 (default)
+-- return errors message while object not exist and mode == 0
 function validators.existence_validator(params, index_fields_and_model_instance)
     local is_params_error = false
+    local mode = index_fields_and_model_instance.mode or 1
     local message
     local unique_index = ""
     local index_fields = {}
@@ -178,12 +182,16 @@ function validators.existence_validator(params, index_fields_and_model_instance)
     end
     model_instance:db():findOne({[unique_index] = index_fields}, resume)
     local err, result = yield()
-    if (result) then
+    if (result) and (mode == 1) then
         is_params_error = true
         message = model_instance.db_name .. " exist"
+    elseif (not result) and (mode == 0) then
+        is_params_error = true
+        message = model_instance.db_name .. " not exist"
     end
     return is_params_error, message
 end
+
 
 function validators:add_validate_tasks(validate_tasks, params)
     for i, task in ipairs(validate_tasks) do
