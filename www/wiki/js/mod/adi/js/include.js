@@ -44,22 +44,31 @@ define([
 			
 			$scope.setExternalIframeHeight = function(){
 				setTimeout(function(){
-					var iFrame = document.querySelector('#' + $scope.currentIframe);
-
-					if (iFrame) {
-						if($scope.editorMode){
-							var preview = document.querySelector("#preview");
-
-							if(preview){
-								iFrame.style.height = (parseInt(preview.style.height) + 100) + "px";
+				  	var iFrame = document.querySelector('#' + $scope.currentIframe);
+				  	if (iFrame) {
+					var load_finished = false;
+					iFrame.onload = function(){
+					  	if(!load_finished){
+							if($scope.editorMode){
+						  		var preview = document.querySelector("#preview");
+								if(preview){
+									iFrame.style.height = (parseInt(preview.style.height) + 100) + "px";
+						  		}
+							}else{
+						  		iFrame.style.height = (window.screen.height - 310) + "px";
 							}
-						}else{
-							iFrame.style.height = (window.screen.height - 310) + "px";
-						}
-					}
+					  	}else{
+						iFrame.style.height = "50px";
+					  	}
+					}; 
+					
+					setTimeout(function(){
+					  	load_finished = true;
+					}, 10000)
+				  	}
 				}, 0);
 			};
-
+		
 			$scope.setInnerIframeHeight = function(){
 				setTimeout(function(){
 					var iFrame = document.querySelector('#' + $scope.currentIframe);
