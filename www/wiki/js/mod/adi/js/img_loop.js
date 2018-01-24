@@ -124,7 +124,6 @@ define([
                     var displayBar=document.querySelector(".displayBar");
                     displayBar.style.opacity=0;
                 }
-                
             })
             
         }]);
