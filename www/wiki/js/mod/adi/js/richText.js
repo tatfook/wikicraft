@@ -42,7 +42,6 @@ define([
                     }
                 }
             }
-
             
             $scope.success = function(html){
                 $scope.params.modal_rich.data = html;
@@ -52,9 +51,24 @@ define([
             $scope.error = function(msg){
                 console.log(msg);
             };
+
             $scope.richClick = function(){
                 config.services.selfDefinedModal($scope.options, $scope.success, $scope.error);
             }
+
+            $scope.currentRichText = "__RICHTEXT__" + Date.now();
+
+            $scope.$watch("params", function(){
+                $scope.$watch("$viewContentLoaded", function(){
+                    setTimeout(function(){
+                        var richText = document.querySelector('#' + $scope.currentRichText);
+
+                        if(richText){
+                            richText.innerHTML = $scope.params.modal_rich.data;
+                        }
+                    }, 0)
+                });
+            })
         }])
         
 		app.registerController("richEditorController", ['$scope', '$uibModalInstance', 'wikiBlock', function ($scope, $uibModalInstance, wikiBlock) {
