@@ -145,7 +145,8 @@ define([
 				html: true,
 				langPrefix: 'code-'
 			})
-			
+            
+
 			$scope.$watch('params', function(){
 				$scope.multiText_content = md.render($scope.params.multiText_content.text);
 			})
