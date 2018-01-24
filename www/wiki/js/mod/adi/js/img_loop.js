@@ -14,7 +14,7 @@ define([
                     {
                         "design": {
                             "text":"style1",
-                            "cover": "/wiki/js/mod/adi/assets/images/imgCarouselOne.png"
+                            "cover": "/wiki/js/mod/adi/assets/images/thumbnail.png"
                         },
                     },
                 ],
