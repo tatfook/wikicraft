@@ -24,7 +24,7 @@ Desc: validators to validate parameters
 --         condition = fields_length
 --     },
 --     {
---         validator = validators.check_users_existence_validator,
+--         validator = validators.users_existence_validator,
 --         condition = nil
 --     },
 --     {
@@ -165,6 +165,25 @@ function validators.users_existence_validator(params, user_model_instance)
     return is_params_error, message
 end
 
+
+function validators.existence_validator(params, index_fields_and_model_instance)
+    local is_params_error = false
+    local message
+    local unique_index = ""
+    local index_fields = {}
+    local model_instance = index_fields_and_model_instance.model_instance
+    for i, field_name in ipairs(index_fields_and_model_instance.index_fields) do
+        unique_index = unique_index .. "+" .. field_name
+        index_fields[(#index_fields) + 1] = params[field_name]
+    end
+    model_instance:db():findOne({[unique_index] = index_fields}, resume)
+    local err, result = yield()
+    if (result) then
+        is_params_error = true
+        message = model_instance.db_name .. " exist"
+    end
+    return is_params_error, message
+end
 
 function validators:add_validate_tasks(validate_tasks, params)
     for i, task in ipairs(validate_tasks) do

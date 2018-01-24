@@ -44,6 +44,7 @@ function skills:api_insert(params)
         result.usersLiked = nil
         result._id = nil
     end
+    
     return errors:wrap(err, result)
 end
 
@@ -53,6 +54,10 @@ function skills:insert_validator(params)
     local are_they_sensitive_fields = {"title"}
     local fields_length = {username = 30, title = 30}
     local fields_range = {level = {gte = 0, lte = 5}}
+    local index_fields_and_model_instance = {
+        index_fields = {"username", "title"},
+        model_instance = self
+    }
     local user_model_instance = models.user:new()
     local validate_tasks = {
         {
@@ -70,6 +75,9 @@ function skills:insert_validator(params)
         }, {
             validator = validators.number_range_validator,
             condition = fields_range
+        }, {
+            validator = validators.existence_validator,
+            condition = index_fields_and_model_instance
         }
     }
     validators:add_validate_tasks(validate_tasks, params)
@@ -80,9 +88,9 @@ function skills:insert_validator(params)
         clean_data = {
             title = params.title,
             username = params.username,
-            level = params.level
-            -- usersLiked = {},
-            -- likedCount = 0
+            level = params.level,
+            usersLiked = {},
+            likedCount = 0,
         }
     end
 
@@ -424,13 +432,12 @@ end
 
 
 -- function skills:api_test()
---     local params = {
+--     skill = {
 --         username = "user1",
 --         title = "npl",
---         visitor = "visitor1",
 --         level = 5,
 --         works = {}
 --     }
---     return self:api_insert(params)
+--     return self:api_insert(skill)
 -- end
 
