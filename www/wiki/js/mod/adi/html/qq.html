@@ -2,15 +2,17 @@
     .qq .clear-pointer, .clear-pointer a{
         cursor : default !important;
     }
-    
+    .qq .change {
+        position: fixed;
+        z-index: 100;
+    }
     /* style1 css */
     .qq .style1 {
-        /* z-index: 9999; */
         height: 120px;
         width: 100%;
     }
     .qq .style1 .qq-mod {
-        z-index: 10000;
+        z-index: 1000;
         position: fixed;
         right: 10px;
         top: 15%;
@@ -50,12 +52,11 @@
 
     /* style2 css */
     .qq .style2 {
-        /* z-index: 9999; */
         height: 90px;
         width: 100%;
     }
     .qq .style2 .qq-mod {
-        z-index: 10000;
+        z-index: 1000;
         position: fixed;
         top: 15%;
         right: 10px;
@@ -63,9 +64,6 @@
         width: 150px;
         height: 80px;
     }
-    /* .qq .qq-mod .clearfix {
-        clear: both;
-    } */
     .qq .style2 .qq-mod .qq-mod-head {
         float: right;
         height: 20px;
@@ -100,7 +98,7 @@
 <div ng-controller="qqController" ng-class="{true:'clear-pointer'}[editorMode]" class="qq">
 
     <!-- style1 html -->
-    <div ng-if='params.design.text=="style1"' class="style1">
+    <div ng-if='params.design.text=="style1"' class="style1" ng-class="{true:'change'}[!editorMode]">
         <div class="qq-mod" ng-style="topStyle">
             <div class="qq-mod-img" ng-hide="params.media_img.is_mod_hide">
                 <a  ng-if="editorMode"
@@ -134,8 +132,8 @@
     </div>
 
     <!-- style2 html -->
-    <div ng-if='params.design.text=="style2"' class="style2">
-        <div ng-class="{true:'clear-pointer'}[editorMode]" class="qq-mod" ng-style="topStyle">
+    <div ng-if='params.design.text=="style2"' class="style2" ng-class="{true:'change'}[!editorMode]">
+        <div class="qq-mod" ng-style="topStyle">
             <div class="qq-mod-head" ng-hide="params.link_title.is_mod_hide"> 
                 <a  ng-if="editorMode"
                     href="javascript::void(0)"
@@ -149,7 +147,6 @@
                     {{params.link_title.text}}
                 </a>
             </div>  
-            <!-- <div class="clearfix"></div> -->
             <div class="qq-mod-img" ng-hide="params.media_img.is_mod_hide">
                 <a  ng-if="editorMode"
                     href="javascript::void(0)"
