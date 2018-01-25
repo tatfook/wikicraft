@@ -151,29 +151,42 @@ define([
             // }
 
 
-            var setHeightInterval = setInterval(function(params){
-                var miximg = document.querySelector('#' + $scope.imgHeight);
-                var mixdiv = document.querySelector('#' + $scope.divHeight);
-                if($scope.params.multiText_content.text.length > mixDesc.length){
-                    if(miximg.offsetHeight < 1739){
-                        miximg.style.height = mixdiv.offsetHeight + 'px';
-                    }else{
-                        mixdiv.style.marginTop = 700 + 'px';
-                        miximg.style.height    = 694 + 'px';
-                    }
-                }
-            }, 100); 
+            // var setHeightInterval = setInterval(function(params){
+                
+            // }, 100); 
 
 			$scope.$watch('params', function(){
                 $scope.multiText_content = md.render($scope.params.multiText_content.text);
             })
             
-            // if($scope.params.multiText_content.text.length > mixDesc.length){
-            //     $scope.$watch("$viewContentLoaded", $scope.mixImgHeight);
-            // }
-
             $scope.imgHeight = "__MIXIMG__" + Date.now();
             $scope.divHeight = "__MIXDIV__" + Date.now();
+
+            console.log('#' + $scope.imgHeight);
+
+            $scope.$watch("$viewContentLoaded", function(){
+                setTimeout(function(){
+                    var miximg = document.querySelector('#' + $scope.imgHeight);
+                    var mixdiv = document.querySelector('#' + $scope.divHeight);
+
+                    console.log(mixdiv.offsetHeight);
+                    console.log(miximg.offsetHeight);
+
+                    if(mixdiv.offsetHeight > 649 && mixdiv.offsetHeight < 1739){
+                        miximg.style.height = mixdiv.offsetHeight + 'px';
+                    }
+
+                    if(mixdiv.offsetHeight > 1739){
+                        mixdiv.style.marginTop = 700 + 'px';
+                        miximg.style.height    = 694 + 'px';
+                    }
+                }, 0)
+            })
+            
+
+            // if($scope.params.multiText_content.text.length > mixDesc.length){
+            //     $scope.$watch("$viewContentLoaded", $scope.mixImgHeight);
+            // }            
         }]);
     }
 
