@@ -17,9 +17,12 @@
         background-position: center;
     }
     .mix-layer .style1 .mix-div{
+        /* width: 100%;
+        height: 694px; */
         float: left;
         text-align: left;
         margin-left: 60px;
+        margin-right: 60px;
     }
     .mix-layer .style1 .mix-div > h2{
         font-size: 32px;
@@ -37,8 +40,10 @@
         display: block;
         word-wrap: break-word;
         white-space: pre-wrap;
-        width: 545px;
+        /* width: 545px;
         height: 350px;
+        overflow: hidden; */
+        width: 100%;
         overflow: hidden;
     }
     .mix-layer .style1 .mix-div > span a{
@@ -374,7 +379,7 @@
 
     <!-- style1 html -->
     <div ng-if='params.design.text=="style1"' class="style1 clearfix container">
-        <div class="mix-div">
+        <div class="mix-div" id="{{divHeight}}">
             <h2 ng-class="{true:'mix-a-color'}[params.media_img.is_mod_hide]">
                 <a ng-if="editorMode"
                    ng-hide="params.link_title.is_mod_hide"
@@ -395,14 +400,14 @@
                    ng-hide="params.link_subtitle.is_mod_hide"
                    ng-click="viewEditorClick(params.link_subtitle, $event)"
                    href="javascript::void(0)">
-                    {{params.link_subtitle.text}}
+                        {{params.link_subtitle.text}}
                 </a>
                 <a ng-if="!editorMode"
                    ng-hide="params.link_subtitle.is_mod_hide"
                    ng-class="{true : 'mix-clear-pointer'}[params.link_subtitle.href.length == 0]"
                    target="{{params.link_subtitle.target ? params.link_subtitle.target : '_blank'}}"
                    ng-href="{{params.link_subtitle.href}}">
-                    {{params.link_subtitle.text}}
+                        {{params.link_subtitle.text}}
                 </a>
             </h3>
             <span ng-class="{true:'mix-a-color'}[params.media_img.is_mod_hide]">
@@ -423,7 +428,7 @@
            ng-hide="params.media_img.is_mod_hide"
            ng-click="viewEditorClick(params.media_img, $event)"
            href="javascript::void(0)">
-            <div ng-style="mixLaer" class="mix-img">
+            <div ng-style="mixLaer" id="{{imgHeight}}" class="mix-img">
             </div>  
         </a>
         <a ng-if="!editorMode"
@@ -431,11 +436,10 @@
            ng-class="{true : 'mix-clear-pointer'}[params.media_img.href.length == 0]"
            target="{{params.media_img.target ? params.media_img.target : '_blank'}}"
            ng-href="{{params.media_img.href}}">
-            <div ng-style="mixLaer" class="mix-img">
+            <div ng-style="mixLaer" id="{{imgHeight}}" class="mix-img">
             </div>  
         </a>  
     </div>
-
 
 
     <!-- style2 html -->    
