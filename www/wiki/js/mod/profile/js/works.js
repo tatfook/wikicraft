@@ -2,7 +2,7 @@
  * @Author: ZhangKaitlyn 
  * @Date: 2018-01-19
  * @Last Modified by: none
- * @Last Modified time: 2018-01-25 17:46:33
+ * @Last Modified time: 2018-01-25 21:52:26
  */
 define([
     'app', 
@@ -126,10 +126,6 @@ define([
                 {
                     'key': 'workLink',
                     'value': '作品链接'
-                },
-                {
-                    'key': 'desc',
-                    'value': '作品简介'
                 }];
                 var requiredResult = isRequiredEmptyAttr(requiredAttrs); 
                 if (requiredResult.boolResult) {
