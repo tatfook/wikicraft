@@ -2,17 +2,21 @@
  * @Author: ZhangKaitlyn 
  * @Date: 2018-01-19
  * @Last Modified by: none
- * @Last Modified time: 2018-01-24 19:31:45
+ * @Last Modified time: 2018-01-25 17:46:33
  */
 define([
     'app', 
     'helper/util',
+    'helper/mdconf',
     'text!wikimod/profile/html/works.html',
     'text!wikimod/profile/html/modalTemplate/addWorkModal.html',
     'cropper'
-], function (app, util, htmlContent, addWorkModalHtmlContent) {
+], function (app, util, mdconf, htmlContent, addWorkModalHtmlContent) {
     function registerController(wikiBlock) {
-        app.registerController("worksCtrl", ['$scope','$uibModal', function ($scope, $uibModal) {
+        app.registerController("worksCtrl", ['$rootScope', '$scope','$uibModal', function ($rootScope, $scope, $uibModal) {
+            const modCmd = "```@profile/js/works";
+            var thisInBlockIndex;
+            var thisContainerId;
 			wikiBlock.init({
 				scope:$scope,
 				params_template:{
@@ -33,7 +37,24 @@ define([
                 }
             });
 
-            $scope.works = $scope.params.works;
+            $scope.works = Array.from($scope.params.works);
+
+            // 获取当前模块的index和containerId
+            var getBlockIndex = function(){
+                if (thisInBlockIndex >= 0) {
+                    return thisInBlockIndex;
+                }
+                var blockList = wikiBlock.blockList;
+                for(var i = 0; i<blockList.length; i++){
+                    var modReg = new RegExp(modCmd);
+                    if (modReg.test(blockList[i].content)) {
+                        break;
+                    }
+                }
+                thisInBlockIndex = i;
+                thisContainerId = blockList[i].blockCache.containerId;
+                return i;
+            }
 
             $scope.showModal = function(){
                 $uibModal.open({
@@ -42,9 +63,17 @@ define([
                     appendTo: $(".user-works .modal-parent"),
                     scope: $scope
                 }).result.then(function(result){
-                    console.log(result);
+                    $scope.works.push(result);
+                    var newItemObj = {
+                        index: getBlockIndex(),
+                        containerId: thisContainerId,
+                        content: modCmd + "\n" + mdconf.jsonToMd({
+                            "works": $scope.works
+                        }) + "\n```\n"
+                    }
+                    console.log(newItemObj.content);
+                    $rootScope.$broadcast("changeProfileMd", newItemObj);
                 }, function(){
-                    console.log("22222");
                 });
             }
         }]);
@@ -71,6 +100,43 @@ define([
                 context.drawImage(sourceCanvas, 0, 0, width, height);
 
                 return canvas;
+            }
+
+            var isRequiredEmptyAttr = function(attrNames){
+                attrNames = attrNames || [];
+                for(var i = 0;i < attrNames.length;i++){
+                    if ($scope.addingWork[attrNames[i].key] && $scope.addingWork[attrNames[i].key].length > 0) {
+                        continue;
+                    }else{
+                        break;
+                    }
+                }
+                return {
+                    'boolResult':(i < attrNames.length),
+                    'attr': attrNames[i] && attrNames[i].value
+                };
+            }
+
+            $scope.submitAddingWork = function(){
+                $scope.errMsg = "";
+                var requiredAttrs = [{
+                    'key': 'title',
+                    'value': '作品名'
+                },
+                {
+                    'key': 'workLink',
+                    'value': '作品链接'
+                },
+                {
+                    'key': 'desc',
+                    'value': '作品简介'
+                }];
+                var requiredResult = isRequiredEmptyAttr(requiredAttrs); 
+                if (requiredResult.boolResult) {
+                    $scope.errMsg = requiredResult.attr + "不可为空";
+                    return;
+                }
+                $uibModalInstance.close($scope.addingWork);
             }
 
             $scope.cropperImage = function(e){

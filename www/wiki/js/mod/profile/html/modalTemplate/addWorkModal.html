@@ -28,25 +28,26 @@
             <div class="form-group form-group-md">
                 <label for="inputName" class="col-sm-3 control-label">作品名：</label>
                 <div class="col-sm-9">
-                    <input type="text" class="form-control" id="inputName">
+                    <input type="text" class="form-control" ng-model="addingWork.title" id="inputName">
                 </div>
             </div>
             <div class="form-group form-group-md">
                 <label for="inputLink" class="col-sm-3 control-label">作品链接：</label>
                 <div class="col-sm-9">
-                    <input type="text" class="form-control" id="inputLink" ng-model="addingWork.link">
+                    <input type="text" class="form-control" id="inputLink" ng-model="addingWork.workLink">
                 </div>
             </div>
             <div class="form-group form-group-md">
                 <label for="inputDesc" class="col-sm-3 control-label">作品简介：</label>
                 <div class="col-sm-9">
-                    <input type="text" class="form-control" id="inputDesc">
+                    <input type="text" class="form-control" ng-model="addingWork.desc" id="inputDesc">
                 </div>
             </div>
         </form>
     </div>
     <div class="modal-footer">
-        <button type="button" class="btn btn-primary">添加</button>
+        <span class="text-danger">{{errMsg}}</span>
+        <button type="button" class="btn btn-primary" ng-click="submitAddingWork()">添加</button>
         <button type="button" class="btn btn-default" ng-click="cancel()">取消</button>
     </div>
 </div>
