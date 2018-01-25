@@ -4,7 +4,7 @@ define([
     'text!wikimod/adi/html/include.html',
 ], function (app, util, htmlContent) {
     function registerController(wikiblock) {
-        app.registerController("includeController", ['$scope','$sce', function ($scope, $sce) {
+        app.registerController("includeController", ['$scope','$sce', '$http', function ($scope, $sce, $http) {
 			$scope.editorMode = wikiblock.editorMode;
 
 			wikiblock.init({
@@ -29,30 +29,24 @@ define([
 				setTimeout(function(){
 				  	var iFrame = document.querySelector('#' + $scope.currentIframe);
 				  	if (iFrame) {
-						var load_finished = false;
-
-						iFrame.onload = function(){
-							if(!load_finished){
-								load_finished=true;
-
-								if($scope.editorMode){
-									var preview = document.querySelector("#preview");
-
-									if(preview){
-										iFrame.style.height = (parseInt(preview.style.height) + 100) + "px";
-									}
+						$http({
+							method: 'POST',
+							url: '/api/wiki/models/page_code/',
+							params: {
+								"url" : $scope.params.url_img.href,
+							}
+						}).then(function successCallback(response) {
+								// 请求成功执行代码
+								$scope.codesun=response.data;
+								if($scope.codesun.data.code==200){
+									iFrame.style.height = (window.screen.height - 210) + "px";
 								}else{
-									iFrame.style.height = window.screen.height + "px";
+									iFrame.style.height = 50 + "px";
 								}
-							}
-						}; 
-						
-						setTimeout(function(){ 
-							if(!load_finished){
-								iFrame.style.height = "50px";
-								load_finished = true;
-							}
-						}, 25000)
+							}, function errorCallback(response) {
+								// 请求失败执行代码
+								
+						});
 				  	}
 				}, 0);
 			};
