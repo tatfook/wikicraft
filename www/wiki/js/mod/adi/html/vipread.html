@@ -8,10 +8,17 @@
         background-color: #FFF;
         box-shadow: 1px -1px 10px #b5b5b5;
         height: 80px;
-        line-height: 80px;
         text-align: center;
         font-size: 18px;
+        line-height: 30px;
+        padding-top: 10px;
         z-index: 1;
+    }
+    .vip-more-permission .switch-notice{
+        font-size: 17px;
+    }
+    .vip-more-permission .switch-notice span{
+        font-size: 20px;
     }
     .vip-more-permission .fa-lock{
         border: 1px solid;
@@ -28,9 +35,9 @@
         <p ng-show="!editorMode">
             <a ng-show="!isVip" href="/wiki/vip"><span class="fa fa-lock"></span>成为VIP，才能查看更多</a>
         </p>
-        <p ng-show="editorMode">
-            <span class="fa fa-lock"></span>
-            本网页内容，仅限VIP用户浏览全部
+        <p ng-show="editorMode" class="switch-notice">
+            <!-- <span class="fa fa-lock"></span> -->
+            本网页内容，仅限VIP用户浏览全部 <br />
             <span ng-if="params.switch_vipread.is_mod_hide">（关闭）</span>
             <span ng-if="!params.switch_vipread.is_mod_hide">（开启）</span>
         </p>
