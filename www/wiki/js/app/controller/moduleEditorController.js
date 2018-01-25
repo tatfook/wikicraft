@@ -32,6 +32,7 @@ define([
         var fakeIconDom = [];
         $scope.filelist = [];
         $scope.linkFilter = "";
+        $scope.hasStyle = false;
 
         var getFileList = function(){
             var username = $scope.user.username;
@@ -491,6 +492,12 @@ define([
             }
 
 			moduleEditorParams.setEditorObj = function(obj) {
+                if(config.shareMap.moduleEditorParams.wikiBlock.styles.length > 0){
+                    $scope.hasStyle = true;
+                }else{
+                    $scope.hasStyle = false;
+                }
+
                 // setFakeIconPosition();
                 moduleEditorParams = config.shareMap.moduleEditorParams || {};
                 
