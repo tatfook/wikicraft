@@ -40,14 +40,13 @@ define([
 							}else{
 						  		iFrame.style.height = (window.screen.height - 310) + "px";
 							}
-					  	}else{
-						iFrame.style.height = "50px";
 					  	}
 					}; 
 					
 					setTimeout(function(){
-					  	load_finished = true;
-					}, 10000)
+						  load_finished = true;
+						  iFrame.style.height = "50px";
+					}, 20000)
 				  	}
 				}, 0);
 			};
