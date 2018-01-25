@@ -29,24 +29,30 @@ define([
 				setTimeout(function(){
 				  	var iFrame = document.querySelector('#' + $scope.currentIframe);
 				  	if (iFrame) {
-					var load_finished = false;
-					iFrame.onload = function(){
-					  	if(!load_finished){
-							if($scope.editorMode){
-						  		var preview = document.querySelector("#preview");
-								if(preview){
-									iFrame.style.height = (parseInt(preview.style.height) + 100) + "px";
-						  		}
-							}else{
-						  		iFrame.style.height = (window.screen.height - 310) + "px";
+						var load_finished = false;
+
+						iFrame.onload = function(){
+							if(!load_finished){
+								load_finished=true;
+
+								if($scope.editorMode){
+									var preview = document.querySelector("#preview");
+
+									if(preview){
+										iFrame.style.height = (parseInt(preview.style.height) + 100) + "px";
+									}
+								}else{
+									iFrame.style.height = window.screen.height + "px";
+								}
 							}
-					  	}
-					}; 
-					
-					setTimeout(function(){
-						  load_finished = true;
-						  iFrame.style.height = "50px";
-					}, 20000)
+						}; 
+						
+						setTimeout(function(){ 
+							if(!load_finished){
+								iFrame.style.height = "50px";
+								load_finished = true;
+							}
+						}, 25000)
 				  	}
 				}, 0);
 			};
