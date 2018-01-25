@@ -78,6 +78,8 @@ define([
 			if($scope.params.url_img.href.length > 4){
 				if($scope.params.url_img.href.indexOf(config.hostname) > 0){
 					$scope.$watch("$viewContentLoaded", $scope.setInnerIframeHeight);
+				}else if($scope.params.url_img.href.indexOf("http://")==-1 && $scope.params.url_img.href.indexOf("https://") ==-1){
+					$scope.$watch("$viewContentLoaded", $scope.setInnerIframeHeight);
 				}else{
 					$scope.$watch("$viewContentLoaded", $scope.setExternalIframeHeight);
 				}
