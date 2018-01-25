@@ -78,27 +78,24 @@ function elasticsearch:updateOne(params)
 end
 
 
--- can only find by single field(like id or access_url)
+-- can only find by single field(like id or any other keyword field)
 function elasticsearch:findOne(params)
-    if params.id then
-        params._id = params.id
-        params.id = nil
-    end
-    
+    local term = {_id = params.id}
+    params.id = nil
+
     local location = self:locator(params)
     local search_in = location.. "_search"
     params.type = nil
 
-    if params.access_url then
-        params["access_url.keyword"] = params.access_url
-        params.access_url = nil
+    for k, v in pairs(params) do
+        if (not term._id) then term[format("%s.keyword", k)] = v end
     end
 
     local body = {
         query = {
             constant_score = { 
                 filter = {
-                    term = params
+                    term = term
                 }
             }
         }
@@ -215,7 +212,8 @@ function elasticsearch:sendToES(params)
         info.method = nil
     else
         if (info.method == "POST") then
-            -- 因es不能接受空JSON对象将空表{}转为JSON中的空数组[]
+
+            -- send empty table as an array
             info.postfields = commonlib.Json.Encode(info.form, true)
         end
     end
@@ -223,7 +221,6 @@ function elasticsearch:sendToES(params)
     System.os.GetUrl(info, resume)
     local err, result = yield()
 
-    -- 若返回错误，则记录
     self:errors_logger(err, result, info)
     return errors:wrap(err, result)
 end
