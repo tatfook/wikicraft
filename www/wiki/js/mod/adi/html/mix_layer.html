@@ -17,8 +17,6 @@
         background-position: center;
     }
     .mix-layer .style1 .mix-div{
-        /* width: 100%;
-        height: 694px; */
         float: left;
         text-align: left;
         margin-left: 60px;
@@ -40,9 +38,6 @@
         display: block;
         word-wrap: break-word;
         white-space: pre-wrap;
-        /* width: 545px;
-        height: 350px;
-        overflow: hidden; */
         width: 100%;
         overflow: hidden;
     }
@@ -81,9 +76,6 @@
         display: block;
         word-wrap: break-word;
         white-space: pre-wrap;
-        margin: 0 auto;
-        width: 545px;
-        height: 350px;
         overflow: hidden;
     }
     .mix-layer .style2 .mix-div > span a{
@@ -104,6 +96,7 @@
         float: right;
         text-align: right;
         margin-right: 60px;
+        margin-left: 60px;
     }
     .mix-layer .style3 .mix-div > h2{
         font-size: 32px;
@@ -121,8 +114,6 @@
         display: block;
         word-wrap: break-word;
         white-space: pre-wrap;
-        width: 545px;
-        height: 350px;
         overflow: hidden;
     }
     .mix-layer .style3 .mix-div > span a{
@@ -143,6 +134,7 @@
         float: left;
         text-align: left;
         margin-left: 60px;
+        margin-right: 60px;
     }
     .mix-layer .style4 .mix-div > h2{
         font-size: 32px;
@@ -160,8 +152,6 @@
         display: block;
         word-wrap:break-word;
         white-space: pre-wrap;
-        width: 545px;
-        height: 350px;
         overflow: hidden;
     }
     .mix-layer .style4 .mix-div > span a{
@@ -171,10 +161,6 @@
     /* style5 css */
      .mix-layer .style5 a{
         color: rgb(255, 255, 255);
-    }
-    .mix-layer .style5{
-        width: 100%;
-        height: 694px;
     }
     .mix-layer .style5 .mix-img{
         width: 100%;
@@ -203,10 +189,9 @@
         display: block;
         word-wrap:break-word;
         white-space: pre-wrap;
-        width: 545px;
-        height: 350px;
-        margin: 0 auto;
         overflow: hidden;
+        margin-right: 60px;
+        margin-left: 60px;
     }
     .mix-layer .style5 .mix-div > span a{
         font-size: 16px;
@@ -226,6 +211,7 @@
         float: right;
         text-align: right;
         margin-right: 60px;
+        margin-left: 60px;
     }
     .mix-layer .style6 .mix-div > h2{
         font-size: 32px;
@@ -243,8 +229,6 @@
         display: block;
         word-wrap:break-word;
         white-space: pre-wrap;
-        width: 545px;
-        height: 350px;
         overflow: hidden;
     }
     .mix-layer .style6 .mix-div > span a{
@@ -265,6 +249,7 @@
         float: left;
         text-align: left;
         margin-left: 60px;
+        margin-right: 60px;
     }
     .mix-layer .style7 .mix-div > h2{
         font-size: 32px;
@@ -282,8 +267,6 @@
         display: block;
         word-wrap:break-word;
         white-space: pre-wrap;
-        width: 545px;
-        height: 350px;
         overflow: hidden;
     }
     .mix-layer .style7 .mix-div > span a{
@@ -296,7 +279,6 @@
     }
     .mix-layer .style8 .mix{
         width: 100%;
-        height: 694px;
     }
     .mix-layer .style8 .mix .mix-img{
         width: 100%;
@@ -325,10 +307,7 @@
         display: block;
         word-wrap:break-word;
         white-space: pre-wrap;
-        width: 545px;
-        height: 350px;
         overflow: hidden;
-        margin: 0 auto;
     }
     .mix-layer .style8 .mix .mix-div > span a{
         font-size: 16px;
@@ -348,6 +327,7 @@
         float: right;
         text-align: right;
         margin-right: 60px;
+        margin-left: 60px;
     }
     .mix-layer .style9 .mix-div > h2{
         font-size: 32px;
@@ -365,8 +345,6 @@
         display: block;
         word-wrap:break-word;
         white-space: pre-wrap;
-        width: 545px;
-        height: 350px;
         overflow: hidden;
     }
     .mix-layer .style9 .mix-div > span a{
@@ -384,6 +362,7 @@
                 <a ng-if="editorMode"
                    ng-hide="params.link_title.is_mod_hide"
                    ng-click="viewEditorClick(params.link_title, $event)"
+                   ng-style="mixFontColor"
                    href="javascript::void(0)">
                     {{params.link_title.text}}
                 </a>
@@ -391,6 +370,7 @@
                    ng-hide="params.link_title.is_mod_hide"
                    ng-class="{true : 'mix-clear-pointer'}[params.link_title.href.length == 0]"
                    target="{{params.link_title.target ? params.link_title.target : '_blank'}}"
+                   ng-style="mixFontColor"
                    ng-href="{{params.link_title.href}}">
                     {{params.link_title.text}}
                 </a>
@@ -399,6 +379,7 @@
                 <a ng-if="editorMode"
                    ng-hide="params.link_subtitle.is_mod_hide"
                    ng-click="viewEditorClick(params.link_subtitle, $event)"
+                   ng-style="mixFontColor"
                    href="javascript::void(0)">
                         {{params.link_subtitle.text}}
                 </a>
@@ -406,6 +387,7 @@
                    ng-hide="params.link_subtitle.is_mod_hide"
                    ng-class="{true : 'mix-clear-pointer'}[params.link_subtitle.href.length == 0]"
                    target="{{params.link_subtitle.target ? params.link_subtitle.target : '_blank'}}"
+                   ng-style="mixFontColor"
                    ng-href="{{params.link_subtitle.href}}">
                         {{params.link_subtitle.text}}
                 </a>
@@ -415,11 +397,13 @@
                    ng-hide="params.multiText_content.is_mod_hide"
                    ng-click="viewEditorClick(params.multiText_content, $event)"
                    href="javascript::void(0)"
+                   ng-style="mixFontColor"
                    ng-bind-html="multiText_content"></a>
                 <a ng-if="!editorMode"
                    ng-hide="params.multiText_content.is_mod_hide"
                    target="{{params.multiText_content.target ? params.multiText_content.target : '_blank'}}"
                    ng-href="{{params.multiText_content.href}}"
+                   ng-style="mixFontColor"
                    ng-class="{true : 'mix-clear-pointer'}[params.multiText_content.href.length == 0]"
                    ng-bind-html="multiText_content"></a>
             </span>
@@ -444,16 +428,18 @@
 
     <!-- style2 html -->    
         <div ng-if='params.design.text=="style2"' class="style2 clearfix container">
-            <div class="mix-div">
+            <div class="mix-div" id="{{divHeight}}">
                 <h2 ng-class="{true:'mix-a-color'}[params.media_img.is_mod_hide]">
                     <a ng-if="editorMode"
                        ng-hide="params.link_title.is_mod_hide"
+                       ng-style="mixFontColor"
                        ng-click="viewEditorClick(params.link_title, $event)"
                        href="javascript::void(0)">
                         {{params.link_title.text}}
                     </a>
                     <a ng-if="!editorMode"
                        ng-hide="params.link_title.is_mod_hide"
+                       ng-style="mixFontColor"
                        ng-class="{true : 'mix-clear-pointer'}[params.link_title.href.length == 0]"
                        target="{{params.link_title.target ? params.link_title.target : '_blank'}}"
                        ng-href="{{params.link_title.href}}">
@@ -463,12 +449,14 @@
                 <h3 ng-class="{true:'mix-a-color'}[params.media_img.is_mod_hide]">
                     <a ng-if="editorMode"
                        ng-hide="params.link_subtitle.is_mod_hide"
+                       ng-style="mixFontColor"
                        ng-click="viewEditorClick(params.link_subtitle, $event)"
                        href="javascript::void(0)">
                         {{params.link_subtitle.text}}
                     </a>
                     <a ng-if="!editorMode"
                        ng-hide="params.link_subtitle.is_mod_hide"
+                       ng-style="mixFontColor"
                        ng-class="{true : 'mix-clear-pointer'}[params.link_subtitle.href.length == 0]"
                        target="{{params.link_subtitle.target ? params.link_subtitle.target : '_blank'}}"
                        ng-href="{{params.link_subtitle.href}}">
@@ -478,6 +466,7 @@
                 <span ng-class="{true:'mix-a-color'}[params.media_img.is_mod_hide]">
                     <a ng-if="editorMode"
                        ng-hide="params.multiText_content.is_mod_hide"
+                       ng-style="mixFontColor"
                        ng-click="viewEditorClick(params.multiText_content, $event)"
                        href="javascript::void(0)"
                        ng-bind-html="multiText_content"></a>
@@ -485,6 +474,7 @@
                        ng-hide="params.multiText_content.is_mod_hide"
                        target="{{params.multiText_content.target ? params.multiText_content.target : '_blank'}}"
                        ng-href="{{params.multiText_content.href}}"
+                       ng-style="mixFontColor"
                        ng-class="{true : 'mix-clear-pointer'}[params.multiText_content.href.length == 0]"
                        ng-bind-html="multiText_content"></a>
                 </span>
@@ -493,7 +483,7 @@
                ng-hide="params.media_img.is_mod_hide"
                ng-click="viewEditorClick(params.media_img, $event)"
                href="javascript::void(0)">
-                <div ng-style="mixLaer" class="mix-img">
+                <div ng-style="mixLaer" id="{{imgHeight}}" class="mix-img">
                 </div>  
             </a>
             <a ng-if="!editorMode"
@@ -501,7 +491,7 @@
                ng-class="{true : 'mix-clear-pointer'}[params.media_img.href.length == 0]"
                target="{{params.media_img.target ? params.media_img.target : '_blank'}}"
                ng-href="{{params.media_img.href}}">
-                <div ng-style="mixLaer" class="mix-img">
+                <div ng-style="mixLaer" id="{{imgHeight}}" class="mix-img">
                 </div>  
             </a>  
         </div>
@@ -510,16 +500,18 @@
 
     <!-- style3 html -->
     <div ng-if='params.design.text=="style3"' class="style3 clearfix container">
-        <div class="mix-div">
+        <div class="mix-div" id="{{divHeight}}">
             <h2 ng-class="{true:'mix-a-color'}[params.media_img.is_mod_hide]">
                 <a ng-if="editorMode"
                    ng-hide="params.link_title.is_mod_hide"
+                   ng-style="mixFontColor"
                    ng-click="viewEditorClick(params.link_title, $event)"
                    href="javascript::void(0)">
                     {{params.link_title.text}}
                 </a>
                 <a ng-if="!editorMode"
                    ng-hide="params.link_title.is_mod_hide"
+                   ng-style="mixFontColor"
                    ng-class="{true : 'mix-clear-pointer'}[params.link_title.href.length == 0]"
                    target="{{params.link_title.target ? params.link_title.target : '_blank'}}"
                    ng-href="{{params.link_title.href}}">
@@ -528,6 +520,7 @@
             </h2>
             <h3 ng-class="{true:'mix-a-color'}[params.media_img.is_mod_hide]">
                 <a ng-if="editorMode"
+                   ng-style="mixFontColor"
                    ng-hide="params.link_subtitle.is_mod_hide"
                    ng-click="viewEditorClick(params.link_subtitle, $event)"
                    href="javascript::void(0)">
@@ -535,6 +528,7 @@
                 </a>
                 <a ng-if="!editorMode"
                    ng-hide="params.link_subtitle.is_mod_hide"
+                   ng-style="mixFontColor"
                    ng-class="{true : 'mix-clear-pointer'}[params.link_subtitle.href.length == 0]"
                    target="{{params.link_subtitle.target ? params.link_subtitle.target : '_blank'}}"
                    ng-href="{{params.link_subtitle.href}}">
@@ -544,11 +538,13 @@
             <span ng-class="{true:'mix-a-color'}[params.media_img.is_mod_hide]">
                 <a ng-if="editorMode"
                    ng-hide="params.multiText_content.is_mod_hide"
+                   ng-style="mixFontColor"
                    ng-click="viewEditorClick(params.multiText_content, $event)"
                    href="javascript::void(0)"
                    ng-bind-html="multiText_content"></a>
                 <a ng-if="!editorMode"
                    ng-hide="params.multiText_content.is_mod_hide"
+                   ng-style="mixFontColor"
                    target="{{params.multiText_content.target ? params.multiText_content.target : '_blank'}}"
                    ng-href="{{params.multiText_content.href}}"
                    ng-class="{true : 'mix-clear-pointer'}[params.multiText_content.href.length == 0]"
@@ -559,7 +555,7 @@
            ng-hide="params.media_img.is_mod_hide"
            ng-click="viewEditorClick(params.media_img, $event)"
            href="javascript::void(0)">
-            <div ng-style="mixLaer" class="mix-img">
+            <div ng-style="mixLaer" id="{{imgHeight}}" class="mix-img">
             </div>  
         </a>
         <a ng-if="!editorMode"
@@ -567,7 +563,7 @@
            ng-class="{true : 'mix-clear-pointer'}[params.media_img.href.length == 0]"
            target="{{params.media_img.target ? params.media_img.target : '_blank'}}"
            ng-href="{{params.media_img.href}}">
-            <div ng-style="mixLaer" class="mix-img">
+            <div ng-style="mixLaer" id="{{imgHeight}}" class="mix-img">
             </div>  
         </a>  
     </div>
@@ -576,11 +572,12 @@
 
     <!-- style4 html -->
     <div ng-if='params.design.text=="style4"' class="style4 clearfix container">
-        <div class="mix-div">
+        <div class="mix-div" id="{{divHeight}}">
             <h2 ng-class="{true:'mix-a-color'}[params.media_img.is_mod_hide]">
                 <a ng-if="editorMode"
                    ng-hide="params.link_title.is_mod_hide"
                    ng-click="viewEditorClick(params.link_title, $event)"
+                   ng-style="mixFontColor"
                    href="javascript::void(0)">
                     {{params.link_title.text}}
                 </a>
@@ -588,6 +585,7 @@
                    ng-hide="params.link_title.is_mod_hide"
                    ng-class="{true : 'mix-clear-pointer'}[params.link_title.href.length == 0]"
                    target="{{params.link_title.target ? params.link_title.target : '_blank'}}"
+                   ng-style="mixFontColor"
                    ng-href="{{params.link_title.href}}">
                     {{params.link_title.text}}
                 </a>
@@ -596,6 +594,7 @@
                 <a ng-if="editorMode"
                    ng-hide="params.link_subtitle.is_mod_hide"
                    ng-click="viewEditorClick(params.link_subtitle, $event)"
+                   ng-style="mixFontColor"
                    href="javascript::void(0)">
                     {{params.link_subtitle.text}}
                 </a>
@@ -603,6 +602,7 @@
                    ng-hide="params.link_subtitle.is_mod_hide"
                    ng-class="{true : 'mix-clear-pointer'}[params.link_subtitle.href.length == 0]"
                    target="{{params.link_subtitle.target ? params.link_subtitle.target : '_blank'}}"
+                   ng-style="mixFontColor"
                    ng-href="{{params.link_subtitle.href}}">
                     {{params.link_subtitle.text}}
                 </a>
@@ -611,11 +611,13 @@
                 <a ng-if="editorMode"
                    ng-hide="params.multiText_content.is_mod_hide"
                    ng-click="viewEditorClick(params.multiText_content, $event)"
+                   ng-style="mixFontColor"
                    href="javascript::void(0)"
                    ng-bind-html="multiText_content"></a>
                 <a ng-if="!editorMode"
                    ng-hide="params.multiText_content.is_mod_hide"
                    target="{{params.multiText_content.target ? params.multiText_content.target : '_blank'}}"
+                   ng-style="mixFontColor"
                    ng-href="{{params.multiText_content.href}}"
                    ng-class="{true : 'mix-clear-pointer'}[params.multiText_content.href.length == 0]"
                    ng-bind-html="multiText_content"></a>
@@ -625,7 +627,7 @@
            ng-hide="params.media_img.is_mod_hide"
            ng-click="viewEditorClick(params.media_img, $event)"
            href="javascript::void(0)">
-            <div ng-style="mixLaer" class="mix-img">
+            <div ng-style="mixLaer" id="{{imgHeight}}" class="mix-img">
             </div>  
         </a>
         <a ng-if="!editorMode"
@@ -633,7 +635,7 @@
            ng-class="{true : 'mix-clear-pointer'}[params.media_img.href.length == 0]"
            target="{{params.media_img.target ? params.media_img.target : '_blank'}}"
            ng-href="{{params.media_img.href}}">
-            <div ng-style="mixLaer" class="mix-img">
+            <div ng-style="mixLaer" id="{{imgHeight}}" class="mix-img">
             </div>  
         </a>  
     </div>
@@ -641,10 +643,11 @@
 
     <!-- style5 html -->
     <div ng-if='params.design.text=="style5"' class="style5 clearfix container">
-        <div class="mix-div">
+        <div class="mix-div" id="{{divHeight}}">
             <h2 ng-class="{true:'mix-a-color'}[params.media_img.is_mod_hide]">
                 <a ng-if="editorMode"
                    ng-hide="params.link_title.is_mod_hide"
+                   ng-style="mixFontColor"
                    ng-click="viewEditorClick(params.link_title, $event)"
                    href="javascript::void(0)">
                     {{params.link_title.text}}
@@ -652,6 +655,7 @@
                 <a ng-if="!editorMode"
                    ng-hide="params.link_title.is_mod_hide"
                    ng-class="{true : 'mix-clear-pointer'}[params.link_title.href.length == 0]"
+                   ng-style="mixFontColor"
                    target="{{params.link_title.target ? params.link_title.target : '_blank'}}"
                    ng-href="{{params.link_title.href}}">
                     {{params.link_title.text}}
@@ -660,12 +664,14 @@
             <h3 ng-class="{true:'mix-a-color'}[params.media_img.is_mod_hide]">
                 <a ng-if="editorMode"
                    ng-hide="params.link_subtitle.is_mod_hide"
+                   ng-style="mixFontColor"
                    ng-click="viewEditorClick(params.link_subtitle, $event)"
                    href="javascript::void(0)">
                     {{params.link_subtitle.text}}
                 </a>
                 <a ng-if="!editorMode"
                    ng-hide="params.link_subtitle.is_mod_hide"
+                   ng-style="mixFontColor"
                    ng-class="{true : 'mix-clear-pointer'}[params.link_subtitle.href.length == 0]"
                    target="{{params.link_subtitle.target ? params.link_subtitle.target : '_blank'}}"
                    ng-href="{{params.link_subtitle.href}}">
@@ -675,11 +681,13 @@
             <span ng-class="{true:'mix-a-color'}[params.media_img.is_mod_hide]">
                 <a ng-if="editorMode"
                    ng-hide="params.multiText_content.is_mod_hide"
+                   ng-style="mixFontColor"
                    ng-click="viewEditorClick(params.multiText_content, $event)"
                    href="javascript::void(0)"
                    ng-bind-html="multiText_content"></a>
                 <a ng-if="!editorMode"
                    ng-hide="params.multiText_content.is_mod_hide"
+                   ng-style="mixFontColor"
                    target="{{params.multiText_content.target ? params.multiText_content.target : '_blank'}}"
                    ng-href="{{params.multiText_content.href}}"
                    ng-class="{true : 'mix-clear-pointer'}[params.multiText_content.href.length == 0]"
@@ -690,7 +698,7 @@
            ng-hide="params.media_img.is_mod_hide"
            ng-click="viewEditorClick(params.media_img, $event)"
            href="javascript::void(0)">
-            <div ng-style="mixLaer" class="mix-img">
+            <div ng-style="mixLaer" id="{{imgHeight}}" class="mix-img">
             </div>  
         </a>
         <a ng-if="!editorMode"
@@ -698,7 +706,7 @@
            ng-class="{true : 'mix-clear-pointer'}[params.media_img.href.length == 0]"
            target="{{params.media_img.target ? params.media_img.target : '_blank'}}"
            ng-href="{{params.media_img.href}}">
-            <div ng-style="mixLaer" class="mix-img">
+            <div ng-style="mixLaer" id="{{imgHeight}}" class="mix-img">
             </div>  
         </a>  
     </div>
@@ -706,16 +714,18 @@
 
     <!-- style6 html -->
     <div ng-if='params.design.text=="style6"' class="style6 clearfix container">
-        <div class="mix-div">
+        <div class="mix-div" id="{{divHeight}}">
             <h2 ng-class="{true:'mix-a-color'}[params.media_img.is_mod_hide]">
                 <a ng-if="editorMode"
                    ng-hide="params.link_title.is_mod_hide"
+                   ng-style="mixFontColor"
                    ng-click="viewEditorClick(params.link_title, $event)"
                    href="javascript::void(0)">
                     {{params.link_title.text}}
                 </a>
                 <a ng-if="!editorMode"
                    ng-hide="params.link_title.is_mod_hide"
+                   ng-style="mixFontColor"
                    ng-class="{true : 'mix-clear-pointer'}[params.link_title.href.length == 0]"
                    target="{{params.link_title.target ? params.link_title.target : '_blank'}}"
                    ng-href="{{params.link_title.href}}">
@@ -725,6 +735,7 @@
             <h3 ng-class="{true:'mix-a-color'}[params.media_img.is_mod_hide]">
                 <a ng-if="editorMode"
                    ng-hide="params.link_subtitle.is_mod_hide"
+                   ng-style="mixFontColor"
                    ng-click="viewEditorClick(params.link_subtitle, $event)"
                    href="javascript::void(0)">
                     {{params.link_subtitle.text}}
@@ -732,6 +743,7 @@
                 <a ng-if="!editorMode"
                    ng-hide="params.link_subtitle.is_mod_hide"
                    ng-class="{true : 'mix-clear-pointer'}[params.link_subtitle.href.length == 0]"
+                   ng-style="mixFontColor"
                    target="{{params.link_subtitle.target ? params.link_subtitle.target : '_blank'}}"
                    ng-href="{{params.link_subtitle.href}}">
                     {{params.link_subtitle.text}}
@@ -740,11 +752,13 @@
             <span ng-class="{true:'mix-a-color'}[params.media_img.is_mod_hide]">
                 <a ng-if="editorMode"
                    ng-hide="params.multiText_content.is_mod_hide"
+                   ng-style="mixFontColor"
                    ng-click="viewEditorClick(params.multiText_content, $event)"
                    href="javascript::void(0)"
                    ng-bind-html="multiText_content"></a>
                 <a ng-if="!editorMode"
                    ng-hide="params.multiText_content.is_mod_hide"
+                   ng-style="mixFontColor"
                    target="{{params.multiText_content.target ? params.multiText_content.target : '_blank'}}"
                    ng-href="{{params.multiText_content.href}}"
                    ng-class="{true : 'mix-clear-pointer'}[params.multiText_content.href.length == 0]"
@@ -755,7 +769,7 @@
            ng-hide="params.media_img.is_mod_hide"
            ng-click="viewEditorClick(params.media_img, $event)"
            href="javascript::void(0)">
-            <div ng-style="mixLaer" class="mix-img">
+            <div ng-style="mixLaer" id="{{imgHeight}}" class="mix-img">
             </div>  
         </a>
         <a ng-if="!editorMode"
@@ -763,17 +777,18 @@
            ng-class="{true : 'mix-clear-pointer'}[params.media_img.href.length == 0]"
            target="{{params.media_img.target ? params.media_img.target : '_blank'}}"
            ng-href="{{params.media_img.href}}">
-            <div ng-style="mixLaer" class="mix-img">
+            <div ng-style="mixLaer" id="{{imgHeight}}" class="mix-img">
             </div>  
         </a>  
     </div>
 
     <!-- style7 html -->
     <div ng-if='params.design.text=="style7"' class="style7 clearfix container">
-        <div class="mix-div">
+        <div class="mix-div" id="{{divHeight}}">
             <h2 ng-class="{true:'mix-a-color'}[params.media_img.is_mod_hide]">
                 <a ng-if="editorMode"
                    ng-hide="params.link_title.is_mod_hide"
+                   ng-style="mixFontColor"
                    ng-click="viewEditorClick(params.link_title, $event)"
                    href="javascript::void(0)">
                     {{params.link_title.text}}
@@ -781,6 +796,7 @@
                 <a ng-if="!editorMode"
                    ng-hide="params.link_title.is_mod_hide"
                    ng-class="{true : 'mix-clear-pointer'}[params.link_title.href.length == 0]"
+                   ng-style="mixFontColor"
                    target="{{params.link_title.target ? params.link_title.target : '_blank'}}"
                    ng-href="{{params.link_title.href}}">
                     {{params.link_title.text}}
@@ -789,12 +805,14 @@
             <h3 ng-class="{true:'mix-a-color'}[params.media_img.is_mod_hide]">
                 <a ng-if="editorMode"
                    ng-hide="params.link_subtitle.is_mod_hide"
+                   ng-style="mixFontColor"
                    ng-click="viewEditorClick(params.link_subtitle, $event)"
                    href="javascript::void(0)">
                     {{params.link_subtitle.text}}
                 </a>
                 <a ng-if="!editorMode"
                    ng-hide="params.link_subtitle.is_mod_hide"
+                   ng-style="mixFontColor"
                    ng-class="{true : 'mix-clear-pointer'}[params.link_subtitle.href.length == 0]"
                    target="{{params.link_subtitle.target ? params.link_subtitle.target : '_blank'}}"
                    ng-href="{{params.link_subtitle.href}}">
@@ -804,11 +822,13 @@
             <span ng-class="{true:'mix-a-color'}[params.media_img.is_mod_hide]">
                 <a ng-if="editorMode"
                    ng-hide="params.multiText_content.is_mod_hide"
+                   ng-style="mixFontColor"
                    ng-click="viewEditorClick(params.multiText_content, $event)"
                    href="javascript::void(0)"
                    ng-bind-html="multiText_content"></a>
                 <a ng-if="!editorMode"
                    ng-hide="params.multiText_content.is_mod_hide"
+                   ng-style="mixFontColor"
                    target="{{params.multiText_content.target ? params.multiText_content.target : '_blank'}}"
                    ng-href="{{params.multiText_content.href}}"
                    ng-class="{true : 'mix-clear-pointer'}[params.multiText_content.href.length == 0]"
@@ -819,7 +839,7 @@
            ng-hide="params.media_img.is_mod_hide"
            ng-click="viewEditorClick(params.media_img, $event)"
            href="javascript::void(0)">
-            <div ng-style="mixLaer" class="mix-img">
+            <div ng-style="mixLaer" id="{{imgHeight}}" class="mix-img">
             </div>  
         </a>
         <a ng-if="!editorMode"
@@ -827,7 +847,7 @@
            ng-class="{true : 'mix-clear-pointer'}[params.media_img.href.length == 0]"
            target="{{params.media_img.target ? params.media_img.target : '_blank'}}"
            ng-href="{{params.media_img.href}}">
-            <div ng-style="mixLaer" class="mix-img">
+            <div ng-style="mixLaer" id="{{imgHeight}}" class="mix-img">
             </div>  
         </a>  
     </div>
@@ -835,10 +855,11 @@
     <!-- style8 html -->
     <div ng-if='params.design.text=="style8"' class="style8 clearfix container">
         <div class="mix">
-            <div class="mix-div">
+            <div class="mix-div" id="{{divHeight}}">
                 <h2 ng-class="{true:'mix-a-color'}[params.media_img.is_mod_hide]">
                     <a ng-if="editorMode"
                     ng-hide="params.link_title.is_mod_hide"
+                    ng-style="mixFontColor"
                     ng-click="viewEditorClick(params.link_title, $event)"
                     href="javascript::void(0)">
                         {{params.link_title.text}}
@@ -854,12 +875,14 @@
                 <h3 ng-class="{true:'mix-a-color'}[params.media_img.is_mod_hide]">
                     <a ng-if="editorMode"
                     ng-hide="params.link_subtitle.is_mod_hide"
+                    ng-style="mixFontColor"
                     ng-click="viewEditorClick(params.link_subtitle, $event)"
                     href="javascript::void(0)">
                         {{params.link_subtitle.text}}
                     </a>
                     <a ng-if="!editorMode"
                     ng-hide="params.link_subtitle.is_mod_hide"
+                    ng-style="mixFontColor"
                     ng-class="{true : 'mix-clear-pointer'}[params.link_subtitle.href.length == 0]"
                     target="{{params.link_subtitle.target ? params.link_subtitle.target : '_blank'}}"
                     ng-href="{{params.link_subtitle.href}}">
@@ -869,6 +892,7 @@
                 <span ng-class="{true:'mix-a-color'}[params.media_img.is_mod_hide]">
                     <a ng-if="editorMode"
                     ng-hide="params.multiText_content.is_mod_hide"
+                    ng-style="mixFontColor"
                     ng-click="viewEditorClick(params.multiText_content, $event)"
                     href="javascript::void(0)"
                     ng-bind-html="multiText_content"></a>
@@ -876,6 +900,7 @@
                     ng-hide="params.multiText_content.is_mod_hide"
                     target="{{params.multiText_content.target ? params.multiText_content.target : '_blank'}}"
                     ng-href="{{params.multiText_content.href}}"
+                    ng-style="mixFontColor"
                     ng-class="{true : 'mix-clear-pointer'}[params.multiText_content.href.length == 0]"
                     ng-bind-html="multiText_content"></a>
                 </span>
@@ -884,7 +909,7 @@
             ng-hide="params.media_img.is_mod_hide"
             ng-click="viewEditorClick(params.media_img, $event)"
             href="javascript::void(0)">
-                <div ng-style="mixLaer" class="mix-img">
+                <div ng-style="mixLaer" id="{{imgHeight}}" class="mix-img">
                 </div>  
             </a>
             <a ng-if="!editorMode"
@@ -892,7 +917,7 @@
             ng-class="{true : 'mix-clear-pointer'}[params.media_img.href.length == 0]"
             target="{{params.media_img.target ? params.media_img.target : '_blank'}}"
             ng-href="{{params.media_img.href}}">
-                <div ng-style="mixLaer" class="mix-img">
+                <div ng-style="mixLaer" id="{{imgHeight}}" class="mix-img">
                 </div>  
             </a>
         </div>  
@@ -900,16 +925,18 @@
 
     <!-- style9 html -->
     <div ng-if='params.design.text=="style9"' class="style9 clearfix container">
-        <div class="mix-div">
+        <div class="mix-div" id="{{divHeight}}">
             <h2 ng-class="{true:'mix-a-color'}[params.media_img.is_mod_hide]">
                 <a ng-if="editorMode"
                    ng-hide="params.link_title.is_mod_hide"
+                   ng-style="mixFontColor"
                    ng-click="viewEditorClick(params.link_title, $event)"
                    href="javascript::void(0)">
                     {{params.link_title.text}}
                 </a>
                 <a ng-if="!editorMode"
                    ng-hide="params.link_title.is_mod_hide"
+                   ng-style="mixFontColor"
                    ng-class="{true : 'mix-clear-pointer'}[params.link_title.href.length == 0]"
                    target="{{params.link_title.target ? params.link_title.target : '_blank'}}"
                    ng-href="{{params.link_title.href}}">
@@ -919,12 +946,14 @@
             <h3 ng-class="{true:'mix-a-color'}[params.media_img.is_mod_hide]">
                 <a ng-if="editorMode"
                    ng-hide="params.link_subtitle.is_mod_hide"
+                   ng-style="mixFontColor"
                    ng-click="viewEditorClick(params.link_subtitle, $event)"
                    href="javascript::void(0)">
                     {{params.link_subtitle.text}}
                 </a>
                 <a ng-if="!editorMode"
                    ng-hide="params.link_subtitle.is_mod_hide"
+                   ng-style="mixFontColor"
                    ng-class="{true : 'mix-clear-pointer'}[params.link_subtitle.href.length == 0]"
                    target="{{params.link_subtitle.target ? params.link_subtitle.target : '_blank'}}"
                    ng-href="{{params.link_subtitle.href}}">
@@ -934,11 +963,13 @@
             <span ng-class="{true:'mix-a-color'}[params.media_img.is_mod_hide]">
                 <a ng-if="editorMode"
                    ng-hide="params.multiText_content.is_mod_hide"
+                   ng-style="mixFontColor"
                    ng-click="viewEditorClick(params.multiText_content, $event)"
                    href="javascript::void(0)"
                    ng-bind-html="multiText_content"></a>
                 <a ng-if="!editorMode"
                    ng-hide="params.multiText_content.is_mod_hide"
+                   ng-style="mixFontColor"
                    target="{{params.multiText_content.target ? params.multiText_content.target : '_blank'}}"
                    ng-href="{{params.multiText_content.href}}"
                    ng-class="{true : 'mix-clear-pointer'}[params.multiText_content.href.length == 0]"
@@ -949,7 +980,7 @@
            ng-hide="params.media_img.is_mod_hide"
            ng-click="viewEditorClick(params.media_img, $event)"
            href="javascript::void(0)">
-            <div ng-style="mixLaer" class="mix-img">
+            <div ng-style="mixLaer" id="{{imgHeight}}" class="mix-img">
             </div>  
         </a>
         <a ng-if="!editorMode"
@@ -957,7 +988,7 @@
            ng-class="{true : 'mix-clear-pointer'}[params.media_img.href.length == 0]"
            target="{{params.media_img.target ? params.media_img.target : '_blank'}}"
            ng-href="{{params.media_img.href}}">
-            <div ng-style="mixLaer" class="mix-img">
+            <div ng-style="mixLaer" id="{{imgHeight}}" class="mix-img">
             </div>  
         </a> 
     </div>

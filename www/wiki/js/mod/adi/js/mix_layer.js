@@ -8,7 +8,6 @@ define([
     function registerController(wikiblock) {
         app.registerController("mix_layerController", ['$scope','$sce', function ($scope, $sce) {
             $scope.editorMode = wikiblock.editorMode;
-            var mixDesc = "加利福尼亚大学伯克利分校是美国最负盛名且是最顶尖的一所公立研究型大学，位于旧金山东湾伯克利市的山丘上。1868年由加利福尼亚学院以及农业、矿业和机械学院合并而成，1873年迁至圣弗朗西斯科（旧金山）附近的伯克利市。伯克利加大是加利福尼亚大学中最老的一所。它也是美国大学协会（Association of American Universities）创始会员之一。其吉祥物蜕变自加州徽号，故其学生亦常自称“金色小熊”。加州大学伯克利分校与斯坦福大学、麻省理工学院等一同被誉为美国工程科技界的学术领袖。"
 
             initObj = {
 				scope  : $scope,
@@ -135,25 +134,6 @@ define([
 				langPrefix: 'code-'
             })          
             
-            // $scope.mixImgHeight = function(params){
-            //     var setHeightInterval = setInterval(function(params){
-            //         var miximg = document.querySelector('#' + $scope.imgHeight);
-            //         var mixdiv = document.querySelector('#' + $scope.divHeight);
-            //         if($scope.params.multiText_content.text.length > mixDesc.length){
-            //             if(miximg.offsetHeight < 1739){
-            //                 miximg.style.height = mixdiv.offsetHeight + 'px';
-            //             }else{
-            //                 mixdiv.style.marginTop = 700 + 'px';
-            //                 miximg.style.height    = 694 + 'px';
-            //             }
-            //         }
-            //     }, 100); 
-            // }
-
-
-            // var setHeightInterval = setInterval(function(params){
-                
-            // }, 100); 
 
 			$scope.$watch('params', function(){
                 $scope.multiText_content = md.render($scope.params.multiText_content.text);
@@ -174,11 +154,32 @@ define([
 
                     if(mixdiv.offsetHeight > 649 && mixdiv.offsetHeight < 1739){
                         miximg.style.height = mixdiv.offsetHeight + 'px';
+                        $scope.mixFontColor    = {
+                            'color' : 'rgb(255, 255, 255)' 
+                        }
                     }
 
                     if(mixdiv.offsetHeight > 1739){
-                        mixdiv.style.marginTop = 700 + 'px';
-                        miximg.style.height    = 694 + 'px';
+                        if($scope.params.design.text == "style7" ||
+                           $scope.params.design.text == "style8" ||
+                           $scope.params.design.text == "style9"){
+                            mixdiv.style.marginTop = 430 + 'px';
+                        }
+                        if($scope.params.design.text == "style4" ||
+                           $scope.params.design.text == "style5" ||
+                           $scope.params.design.text == "style6"){
+                             mixdiv.style.marginTop = 510 + 'px';
+                        }
+                        if($scope.params.design.text == "style1" ||
+                           $scope.params.design.text == "style2" ||
+                           $scope.params.design.text == "style3"){
+                            mixdiv.style.marginTop = 694 + 'px';
+                            miximg.style.height    = 694 + 'px';
+                        }
+                        
+                        $scope.mixFontColor    = {
+                            'color' : 'black' 
+                        }
                     }
                 }, 0)
             })
