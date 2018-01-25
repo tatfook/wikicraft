@@ -207,7 +207,7 @@
             <p translate="暂无相关内容..."></p>
         </div>
         <div class="works-item" ng-repeat="work in works track by $index" ng-show="works.length>0">
-            <img ng-src="{{work.logoUrl}}">
+            <img ng-src="{{work.logoUrl || getImageUrl('wiki_cover.jpg', imgsPath)}}">
             <div class="work-detail">
                 <h4>{{work.title}}</h4>
                 <p class="p-link">
@@ -220,9 +220,9 @@
             </div>
             <div class="work-other-msg">
                 <span>
-                    <img ng-src="{{imgsPath+'icon/wiki_pageview.png'}}">{{work.visitCount}}</span>
+                    <img ng-src="{{imgsPath+'icon/wiki_pageview.png'}}">{{work.visitCount || 0}}</span>
                 <span>
-                    <img ng-src="{{imgsPath+'icon/wiki_pageview.png'}}">{{work.favoriteCount}}</span>
+                    <img ng-src="{{imgsPath+'icon/wiki_pageview.png'}}">{{work.favoriteCount || 0}}</span>
             </div>
         </div>
     </div>

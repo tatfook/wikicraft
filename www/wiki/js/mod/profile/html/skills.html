@@ -1,11 +1,16 @@
 <style>
+    .user-skills{
+        padding-bottom: 47px;
+    }
+
     .user-skills .empty-box {
         border: 1px solid #F2F2F2;
-        margin: 20px 0 47px;
+        margin: 20px 0 0;
     }
 
     .user-skills .skill-radar {
         min-height: 235px;
+        border-left: 1px solid #F2F2F2;
     }
 
     .user-skills ul {
@@ -21,7 +26,6 @@
     }
 
     .user-skills .v-skill-ul {
-        border-right: 1px solid #F2F2F2;
         padding-right: 73px;
     }
 
@@ -77,7 +81,7 @@
     .user-skills .other-skill {
         border: 1px solid #F2F2F2;
         padding: 30px 20px 20px;
-        margin-bottom: 47px;
+        /* margin-bottom: 47px; */
     }
 
     .user-skills .h-li {
@@ -124,7 +128,7 @@
     <h4 class="title">
         我的技能
         <span class="pull-right">
-            <i class="iconfont icon-tianjia"></i>
+            <i class="iconfont icon-tianjia" ng-click="showSkillModal()"></i>
             <i class="iconfont icon-bianji"></i>
         </span>
     </h4>
@@ -151,10 +155,12 @@
             </li>
         </ul>
         <div class="other-skill-footer">
-            <div class="btn btn-primary" ng-click="loadMoreSkills()">
+            <div class="btn btn-primary" disabled ng-click="loadMoreSkills()">
                 {{ "更多" | translate }}
                 <span class="glyphicon glyphicon-menu-down"></span>
             </div>
         </div>
     </div>
+
+    <div class="add-skill-modal modal-parent"></div>
 </div>
