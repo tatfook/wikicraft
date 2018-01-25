@@ -170,13 +170,13 @@ end
 
 function skills:update_liked_data(params)
     usersLiked = params.usersLiked
-    local doesVisitorLike = true
+    local liked = true
     local err, result, message
     -- to check whether the visitor likes or dislike this skill
     local is_visitor_in_usersLiked, position = self:is_visitor_in_usersLiked(params.visitor, usersLiked)
     if (is_visitor_in_usersLiked) then
         table.remove(usersLiked, position)
-        doesVisitorLike = false
+        liked = false
     else
         usersLiked[(#usersLiked) + 1] = params.visitor
     end
@@ -193,7 +193,7 @@ function skills:update_liked_data(params)
             data_to_update.id = result._id
             self:update_liked_in_es(data_to_update)
         end
-        result.doesVisitorLike = doesVisitorLike
+        result.liked = liked
     else
         message = "likedCount over limit(10000)"
     end
@@ -235,7 +235,7 @@ function skills:api_getLikedStatus(params)
         for i, skill in ipairs(skills) do
             skill.usersLiked = skill.usersLiked or {}
             skill.likedCount = skill.likedCount or #(skill.usersLiked)
-            skill.doesVisitorLike = self:is_visitor_in_usersLiked(params.visitor, skill.usersLiked)
+            skill.liked = self:is_visitor_in_usersLiked(params.visitor, skill.usersLiked)
             skill.usersLiked = nil  -- do not show usersLiked unless necessary
             skill._id = nil
         end
@@ -257,8 +257,8 @@ function skills:api_getDetail(params)
     if (result) then
         local usersLiked = {}
         local limit = 50
-        local doesVisitorLike, position = self:is_visitor_in_usersLiked(params.visitor, result.usersLiked)
-        if (doesVisitorLike) then
+        local liked, position = self:is_visitor_in_usersLiked(params.visitor, result.usersLiked)
+        if (liked) then
             usersLiked[1] = table.remove(result.usersLiked, position)
             limit = 49
         end
@@ -267,7 +267,7 @@ function skills:api_getDetail(params)
             usersLiked[(#usersLiked) + 1] = result.usersLiked[(#result.usersLiked) - (limit - i)]
         end
         result.usersLiked = usersLiked
-        result.doesVisitorLike = doesVisitorLike
+        result.liked = liked
         result.likedCount = result.likedCount or 0
         result._id = nil
     end
