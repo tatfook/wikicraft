@@ -496,7 +496,7 @@
             ng-click="tabTo('editor')">
             <a href="#Attr" aria-controls="Attr" role="tab" data-toggle="tab" translate="属性"></a>
         </li>
-        <li role="presentation" ng-hide="show_type == 'knowledge' || !show_type" ng-class="{true: 'active'}[show_type == 'design']"
+        <li role="presentation" ng-hide="show_type == 'knowledge' || !show_type || !hasStyle" ng-class="{true: 'active'}[show_type == 'design']"
             ng-click="tabTo('design')">
             <a href="#StyleSetting" aria-controls="StyleSetting" role="tab" data-toggle="tab" translate="样式"></a>
         </li>
