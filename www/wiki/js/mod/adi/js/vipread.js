@@ -39,15 +39,27 @@ define([
                         document.querySelector("#" + wikiBlock.containerId).style.display = "none";
                     }else{
                         containerId = mdwiki.getMdWikiContentContainerId();
-                        container   = $("#"+ containerId);
-        
+                        container   = $("#" + containerId);
+                        vipBlock    = document.querySelector("#" + wikiBlock.containerId);
+
                         var innerElement = container[0];
-        
-                        for(var i=4; i < innerElement.childNodes.length; i++){
-                            innerElement.childNodes[i].style.display = "none";
+
+                        for(var i = 0; i < innerElement.childNodes.length; i++){
+                            if(innerElement.childNodes[i].id == wikiBlock.containerId){
+                                innerElement.childNodes[i].remove();
+                            }
                         }
-        
-                        document.querySelector("#" + wikiBlock.containerId).style.display = "block";
+
+                        for(var i = 0; i < innerElement.childNodes.length; i++){
+                            if(i >= 1){
+                                innerElement.childNodes[i].style.display = "none";
+                            }else{
+                                innerElement.childNodes[i].style.maxHeight = "150px";
+                                innerElement.childNodes[i].style.overflow = "hidden";
+                            }
+                        }
+
+                        innerElement.prepend(vipBlock);
                     }
                 }else{
                     document.querySelector("#" + wikiBlock.containerId).style.display = "none";
