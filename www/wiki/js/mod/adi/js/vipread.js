@@ -50,14 +50,16 @@ define([
                             }
                         }
 
-                        for(var i = 0; i < innerElement.childNodes.length; i++){
-                            if(i >= 1){
-                                innerElement.childNodes[i].style.display = "none";
-                            }else{
-                                innerElement.childNodes[i].style.maxHeight = "150px";
-                                innerElement.childNodes[i].style.overflow = "hidden";
-                            }
-                        }
+                        container.css({"height":"300px", "overflow":"hidden"});
+
+                        // for(var i = 0; i < innerElement.childNodes.length; i++){
+                        //     if(i >= 1){
+                        //         innerElement.childNodes[i].style.display = "none";
+                        //     }else{
+                        //         innerElement.childNodes[i].style.maxHeight = "150px";
+                        //         innerElement.childNodes[i].style.overflow = "hidden";
+                        //     }
+                        // }
 
                         innerElement.prepend(vipBlock);
                     }
