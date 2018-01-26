@@ -40,8 +40,7 @@ function pages:api_insert(params)
     if (result) then
         -- params.id = result._id
         -- self:insert_to_es(params)
-        result._id = nil
-        result.siteUrl = nil
+        result = {url = result.url, tags = result.tags}
     end
     return errors:wrap(err, result)
 end
@@ -49,7 +48,7 @@ end
 
 function pages:insert_validator(params)
     local clean_data = {}
-    local required_fields = {"url", "pagetype"}
+    local required_fields = {"url"}
     local fields_length = {tags = 5}
     local are_they_sensitive_fields = {"tags"}
     local index_fields_and_model_instance = {
@@ -97,15 +96,13 @@ function pages:api_updateTags(params)
     if (result) then
         self:db():updateOne({["+url"] = {page.url}}, {tags = page.tags}, resume)
         err, result = yield()
-        if (result) then self:update_to_es(params) end
+        -- if (result) then self:update_to_es(params) end
     else
-        page.visitCount = 0
         self:db():insertOne({["+url"] = {page.url}}, page, resume)
         err, result = yield()
-        if (result) then self:insert_to_es(params) end
+        -- if (result) then self:insert_to_es(params) end
     end
-    result._id = nil
-    result.visitCount = nil
+    result = {url = result.url, tags = result.tags}
     return errors:wrap(err, result)
 end
 
@@ -163,9 +160,7 @@ function pages:api_updateVisitCount(params)
         self:db():insertOne({["+url"] = {page.url}}, page, resume)
     end
     err, result = yield()
-    result.siteUrl = nil
-    result.tags = nil
-    result._id = nil
+    result = {visitCount = result.visitCount}
     return errors:wrap(err, result)
 end
 
