@@ -54,7 +54,7 @@ function skills:insert_validator(params)
     local required_fields = {"username", "title", "level", "works"}
     local are_they_sensitive_fields = {"title"}
     local fields_length = {username = 30, title = 30}
-    local fields_range = {level = {gte = 0, lte = 5}}
+    local fields_range = {level = {gte = 1, lte = 5}}
     local index_fields_and_model_instance = {
         index_fields = {"username", "title"},
         model_instance = self
@@ -121,7 +121,7 @@ end
 function skills:update_validator(params)
     local clean_data = {}
     local required_fields = {"username", "title", "level", "works"}
-    local fields_range = {level = {gte = 0, lte = 5}}
+    local fields_range = {level = {gte = 1, lte = 5}}
     local validate_tasks = {
         {
             validator = validators.required_fields_validator,
