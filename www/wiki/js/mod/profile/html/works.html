@@ -48,20 +48,31 @@
         margin-right: 12px;
     }
 
-    .user-works .work-other-msg {
+    .user-works .absolute-right {
         position: absolute;
         right: 0;
         top: 23px;
         color: #999;
     }
 
-    .user-works .work-other-msg>span {
+    .user-works .absolute-right > span {
         margin-left: 10px;
     }
 
     .user-works .work-other-msg img {
         margin-right: 6px;
         vertical-align: sub;
+    }
+
+    .user-works .editing-toolbar .iconfont{
+        font-size: 24px;
+        margin-left: 5px;
+        color: #3977AD;
+    }
+
+    .user-works h4.title .icon-fanhui{
+        font-weight: normal;
+        font-size: 26px;
     }
 
     .add-modal {
@@ -199,8 +210,8 @@
     <h4 class="title">
         我的作品
         <span class="pull-right">
-            <i class="iconfont icon-tianjia" ng-click="showModal()"></i>
-            <i class="iconfont icon-bianji"></i>
+            <i class="iconfont icon-tianjia" ng-hide="editing" ng-click="showModal()"></i>
+            <i class="iconfont" ng-class="{true:'icon-fanhui', false:'icon-bianji'}[editing]" ng-click="editWork()"></i>
         </span>
     </h4>
     <div class="works-list">
@@ -220,11 +231,17 @@
                     <span ng-repeat="tag in work.tags track by $index">{{tag}}</span>
                 </p>
             </div>
-            <div class="work-other-msg">
+            <div class="work-other-msg absolute-right" ng-hide="editing">
                 <span>
                     <img ng-src="{{imgsPath+'icon/wiki_pageview.png'}}">{{work.visitCount || 0}}</span>
                 <span>
                     <img ng-src="{{imgsPath+'icon/wiki_pageview.png'}}">{{work.favoriteCount || 0}}</span>
+            </div>
+            <div class="editing-toolbar absolute-right" ng-show="editing">
+                <span class="iconfont icon-shezhi" ng-click="setWork($index)"></span>
+                <span class="iconfont icon-shangyi" ng-click="shiftUp($index)"></span>
+                <span class="iconfont icon-xiayi" ng-click="shiftDown($index)"></span>
+                <span class="iconfont icon-shanchu1"  ng-click="deleteWork($index)"></span>
             </div>
         </div>
     </div>

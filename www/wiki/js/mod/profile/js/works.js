@@ -2,7 +2,7 @@
  * @Author: ZhangKaitlyn 
  * @Date: 2018-01-19
  * @Last Modified by: none
- * @Last Modified time: 2018-01-25 21:52:26
+ * @Last Modified time: 2018-01-26 15:33:32
  */
 define([
     'app', 
@@ -38,6 +38,7 @@ define([
             });
 
             $scope.works = Array.from($scope.params.works);
+            $scope.editing = false;
 
             // 获取当前模块的index和containerId
             var getBlockIndex = function(){
@@ -56,31 +57,75 @@ define([
                 return i;
             }
 
-            $scope.showModal = function(){
+            var modifyWorksMd = function(){
+                var newItemObj = {
+                    index: getBlockIndex(),
+                    containerId: thisContainerId,
+                    content: modCmd + "\n" + mdconf.jsonToMd({
+                        "works": $scope.works
+                    }) + "\n```\n"
+                }
+                console.log(newItemObj.content);
+                $rootScope.$broadcast("changeProfileMd", newItemObj);
+            }
+
+            $scope.showModal = function(index){
+                $scope.addingWork = angular.copy($scope.works[index]);
                 $uibModal.open({
                     template: addWorkModalHtmlContent,
                     controller: "addWorkModalCtrl",
                     appendTo: $(".user-works .modal-parent"),
                     scope: $scope
                 }).result.then(function(result){
-                    $scope.works.push(result);
-                    var newItemObj = {
-                        index: getBlockIndex(),
-                        containerId: thisContainerId,
-                        content: modCmd + "\n" + mdconf.jsonToMd({
-                            "works": $scope.works
-                        }) + "\n```\n"
+                    console.log(index);
+                    if (index >= 0) {    // 编辑作品
+                        $scope.works[index] = result;
+                    }else{          // 添加作品
+                        $scope.works.push(result);
                     }
-                    console.log(newItemObj.content);
-                    $rootScope.$broadcast("changeProfileMd", newItemObj);
+                    modifyWorksMd();
                 }, function(){
                 });
             }
+
+            $scope.editWork = function(){
+                $scope.editing = !$scope.editing;
+            };
+
+            $scope.setWork = function(index){
+                $scope.showModal(index);
+            };
+
+            $scope.shiftUp = function(index){
+                var prev = index - 1;
+                $scope.works[prev] = $scope.works.splice((prev + 1), 1, $scope.works[prev])[0];
+                modifyWorksMd();
+            };
+
+            $scope.shiftDown = function(index){
+                var prev = index;
+                $scope.works[prev] = $scope.works.splice((prev + 1), 1, $scope.works[prev])[0];
+                modifyWorksMd();
+            };
+
+            $scope.deleteWork = function(index){
+                config.services.confirmDialog({
+                    "title": "删除提示",
+                    "theme": "danger",
+                    "content": "确定删除 " + $scope.works[index].title + "?"
+                }, function(result){
+                    $scope.works.splice(index, 1);
+                    modifyWorksMd();
+                }, function(cancel){
+                    console.log("cancel delete");
+                });
+            };
         }]);
 
         app.registerController("addWorkModalCtrl", ['$scope','$uibModal', '$uibModalInstance',function ($scope, $uibModal, $uibModalInstance) {
-            $scope.addingWork = {};
+            $scope.addingWork = $scope.addingWork || {};
             $scope.cancel = function(){
+                $scope.addingWork = {};
                 $uibModalInstance.dismiss("cancel");
             }
 
