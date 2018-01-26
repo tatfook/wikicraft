@@ -1,5 +1,5 @@
 <style>
-    .user-skills{
+    .user-skills {
         padding-bottom: 47px;
     }
 
@@ -123,35 +123,48 @@
     .user-skills .glyphicon-menu-down {
         -webkit-text-stroke: 1px #7FC4FF;
     }
+
+    .user-skills .editing-skill{
+        border: 1px solid #F2F2F2;
+        margin-top: 20px;
+    }
+
+    .user-skills .editing-v-skill-ul{
+        padding: 15px 20px 28px;
+    }
+
+    .user-skills .sub-skill .title{
+        background-color: #E4E4E4;
+    }
 </style>
 <div class="user-skills" ng-controller="skillCtrl">
     <h4 class="title">
         我的技能
         <span class="pull-right">
-            <i class="iconfont icon-tianjia" ng-click="showSkillModal()"></i>
-            <i class="iconfont icon-bianji"></i>
+            <i class="iconfont icon-tianjia" ng-click="showSkillModal()" ng-hide="editing"></i>
+            <i class="iconfont" ng-class="{true:'icon-fanhui', false:'icon-bianji'}[editing]" ng-click="editSkill()"></i>
         </span>
     </h4>
     <div class="empty-box" ng-hide="skills.length>0">
         <span class="iconfont icon-kongbaiyemian"></span>
         <p translate="暂无相关内容..."></p>
     </div>
-    <div class="main-skill clearfix" ng-show="skills.length>0">
+    <div class="main-skill clearfix" ng-show="skills.length>0 && !editing">
         <ul class="col-sm-6 v-skill-ul">
-            <li class="clearfix v-li" ng-repeat="skill in skills | limitTo: 5">
+            <li class="clearfix v-li" ng-repeat="skill in skills | limitTo: 5 track by $index">
                 <span class="title">{{skill.title}}</span>
                 <span class="level">{{skill.level}}</span>
-                <span class="pull-right iconfont icon-icondianzan pull-right"></span>
+                <span class="pull-right iconfont icon-icondianzan"></span>
             </li>
         </ul>
         <div class="col-sm-6 skill-radar" id="skillRadar">
         </div>
     </div>
-    <div class="other-skill" ng-show="skills.length > 5">
+    <div class="other-skill" ng-show="skills.length > 5 && !editing">
         <ul class="h-skill-ul clearfix">
-            <li class="clearfix h-li" ng-repeat="skill in skills | limitTo: (5 - skills.length)">
+            <li class="clearfix h-li" ng-repeat="skill in skills | limitTo: (5 - skills.length) track by $index">
                 <span class="title">{{skill.title}}</span>
-                <span class="pull-right iconfont icon-icondianzan pull-right"></span>
+                <span class="pull-right iconfont icon-icondianzan"></span>
             </li>
         </ul>
         <div class="other-skill-footer">
@@ -160,6 +173,19 @@
                 <span class="glyphicon glyphicon-menu-down"></span>
             </div>
         </div>
+    </div>
+    <div class="editing-skill" ng-show="editing">
+        <ul class="v-skill-ul editing-v-skill-ul">
+            <li class="clearfix v-li" ng-class="{true:'sub-skill'}[$index >4]" ng-repeat="skill in skills track by $index">
+                <span class="title">{{skill.title}}</span>
+                <span class="pull-right editing-toolbar">
+                    <span class="iconfont icon-shezhi" ng-click="setSkill($index)"></span>
+                    <span class="iconfont icon-shangyi" ng-click="shiftUp($index)"></span>
+                    <span class="iconfont icon-xiayi" ng-click="shiftDown($index)"></span>
+                    <span class="iconfont icon-shanchu1" ng-click="deleteSkill($index)"></span>
+                </span>
+            </li>
+        </ul>
     </div>
 
     <div class="add-skill-modal modal-parent"></div>

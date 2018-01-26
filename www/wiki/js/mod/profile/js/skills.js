@@ -2,7 +2,7 @@
  * @Author: ZhangKaitlyn 
  * @Date: 2018-01-19
  * @Last Modified by: none
- * @Last Modified time: 2018-01-25 21:45:40
+ * @Last Modified time: 2018-01-26 17:04:47
  */
 define([
     'app', 
@@ -33,6 +33,7 @@ define([
             });
             
             $scope.skills = Array.from($scope.params.skills);
+            $scope.editing = false;
             
             // 获取当前模块的index和containerId
             var getBlockIndex = function(){
@@ -51,7 +52,21 @@ define([
                 return i;
             }
 
-            $scope.showSkillModal = function(){
+            var modifySkillsMd = function(){
+                initRadar();
+                var newItemObj = {
+                    index: getBlockIndex(),
+                    containerId: thisContainerId,
+                    content: modCmd + "\n" + mdconf.jsonToMd({
+                        "skills": $scope.skills
+                    }) + "\n```\n"
+                }
+                console.log(newItemObj.content);
+                $rootScope.$broadcast("changeProfileMd", newItemObj);
+            }
+
+            $scope.showSkillModal = function(index){
+                $scope.addingSkill = angular.copy($scope.skills[index]);
                 $uibModal.open({
                     template: addSkillModalHtmlContent,
                     controller: "addSkillModalCtrl",
@@ -59,34 +74,65 @@ define([
                     scope: $scope,
                     backdrop:'static'
                 }).result.then(function(result){
-                    $scope.skills.push(result);
-                    initRadar();
-                    var newItemObj = {
-                        index: getBlockIndex(),
-                        containerId: thisContainerId,
-                        content: modCmd + "\n" + mdconf.jsonToMd({
-                            "skills": $scope.skills
-                        }) + "\n```\n"
+                    console.log(index);
+                    if (index >= 0) {
+                        $scope.skills[index] = result;
+                    }else{
+                        $scope.skills.push(result);
                     }
-                    console.log(newItemObj.content);
-                    $rootScope.$broadcast("changeProfileMd", newItemObj);
+                    modifySkillsMd();
                 }, function(){
                 });
             }
+
+            $scope.editSkill = function(){
+                $scope.editing = !$scope.editing;
+            };
+
+            $scope.setSkill = function(index){
+                $scope.showSkillModal(index);
+            };
+
+            $scope.shiftUp = function(index){
+                var prev = index - 1;
+                $scope.skills[prev] = $scope.skills.splice((prev + 1), 1, $scope.skills[prev])[0];
+                modifySkillsMd();
+            };
+
+            $scope.shiftDown = function(index){
+                var prev = index;
+                $scope.skills[prev] = $scope.skills.splice((prev + 1), 1, $scope.skills[prev])[0];
+                modifySkillsMd();
+            };
+
+            $scope.deleteSkill = function(index){
+                config.services.confirmDialog({
+                    "title": "删除提示",
+                    "theme": "danger",
+                    "content": "确定删除 " + $scope.skills[index].title + "?"
+                }, function(result){
+                    $scope.skills.splice(index, 1);
+                    modifySkillsMd();
+                }, function(cancel){
+                    console.log("cancel delete");
+                });
+            };
 
             var radarEchartsObj;
 
             var initRadar = function(){
                 var indicator = [];
                 var value = [];
-                $scope.skills.map(function(skill){
+                var end = ($scope.skills.length > 5) ? 5 : ($scope.skills.length);
+                for(var i = 0;i < end;i++){
+                    var skill = $scope.skills[i];
                     indicator.push({
                         name: skill.title,
                         max: 5,
                         color: "#666"
                     });
                     value.push(skill.level);
-                });
+                }
                 console.log(indicator);
                 console.log(value);
                 if (indicator.length <= 0 && value.length <= 0) {
@@ -150,7 +196,7 @@ define([
         }]);
 
         app.registerController("addSkillModalCtrl", ['$scope', '$uibModalInstance',function ($scope, $uibModalInstance) {
-            $scope.addingSkill = {};
+            $scope.addingSkill = $scope.addingSkill || {};
             $scope.cancel = function(){
                 $uibModalInstance.dismiss("cancel");
             }
