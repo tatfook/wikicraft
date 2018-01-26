@@ -71,8 +71,21 @@
     .user-header .main-msg>span:last-child {
         border-right: none;
     }
+
+    .user-header .btn-concern {
+        width: 168px;
+        height: 32px;
+        padding: 0;
+        line-height: 30px;
+        font-size: 16px;
+        margin-top: 18px;
+    }
+    
+    .user-other .detail-msg{
+        margin-top: 15px;
+    }
 </style>
-<div class="user-header" ng-controller="userMsgCtrl">
+<div class="user-header" ng-class="{false:'user-other'}[isSelf]" ng-controller="userMsgCtrl">
     <div class="img-text">
         <div class="profile">
             <img ng-src="{{userinfo.portrait || imgsPath+'wiki_default_profile.jpg'}}" alt="">
@@ -91,6 +104,11 @@
         </span>
         <span>
             <a>{{userinfo.fansCount || 0}} 粉丝</a>
+        </span>
+    </p>
+    <p ng-show="isOthers">
+        <span class="btn btn-primary btn-concern" ng-click="favoriteUser(userinfo, 'fansOpt')">
+            {{userinfo.concerned?translate("取消关注"):translate("关 注")}}
         </span>
     </p>
     <p class="detail-msg">

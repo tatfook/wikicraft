@@ -2,7 +2,7 @@
  * @Author: ZhangKaitlyn 
  * @Date: 2018-01-19
  * @Last Modified by: none
- * @Last Modified time: 2018-01-26 17:04:47
+ * @Last Modified time: 2018-01-26 19:22:47
  */
 define([
     'app', 
@@ -182,9 +182,7 @@ define([
                     }]
                 };
 
-                console.log(radarEchartsObj);
-                // radarEchartsObj && radarEchartsObj.dispose && radarEchartsObj.dispose();
-                console.log(radarEchartsObj);
+                radarEchartsObj && radarEchartsObj.dispose && radarEchartsObj.dispose();
     
                 var radarContainer = document.getElementById("skillRadar");
                 radarEchartsObj = echartsRadar.init(radarContainer);

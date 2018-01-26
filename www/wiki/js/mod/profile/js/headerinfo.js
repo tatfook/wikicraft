@@ -1,15 +1,16 @@
 /*
  * @Author: ZhangKaitlyn 
  * @Date: 2018-01-19
- * @Last Modified by: mikey.zhaopeng
- * @Last Modified time: 2018-01-19 11:31:51
+ * @Last Modified by: none
+ * @Last Modified time: 2018-01-26 19:05:21
  */
 define([
     'app', 
+    'helper/util',
     'text!wikimod/profile/html/headerinfo.html'
-], function (app, htmlContent) {
+], function (app, util, htmlContent) {
     function registerController(wikiBlock) {
-        app.registerController("userMsgCtrl", ['$scope',function ($scope) {
+        app.registerController("userMsgCtrl", ['$scope', 'Message', function ($scope, Message) {
 			wikiBlock.init({
 				scope:$scope,
 				params_template:{
@@ -17,7 +18,67 @@ define([
 				}
 			});
 
-			console.log($scope.params);			
+            console.log($scope.params);
+            $scope.favoriteUser = function (fansUser, subInfo) {
+                if (!$scope.userinfo) {
+                    $scope.concerned = !$scope.concerned;
+                    return;
+                }
+    
+                if (!Account.isAuthenticated()) {
+                    Message.info("登录后才能关注");
+                    modal('controller/loginController', {
+                        controller: 'loginController',
+                        size: 'lg',
+                        backdrop: true
+                    }, function (result) {
+                        console.log(result);
+                        // nowPage.replaceSelection(login.content);
+                    }, function (result) {
+                        console.log(result);
+                    });
+                    return; // 登录后才能关注
+                }
+    
+                fansUser = fansUser ? fansUser : $scope.userinfo;//关注该页面的用户，或者关注这个用户的粉丝
+    
+                if (!Account.isAuthenticated() || !$scope.user || $scope.user._id == fansUser._id) {
+                    Message.info("自己不关注自己");
+                    return; // 自己不关注自己
+                }
+    
+                var ownUserFan = {
+                    "userId": fansUser._id,
+                    "fansUserId": $scope.user._id,
+                    "userinfo": $scope.user
+                };
+    
+                if(fansUser.concerned){//取消关注
+                    util.post(config.apiUrlPrefix + 'user_fans/unattent', {userId:fansUser._id, fansUserId:$scope.user._id}, function () {
+                        console.log("取消关注成功");
+                        Message.info("取消关注成功");
+                        fansUser.concerned=false;
+                        if (subInfo && subInfo == "fansOpt"){
+                            for(var i = 0;i<$scope.fansList.length;i++){
+                                var fansItem = $scope.fansList[i];
+                                if (fansItem.fansUserId == $scope.user._id){
+                                    $scope.fansList.splice(i, 1);
+                                    break;
+                                }
+                            }
+                        }
+                    });
+                }else{
+                    util.post(config.apiUrlPrefix + 'user_fans/attent', {userId:fansUser._id, fansUserId:$scope.user._id}, function () {
+                        console.log("关注成功");
+                        Message.info("关注成功");
+                        fansUser.concerned=true;
+                        if (subInfo && subInfo == "fansOpt"){
+                            $scope.fansList.push(ownUserFan);
+                        }
+                    });
+                }
+            };
         }]);
     }
 

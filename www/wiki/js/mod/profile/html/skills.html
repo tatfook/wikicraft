@@ -140,9 +140,9 @@
 <div class="user-skills" ng-controller="skillCtrl">
     <h4 class="title">
         我的技能
-        <span class="pull-right">
+        <span class="pull-right" ng-show="isSelf">
             <i class="iconfont icon-tianjia" ng-click="showSkillModal()" ng-hide="editing"></i>
-            <i class="iconfont" ng-class="{true:'icon-fanhui', false:'icon-bianji'}[editing]" ng-click="editSkill()"></i>
+            <i class="iconfont" ng-show="skills.length > 0" ng-class="{true:'icon-fanhui', false:'icon-bianji'}[editing]" ng-click="editSkill()"></i>
         </span>
     </h4>
     <div class="empty-box" ng-hide="skills.length>0">

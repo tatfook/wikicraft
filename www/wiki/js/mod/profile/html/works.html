@@ -204,9 +204,9 @@
 <div class="user-works" ng-controller="worksCtrl">
     <h4 class="title">
         我的作品
-        <span class="pull-right">
+        <span class="pull-right" ng-show="isSelf">
             <i class="iconfont icon-tianjia" ng-hide="editing" ng-click="showModal()"></i>
-            <i class="iconfont" ng-class="{true:'icon-fanhui', false:'icon-bianji'}[editing]" ng-click="editWork()"></i>
+            <i class="iconfont" ng-show="works.length > 0" ng-class="{true:'icon-fanhui', false:'icon-bianji'}[editing]" ng-click="editWork()"></i>
         </span>
     </h4>
     <div class="works-list">

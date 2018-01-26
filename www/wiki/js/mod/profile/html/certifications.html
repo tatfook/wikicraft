@@ -62,9 +62,9 @@
 <div class="user-certification" ng-controller="certificationCtrl">
     <h4 class="title">
         我的认证
-        <span class="pull-right">
+        <span class="pull-right" ng-show="isSelf">
             <i class="iconfont icon-tianjia" ng-click="showCertificationModal()" ng-hide="editing"></i>
-            <i class="iconfont" ng-class="{true:'icon-fanhui', false:'icon-bianji'}[editing]" ng-click="editCertification()"></i>
+            <i class="iconfont" ng-show="certifications.length > 0" ng-class="{true:'icon-fanhui', false:'icon-bianji'}[editing]" ng-click="editCertification()"></i>
         </span>
     </h4>
     <div class="certifications-list">

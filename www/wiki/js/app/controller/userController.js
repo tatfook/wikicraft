@@ -158,6 +158,17 @@ define([
                 // $scope.trendsCount = data.trendsObj.total;
                 // $scope.active = data.activeObj;
                 // contributionCalendar("contributeCalendar",$scope.active);
+                
+                // isSelf: 自己
+                $rootScope.isSelf = ($scope.user && $scope.userinfo && ($scope.user._id == $scope.userinfo._id));
+                // isOthers: 他人(不包括自己和未登录)
+                $rootScope.isOthers = ($scope.user && $scope.userinfo && ($scope.user._id != $scope.userinfo._id));
+
+                if ($scope.user && $scope.user._id) {
+                    util.post(config.apiUrlPrefix + "user_fans/isAttented", {userId:$scope.userinfo._id, fansUserId:$scope.user._id}, function (data) {
+                        $scope.userinfo.concerned=data;
+                    });
+                }
             });
         }
 

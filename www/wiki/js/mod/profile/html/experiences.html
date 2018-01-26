@@ -61,9 +61,9 @@
 <div class="user-experience" ng-controller="experienceCtrl">
     <h4 class="title">
         我的经历
-        <span class="pull-right">
+        <span class="pull-right" ng-show="isSelf">
             <i class="iconfont icon-tianjia" ng-click="showExperienceModal()" ng-hide="editing"></i>
-            <i class="iconfont" ng-class="{true:'icon-fanhui', false:'icon-bianji'}[editing]" ng-click="editExperience()"></i>
+            <i class="iconfont" ng-show="experiences.length > 0" ng-class="{true:'icon-fanhui', false:'icon-bianji'}[editing]" ng-click="editExperience()"></i>
         </span>
     </h4>
     <div class="experiences-list">
