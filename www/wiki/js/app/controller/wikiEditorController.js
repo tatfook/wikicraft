@@ -2846,7 +2846,7 @@ define([
                 //};
 
 				editor.on("cursorActivity", function(cm){
-					mdwiki.cursorActivity();					
+					mdwiki.cursorActivity();
 				});
 
                 editor.on("change", function (cm, changeObj) {
