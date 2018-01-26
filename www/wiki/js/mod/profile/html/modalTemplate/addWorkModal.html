@@ -1,0 +1,53 @@
+<div id="addWorkModal">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+        <h3 class="modal-title">新增作品</h3>
+    </div>
+    <div class="modal-body">
+        <form class="form-horizontal">
+            <div class="form-group form-group-md">
+                <label class="col-sm-3 control-label">作品封面：</label>
+                <div class="col-sm-9 upload-zone">
+                    <div id="preview" class="preview-zone">
+                        <div id="cropper" class="cropper-zone sr-only visible-hidden">
+                        </div>
+                        <div class="result-img-box" ng-show="addingWork.logoUrl">
+                            <img class="result-img" ng-src="{{addingWork.logoUrl}}" alt="">
+                        </div>
+                        <p id="control-box" class="upload-info" ng-class="{true:'have-img'}[addingWork.logoUrl.length > 0]">
+                            <input type="file" name="upload-input" ng-model="addingWork.logoUrl" onchange="angular.element(this).scope().cropperImage(event)">
+                            <span class="icon-add">+</span>
+                            <span class="info">上传封面</span>
+                        </p>
+                    </div>
+                    <div id="finishCrop" class="btn btn-primary sr-only">确定</div>
+                </div>
+            </div>
+            <div class="form-group form-group-md">
+                <label for="inputName" class="col-sm-3 control-label">作品名：</label>
+                <div class="col-sm-9">
+                    <input type="text" class="form-control" ng-model="addingWork.title" id="inputName">
+                </div>
+            </div>
+            <div class="form-group form-group-md">
+                <label for="inputLink" class="col-sm-3 control-label">作品链接：</label>
+                <div class="col-sm-9">
+                    <input type="text" class="form-control" id="inputLink" ng-model="addingWork.workLink">
+                </div>
+            </div>
+            <div class="form-group form-group-md">
+                <label for="inputDesc" class="col-sm-3 control-label">作品简介：</label>
+                <div class="col-sm-9">
+                    <input type="text" class="form-control" ng-model="addingWork.desc" id="inputDesc">
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="modal-footer">
+        <span class="text-danger">{{errMsg}}</span>
+        <button type="button" class="btn btn-primary" ng-click="submitAddingWork()">添加</button>
+        <button type="button" class="btn btn-default" ng-click="cancel()">取消</button>
+    </div>
+</div>

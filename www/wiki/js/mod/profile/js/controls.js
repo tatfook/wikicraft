@@ -2,7 +2,7 @@
  * @Author: ZhangKaitlyn 
  * @Date: 2018-01-19
  * @Last Modified by: none
- * @Last Modified time: 2018-01-22 17:30:41
+ * @Last Modified time: 2018-01-25 17:47:28
  */
 define([
     'app',
@@ -57,11 +57,9 @@ define([
             }
 
             var initView = function(type){
-                console.log(type);
                 type = (type === "profile" || type === "site" || type === "contact") ? type : "profile";
                 var subContent = getSubContent(type);
                 if (subContent && subContent.length > 0) {
-                    console.log(subContent);
                     $timeout(function(){
                         var subHtml = md.render(subContent);
                         console.log(subHtml);

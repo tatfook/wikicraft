@@ -18,6 +18,9 @@ define([
     app.registerController('userController', ['$rootScope', '$scope', '$timeout', 'Account','Message', 'modal', function ($rootScope, $scope, $timeout, Account, Message, modal) {
         const UserSystemProjectName = "keepworkdatasource";
         const ProfileDataFileName = "profile.md";
+        var profileUserMsgBlockList = [];
+        var topMdContent;
+        var userDataSource;
         var splitMainContent = function(origionContent){
             origionContent = origionContent.split("```");
             var topContent= [],subContent = [];
@@ -37,7 +40,7 @@ define([
         };
 
         // 新注册用户及老用户（个人信息md文件不存在处理）
-        var createProfilePages = function(userDataSource, cb, errcb){
+        var createProfilePages = function(cb, errcb){
             var pagePrefix = '/'+ userDataSource.keepwrokUsername +'_datas/';
             var profilePagesList = [
                 {
@@ -78,13 +81,15 @@ define([
             });
         }
 
-        var getUserProfileData = function(userDataSource){
+        var getUserProfileData = function(){
             var profileDataPath = '/'+ userDataSource.keepwrokUsername +'_datas/' + ProfileDataFileName;
             console.log(profileDataPath);
             userDataSource.getFile({path: profileDataPath}, function (data) {
+                var md = markdownwiki({breaks: true, isMainMd:true});
                 var content = data.content || "";
                 var mdContent = splitMainContent(content);
-                var md = markdownwiki({breaks: true, isMainMd:true});
+                topMdContent = mdContent.topContent;
+                profileUserMsgBlockList = md.parse(mdContent.subContent);
                 var topHtml = md.render(mdContent.topContent);
                 util.html("#user-maincontent", topHtml);
             
@@ -92,8 +97,8 @@ define([
             }, function(err){
                 console.log(err);
                 util.html("#user-maincontent", notFoundHtmlContent);
-                createProfilePages(userDataSource, function(){
-                    getUserProfileData(userDataSource);
+                createProfilePages(function(){
+                    getUserProfileData();
                 });
             });
         }
@@ -108,7 +113,8 @@ define([
                 var userSystemDataSource = DataSource.getDefaultDataSource();
                 console.log(userSystemDataSource);
                 $rootScope.userDataSource = userSystemDataSource;
-                getUserProfileData(userSystemDataSource);
+                userDataSource = userSystemDataSource;
+                getUserProfileData();
             });
         }
         function init(userinfo) {
@@ -154,6 +160,41 @@ define([
                 // contributionCalendar("contributeCalendar",$scope.active);
             });
         }
+
+        var saveNewProfileToGit = function(){
+            console.log(profileUserMsgBlockList);
+            var content = "";
+            profileUserMsgBlockList.map(function(block){
+                content += block.content;
+            });
+            var profileDataPath = '/'+ userDataSource.keepwrokUsername +'_datas/' + ProfileDataFileName;
+            userDataSource.writeFile({
+                path: profileDataPath, 
+                content: topMdContent + content
+            }, function(){
+                Message.info("添加成功");
+            }, function(){
+                saveNewProfileToGit();
+                console.log("添加失败");
+            });
+        }
+
+        $rootScope.$on("changeProfileMd", function(e, newBlockItem){
+            if (profileUserMsgBlockList.length <= 0) {
+                return;
+            }
+
+            var blockIndex = newBlockItem.index;
+            var newContent = newBlockItem.content;
+            var isSameBlock = (profileUserMsgBlockList[blockIndex].blockCache.containerId == newBlockItem.containerId);
+            if (isSameBlock) {
+                console.log("两个block不同");
+                return;
+            }
+            profileUserMsgBlockList[blockIndex].content = newContent;
+            saveNewProfileToGit();
+        });
+
         $scope.$watch('$viewContentLoaded', function () {
             //console.log("------------------init user controller----------------------");
             if ($scope.urlObj.username) {

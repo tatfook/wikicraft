@@ -3,13 +3,15 @@
         padding-top: 22px;
         float: left;
     }
-    .user-fans .fans-item > img{
+
+    .user-fans .fans-item>img {
         width: 60px;
         height: 60px;
         object-fit: cover;
         border-radius: 50%;
     }
-    .user-fans .fans-list{
+
+    .user-fans .fans-list {
         min-height: 250px;
         border: 1px solid #F2F2F2;
         padding: 0 28px;
@@ -19,7 +21,11 @@
 <div class="user-fans" ng-controller="fansCtrl">
     <h4 class="title">我的粉丝</h4>
     <div class="fans-list">
-        <div class="fans-item" ng-repeat="fans in fansList">
+        <div class="empty-box" ng-hide="fansList.length > 0">
+            <span class="iconfont icon-kongbaiyemian"></span>
+            <p translate="暂无相关内容..."></p>
+        </div>
+        <div class="fans-item" ng-repeat="fans in fansList" ng-show="fansList.length > 0">
             <img ng-src="{{fans.userinfo.logoUrl || getImageUrl('default_portrait.png',imgsPath)}}" alt="">
             <h4>{{fans.userinfo.displayName || fans.userinfo.username}}</h4>
         </div>

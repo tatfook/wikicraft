@@ -46,17 +46,23 @@
     <h4 class="title">
         我的认证
         <span class="pull-right">
-            <i class="iconfont icon-tianjia"></i>
+            <i class="iconfont icon-tianjia" ng-click="showCertificationModal()"></i>
             <i class="iconfont icon-bianji"></i>
         </span>
     </h4>
     <div class="certifications-list">
-        <table>
+        <div class="empty-box" ng-hide="certifications.length>0">
+            <span class="iconfont icon-kongbaiyemian"></span>
+            <p translate="暂无相关内容..."></p>
+        </div>
+        <table ng-show="certifications.length>0">
             <tr class="certification-item" ng-repeat="certification in certifications">
                 <td class="title ellipsis-1">{{certification.title}}</td>
                 <td class="link ellipsis-1">{{certification.link}}</td>
-                <td class="time ellipsis-1">{{certification.time}}</td>
+                <td class="time ellipsis-1">{{certification.getDate}}</td>
             </tr>
         </table>
     </div>
+
+    <div class="add-certification-modal modal-parent"></div>
 </div>

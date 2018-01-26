@@ -1,6 +1,16 @@
 <style>
+    .user-skills{
+        padding-bottom: 47px;
+    }
+
+    .user-skills .empty-box {
+        border: 1px solid #F2F2F2;
+        margin: 20px 0 0;
+    }
+
     .user-skills .skill-radar {
         min-height: 235px;
+        border-left: 1px solid #F2F2F2;
     }
 
     .user-skills ul {
@@ -16,7 +26,6 @@
     }
 
     .user-skills .v-skill-ul {
-        border-right: 1px solid #F2F2F2;
         padding-right: 73px;
     }
 
@@ -72,7 +81,7 @@
     .user-skills .other-skill {
         border: 1px solid #F2F2F2;
         padding: 30px 20px 20px;
-        margin-bottom: 47px;
+        /* margin-bottom: 47px; */
     }
 
     .user-skills .h-li {
@@ -93,7 +102,7 @@
         background-color: transparent;
     }
 
-    .user-skills .other-skill-footer{
+    .user-skills .other-skill-footer {
         text-align: center;
     }
 
@@ -119,11 +128,15 @@
     <h4 class="title">
         我的技能
         <span class="pull-right">
-            <i class="iconfont icon-tianjia"></i>
+            <i class="iconfont icon-tianjia" ng-click="showSkillModal()"></i>
             <i class="iconfont icon-bianji"></i>
         </span>
     </h4>
-    <div class="main-skill clearfix">
+    <div class="empty-box" ng-hide="skills.length>0">
+        <span class="iconfont icon-kongbaiyemian"></span>
+        <p translate="暂无相关内容..."></p>
+    </div>
+    <div class="main-skill clearfix" ng-show="skills.length>0">
         <ul class="col-sm-6 v-skill-ul">
             <li class="clearfix v-li" ng-repeat="skill in skills | limitTo: 5">
                 <span class="title">{{skill.title}}</span>
@@ -134,7 +147,7 @@
         <div class="col-sm-6 skill-radar" id="skillRadar">
         </div>
     </div>
-    <div class="other-skill">
+    <div class="other-skill" ng-show="skills.length > 5">
         <ul class="h-skill-ul clearfix">
             <li class="clearfix h-li" ng-repeat="skill in skills | limitTo: (5 - skills.length)">
                 <span class="title">{{skill.title}}</span>
@@ -142,10 +155,12 @@
             </li>
         </ul>
         <div class="other-skill-footer">
-            <div class="btn btn-primary" ng-click="loadMoreSkills()">
+            <div class="btn btn-primary" disabled ng-click="loadMoreSkills()">
                 {{ "更多" | translate }}
                 <span class="glyphicon glyphicon-menu-down"></span>
             </div>
         </div>
     </div>
+
+    <div class="add-skill-modal modal-parent"></div>
 </div>
