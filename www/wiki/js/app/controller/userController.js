@@ -172,10 +172,10 @@ define([
                 path: profileDataPath, 
                 content: topMdContent + content
             }, function(){
-                Message.info("添加成功");
+                Message.info("修改成功");
             }, function(){
                 saveNewProfileToGit();
-                console.log("添加失败");
+                console.log("修改失败");
             });
         }
 

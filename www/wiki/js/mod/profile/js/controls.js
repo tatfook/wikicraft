@@ -2,7 +2,7 @@
  * @Author: ZhangKaitlyn 
  * @Date: 2018-01-19
  * @Last Modified by: none
- * @Last Modified time: 2018-01-25 17:47:28
+ * @Last Modified time: 2018-01-26 14:46:07
  */
 define([
     'app',
@@ -62,7 +62,6 @@ define([
                 if (subContent && subContent.length > 0) {
                     $timeout(function(){
                         var subHtml = md.render(subContent);
-                        console.log(subHtml);
                         util.html("#profileMain", subHtml);
                     }, 0);
                     return;
