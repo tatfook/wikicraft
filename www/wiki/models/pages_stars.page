@@ -43,6 +43,10 @@ function pages_stars:star(params)
         err ,result = yield()
         if (result) then result = {starred = true} end
     end
+    self:db():count({url = params.url}, resume)
+    local _, starredCount = yield()
+    result.starredCount = starredCount
+    
     return errors:wrap(err, result)
 end
 

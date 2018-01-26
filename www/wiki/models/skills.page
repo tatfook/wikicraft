@@ -51,7 +51,7 @@ end
 
 function skills:insert_validator(params)
     local clean_data = {}
-    local required_fields = {"username", "title", "level", "works"}
+    local required_fields = {"username", "title", "level"}
     local are_they_sensitive_fields = {"title"}
     local fields_length = {username = 30, title = 30}
     local fields_range = {level = {gte = 1, lte = 5}}
@@ -110,9 +110,7 @@ function skills:api_update(params)
     if (result) then
         -- params.id = result._id
         -- self:update_to_es(params)
-        result.likedCount = result.likedCount or 0
-        result.usersLiked = nil
-        result._id = nil
+        result = {level = result.level}
     end
     return errors:wrap(err, result)
 end
@@ -120,7 +118,7 @@ end
 
 function skills:update_validator(params)
     local clean_data = {}
-    local required_fields = {"username", "title", "level", "works"}
+    local required_fields = {"username", "title", "level"}
     local fields_range = {level = {gte = 1, lte = 5}}
     local validate_tasks = {
         {
@@ -161,8 +159,7 @@ function skills:api_like(params)
         if (message) then
             return response:status(404):send({error={message=message,status=404}})
         end
-        result.usersLiked = nil -- do not show usersLiked unless necessary
-        result._id = nil
+        result = {liked = result.liked, likedCount = result.likedCount}
     end
    
     return errors:wrap(err, result)
@@ -316,7 +313,7 @@ function skills:insert_to_es(params)
         username = params.username,
         level = params.level,
         title = params.title,
-        works = params.works,
+        works = params.works or {},
         usersLiked = {},
         likedCount = 0
     }
