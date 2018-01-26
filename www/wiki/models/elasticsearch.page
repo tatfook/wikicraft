@@ -14,10 +14,11 @@ local elasticsearch = inherit(models.abstract.base, gettable("models.elasticsear
 -- set host,port and index
 function elasticsearch:connect(params)
     local params = params or {}
-    self.host = params.host or KEEPWORK["config"]["default"]["wiki"]["es_setting"]["host"]
-    self.port = params.port or KEEPWORK["config"]["default"]["wiki"]["es_setting"]["port"]
+    self.host = params.host or KEEPWORK["config"]["default"]["wiki"]["es_setting"]["host"] or "localhost"
+    self.port = params.port or KEEPWORK["config"]["default"]["wiki"]["es_setting"]["port"] or 9200
     self.index = params.index or KEEPWORK["config"]["default"]["wiki"]["es_setting"]["index"]
     self.url = format("http://%s:%d/%s/", self.host, self.port, self.index)
+    self.enabled = params.enabled or KEEPWORK["config"]["default"]["wiki"]["es_setting"]["enabled"] or 1
 end
 
 
@@ -45,7 +46,6 @@ function elasticsearch:locator(params)
 
     return format("%s%s%s", self.url, _type, _id)
 end
-
 
 
 function elasticsearch:insertOne(params)
@@ -77,27 +77,24 @@ function elasticsearch:updateOne(params)
 end
 
 
--- can only find by single field(like id or access_url)
+-- can only find by single field(like id or any other keyword field)
 function elasticsearch:findOne(params)
-    if params.id then
-        params._id = params.id
-        params.id = nil
-    end
-    
+    local term = {_id = params.id}
+    params.id = nil
+
     local location = self:locator(params)
     local search_in = location.. "_search"
     params.type = nil
 
-    if params.access_url then
-        params["access_url.keyword"] = params.access_url
-        params.access_url = nil
+    for k, v in pairs(params) do
+        if (not term._id) then term[format("%s.keyword", k)] = v end
     end
 
     local body = {
         query = {
             constant_score = { 
                 filter = {
-                    term = params
+                    term = term
                 }
             }
         }
@@ -191,6 +188,10 @@ end
 
 
 function elasticsearch:sendToES(params)
+    if (self.enabled == 0) then
+        local message = "elasticsearch not enabled"
+        return response:status(404):send({error={message=message,status=404}})
+    end
     if (not params.send_to) then
         return errors:wrap(errors.REQUEST_PARAMS_ERROR)
     end
@@ -210,7 +211,8 @@ function elasticsearch:sendToES(params)
         info.method = nil
     else
         if (info.method == "POST") then
-            -- 因es不能接受空JSON对象将空表{}转为JSON中的空数组[]
+
+            -- send empty table as an array
             info.postfields = commonlib.Json.Encode(info.form, true)
         end
     end
@@ -218,10 +220,7 @@ function elasticsearch:sendToES(params)
     System.os.GetUrl(info, resume)
     local err, result = yield()
 
-    -- 若返回错误，则记录
     self:errors_logger(err, result, info)
-
-    -- return errors:wrap(err, result.data)
     return errors:wrap(err, result)
 end
 

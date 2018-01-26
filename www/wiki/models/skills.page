@@ -38,14 +38,16 @@ function skills:api_insert(params)
     self:db():insertOne({["+username+title"] = {skill.username, skill.title}}, skill, resume)
     local err, result = yield()
     if (result) then
-        params.id = result._id
-        self:insert_to_es(params)
+        -- params.id = result._id
+        -- self:insert_to_es(params)
         result.likedCount = result.likedCount or 0
         result.usersLiked = nil
         result._id = nil
     end
+    
     return errors:wrap(err, result)
 end
+
 
 function skills:insert_validator(params)
     local clean_data = {}
@@ -53,6 +55,10 @@ function skills:insert_validator(params)
     local are_they_sensitive_fields = {"title"}
     local fields_length = {username = 30, title = 30}
     local fields_range = {level = {gte = 0, lte = 5}}
+    local index_fields_and_model_instance = {
+        index_fields = {"username", "title"},
+        model_instance = self
+    }
     local user_model_instance = models.user:new()
     local validate_tasks = {
         {
@@ -70,6 +76,9 @@ function skills:insert_validator(params)
         }, {
             validator = validators.number_range_validator,
             condition = fields_range
+        }, {
+            validator = validators.existence_validator,
+            condition = index_fields_and_model_instance
         }
     }
     validators:add_validate_tasks(validate_tasks, params)
@@ -80,9 +89,9 @@ function skills:insert_validator(params)
         clean_data = {
             title = params.title,
             username = params.username,
-            level = params.level
-            -- usersLiked = {},
-            -- likedCount = 0
+            level = params.level,
+            usersLiked = {},
+            likedCount = 0,
         }
     end
 
@@ -99,8 +108,8 @@ function skills:api_update(params)
     self:db():updateOne({["+username+title"]={skill.username, skill.title}}, {level=skill.level}, resume)
     local err, result = yield()
     if (result) then
-        params.id = result._id
-        self:update_to_es(params)
+        -- params.id = result._id
+        -- self:update_to_es(params)
         result.likedCount = result.likedCount or 0
         result.usersLiked = nil
         result._id = nil
@@ -162,13 +171,13 @@ end
 
 function skills:update_liked_data(params)
     usersLiked = params.usersLiked
-    local doesVisitorLike = true
+    local liked = true
     local err, result, message
     -- to check whether the visitor likes or dislike this skill
     local is_visitor_in_usersLiked, position = self:is_visitor_in_usersLiked(params.visitor, usersLiked)
     if (is_visitor_in_usersLiked) then
         table.remove(usersLiked, position)
-        doesVisitorLike = false
+        liked = false
     else
         usersLiked[(#usersLiked) + 1] = params.visitor
     end
@@ -181,16 +190,17 @@ function skills:update_liked_data(params)
     if (likedCount <= 10000) then
         self:db():updateOne({["+username+title"]={params.username, params.title}}, data_to_update, resume)
         err, result = yield()
-        if (result) then
-            data_to_update.id = result._id
-            self:update_liked_in_es(data_to_update)
-        end
-        result.doesVisitorLike = doesVisitorLike
+        -- if (result) then
+        --     data_to_update.id = result._id
+        --     self:update_liked_in_es(data_to_update)
+        -- end
+        result.liked = liked
     else
         message = "likedCount over limit(10000)"
     end
     return err, result, message
 end
+
 
 function skills:like_validator(params)
     local clean_data = {}
@@ -227,7 +237,7 @@ function skills:api_getLikedStatus(params)
         for i, skill in ipairs(skills) do
             skill.usersLiked = skill.usersLiked or {}
             skill.likedCount = skill.likedCount or #(skill.usersLiked)
-            skill.doesVisitorLike = self:is_visitor_in_usersLiked(params.visitor, skill.usersLiked)
+            skill.liked = self:is_visitor_in_usersLiked(params.visitor, skill.usersLiked)
             skill.usersLiked = nil  -- do not show usersLiked unless necessary
             skill._id = nil
         end
@@ -249,8 +259,8 @@ function skills:api_getDetail(params)
     if (result) then
         local usersLiked = {}
         local limit = 50
-        local doesVisitorLike, position = self:is_visitor_in_usersLiked(params.visitor, result.usersLiked)
-        if (doesVisitorLike) then
+        local liked, position = self:is_visitor_in_usersLiked(params.visitor, result.usersLiked)
+        if (liked) then
             usersLiked[1] = table.remove(result.usersLiked, position)
             limit = 49
         end
@@ -259,7 +269,7 @@ function skills:api_getDetail(params)
             usersLiked[(#usersLiked) + 1] = result.usersLiked[(#result.usersLiked) - (limit - i)]
         end
         result.usersLiked = usersLiked
-        result.doesVisitorLike = doesVisitorLike
+        result.liked = liked
         result.likedCount = result.likedCount or 0
         result._id = nil
     end
@@ -281,9 +291,8 @@ function skills:api_delete(params)
     if (skill) then
         self:db():deleteOne({_id=skill._id}, resume)
         local err, result = yield()
-
-        params.id = skill._id
-        self:delete_in_es(params)
+        -- params.id = skill._id
+        -- self:delete_in_es(params)
     end
 
     return errors:wrap(err, result)
@@ -422,15 +431,4 @@ function skills:wrap_search_result(result)
     return wrapped_result
 end
 
-
--- function skills:api_test()
---     local params = {
---         username = "user1",
---         title = "npl",
---         visitor = "visitor1",
---         level = 5,
---         works = {}
---     }
---     return self:api_insert(params)
--- end
 
