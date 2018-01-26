@@ -41,13 +41,30 @@
         color: #999;
         text-align: right;
     }
+
+    .user-certification .editing-certifications td.title{
+        width: 24%;
+    }
+
+    .user-certification .editing-certifications td.link{
+        width: 39%;
+    }
+
+    .user-certification .editing-certifications td.time{
+        width: 19%;
+    }
+
+    .user-certification .editing-certifications td.editing-toolbar{
+        width: 18%;
+        text-align: right;
+    }
 </style>
 <div class="user-certification" ng-controller="certificationCtrl">
     <h4 class="title">
         我的认证
         <span class="pull-right">
-            <i class="iconfont icon-tianjia" ng-click="showCertificationModal()"></i>
-            <i class="iconfont icon-bianji"></i>
+            <i class="iconfont icon-tianjia" ng-click="showCertificationModal()" ng-hide="editing"></i>
+            <i class="iconfont" ng-class="{true:'icon-fanhui', false:'icon-bianji'}[editing]" ng-click="editCertification()"></i>
         </span>
     </h4>
     <div class="certifications-list">
@@ -55,11 +72,17 @@
             <span class="iconfont icon-kongbaiyemian"></span>
             <p translate="暂无相关内容..."></p>
         </div>
-        <table ng-show="certifications.length>0">
+        <table ng-show="certifications.length>0" ng-class="{true:'editing-certifications'}[editing]">
             <tr class="certification-item" ng-repeat="certification in certifications">
                 <td class="title ellipsis-1">{{certification.title}}</td>
                 <td class="link ellipsis-1">{{certification.link}}</td>
                 <td class="time ellipsis-1">{{certification.getDate}}</td>
+                <td class="editing-toolbar" ng-show="editing">
+                    <span class="iconfont icon-shezhi" ng-click="setCertification($index)"></span>
+                    <span class="iconfont icon-shangyi" ng-click="shiftUp($index)"></span>
+                    <span class="iconfont icon-xiayi" ng-click="shiftDown($index)"></span>
+                    <span class="iconfont icon-shanchu1" ng-click="deleteCertification($index)"></span>
+                </td>
             </tr>
         </table>
     </div>

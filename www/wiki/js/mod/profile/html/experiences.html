@@ -40,13 +40,30 @@
         font-size: 14px;
         color: #999;
     }
+
+    .user-experience .editing-experiences td.title{
+        width: 24%;
+    }
+
+    .user-experience .editing-experiences td.link{
+        width: 39%;
+    }
+
+    .user-experience .editing-experiences td.time{
+        width: 19%;
+    }
+
+    .user-experience .editing-experiences td.editing-toolbar{
+        width: 18%;
+        text-align: right;
+    }
 </style>
 <div class="user-experience" ng-controller="experienceCtrl">
     <h4 class="title">
         我的经历
         <span class="pull-right">
-            <i class="iconfont icon-tianjia" ng-click="showExperienceModal()"></i>
-            <i class="iconfont icon-bianji"></i>
+            <i class="iconfont icon-tianjia" ng-click="showExperienceModal()" ng-hide="editing"></i>
+            <i class="iconfont" ng-class="{true:'icon-fanhui', false:'icon-bianji'}[editing]" ng-click="editExperience()"></i>
         </span>
     </h4>
     <div class="experiences-list">
@@ -54,11 +71,17 @@
             <span class="iconfont icon-kongbaiyemian"></span>
             <p translate="暂无相关内容..."></p>
         </div>
-        <table ng-show="experiences.length>0">
+        <table ng-show="experiences.length>0" ng-class="{true:'editing-experiences'}[editing]">
             <tr class="experience-item" ng-repeat="experience in experiences">
                 <td class="title ellipsis-1">{{experience.title}}</td>
                 <td class="link ellipsis-1">{{experience.link}}</td>
                 <td class="time ellipsis-1">{{experience.startDate+"至"+experience.endDate}}</td>
+                <td class="editing-toolbar" ng-show="editing">
+                    <span class="iconfont icon-shezhi" ng-click="setExperience($index)"></span>
+                    <span class="iconfont icon-shangyi" ng-click="shiftUp($index)"></span>
+                    <span class="iconfont icon-xiayi" ng-click="shiftDown($index)"></span>
+                    <span class="iconfont icon-shanchu1" ng-click="deleteExperience($index)"></span>
+                </td>
             </tr>
         </table>
     </div>

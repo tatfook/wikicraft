@@ -2,7 +2,7 @@
  * @Author: ZhangKaitlyn 
  * @Date: 2018-01-19
  * @Last Modified by: none
- * @Last Modified time: 2018-01-25 22:17:37
+ * @Last Modified time: 2018-01-26 17:38:52
  */
 define([
     'app', 
@@ -34,6 +34,7 @@ define([
             });
             
             $scope.experiences = Array.from($scope.params.experiences);
+            $scope.editing = false;
 
             // 获取当前模块的index和containerId
             var getBlockIndex = function(){
@@ -52,7 +53,20 @@ define([
                 return i;
             }
 
-            $scope.showExperienceModal = function(){
+            var modifyExperiencesMd = function(){
+                var newItemObj = {
+                    index: getBlockIndex(),
+                    containerId: thisContainerId,
+                    content: modCmd + "\n" + mdconf.jsonToMd({
+                        "experiences": $scope.experiences
+                    }) + "\n```\n"
+                }
+                console.log(newItemObj.content);
+                $rootScope.$broadcast("changeProfileMd", newItemObj);
+            }
+
+            $scope.showExperienceModal = function(index){
+                $scope.addingExperience = angular.copy($scope.experiences[index]);
                 $uibModal.open({
                     template: addExperienceModalHtmlContent,
                     controller: "addExperiencelModalCtrl",
@@ -60,23 +74,52 @@ define([
                     scope: $scope,
                     backdrop:'static'
                 }).result.then(function(result){
-                    $scope.experiences.push(result);
-                    var newItemObj = {
-                        index: getBlockIndex(),
-                        containerId: thisContainerId,
-                        content: modCmd + "\n" + mdconf.jsonToMd({
-                            "experiences": $scope.experiences
-                        }) + "\n```\n"
+                    if (index >= 0) {
+                        $scope.experiences[index] = result;
+                    }else{
+                        $scope.experiences.push(result);
                     }
-                    console.log(newItemObj.content);
-                    $rootScope.$broadcast("changeProfileMd", newItemObj);
+                    modifyExperiencesMd();
                 }, function(){
                 });
             }
+
+            $scope.editExperience = function(){
+                $scope.editing = !$scope.editing;
+            };
+
+            $scope.setExperience = function(index){
+                $scope.showExperienceModal(index);
+            };
+
+            $scope.shiftUp = function(index){
+                var prev = index - 1;
+                $scope.experiences[prev] = $scope.experiences.splice((prev + 1), 1, $scope.experiences[prev])[0];
+                modifyExperiencesMd();
+            };
+
+            $scope.shiftDown = function(index){
+                var prev = index;
+                $scope.experiences[prev] = $scope.experiences.splice((prev + 1), 1, $scope.experiences[prev])[0];
+                modifyExperiencesMd();
+            };
+
+            $scope.deleteExperience = function(index){
+                config.services.confirmDialog({
+                    "title": "删除提示",
+                    "theme": "danger",
+                    "content": "确定删除 " + $scope.experiences[index].title + "?"
+                }, function(result){
+                    $scope.experiences.splice(index, 1);
+                    modifyExperiencesMd();
+                }, function(cancel){
+                    console.log("cancel delete");
+                });
+            };
         }]);
 
         app.registerController("addExperiencelModalCtrl", ['$scope', '$uibModalInstance',function ($scope, $uibModalInstance) {
-            $scope.addingExperience = {};
+            $scope.addingExperience = $scope.addingExperience || {};
             $scope.cancel = function(){
                 $uibModalInstance.dismiss("cancel");
             }

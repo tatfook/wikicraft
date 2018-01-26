@@ -2,7 +2,7 @@
  * @Author: ZhangKaitlyn 
  * @Date: 2018-01-19
  * @Last Modified by: none
- * @Last Modified time: 2018-01-26 10:30:06
+ * @Last Modified time: 2018-01-26 17:53:32
  */
 define([
     'app', 
@@ -32,6 +32,7 @@ define([
             });
             
             $scope.certifications = Array.from($scope.params.certifications);
+            $scope.editing = false;
 
             // 获取当前模块的index和containerId
             var getBlockIndex = function(){
@@ -50,7 +51,20 @@ define([
                 return i;
             }
 
-            $scope.showCertificationModal = function(){
+            var modifyCertificationsMd = function(){
+                var newItemObj = {
+                    index: getBlockIndex(),
+                    containerId: thisContainerId,
+                    content: modCmd + "\n" + mdconf.jsonToMd({
+                        "certifications": $scope.certifications
+                    }) + "\n```\n"
+                }
+                console.log(newItemObj.content);
+                $rootScope.$broadcast("changeProfileMd", newItemObj);
+            }
+
+            $scope.showCertificationModal = function(index){
+                $scope.addingCertification = angular.copy($scope.certifications[index]);
                 $uibModal.open({
                     template: addCertificationModalHtmlContent,
                     controller: "addCertificationModalCtrl",
@@ -58,23 +72,52 @@ define([
                     scope: $scope,
                     backdrop:'static'
                 }).result.then(function(result){
-                    $scope.certifications.push(result);
-                    var newItemObj = {
-                        index: getBlockIndex(),
-                        containerId: thisContainerId,
-                        content: modCmd + "\n" + mdconf.jsonToMd({
-                            "certifications": $scope.certifications
-                        }) + "\n```\n"
+                    if (index >= 0) {
+                        $scope.certifications[index] = result;
+                    }else{
+                        $scope.certifications.push(result);
                     }
-                    console.log(newItemObj.content);
-                    $rootScope.$broadcast("changeProfileMd", newItemObj);
+                    modifyCertificationsMd();
                 }, function(){
                 });
             }
+
+            $scope.editCertification = function(){
+                $scope.editing = !$scope.editing;
+            };
+
+            $scope.setCertification = function(index){
+                $scope.showCertificationModal(index);
+            };
+
+            $scope.shiftUp = function(index){
+                var prev = index - 1;
+                $scope.certifications[prev] = $scope.certifications.splice((prev + 1), 1, $scope.certifications[prev])[0];
+                modifyCertificationsMd();
+            };
+
+            $scope.shiftDown = function(index){
+                var prev = index;
+                $scope.certifications[prev] = $scope.certifications.splice((prev + 1), 1, $scope.certifications[prev])[0];
+                modifyCertificationsMd();
+            };
+
+            $scope.deleteCertification = function(index){
+                config.services.confirmDialog({
+                    "title": "删除提示",
+                    "theme": "danger",
+                    "content": "确定删除 " + $scope.certifications[index].title + "?"
+                }, function(result){
+                    $scope.certifications.splice(index, 1);
+                    modifyCertificationsMd();
+                }, function(cancel){
+                    console.log("cancel delete");
+                });
+            };
         }]);
 
         app.registerController("addCertificationModalCtrl", ['$scope', '$uibModalInstance',function ($scope, $uibModalInstance) {
-            $scope.addingCertification = {};
+            $scope.addingCertification = $scope.addingCertification || {};
             $scope.cancel = function(){
                 $uibModalInstance.dismiss("cancel");
             }
