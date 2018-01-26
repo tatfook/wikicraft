@@ -35,9 +35,9 @@ function tags:api_insert(params)
     if (not result) then
         self:db():insertOne({["+title"] = {tag.title}}, tag, resume)
         err, result = yield()
-        if (result) then
-            self:insert_to_es(result)
-        end
+        -- if (result) then
+        --     self:insert_to_es(result)
+        -- end
     end
     return errors:wrap(err, result)
 end
@@ -107,9 +107,9 @@ function tags:delete(params)
     if (result) then
         self:db():deleteOne({_id=params._id}, resume)
         err, result = yield()
-        if (result) then
-            self:delete_in_es(params)
-        end
+        -- if (result) then
+        --     self:delete_in_es(params)
+        -- end
     end
     return errors:wrap(err, result)
 end

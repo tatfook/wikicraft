@@ -354,15 +354,3 @@ function pages:wrap_search_result(result)
     return wrapped_result
 end
 
-
-function pages:api_test()
-    page  = {
-        url = "/user1/site1/page52",
-        username = "user1",
-        sitename = "site1",
-        pagetype = "normal",
-    }
-
-    -- return self:api_insert(page)
-    return errors:wrap(self:delete_website(page))
-end

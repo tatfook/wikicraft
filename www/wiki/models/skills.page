@@ -38,8 +38,8 @@ function skills:api_insert(params)
     self:db():insertOne({["+username+title"] = {skill.username, skill.title}}, skill, resume)
     local err, result = yield()
     if (result) then
-        params.id = result._id
-        self:insert_to_es(params)
+        -- params.id = result._id
+        -- self:insert_to_es(params)
         result.likedCount = result.likedCount or 0
         result.usersLiked = nil
         result._id = nil
@@ -47,6 +47,7 @@ function skills:api_insert(params)
     
     return errors:wrap(err, result)
 end
+
 
 function skills:insert_validator(params)
     local clean_data = {}
@@ -107,8 +108,8 @@ function skills:api_update(params)
     self:db():updateOne({["+username+title"]={skill.username, skill.title}}, {level=skill.level}, resume)
     local err, result = yield()
     if (result) then
-        params.id = result._id
-        self:update_to_es(params)
+        -- params.id = result._id
+        -- self:update_to_es(params)
         result.likedCount = result.likedCount or 0
         result.usersLiked = nil
         result._id = nil
@@ -189,16 +190,17 @@ function skills:update_liked_data(params)
     if (likedCount <= 10000) then
         self:db():updateOne({["+username+title"]={params.username, params.title}}, data_to_update, resume)
         err, result = yield()
-        if (result) then
-            data_to_update.id = result._id
-            self:update_liked_in_es(data_to_update)
-        end
+        -- if (result) then
+        --     data_to_update.id = result._id
+        --     self:update_liked_in_es(data_to_update)
+        -- end
         result.liked = liked
     else
         message = "likedCount over limit(10000)"
     end
     return err, result, message
 end
+
 
 function skills:like_validator(params)
     local clean_data = {}
@@ -289,9 +291,8 @@ function skills:api_delete(params)
     if (skill) then
         self:db():deleteOne({_id=skill._id}, resume)
         local err, result = yield()
-
-        params.id = skill._id
-        self:delete_in_es(params)
+        -- params.id = skill._id
+        -- self:delete_in_es(params)
     end
 
     return errors:wrap(err, result)
@@ -430,14 +431,4 @@ function skills:wrap_search_result(result)
     return wrapped_result
 end
 
-
--- function skills:api_test()
---     skill = {
---         username = "user1",
---         title = "npl",
---         level = 5,
---         works = {}
---     }
---     return self:api_insert(skill)
--- end
 
