@@ -23,6 +23,7 @@ include_once("./website_template_config.page")
 include_once("./website_domain.page")
 include_once("./site_data_source.page")
 include_once("./site_group.page")
+include_once("./pages.page")
 
 NPL.load("(gl)script/ide/math/bit.lua")
 
@@ -243,6 +244,8 @@ function website:deleteById(websiteId)
 	-- 删除页信息
 	--local websitePageinfoDB = models.website_pageinfo:new()
 	--websitePageinfoDB:api_delete({sitename=site.name, userId=site.userId})
+	local pages = models.pages:new()
+	pages:delete_website({username=site.username, sitename=site.name})
 
 	-- 删除该站点的所有域名
 	local websiteDomainDB = models.website_domain:new()
