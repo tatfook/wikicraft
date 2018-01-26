@@ -57,19 +57,19 @@ define([
 
 					var setHeightInterval = setInterval(function(){
 						setNow();
-					}, 100);
+					}, 2000);
 
 					var setTimes = 0;
 
 					function setNow(){
-						if(iFrame.offsetHeight != iFrame.contentWindow.document.body.offsetHeight){
-							iFrame.style.height = iFrame.contentWindow.document.body.offsetHeight + "px";
-						}else{
-							if(setTimes <= 50){
-								setTimes++
-							}else{
-								clearInterval(setHeightInterval);
+						if(setTimes <= 3){
+							if(iFrame.offsetHeight != iFrame.contentWindow.document.body.offsetHeight){
+								iFrame.style.height = iFrame.contentWindow.document.body.offsetHeight + "px";
 							}
+
+							setTimes++
+						}else{
+							clearInterval(setHeightInterval);
 						}
 					}
 				}, 0);
