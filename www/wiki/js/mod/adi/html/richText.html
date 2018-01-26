@@ -19,7 +19,7 @@
 </style>
 
 <div ng-controller="richController"
-     class="rich container"
+     class="rich"
      ng-hide="params.modal_rich.is_mod_hide">
     <div ng-hide="!editorMode"
          ng-click="ceshi()"
@@ -34,7 +34,7 @@
              ng-hide="!editorMode"
              ng-dblclick="richClick()">编辑-富文本</div>
 
-        <div class="content"
+        <div class="content container"
              id="{{currentRichText}}"></div>
     </div>
 </div>
