@@ -492,13 +492,13 @@
                    ng-hide="params.multiText_desc.is_mod_hide" 
                    ng-click="viewEditorClick(params.multiText_desc, $event)"
                    href="javascript::void(0)"
-                   ng-bind-html="multiText_desc_md"></a>
+                   ng-bind-html="subMarkdownRender(params.multiText_desc.text)"></a>
                 <a ng-if="!editorMode"
                    ng-hide="params.multiText_desc.is_mod_hide" 
                    ng-class="{true:'world-clear-pointer'}[params.multiText_desc.href.length == 0]"
                    ng-href="{{params.multiText_desc.href}}"
                    target="{{params.multiText_desc.target ? params.multiText_desc.target : '_blank'}}"
-                   ng-bind-html="multiText_desc_md"></a>
+                   ng-bind-html="subMarkdownRender(params.multiText_desc.text)"></a>
             </div>
         </div>
     </div>
@@ -559,13 +559,13 @@
                        ng-hide="params.multiText_desc.is_mod_hide"
                        ng-click="viewEditorClick(params.multiText_desc, $event)"
                        href="javascript::void(0)"
-                       ng-bind-html="multiText_desc_md"></a>
+                       ng-bind-html="subMarkdownRender(params.multiText_desc.text)"></a>
                     <a ng-if="!editorMode"
                        ng-hide="params.multiText_desc.is_mod_hide"
                        ng-class="{true:'world-clear-pointer'}[params.multiText_desc.href.length == 0]"
                        ng-href="{{params.multiText_desc.href}}"
                        target="{{params.multiText_desc.target ? params.multiText_desc.target : '_blank'}}"
-                       ng-bind-html="multiText_desc_md"></a>
+                       ng-bind-html="subMarkdownRender(params.multiText_desc.text)"></a>
                 </div>
                 <div ng-hide="params.link_world_url.is_mod_hide">
                     <a class="btn btn-block btn-default world-btn" ng-if="editorMode"  ng-click="viewEditorClick(params.link_world_url, $event)" href="javascript::void(0)">
