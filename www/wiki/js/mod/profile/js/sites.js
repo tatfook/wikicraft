@@ -2,7 +2,7 @@
  * @Author: ZhangKaitlyn 
  * @Date: 2018-01-19
  * @Last Modified by: none
- * @Last Modified time: 2018-01-22 18:13:28
+ * @Last Modified time: 2018-01-27 18:50:14
  */
 define([
     'app', 
@@ -47,8 +47,19 @@ define([
                 "joined":[]
             }
 
-            var getStickSites = function(type){
+            $scope.toggleStickSite = function(site){
+                util.post(config.apiUrlPrefix + "website/setTop", {
+                    sitename: site.name,
+                    username: site.username
+                }, function(data){
+                    site.isTop = data.isTop;
+                }, function(err){
+                    console.log(err);
+                });
+            }
 
+            var getStickSites = function(type){
+                $scope.sites[type] = $scope.allSiteList;
             }
             
             var getCreatedSites = function(type){

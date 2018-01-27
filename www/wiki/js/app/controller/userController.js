@@ -174,7 +174,6 @@ define([
         }
 
         var saveNewProfileToGit = function(){
-            console.log(profileUserMsgBlockList);
             var content = "";
             profileUserMsgBlockList.map(function(block){
                 content += block.content;

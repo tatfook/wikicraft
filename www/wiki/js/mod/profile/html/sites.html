@@ -82,28 +82,34 @@
             <span class="iconfont icon-kongbaiyemian"></span>
             <p translate="暂无相关内容..."></p>
         </div>
-        <div class="sites-item" ng-show="params.type != 'concerned' && sites[params.type].length > 0" ng-repeat="site in sites[params.type] track by $index">
-            <img ng-src="{{site.logoUrl}}">
-            <div class="site-detail">
-                <h4>{{site.name}}</h4>
-                <p class="p-link">
-                    <a ng-href="{{'/'+ site.username+'/'+site.name}}" target="_blank">{{'/'+ site.username+'/'+site.name}}</a>
-                </p>
-                <p class="p-desc">{{site.desc || "暂无简介"}}</p>
-                <p class="p-tags">
-                    <span ng-repeat="tag in site.tags track by $index">{{tag}}</span>
-                </p>
-            </div>
-            <div class="site-other-msg">
-                <span>
-                    <i class="iconfont icon-browse"></i>{{site.visitCount || 0}}
-                </span>
-                <span>
-                    <i class="iconfont icon-collection"></i>{{site.favoriteCount || 0}}
-                </span>
+        <!-- 创建的网站、置顶内容、参与的网站 -->
+        <div class="sites-box" ng-show="params.type != 'concerned' && sites[params.type].length > 0">
+            <div class="sites-item" ng-hide="params.type == 'stick' && !site.isTop" ng-repeat="site in sites[params.type] track by $index">
+                <img ng-src="{{site.logoUrl}}">
+                <div class="site-detail">
+                    <h4>{{site.name}}</h4>
+                    <p class="p-link">
+                        <a ng-href="{{'/'+ site.username+'/'+site.name}}" target="_blank">{{'/'+ site.username+'/'+site.name}}</a>
+                    </p>
+                    <p class="p-desc">{{site.desc || "暂无简介"}}</p>
+                    <p class="p-tags">
+                        <span ng-repeat="tag in site.tags track by $index">{{tag}}</span>
+                    </p>
+                </div>
+                <div class="site-other-msg">
+                    <span>
+                        <i class="iconfont icon-browse"></i>{{site.visitCount || 0}}
+                    </span>
+                    <span>
+                        <i class="iconfont icon-collection"></i>{{site.favoriteCount || 0}}
+                    </span>
+                    <span class="stick-btn iconfont icon-zhiding" ng-show="params.type == 'created'" ng-click="toggleStickSite(site)">
+                    </span>
+                </div>
             </div>
         </div>
 
+        <!-- 关注网站 -->
         <div class="sites-item" ng-show="params.type == 'concerned' && sites[params.type].length > 0" ng-repeat="site in sites[params.type] track by $index">
             <img ng-src="{{site.siteinfo.logoUrl}}">
             <div class="site-detail">

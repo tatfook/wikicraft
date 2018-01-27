@@ -2,7 +2,7 @@
  * @Author: ZhangKaitlyn 
  * @Date: 2018-01-19
  * @Last Modified by: none
- * @Last Modified time: 2018-01-27 17:21:50
+ * @Last Modified time: 2018-01-27 18:54:37
  */
 define([
     'app', 
@@ -276,7 +276,20 @@ define([
                     $scope.errMsg = requiredResult.attr + "不可为空";
                     return;
                 }
-                $uibModalInstance.close($scope.addingSkill);
+
+                util.get(config.apiUrlPrefix + "skills/checkExistence", {
+                    title: $scope.addingSkill.title,
+                    username: $scope.userinfo.username
+                }, function(data){
+                    console.log(data);
+                }, function(err){
+                    if (err.status == '404') {
+                        $scope.errMsg = "该技能已存在";
+                        return;
+                    }
+                    
+                    $uibModalInstance.close($scope.addingSkill);
+                });
             }
 
             $scope.selectLevel = function(level){
