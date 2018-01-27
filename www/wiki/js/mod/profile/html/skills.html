@@ -71,11 +71,15 @@
         width: 36px;
         height: 36px;
         background-color: #e0f1ff;
-        color: #FE7532;
+        color: #999;
         border-radius: 50%;
         text-align: center;
         line-height: 36px;
         font-size: 20px;
+    }
+
+    .user-skills span.icon-icondianzan.active{
+        color: #FE7532;
     }
 
     .user-skills .other-skill {
@@ -154,7 +158,7 @@
             <li class="clearfix v-li" ng-repeat="skill in skills | limitTo: 5 track by $index">
                 <span class="title">{{skill.title}}</span>
                 <span class="level">{{skill.level}}</span>
-                <span class="pull-right iconfont icon-icondianzan"></span>
+                <span class="pull-right iconfont icon-icondianzan" ng-class="{true:'active'}[!skill.data.liked]" ng-click="likeSkill(skill)"></span>
             </li>
         </ul>
         <div class="col-sm-6 skill-radar" id="skillRadar">
