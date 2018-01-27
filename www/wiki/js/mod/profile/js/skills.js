@@ -2,7 +2,7 @@
  * @Author: ZhangKaitlyn 
  * @Date: 2018-01-19
  * @Last Modified by: none
- * @Last Modified time: 2018-01-26 19:22:47
+ * @Last Modified time: 2018-01-27 16:19:02
  */
 define([
     'app', 
@@ -133,8 +133,6 @@ define([
                     });
                     value.push(skill.level);
                 }
-                console.log(indicator);
-                console.log(value);
                 if (indicator.length <= 0 && value.length <= 0) {
                     return;
                 }

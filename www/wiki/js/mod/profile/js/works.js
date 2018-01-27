@@ -2,7 +2,7 @@
  * @Author: ZhangKaitlyn 
  * @Date: 2018-01-19
  * @Last Modified by: none
- * @Last Modified time: 2018-01-27 11:03:18
+ * @Last Modified time: 2018-01-27 16:12:26
  */
 define([
     'app', 
@@ -15,6 +15,8 @@ define([
     function registerController(wikiBlock) {
         app.registerController("worksCtrl", ['$rootScope', '$scope','$uibModal', function ($rootScope, $scope, $uibModal) {
             const modCmd = "```@profile/js/works";
+            const kepeworkLink = "keepwork.com";
+            const keepworkReg = new RegExp(kepeworkLink);
             var thisInBlockIndex;
             var thisContainerId;
 			wikiBlock.init({
@@ -37,9 +39,37 @@ define([
                 }
             });
 
+            var getWorksMsgByUrl = function(){
+                $scope.works.map(function(work, index){
+                    var link = work.workLink;
+                    var linkParams = link.split("/");
+                    var startIndex = link.search(keepworkReg);
+                    if (index >= 0 && linkParams.length >= 3) {
+                        var urlStartIndex = startIndex + kepeworkLink.length;
+                        var backUrl = link.substring(urlStartIndex);
+                        var visitor = ($scope.user && $scope.user.username) || "";
+                        util.get(config.apiUrlPrefix + 'pages/getDetail', {
+                            url: backUrl,
+                            visitor: visitor
+                        }, function(data){
+                            if (!data) {
+                                return;
+                            }
+                            $scope.works[index].data = data
+                        }, function(err){
+                            console.log(err);
+                        })
+                    }else{
+                        $scope.works[index].isThirdLink = true;
+                    }
+                });
+            }
+            
+
             $scope.works = Array.from($scope.params.works);
             $scope.userinfo.worksCount = $scope.works.length;
             $scope.editing = false;
+            getWorksMsgByUrl();
 
             // 获取当前模块的index和containerId
             var getBlockIndex = function(){
