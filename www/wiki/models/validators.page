@@ -96,6 +96,12 @@ function validators.number_range_validator(params, fields_range)
     local message
 
     for field_name, range in pairs(fields_range) do
+        params[field_name] = tonumber(params[field_name])
+        if (not params[field_name]) then
+            is_params_error = true
+            message = format("%s must be a number", field_name)
+            break
+        end
         if (range.gt) then
             if (not (params[field_name] > range.gt)) then
                 is_params_error = true
