@@ -274,6 +274,40 @@ function skills:api_getDetail(params)
 end
 
 
+-- return 404 if skill exists
+function skills:api_checkExistence(params)
+    local skill, is_params_error, message = self:check_existence_validator(params)
+    if (is_params_error) then
+        return response:status(404):send({error={message=message,status=404}})
+    end
+    return errors:wrap(nil)
+end
+
+
+function skills:check_existence_validator(params)
+    local clean_data = {}
+    local required_fields = {"username", "title"}
+    local index_fields_and_model_instance = {
+        index_fields = {"username", "title"},
+        model_instance = self
+    }
+    local user_model_instance = models.user:new()
+    local validate_tasks = {
+        {
+            validator = validators.required_fields_validator,
+            condition = required_fields
+        }, {
+            validator = validators.existence_validator,
+            condition = index_fields_and_model_instance
+        }
+    }
+    validators:add_validate_tasks(validate_tasks, params)
+    local is_params_error, message = validators:get_validate_result()
+    return clean_data, is_params_error, message
+end
+
+
+
 function skills:api_delete(params)
     -- ensureAuthenticated()
     local required_fields = {"username", "title"}
