@@ -2,7 +2,7 @@
  * @Author: ZhangKaitlyn 
  * @Date: 2018-01-19
  * @Last Modified by: none
- * @Last Modified time: 2018-01-27 13:38:14
+ * @Last Modified time: 2018-01-27 16:18:37
  */
 define([
     'app', 
@@ -93,8 +93,6 @@ define([
                     var fakeContent = $("#fake-content");
                     var toggleHeight = toggleContent.height();
                     var fakeHeight = fakeContent.height();
-                    console.log(toggleHeight);
-                    console.log(fakeHeight);
                     $scope.isExceed = (fakeHeight > toggleHeight) ? true : false;
                     util.$apply();
                 });

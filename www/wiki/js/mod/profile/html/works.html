@@ -234,16 +234,16 @@
                     <a ng-href="{{work.workLink}}" target="_blank">{{work.workLink}}</a>
                 </p>
                 <p class="p-desc">{{work.desc}}</p>
-                <p class="p-tags">
-                    <span ng-repeat="tag in work.tags track by $index">{{tag}}</span>
+                <p class="p-tags" ng-hide="work.isThirdLink">
+                    <span ng-repeat="tag in work.data.tags track by $index">{{tag}}</span>
                 </p>
             </div>
-            <div class="work-other-msg absolute-right" ng-hide="editing">
+            <div class="work-other-msg absolute-right" ng-hide="editing || work.isThirdLink">
                 <span>
-                    <i class="iconfont icon-browse"></i>{{work.visitCount || 0}}
+                    <i class="iconfont icon-browse"></i>{{work.data.visitCount || 0}}
                 </span>
                 <span>
-                    <i class="iconfont icon-collection"></i>{{work.favoriteCount || 0}}
+                    <i class="iconfont icon-collection"></i>{{work.data.starredCount || 0}}
                 </span>
             </div>
             <div class="editing-toolbar absolute-right" ng-show="editing">
