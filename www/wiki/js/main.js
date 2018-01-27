@@ -3,7 +3,6 @@
  */
 
 'use strict';
-var Vue;
 
 (function (win) {
 	var pathPrefix = config.pathPrefix;
@@ -181,9 +180,8 @@ var Vue;
 			}
 
 			// ***在angular启动之前加载页面内容，目的是内容js完全兼容之前angular书写方式，否则angular启动后，之前书写方式很多功能失效***
-			require(['angular', 'vue', 'app', 'preload'], function (angular, vue, app) {
+			require(['angular', 'app', 'preload'], function (angular, app) {
 				config.init(function () {
-					Vue = vue;
 					// 加载页面主体内容
 					config.loadMainContent(function () {
 						angular.bootstrap(document, ['webapp']);

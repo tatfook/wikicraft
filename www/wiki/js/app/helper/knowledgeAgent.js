@@ -1,6 +1,10 @@
+var Vue // global vue
+
 define([
+    'vue',
     'botui',
-], function () {
+], function (vue) {
+    Vue = vue
     var agent = {}
     agent.context = {}
     agent.clips = {
