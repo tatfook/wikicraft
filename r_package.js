@@ -66,11 +66,13 @@
         'bootstrap': "lib/bootstrap/js/bootstrap.min",
         'satellizer': 'lib/satellizer/satellizer.min',
         'bootstrap-treeview': 'lib/bootstrap-treeview/bootstrap-treeview.min',
+        'botui': 'lib/botui/botui.min',
+        'vue': 'lib/vue/vue.min',
         //'github-api': 'lib/github-api/GitHub.bundle.min',
         //'cropper': 'lib/cropper/cropper.min',
         'cropper': 'empty:',
         'markdown-it':'lib/markdown-it/markdown-it.min',
-        'highlight': 'lib/highlight/highlight.pack', 
+        'highlight': 'lib/highlight/highlight.pack',
         'js-base64': 'lib/js-base64/base64.min',
 		'js-base32': 'lib/js-base32/base32.min',
         'text': 'lib/requirejs/text',
@@ -151,7 +153,10 @@
 		'qiniu': {
 			deps:['plupload'],
 			exports:'qiniu'
-		}
+        },
+        'botui': {
+            deps:['vue'],
+        },
     },
     packages: [
         {
