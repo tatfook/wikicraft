@@ -84,7 +84,7 @@ define([
         var getUserProfileData = function(){
             var profileDataPath = '/'+ userDataSource.keepwrokUsername +'_datas/' + ProfileDataFileName;
             console.log(profileDataPath);
-            userDataSource.getFile({path: profileDataPath}, function (data) {
+            userDataSource.getFile({path: profileDataPath, ref: 'master'}, function (data) {
                 var md = markdownwiki({breaks: true, isMainMd:true});
                 var content = data.content || "";
                 var mdContent = splitMainContent(content);
