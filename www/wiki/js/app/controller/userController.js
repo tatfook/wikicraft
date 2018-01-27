@@ -110,7 +110,8 @@ define([
                 });
                 var DataSource = dataSource.getUserDataSource(username);
                 DataSource.init(systemSource);
-                var userSystemDataSource = DataSource.getDefaultDataSource();
+                // var userSystemDataSource = DataSource.getDefaultDataSource();
+                var userSystemDataSource = DataSource.getDataSourceBySitename(username);
                 console.log(userSystemDataSource);
                 $rootScope.userDataSource = userSystemDataSource;
                 userDataSource = userSystemDataSource;
