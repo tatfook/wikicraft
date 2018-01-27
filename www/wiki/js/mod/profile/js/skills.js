@@ -2,17 +2,18 @@
  * @Author: ZhangKaitlyn 
  * @Date: 2018-01-19
  * @Last Modified by: none
- * @Last Modified time: 2018-01-27 16:19:02
+ * @Last Modified time: 2018-01-27 17:21:50
  */
 define([
     'app', 
     'text!wikimod/profile/html/skills.html',
     'text!wikimod/profile/html/modalTemplate/addSkillModal.html',
     'helper/mdconf',
+    'helper/util',
     'echarts-radar',
-], function (app, htmlContent, addSkillModalHtmlContent, mdconf, echartsRadar) {
+], function (app, htmlContent, addSkillModalHtmlContent, mdconf, util, echartsRadar) {
     function registerController(wikiBlock) {
-        app.registerController("skillCtrl", ['$rootScope', '$scope', '$uibModal', function ($rootScope, $scope, $uibModal) {
+        app.registerController("skillCtrl", ['$rootScope', '$scope', '$uibModal', 'Message', function ($rootScope, $scope, $uibModal, Message) {
             const modCmd = "```@profile/js/skills";
             var thisInBlockIndex;
             var thisContainerId;
@@ -32,7 +33,26 @@ define([
                 }
             });
             
+            var getSkillLikeStatus = function(){
+                $scope.skills.map(function(skill, index){
+                    var visitor = ($scope.user && $scope.user.username) || "";
+                    util.get(config.apiUrlPrefix + 'skills/getDetail', {
+                        title: skill.title,
+                        visitor: visitor,
+                        username: $scope.userinfo.username
+                    }, function(data){
+                        if (!data) {
+                            return;
+                        }
+                        console.log(data);
+                        $scope.skills[index].data = data
+                    }, function(err){
+                        console.log(err);
+                    })
+                })
+            }
             $scope.skills = Array.from($scope.params.skills);
+            getSkillLikeStatus();
             $scope.editing = false;
             
             // 获取当前模块的index和containerId
@@ -65,6 +85,15 @@ define([
                 $rootScope.$broadcast("changeProfileMd", newItemObj);
             }
 
+            var updateSkill = function(skill, type){
+                type = (type == 'update') ? type : 'insert'; 
+                util.post(config.apiUrlPrefix + 'skills/' + type, {
+                    username: $scope.userinfo.username,
+                    title: skill.title,
+                    level: parseInt(skill.level)
+                }, function(){}, function(){})
+            }
+
             $scope.showSkillModal = function(index){
                 $scope.addingSkill = angular.copy($scope.skills[index]);
                 $uibModal.open({
@@ -77,12 +106,27 @@ define([
                     console.log(index);
                     if (index >= 0) {
                         $scope.skills[index] = result;
+                        updateSkill(result, "update");
                     }else{
                         $scope.skills.push(result);
+                        updateSkill(result, "insert");
                     }
                     modifySkillsMd();
                 }, function(){
                 });
+            }
+
+            $scope.likeSkill = function(skill){
+                var visitor = ($scope.user && $scope.user.username) || "";
+                util.post(config.apiUrlPrefix + 'skills/like', {
+                    title: skill.title,
+                    visitor: visitor,
+                    username: $scope.userinfo.username
+                }, function(data){
+                    skill.data.liked = data.liked;
+                    var act = data.liked ? "取消点赞" : "点赞";
+                    Message.info(act + "成功！");
+                })
             }
 
             $scope.editSkill = function(){
@@ -111,6 +155,12 @@ define([
                     "theme": "danger",
                     "content": "确定删除 " + $scope.skills[index].title + "?"
                 }, function(result){
+                    util.http("DELETE", config.apiUrlPrefix + "skills/delete", {
+                        title: $scope.skills[index].title,
+                        username: $scope.userinfo.username
+                    }, function(){}, function(err){
+                        console.log(err);
+                    })
                     $scope.skills.splice(index, 1);
                     modifySkillsMd();
                 }, function(cancel){

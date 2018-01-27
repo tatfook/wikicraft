@@ -99,7 +99,7 @@
             <div class="form-group form-group-md">
                 <label for="inputName" class="col-sm-3 control-label">技能名称：</label>
                 <div class="col-sm-9">
-                    <input type="text" class="form-control" ng-model="addingSkill.title" id="inputName">
+                    <input ng-disabled="editing" type="text" class="form-control" ng-model="addingSkill.title" id="inputName">
                 </div>
             </div>
             <div class="form-group form-group-md">
@@ -124,14 +124,6 @@
                             <li ng-click="selectLevel('5')">5</li>
                         </ul>
                     </div>
-                    <!-- <select class="form-control input-select" ng-model="addingSkill.level">
-                        <option value="" disabled selected>选择熟练度</option>
-                        <option value="1">1</option>
-                        <option value="2">2</option>
-                        <option value="3">3</option>
-                        <option value="4">4</option>
-                        <option value="5">5</option>
-                    </select> -->
                 </div>
             </div>
         </form>
