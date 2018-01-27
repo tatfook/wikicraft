@@ -176,11 +176,7 @@ define([
                     }
                 }, 0);
             })
-            
-
-            // if($scope.params.multiText_content.text.length > mixDesc.length){
-            //     $scope.$watch("$viewContentLoaded", $scope.mixImgHeight);
-            // }            
+                      
         }]);
     }
 
