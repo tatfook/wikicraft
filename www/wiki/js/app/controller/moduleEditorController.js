@@ -34,6 +34,7 @@ define([
         $scope.filelist = [];
         $scope.linkFilter = "";
         $scope.hasStyle = false;
+        $scope.agentEnable = false;
 
         var getFileList = function(){
             var username = $scope.user.username;
@@ -585,7 +586,10 @@ define([
                 moduleEditorParams.show_type = "knowledge";
                 $scope.show_type = "knowledge";
                 $scope.lineContent = lineContent;
-                initAgent();
+                if(!$scope.agentEnable){
+                    $scope.agentEnable = true;
+                    initAgent();
+                }
             }
 
 			// $scope.show_type = "editor";

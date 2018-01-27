@@ -104,7 +104,6 @@ define([
     }
 
     agent.getClip = function (pattern) {
-        console.log(pattern)
         var clip = agent.context.patterns[pattern]
         if (!clip) {
             alert("Invalid Pattern!")
@@ -122,6 +121,8 @@ define([
 
     agent.botUI = function (domId) {
         agent.domId = domId
+        var dom = document.getElementById(domId)
+        console.log(dom)
         agent.bot = new BotUI(domId)
         agent.botData = []
         agent.addWelcome()
