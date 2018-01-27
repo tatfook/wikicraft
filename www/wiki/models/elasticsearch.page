@@ -14,11 +14,12 @@ local elasticsearch = inherit(models.abstract.base, gettable("models.elasticsear
 -- set host,port and index
 function elasticsearch:connect(params)
     local params = params or {}
-    self.host = params.host or KEEPWORK["config"]["default"]["wiki"]["es_setting"]["host"] or "localhost"
-    self.port = params.port or KEEPWORK["config"]["default"]["wiki"]["es_setting"]["port"] or 9200
-    self.index = params.index or KEEPWORK["config"]["default"]["wiki"]["es_setting"]["index"]
+    local es_setting = KEEPWORK["config"]["default"]["wiki"]["es_setting"] or {}
+    self.host = params.host or es_setting["host"] or "localhost"
+    self.port = params.port or es_setting["port"] or 9200
+    self.index = params.index or es_setting["index"]
+    self.enabled = params.enabled or es_setting["enabled"] or 1
     self.url = format("http://%s:%d/%s/", self.host, self.port, self.index)
-    self.enabled = params.enabled or KEEPWORK["config"]["default"]["wiki"]["es_setting"]["enabled"] or 1
 end
 
 
