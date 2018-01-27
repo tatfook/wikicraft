@@ -147,10 +147,10 @@ define([
                 // $scope.allSiteTotal = data.allSiteList.length;
                 // // 粉丝
                 $rootScope.fansList = data.fansObj.userList;
-                // $scope.fansCount = data.fansObj.total;
+                $rootScope.fansCount = data.fansObj.total;
                 // // 关注的用户
                 $rootScope.followUserList = data.followObj.followUserObj.userList;
-                // $scope.followUserTotal = data.followObj.followUserObj.total;
+                $rootScope.followUserTotal = data.followObj.followUserObj.total;
                 // // 关注的站点
                 $rootScope.followSiteList = data.followObj.followSiteObj.siteList;
                 // $scope.followSiteTotal = data.followObj.followSiteObj.total;

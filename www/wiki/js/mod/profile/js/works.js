@@ -2,7 +2,7 @@
  * @Author: ZhangKaitlyn 
  * @Date: 2018-01-19
  * @Last Modified by: none
- * @Last Modified time: 2018-01-26 15:33:32
+ * @Last Modified time: 2018-01-27 11:03:18
  */
 define([
     'app', 
@@ -38,6 +38,7 @@ define([
             });
 
             $scope.works = Array.from($scope.params.works);
+            $scope.userinfo.worksCount = $scope.works.length;
             $scope.editing = false;
 
             // 获取当前模块的index和containerId
@@ -58,6 +59,7 @@ define([
             }
 
             var modifyWorksMd = function(){
+                $scope.userinfo.worksCount = $scope.works.length;
                 var newItemObj = {
                     index: getBlockIndex(),
                     containerId: thisContainerId,

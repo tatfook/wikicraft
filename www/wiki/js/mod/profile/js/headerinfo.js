@@ -2,7 +2,7 @@
  * @Author: ZhangKaitlyn 
  * @Date: 2018-01-19
  * @Last Modified by: none
- * @Last Modified time: 2018-01-26 19:05:21
+ * @Last Modified time: 2018-01-27 13:38:14
  */
 define([
     'app', 
@@ -10,15 +10,22 @@ define([
     'text!wikimod/profile/html/headerinfo.html'
 ], function (app, util, htmlContent) {
     function registerController(wikiBlock) {
-        app.registerController("userMsgCtrl", ['$scope', 'Message', function ($scope, Message) {
+        app.registerController("userMsgCtrl", ['$scope', 'Message', 'Account', function ($scope, Message, Account) {
 			wikiBlock.init({
 				scope:$scope,
 				params_template:{
+                    is_leaf: true,
 					desc:"个人简介内容"
 				}
 			});
 
             console.log($scope.params);
+            $scope.isFold = true;
+
+            $scope.toggleFold = function(){
+                $scope.isFold = !$scope.isFold;
+            }
+
             $scope.favoriteUser = function (fansUser, subInfo) {
                 if (!$scope.userinfo) {
                     $scope.concerned = !$scope.concerned;
@@ -79,6 +86,22 @@ define([
                     });
                 }
             };
+
+            var initMoreIsShow = function(){
+                setTimeout(function(){
+                    var toggleContent = $("#show-content");
+                    var fakeContent = $("#fake-content");
+                    var toggleHeight = toggleContent.height();
+                    var fakeHeight = fakeContent.height();
+                    console.log(toggleHeight);
+                    console.log(fakeHeight);
+                    $scope.isExceed = (fakeHeight > toggleHeight) ? true : false;
+                    util.$apply();
+                });
+                
+            }
+
+            $scope.$watch("$viewContentLoaded", initMoreIsShow);
         }]);
     }
 

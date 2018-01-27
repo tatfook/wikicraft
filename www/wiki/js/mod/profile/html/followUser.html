@@ -34,11 +34,11 @@
         关注的作者
     </h4>
     <div class="follow-users-list">
-        <div class="empty-box" ng-hide="fansList.length > 0">
+        <div class="empty-box" ng-hide="followUserList.length > 0">
             <span class="iconfont icon-kongbaiyemian"></span>
             <p translate="暂无相关内容..."></p>
         </div>
-        <div class="follow-users-item" ng-repeat="followUser in fansList track by $index" ng-show="fansList.length > 0">
+        <div class="follow-users-item" ng-repeat="followUser in followUserList track by $index" ng-show="followUserList.length > 0">
             <img ng-src="{{followUser.userinfo.logoUrl || getImageUrl('default_portrait.png',imgsPath)}}">
             <div class="follow-user-detail">
                 <h4>{{followUser.userinfo.displayName || followUser.userinfo.username}}</h4>

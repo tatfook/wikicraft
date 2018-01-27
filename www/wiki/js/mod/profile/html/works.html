@@ -55,8 +55,9 @@
         color: #999;
     }
 
-    .user-works .absolute-right > span {
+    .user-works .absolute-right>span {
         margin-left: 10px;
+        font-size: 12px;
     }
 
     .user-works .work-other-msg img {
@@ -64,7 +65,16 @@
         vertical-align: sub;
     }
 
-    .user-works .editing-toolbar .iconfont{
+    .user-works .work-other-msg .iconfont {
+        font-size: 22px;
+        display: inline-block;
+        width: auto;
+        margin-right: 6px;
+        vertical-align: sub;
+        line-height: 1;
+    }
+
+    .user-works .editing-toolbar .iconfont {
         font-size: 24px;
         margin-left: 5px;
         color: #3977AD;
@@ -167,16 +177,18 @@
         margin-top: 10px;
     }
 
-    .add-modal .result-img-box{
+    .add-modal .result-img-box {
         position: absolute;
         width: 100%;
         height: 100%;
     }
-    .add-modal .result-img-box > img{
+
+    .add-modal .result-img-box>img {
         width: 100%;
         height: 100%;
     }
-    .add-modal .result-img-box::before{
+
+    .add-modal .result-img-box::before {
         content: "";
         position: absolute;
         width: 100%;
@@ -185,19 +197,19 @@
         display: none;
     }
 
-    .add-modal .preview-zone:hover .result-img-box:before{
+    .add-modal .preview-zone:hover .result-img-box:before {
         display: block;
     }
 
-    .add-modal .upload-info.have-img{
+    .add-modal .upload-info.have-img {
         display: none;
     }
 
-    .add-modal .preview-zone:hover .upload-info.have-img{
+    .add-modal .preview-zone:hover .upload-info.have-img {
         display: block;
     }
 
-    .add-modal .preview-zone:hover .upload-info.have-img .info{
+    .add-modal .preview-zone:hover .upload-info.have-img .info {
         color: #FFF;
     }
 </style>
@@ -228,15 +240,17 @@
             </div>
             <div class="work-other-msg absolute-right" ng-hide="editing">
                 <span>
-                    <img ng-src="{{imgsPath+'icon/wiki_pageview.png'}}">{{work.visitCount || 0}}</span>
+                    <i class="iconfont icon-browse"></i>{{work.visitCount || 0}}
+                </span>
                 <span>
-                    <img ng-src="{{imgsPath+'icon/wiki_pageview.png'}}">{{work.favoriteCount || 0}}</span>
+                    <i class="iconfont icon-collection"></i>{{work.favoriteCount || 0}}
+                </span>
             </div>
             <div class="editing-toolbar absolute-right" ng-show="editing">
                 <span class="iconfont icon-shezhi" ng-click="setWork($index)"></span>
                 <span class="iconfont icon-shangyi" ng-click="shiftUp($index)"></span>
                 <span class="iconfont icon-xiayi" ng-click="shiftDown($index)"></span>
-                <span class="iconfont icon-shanchu1"  ng-click="deleteWork($index)"></span>
+                <span class="iconfont icon-shanchu1" ng-click="deleteWork($index)"></span>
             </div>
         </div>
     </div>
