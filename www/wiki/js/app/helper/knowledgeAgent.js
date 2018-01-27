@@ -79,7 +79,7 @@ define([
     agent.addWelcome = function () {
         agent.addBotData([{
             type: "message.bot",
-            delay: 0,
+            delay: 500,
             content: agent.context.desc
         }])
     }
@@ -110,6 +110,7 @@ define([
         } else {
             agent.botData = [] // clear data
             agent.addClipData(pattern)
+            agent.addWelcome()
             agent.addPatterns()
             agent.parseBotData()
         }
@@ -120,9 +121,6 @@ define([
     }
 
     agent.botUI = function (domId) {
-        agent.domId = domId
-        var dom = document.getElementById(domId)
-        console.log(dom)
         agent.bot = new BotUI(domId)
         agent.botData = []
         agent.addWelcome()
@@ -132,7 +130,6 @@ define([
 
     agent.parseBotData = function (res) {
         var item = agent.botData.shift()
-        var botAera = document.getElementById(agent.domId)
 
         if (item.type === "message.bot") {
             agent.bot.message.bot({
@@ -144,7 +141,6 @@ define([
                 }
             )
         } else if (item.type === "action.button") {
-            console.log(item.actions)
             agent.bot.action.button({
                 delay: item.delay,
                 action: item.actions
@@ -157,7 +153,12 @@ define([
                     }
                 }
             )
-        }
+
+            setTimeout(function () {
+                var container = document.getElementsByClassName("botui-container")[0]
+                container.scrollTop = container.scrollHeight;
+            }, item.delay || 0);
+        } // TODO else if(item.type === "action.text"){}
     }
 
     return agent

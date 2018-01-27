@@ -8,6 +8,7 @@
 @import "../../js/lib/wangEditor/css/wangEditor.min.css";
 @import "../../js/lib/iconFont/iconfont.css";
 @import "../../js/lib/botui/botui.min.css";
+@import "../../js/lib/botui/botui-theme-default.css";
 @import "editor.css";
 @import "markdownit.css";
 @import "theme.css";
