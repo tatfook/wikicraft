@@ -3,7 +3,9 @@ var Vue // global vue
 define([
     'vue',
     'botui',
-], function (vue) {
+	"helper/mdconf",
+	"helper/md/md",
+], function (vue, botui, mdconf, markdown) {
     Vue = vue
     var agent = {}
     agent.context = {}
@@ -57,23 +59,24 @@ define([
     }
 
     agent.load = function (path) {
+        var defaultPath = "tatfook/keepwork/agent/entry" 
         // TODO
         agent.context.patterns = {
-            "clip1": "keepwork介绍",
-            "clip2": "keepwork教学视频",
-            "clip3": "学习markdown",
+            "keepwork介绍": "clip1",
+            "keepwork教学视频": "clip2",
+            "学习markdown": "clip3",
         }
         agent.context.patternActions = [{
                 text: "keepwork介绍",
-                value: "clip1",
+                value: "keepwork介绍",
             },
             {
                 text: "keepwork教学视频",
-                value: "clip2",
+                value: "keepwork教学视频",
             },
             {
                 text: "学习markdown",
-                value: "clip3",
+                value: "学习markdown",
             }
         ]
         agent.context.desc = "Hi, 我是小K，有什么可以帮到您的吗？"
@@ -116,7 +119,7 @@ define([
             alert("Invalid Pattern!")
         } else {
             agent.botData = [] // clear data
-            agent.addClipData(pattern)
+            agent.addClipData(clip)
             agent.addWelcome()
             agent.addPatterns()
             agent.parseBotData()
