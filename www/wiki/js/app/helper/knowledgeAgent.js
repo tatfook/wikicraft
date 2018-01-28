@@ -11,12 +11,19 @@ define([
         "clip1": [{
                 "type": "message.bot",
                 "delay": 1000,
-                "content": "hello"
+                "content": "hello, what's your name?"
+            },
+            {
+                "type": "action.text",
+                "delay": 1000,
+                "action": {
+                    "placehodler": "name",
+                }
             },
             {
                 "type": "message.bot",
                 "delay": 1000,
-                "content": "我来介绍一下KeepWork"
+                "content": "{{name}}你好，我来介绍一下KeepWork"
             }
         ],
         "clip2": [{
@@ -132,9 +139,13 @@ define([
         var item = agent.botData.shift()
 
         if (item.type === "message.bot") {
+            var content = item.content
+            if (res) {
+                content = content.replace(/{{\w+}}/, res.value)
+            }
             agent.bot.message.bot({
                 delay: item.delay,
-                content: item.content
+                content: content
             }).then(
                 function () {
                     agent.parseBotData()
@@ -158,7 +169,25 @@ define([
                 var container = document.getElementsByClassName("botui-container")[0]
                 container.scrollTop = container.scrollHeight;
             }, item.delay || 0);
-        } // TODO else if(item.type === "action.text"){}
+        } else if (item.type === "action.text") {
+            agent.bot.action.text({
+                delay: item.delay,
+                action: item.action
+            }).then(
+                function (res) {
+                    if (item.callback) {
+                        item.callback(res.value)
+                    } else {
+                        agent.parseBotData(res)
+                    }
+                }
+            )
+
+            setTimeout(function () {
+                var container = document.getElementsByClassName("botui-container")[0]
+                container.scrollTop = container.scrollHeight;
+            }, item.delay || 0);
+        }
     }
 
     return agent
