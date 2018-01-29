@@ -123,38 +123,29 @@ define([
 						require      : true, 
 					},
 				}
-			}
-            wikiblock.init(initObj);
-            $scope.mixLaer = {
-                "background-image" : 'url(' + $scope.params.media_img.text + ')',
             }
+            
+            wikiblock.init(initObj);
+
+            $scope.setImgBackground  = util.setImgBackground;
+            $scope.subMarkdownRender = util.subMarkdownRender;
             
             var md = new markdown_it({
 				html: true,
 				langPrefix: 'code-'
-            })          
-            
-
-			$scope.$watch('params', function(){
-                $scope.multiText_content = md.render($scope.params.multiText_content.text);
-            })
+            });
             
             $scope.imgHeight = "__MIXIMG__" + Date.now();
             $scope.divHeight = "__MIXDIV__" + Date.now();
-
-            console.log('#' + $scope.imgHeight);
 
             $scope.$watch("$viewContentLoaded", function(){
                 setTimeout(function(){
                     var miximg = document.querySelector('#' + $scope.imgHeight);
                     var mixdiv = document.querySelector('#' + $scope.divHeight);
 
-                    console.log(mixdiv.offsetHeight);
-                    console.log(miximg.offsetHeight);
-
                     if(mixdiv.offsetHeight > 649 && mixdiv.offsetHeight < 1739){
                         miximg.style.height = mixdiv.offsetHeight + 'px';
-                        $scope.mixFontColor    = {
+                        $scope.mixFontColor = {
                             'color' : 'rgb(255, 255, 255)' 
                         }
                     }
@@ -165,11 +156,13 @@ define([
                            $scope.params.design.text == "style9"){
                             mixdiv.style.marginTop = 430 + 'px';
                         }
+
                         if($scope.params.design.text == "style4" ||
                            $scope.params.design.text == "style5" ||
                            $scope.params.design.text == "style6"){
                              mixdiv.style.marginTop = 510 + 'px';
                         }
+
                         if($scope.params.design.text == "style1" ||
                            $scope.params.design.text == "style2" ||
                            $scope.params.design.text == "style3"){
@@ -177,11 +170,11 @@ define([
                             miximg.style.height    = 694 + 'px';
                         }
                         
-                        $scope.mixFontColor    = {
+                        $scope.mixFontColor = {
                             'color' : 'black' 
                         }
                     }
-                }, 0)
+                }, 0);
             })
             
 

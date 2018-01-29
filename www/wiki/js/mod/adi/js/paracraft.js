@@ -224,25 +224,6 @@ define([
             util.http("POST", viewTimesUrl, params, function (response) {
                 $scope.viewTimes = response.viewTimes;
             }, function (response) { });
-
-			// $scope.getImageUrl = function (logoUrl) {
-			// 	if(!logoUrl || !logoUrl.text || !logoUrl.text[0] || !logoUrl.text[0].url){
-			// 		return undefined;
-			// 	}
-
-			// 	var url = logoUrl.text[0].url;
-
-            //     if (!url)
-            //         return undefined;
-
-            //     if (url.indexOf("http") == 0)
-            //         return url + "?ver=" + $scope.params.version.text;
-
-            //     if (url[0] == '/')
-            //         url = url.substring(1);
-
-            //     return $scope.imgsPath + url + "?ver=" + $scope.params.version.text;
-			// }
 			
 			$scope.getSize = function(size){
 				if (size <= 1048576) {
@@ -251,11 +232,6 @@ define([
 					return parseInt(size / 1024 / 1024) + "M";
 				}
 			}
-
-			var md = new markdown_it({
-				html: true,
-				langPrefix: 'code-'
-			})
 
             $scope.subMarkdownRender = util.subMarkdownRender;
 		}]);

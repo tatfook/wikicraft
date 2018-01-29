@@ -156,13 +156,9 @@
         float: right;
         width:490px;
     }
-    .project-mod .style .picture-body .picture-body img{
+    .project-mod .style3 .picture-body .picture-body img{
         width: 100%;
     }
-    /* .style3 .picture-body .projectImg{
-        width:490px;
-        height:701px;
-    } */
     .project-mod .style3 .picture-body .picture-span{
         margin-right: 70px;
         float: left;
@@ -262,7 +258,6 @@
                         <a ng-if="editorMode"
                         ng-click="viewEditorClick(params.image_picture, $event)"
                         href="javascript:void(0)">
-                            <!-- <div class="projectImg" ng-style="projectImg"></div> -->
                             <img ng-src="{{params.image_picture.text}}">
                         </a>
                         <a ng-if="!editorMode"
@@ -270,7 +265,6 @@
                         target="{{params.image_picture.target ? params.image_picture.target : '_blank' }}"
                         ng-href="{{params.image_picture.href}}"
                         ng-class="{true : 'project-clear-pointer'}[params.image_picture.href.length == 0]">
-                            <!-- <div class="projectImg" ng-style="projectImg"></div> -->
                             <img ng-src="{{params.image_picture.text}}">
                         </a>
                     </div>
@@ -394,13 +388,13 @@
                         <a ng-if="editorMode"
                            ng-click="viewEditorClick(params.image_picture, $event)"
                            href="javascript:void(0)">
-                            <div ng-style="projectImg"></div>
+                            <div ng-style="setImgBackground(params.image_picture.text)"></div>
                         </a>
                         <a ng-if="!editorMode"
                            target="{{params.image_picture.target ? params.image_picture.target : '_blank'}}"
                            ng-class="{true:'project-clear-pointer'}[params.image_picture.href.length == 0]"
                            ng-href="{{params.image_picture.href}}">
-                            <div ng-style="projectImg"></div>
+                            <div ng-style="setImgBackground(params.image_picture.text)"></div>
                         </a>
                     </div>
                 </div>
@@ -434,7 +428,6 @@
                        ng-hide="params.image_picture.is_mod_hide"
                        ng-click="viewEditorClick(params.image_picture, $event)"
                        href="javascript:void(0)">
-                        <!-- <div class="projectImg" ng-style="projectImg"></div> -->
                         <img ng-src="{{params.image_picture.text}}">
                     </a>
                     <a ng-if="!editorMode"
@@ -442,7 +435,6 @@
                        target="{{params.image_picture.target ? params.image_picture.target : '_blank' }}"
                        ng-href="{{params.image_picture.href}}"
                        ng-class="{true : 'project-clear-pointer'}[params.image_picture.href.length == 0]">
-                        <!-- <div class="projectImg" ng-style="projectImg"></div> -->
                         <img ng-src="{{params.image_picture.text}}">
                     </a>
                 </div>
