@@ -61,8 +61,16 @@ define([
             $scope.applyContent = function(data){
                 var richText = window.document.querySelector('#' + $scope.currentRichText);
 
-                if(richText){
-                    richText.innerHTML = data;
+                if(richText && data){
+                    if(wikiBlock.editorMode){
+                        var content = data.match(/<iframe([\s\S]*)iframe>/)[1];
+                        content = '<iframe' + content + 'iframe>';
+                        data = data.replace(content, '<div style="width:500px;height:500px;font-size:16px;line-height:500px;border:1px solid black;text-align:center">编辑模式下无法显示视频</div>');
+
+                        richText.innerHTML = data;
+                    }else{
+                        richText.innerHTML = data;
+                    }
                 }
             }
         }])
