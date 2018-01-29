@@ -18,13 +18,13 @@ define([
     app.registerController('userController', ['$rootScope', '$scope', '$timeout', 'Account','Message', 'modal', function ($rootScope, $scope, $timeout, Account, Message, modal) {
         const UserSystemProjectName = "keepworkdatasource";
         const ProfileDataFileName = "profile.md";
-        var profileUserMsgBlockList = [];
+        var topBlockList = [], subBlockList = [];
         var topMdContent;
         var userDataSource;
         var splitMainContent = function(origionContent){
             origionContent = origionContent.split("```");
             var topContent= [],subContent = [];
-            var topContentReg = /^@profile\/js\/(headerinfo|controls)/i;
+            var topContentReg = /^@(profile|page)\/js\/(headerinfo|controls|tags)/i;
             var subContentReg = /^@profile\/js\/(works|skills|experiences|certifications|contribution|activities)/i;
             origionContent.forEach(function(content){
                 if (topContentReg.test(content)) {
@@ -88,11 +88,15 @@ define([
                 var md = markdownwiki({breaks: true, isMainMd:true});
                 var content = data.content || "";
                 var mdContent = splitMainContent(content);
+                
+                var mdSub = markdownwiki({breaks: true});
+                topBlockList = mdSub.parse(mdContent.topContent);
+                subBlockList = mdSub.parse(mdContent.subContent);
+
                 topMdContent = mdContent.topContent;
-                profileUserMsgBlockList = md.parse(mdContent.subContent);
                 var topHtml = md.render(mdContent.topContent);
                 util.html("#user-maincontent", topHtml);
-            
+
                 $rootScope.subMdContent = mdContent.subContent;
             }, function(err){
                 console.log(err);
@@ -175,13 +179,16 @@ define([
 
         var saveNewProfileToGit = function(){
             var content = "";
-            profileUserMsgBlockList.map(function(block){
+            topBlockList.map(function(block){
+                content += block.content;
+            });
+            subBlockList.map(function(block){
                 content += block.content;
             });
             var profileDataPath = '/'+ userDataSource.keepwrokUsername +'_datas/' + ProfileDataFileName;
             userDataSource.writeFile({
                 path: profileDataPath, 
-                content: topMdContent + content
+                content: content
             }, function(){
                 Message.info("修改成功");
             }, function(){
@@ -191,18 +198,18 @@ define([
         }
 
         $rootScope.$on("changeProfileMd", function(e, newBlockItem){
-            if (profileUserMsgBlockList.length <= 0) {
+            var blockList = newBlockItem.isTopContent ? topBlockList : subBlockList;
+            if (blockList.length <= 0) {
                 return;
             }
 
             var blockIndex = newBlockItem.index;
             var newContent = newBlockItem.content;
-            var isSameBlock = (profileUserMsgBlockList[blockIndex].blockCache.containerId == newBlockItem.containerId);
-            if (isSameBlock) {
-                console.log("两个block不同");
-                return;
+            if (newBlockItem.isTopContent) {
+                topBlockList[blockIndex].content = newContent;
+            }else{
+                subBlockList[blockIndex].content = newContent;
             }
-            profileUserMsgBlockList[blockIndex].content = newContent;
             saveNewProfileToGit();
         });
 

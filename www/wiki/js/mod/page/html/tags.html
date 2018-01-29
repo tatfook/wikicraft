@@ -1,0 +1,76 @@
+<style>
+    .tags-header {
+        color: #3977AD;
+        padding: 10px 15px;
+    }
+
+    .tags-header li {
+        float: left;
+    }
+
+    .tags-header .tag-item {
+        background-color: #F1F1F1;
+        margin-right: 10px;
+        padding: 4px 11px;
+        font-size: 14px;
+    }
+
+    .tags-header .iconfont {
+        font-size: 20px;
+        display: inline-block;
+        line-height: 1;
+        margin-top: 6px;
+        font-weight: bold;
+    }
+
+    .tags-header .ui-select-multiple.ui-select-bootstrap {
+        box-shadow: none;
+        margin-right: 11px;
+        padding: 3px 7px 0;
+    }
+
+    .tags-header .ui-select-multiple.ui-select-bootstrap .ui-select-match-item {
+        font-size: 14px;
+        color: #3977AD;
+        background-color: #F1F1F1;
+        border: none;
+        margin-right: 5px;
+        padding: 3px 7px;
+    }
+
+    .tags-header .ui-select-multiple.ui-select-bootstrap .ui-select-match .close {
+        font-size: 18px;
+        line-height: 18px;
+        border-left: 1px solid #DADADA;
+        margin-left: 13px;
+        opacity: 1;
+        color: #DADADA;
+    }
+
+    .tags-header .editing-tag {
+        display: flex;
+    }
+
+    .tags-header .btn-primary {
+        font-size: 16px;
+        padding: 5px 21px;
+    }
+</style>
+
+<div ng-controller="pageTagsCtrl" class="tags-header container">
+    <ul class="nav" ng-hide="tagEditing">
+        <li class="tag-item" ng-repeat="tag in tags.tags">{{tag}}</li>
+        <li ng-click="editTags(true)">
+            <i class="iconfont icon-bianji"></i>
+        </li>
+    </ul>
+    <div class="editing-tag" ng-show="tagEditing">
+        <ui-select multiple tagging tagging-label="false" ng-model="tags.tags" theme="bootstrap" title="请输入标签..." on-select="tagSelect($item, $model)">
+            <ui-select-match placeholder="请输入标签...">{{$item}}</ui-select-match>
+            <ui-select-choices repeat="tag in tags.tags | filter:$select.search">
+                {{tag}}
+            </ui-select-choices>
+        </ui-select>
+        <div class="btn btn-primary" ng-click="editTags(false)">完 成</div>
+    </div>
+</div>
