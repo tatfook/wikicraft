@@ -7,6 +7,7 @@ define([
         app.registerController("carouselController", ['$scope','$sce', function ($scope, $sce) {
             $scope.editorMode = wikiblock.editorMode;
             $scope.imgs       = [];
+            $scope.displayBar = {};
 
             initObj = {
                 scope  : $scope,
@@ -120,9 +121,11 @@ define([
                 if(!$scope.params.media_img_five.is_mod_hide){
                     $scope.imgs.push($scope.params.media_img_five);
                 }
+
                 if($scope.imgs.length==1){
-                    var displayBar=document.querySelector(".displayBar");
-                    displayBar.style.opacity=0;
+                    $scope.displayBar = {"display":"none"};
+                }else{
+                    $scope.displayBar = {"display":"block"};
                 }
             })
             
