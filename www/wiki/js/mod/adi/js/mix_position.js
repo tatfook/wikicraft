@@ -134,24 +134,19 @@ define([
 				}
 			}
 
-			
 			wikiblock.init(initObj);
 
+			$scope.setImgBackground  = util.setImgBackground;
             $scope.subMarkdownRender = util.subMarkdownRender;
+			
+			var imgOne = config.wikiModPath + 'adi/assets/imgs/pictureMod.png';
+			var imgTwo = config.wikiModPath + 'adi/assets/imgs/stitching.png'
 
-			$scope.projectImg = {
-				"background-image"    : 'url('+ $scope.params.image_picture.text +')',
-				"background-size"     : "cover",
-				"background-position" : "center center",
-			}
-			$scope.$watch("params", function(){
-                var imgOne = config.wikiModPath + 'adi/assets/imgs/pictureMod.png';
-                var imgTwo = config.wikiModPath + 'adi/assets/imgs/stitching.png'
+			var defaultImgs = [imgOne, imgTwo];
 
-                var defaultImgs = [imgOne, imgTwo];
+			var currentImgText = $scope.params.image_picture.text;
 
-                var currentImgText = $scope.params.image_picture.text;
-
+			setInterval(function(){
                 for(var x in defaultImgs){
                     if(currentImgText == defaultImgs[x]){
                         currentImgText = "";
@@ -161,29 +156,26 @@ define([
 
                 if($scope.params.design.text == "style1"){
                     $scope.params.image_picture.text = currentImgText.length == 0 ? imgOne : $scope.params.image_picture.text;
-                    console.log($scope.params.image_picture.text);
                 }
 
                 if($scope.params.design.text == "style2"){
                     $scope.params.image_picture.text = currentImgText.length == 0 ? imgOne : $scope.params.image_picture.text;
-                    console.log($scope.params.image_picture.text);
 				}
 
 				if($scope.params.design.text == "style3"){
                     $scope.params.image_picture.text = currentImgText.length == 0 ? imgOne : $scope.params.image_picture.text;
-                    console.log($scope.params.image_picture.text);
 				}
 				
 				if($scope.params.design.text == "style4"){
                     $scope.params.image_picture.text = currentImgText.length == 0 ? imgTwo : $scope.params.image_picture.text;
-                    console.log($scope.params.image_picture.text);
 				}
 				
 				if($scope.params.design.text == "style5"){
                     $scope.params.image_picture.text = currentImgText.length == 0 ? imgTwo : $scope.params.image_picture.text;
-                    console.log($scope.params.image_picture.text);
-                }
-            })
+				}
+				
+				$scope.$apply();
+            }, 100);
         }]);
     }
 

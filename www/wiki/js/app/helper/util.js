@@ -25,6 +25,18 @@ define([
         }
     })();
 
+    util.setImgBackground = (function(){
+        var background = {
+            "background-size"     : "cover",
+            "background-position" : "center center",
+        };
+
+        return function(text){
+            background['background-image'] = 'url(' + text + ')';
+            return background;
+        }
+    })();
+
     util.getId = function () {
         this.id = this.id > 1000000 ? 0 : this.id+1;
         return this.id;

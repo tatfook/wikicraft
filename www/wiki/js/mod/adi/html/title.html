@@ -126,7 +126,7 @@
 </style>
 
 <div ng-controller="titleController" ng-class="{true:'title-clear-pointer'}[editorMode]" class="title">
-
+    {{titleImg}}
     <!-- style1 html -->
     <div ng-if='params.design.text=="style1"' class="style1">
         <div class="title-mod container">
@@ -135,13 +135,13 @@
                 <a ng-if="editorMode"
                    href="javascript:void(0)"
                    ng-click="viewEditorClick(params.media_img,$event)">
-                    <div ng-style="titleImg"></div>
+                    <div ng-style="setImgBackground(params.media_img.text)"></div>
                 </a>
                 <a target="{{params.media_img.target ? params.media_img.target : '_blank'}}"
                    ng-if="!editorMode"
                    ng-href="{{params.media_img.href}}"
                    ng-class="{true:'title-clear-pointer2'}[!params.media_img.href.length]">
-                    <div ng-style="titleImg"></div>
+                    <div ng-style="setImgBackground(params.media_img.text)"></div>
                 </a>
             </div>
             <div class="title-mod-head">
@@ -178,13 +178,13 @@
                 <a ng-if="editorMode"
                    ng-click="viewEditorClick(params.media_img,$event)"
                    href="javascript:void(0)">
-                    <div ng-style="titleImg"></div>
+                    <div ng-style="setImgBackground(params.media_img.text)"></div>
                 </a>
                 <a target="{{params.media_img.target ? params.media_img.target : '_blank'}}"
                    ng-if="!editorMode"
                    ng-class="{true:'title-clear-pointer2'}[!params.media_img.href.length]"
                    ng-href="{{params.media_img.href}}">
-                    <div ng-style="titleImg"></div>
+                    <div ng-style="setImgBackground(params.media_img.text)"></div>
                 </a>
             </div>
             <div class="title-mod-head">
