@@ -99,7 +99,7 @@ define([
             $scope.noWrapSlides = false;
             $scope.active       = 0;
 
-            $scope.$watch("params", function(){
+            $scope.onParamsChange = function(){
                 $scope.imgs = [];
 
                 if(!$scope.params.media_img_one.is_mod_hide){
@@ -127,8 +127,9 @@ define([
                 }else{
                     $scope.displayBar = {"display":"block"};
                 }
-            })
-            
+            };
+
+            $scope.$watch("params", $scope.onParamsChange);
         }]);
     }
 
