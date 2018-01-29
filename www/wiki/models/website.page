@@ -726,7 +726,7 @@ end
 
 
 function website:api_setTop(params)
-	-- ensureAuthenticated()
+	ensureAuthenticated()
 	if (not params.username) or (not params.sitename) then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
