@@ -347,7 +347,7 @@
                    target="{{params.link_world_name.target ? params.link_world_name.target : '_blank'}}"
                    ng-href="{{params.link_world_name.href}}">{{params.link_world_name.text}}</a>
 
-                <p ng-hide="params.link_update_date.is_mod_hide" class="info pull-right">
+                <p ng-hide="params.link_update_date.is_mod_hide || params.link_version.is_mod_hide" class="info pull-right">
                     <a ng-if="editorMode" ng-click="viewEditorClick(params.link_update_date, $event)" href="javascript:void(0)">{{params.link_update_date.text + " 版本：" + params.link_version.text}}</a>
                     <a ng-if="!editorMode"
                        ng-class="{true:'world-clear-pointer'}[params.link_update_date.href.length == 0]"
