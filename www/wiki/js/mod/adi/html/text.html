@@ -9,6 +9,7 @@
     }
     .text-mod .style1 .textTitle{
         margin-top: 40px;
+        height: 52px;
     }
     .text-mod .style1 .textTitle > a {
         font-weight: bold;
@@ -44,19 +45,20 @@
     <div class="container style1">
         <div class="textContainerLeft" ng-if="params.design.text == 'left'" ng-class="{true:'text-clear-pointer'}[editorMode]">
             <h1 ng-if="editorMode"
-                ng-hide="params.title.is_mod_hide" 
                 class='textTitle' 
                 ng-click="viewEditorClick(params.title, $event)">
-                <a target="{{params.title.target}}" 
-                    ng-href="{{params.title.href}}">
+                <a ng-hide="params.title.is_mod_hide" 
+                   target="{{params.title.target}}" 
+                   ng-href="{{params.title.href}}">
                     {{params.title.text}}
                 </a>
             </h1>
             <h1 ng-if="!editorMode" 
                 class='textTitle'
                 ng-class="{true: 'text-no-href'}[!params.title.href.length]">
-                <a target="{{params.title.target}}" 
-                    ng-href="{{params.title.href}}">
+                <a ng-hide="params.title.is_mod_hide" 
+                   target="{{params.title.target}}" 
+                   ng-href="{{params.title.href}}">
                     {{params.title.text}}
                 </a>
             </h1>
@@ -81,19 +83,20 @@
             ng-if="params.design.text == 'center'" 
             ng-class="{true:'text-clear-pointer'}[editorMode]">
             <h1 ng-if="editorMode" 
-                ng-hide="params.title.is_mod_hide" 
                 class='textTitle' 
                 ng-click="viewEditorClick(params.title, $event)">
-                <a target="{{params.title.target}}" 
-                    ng-href="{{params.title.href}}">
+                <a ng-hide="params.title.is_mod_hide" 
+                   target="{{params.title.target}}" 
+                   ng-href="{{params.title.href}}">
                     {{params.title.text}}
                 </a>
             </h1>
             <h1 ng-if="!editorMode" 
                 class='textTitle'>
-                <a target="{{params.title.target}}" 
-                    ng-class="{true: 'text-no-href'}[!params.title.href.length]"
-                    ng-href="{{params.title.href}}">
+                <a ng-hide="params.title.is_mod_hide" 
+                   target="{{params.title.target}}" 
+                   ng-class="{true: 'text-no-href'}[!params.title.href.length]"
+                   ng-href="{{params.title.href}}">
                     {{params.title.text}}
                 </a>
             </h1>
