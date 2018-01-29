@@ -3577,7 +3577,7 @@ define([
                         resolve(result);
                     }, function (err) {
                         // console.log(err);
-                        reject(err);
+                        // reject(err);
                     }, false);
                 });
 
