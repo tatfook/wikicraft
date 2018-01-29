@@ -45,6 +45,7 @@ define([
             
             $scope.success = function(html){
                 $scope.params.modal_rich.data = html;
+                applyContent();
                 $scope.applyAttrChange();
             }
 
@@ -58,23 +59,23 @@ define([
 
             $scope.currentRichText = "__RICHTEXT__" + Date.now();
 
-            $scope.$watch("params", function(){
-                $scope.$watch("$viewContentLoaded", function(){
-                    setTimeout(function(){
-                        var richText = document.querySelector('#' + $scope.currentRichText);
+            $scope.$watch("$viewContentLoaded", function(){
+                setTimeout(function(){
+                    applyContent();
+                }, 0)
+            });
 
-                        if(richText){
-                            richText.innerHTML = $scope.params.modal_rich.data;
-                        }
-                    }, 0)
-                });
-            })
+            function applyContent(){
+                var richText = document.querySelector('#' + $scope.currentRichText);
+
+                if(richText){
+                    richText.innerHTML = $scope.params.modal_rich.data;
+                }
+            }
         }])
         
 		app.registerController("richEditorController", ['$scope', '$uibModalInstance', 'wikiBlock', function ($scope, $uibModalInstance, wikiBlock) {
             $scope.init = function() {
-                // wangEditor.config.printLog = false;
-
                 $scope.editor = new wangEditor('richEditor');
                 $scope.editor.create();
 
