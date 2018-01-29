@@ -19,29 +19,27 @@ define([
         var defaultPath = "tatfook/keepwork/agent/entry"
         // TODO
         agent.context.patterns = {
-            "keepwork介绍": "clip1",
-            "keepwork教学视频": "clip2",
-            "学习markdown": "clip3",
-            "聊一聊": "tuling",
+            "返回": "Welcome",
+            "你会什么?": "WhatCanYouDo",
+            "你是谁?": "HowAreYou",
+            "开始新手教学吧": "Tutorial",
+            "了解NPL编程": "NPLIntro",
+            "提问": "tuling",
+            "我明白了，我会多创造作品，让你变得更智能": "WhatCanYouDo",
+            "如何教你知识": "HowToTeachYou",
+            "好的，知道了": "WhatCanYouDo",
         }
         agent.context.patternActions = [{
-                text: "keepwork介绍",
-                value: "keepwork介绍",
+                text: "你会什么?",
+                value: "你会什么?",
             },
             {
-                text: "keepwork教学视频",
-                value: "keepwork教学视频",
-            },
-            {
-                text: "学习markdown",
-                value: "学习markdown",
-            },
-            {
-                text: "聊一聊",
-                value: "聊一聊",
+                text: "提问",
+                value: "提问",
             }
         ]
-        agent.context.desc = "Hi, 我是小K，有什么可以帮到您的吗？"
+        
+        agent.context.desc = "Hi, 我是你的网络化身，让我们相互学习吧？😃"
     }
 
     agent.loadClip = function (path) {
@@ -180,32 +178,60 @@ define([
     }
 
     agent.clips = {
-        "clip1": [{
+        "Welcome": [{
                 "type": "message.bot",
-                "delay": 1000,
-                "content": "hello, what's your name?"
+                "delay": 500,
+                "content": "Hi, 我是你的网络化身，让我们相互学习吧"
             },
             {
-                "type": "action.text",
-                "delay": 1000,
-                "action": {
-                    "placehodler": "name",
-                }
+                "type": "action.button",
+                "delay": 300,
+                "actions": [{
+                    text: "你会什么?",
+                    value: "你会什么?",
+                    },
+                    {
+                        text: "提问",
+                        value: "提问",
+                    }
+                ]
+            },
+        ],
+        "WhatCanYouDo": [{
+                "type": "message.bot",
+                "delay": 500,
+                "content": "我拥有以下知识包：个人简历，新手教学，NPL编程教学。"
             },
             {
-                "type": "message.bot",
-                "delay": 1000,
-                "content": "{{name}}你好，我来介绍一下KeepWork"
-            }
+                "type": "action.button",
+                "delay": 300,
+                "actions": [{
+                    text: "你是谁？",
+                    value: "你是谁？",
+                    },
+                    {
+                        text: "开始新手教学吧",
+                        value: "开始新手教学吧",
+                    },
+                    {
+                        text: "了解NPL编程",
+                        value: "了解NPL编程",
+                    },
+                    {
+                        text: "返回",
+                        value: "返回",
+                    }
+                ]
+            },
         ],
         "clip2": [{
                 "type": "message.bot",
-                "delay": 1000,
+                "delay": 500,
                 "content": "hello, 请选择一个你想了解的"
             },
             {
                 "type": "action.button",
-                "delay": 1000,
+                "delay": 500,
                 "actions": [{
                         text: "什么是mod",
                         value: "mod",
@@ -218,26 +244,26 @@ define([
             },
             {
                 "type": "message.bot",
-                "delay": 1000,
+                "delay": 500,
                 "content": "好的，我来介绍一下{{topic}}"
             }
         ],
         "clip3": [{
                 "type": "message.bot",
-                "delay": 1000,
+                "delay": 500,
                 "content": "hello"
             },
             {
                 "type": "message.bot",
-                "delay": 1000,
+                "delay": 500,
                 "content": "请自己学习markdown"
             }
         ],
         "tuling": [{
             "type": "action.text",
-            "delay": 1000,
+            "delay": 500,
             "action": {
-                placehodler: "请输入..."
+                placeholder: "请输入问题或命令..."
             },
             "callback": agent.tulingQA,
         }]
