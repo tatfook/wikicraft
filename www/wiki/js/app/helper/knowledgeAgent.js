@@ -45,7 +45,7 @@ define([
                 value: "提问",
             }
         ]
-        
+
         agent.context.desc = "Hi, 我是你的网络化身，让我们相互学习吧？😃"
     }
 
@@ -170,13 +170,12 @@ define([
                 url: api,
                 type: "POST",
                 dataType: "json",
-                //contentType:"application/json;charset=UTF-8",
                 data: {
                     key: key,
                     info: message,
                     userid: 123456
                 },
-                success:function(result, statu, xhr) {
+                success: function (result, statu, xhr) {
                     agent.bot.message.bot({
                         "delay": 500,
                         "content": result.text
@@ -186,7 +185,7 @@ define([
                         }
                     )
                 },
-                error:function(xhr, statu, error) {
+                error: function (xhr, statu, error) {
                     console.log(error)
                 }
             })
@@ -281,10 +280,9 @@ define([
                 "type": "action.button",
                 "delay": 500,
                 "actions": [{
-                        text: "我明白了，我会多创造作品，让你变得更智能",
-                        value: "我明白了，我会多创造作品，让你变得更智能",
-                    }
-                ],
+                    text: "我明白了，我会多创造作品，让你变得更智能",
+                    value: "我明白了，我会多创造作品，让你变得更智能",
+                }],
                 callback: agent.getClip
             },
         ],
@@ -475,7 +473,8 @@ define([
                     placeholder: "请输入问题, 命令..."
                 },
                 "callback": agent.tulingQA,
-        }],
+            }
+        ],
         "tuling": [{
             "type": "action.text",
             "delay": 500,
