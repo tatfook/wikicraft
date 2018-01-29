@@ -640,6 +640,13 @@ define([
 
                 if (blockCache.isWikiBlock && blockCache.newWikiBlock) {
                     $.extend(true, blockCache.wikiBlock, blockCache.newWikiBlock);
+                    //notice $scope in wikiBlock
+
+                    try {
+                        blockCache.adiObj && blockCache.adiObj.scope && blockCache.adiObj.scope.onParamsChange && blockCache.adiObj.scope.onParamsChange();
+                    } catch(e) {}
+
+                    // console.log(blockCache);
                     delete blockCache.newWikiBlock;
                 }
 
