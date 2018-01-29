@@ -258,14 +258,14 @@
                         <a ng-if="editorMode"
                         ng-click="viewEditorClick(params.image_picture, $event)"
                         href="javascript:void(0)">
-                            <img ng-src="{{params.image_picture.text}}">
+                            <img ng-src="{{getImagePictureText(params.image_picture.text)}}">
                         </a>
                         <a ng-if="!editorMode"
                         ng-class="{true : 'project-clear-pointer'}[params.image_picture.href.length == 0]"
                         target="{{params.image_picture.target ? params.image_picture.target : '_blank' }}"
                         ng-href="{{params.image_picture.href}}"
                         ng-class="{true : 'project-clear-pointer'}[params.image_picture.href.length == 0]">
-                            <img ng-src="{{params.image_picture.text}}">
+                            <img ng-src="{{getImagePictureText(params.image_picture.text)}}">
                         </a>
                     </div>
                 </div>
@@ -388,13 +388,13 @@
                         <a ng-if="editorMode"
                            ng-click="viewEditorClick(params.image_picture, $event)"
                            href="javascript:void(0)">
-                            <div ng-style="setImgBackground(params.image_picture.text)"></div>
+                            <div ng-style="setImgBackground(getImagePictureText(params.image_picture.text))"></div>
                         </a>
                         <a ng-if="!editorMode"
                            target="{{params.image_picture.target ? params.image_picture.target : '_blank'}}"
                            ng-class="{true:'project-clear-pointer'}[params.image_picture.href.length == 0]"
                            ng-href="{{params.image_picture.href}}">
-                            <div ng-style="setImgBackground(params.image_picture.text)"></div>
+                            <div ng-style="setImgBackground(getImagePictureText(params.image_picture.text))"></div>
                         </a>
                     </div>
                 </div>
@@ -428,14 +428,14 @@
                        ng-hide="params.image_picture.is_mod_hide"
                        ng-click="viewEditorClick(params.image_picture, $event)"
                        href="javascript:void(0)">
-                        <img ng-src="{{params.image_picture.text}}">
+                        <img ng-src="{{getImagePictureText(params.image_picture.text)}}">
                     </a>
                     <a ng-if="!editorMode"
                        ng-hide="params.image_picture.is_mod_hide"
                        target="{{params.image_picture.target ? params.image_picture.target : '_blank' }}"
                        ng-href="{{params.image_picture.href}}"
                        ng-class="{true : 'project-clear-pointer'}[params.image_picture.href.length == 0]">
-                        <img ng-src="{{params.image_picture.text}}">
+                        <img ng-src="{{getImagePictureText(params.image_picture.text)}}">
                     </a>
                 </div>
                 <div class="picture-span">
@@ -555,7 +555,7 @@
                ng-hide="params.image_picture.is_mod_hide"
                ng-click="viewEditorClick(params.image_picture, $event)"
                href="javascript:void(0)">
-               <img ng-src="{{params.image_picture.text}}">
+               <img ng-src="{{getImagePictureText(params.image_picture.text)}}">
             </a>
             <a ng-if="!editorMode"
                ng-hide="params.image_picture.is_mod_hide"
@@ -563,7 +563,7 @@
                target="{{params.image_picture.target ? params.image_picture.target : '_blank' }}"
                ng-href="{{params.image_picture.href}}"
                ng-class="{true : 'clear-pointer'}[params.image_picture.href.length == 0]">
-               <img ng-src="{{params.image_picture.text}}">
+               <img ng-src="{{getImagePictureText(params.image_picture.text)}}">
             </a>
         </div>
 
@@ -576,7 +576,7 @@
                ng-hide="params.image_picture.is_mod_hide"
                ng-click="viewEditorClick(params.image_picture, $event)"
                href="javascript:void(0)">
-               <img ng-src="{{params.image_picture.text}}">
+               <img ng-src="{{getImagePictureText(params.image_picture.text)}}">
             </a>
             <a ng-if="!editorMode"
                ng-hide="params.image_picture.is_mod_hide"
@@ -584,7 +584,7 @@
                target="{{params.image_picture.target ? params.image_picture.target : '_blank' }}"
                ng-href="{{params.image_picture.href}}"
                ng-class="{true : 'clear-pointer'}[params.image_picture.href.length == 0]">
-               <img ng-src="{{params.image_picture.text}}">
+               <img ng-src="{{getImagePictureText(params.image_picture.text)}}">
             </a>
         </div>
         <div class="stitching-span">

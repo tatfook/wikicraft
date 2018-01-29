@@ -142,40 +142,26 @@ define([
 			var imgOne = config.wikiModPath + 'adi/assets/imgs/pictureMod.png';
 			var imgTwo = config.wikiModPath + 'adi/assets/imgs/stitching.png'
 
-			var defaultImgs = [imgOne, imgTwo];
+            var defaultImgs = [imgOne, imgTwo];
+            
+            $scope.getImagePictureText = function(currentImgText) {
+                var image_picture_text = '';
+                var usingDefault = !currentImgText || defaultImgs.indexOf(currentImgText) >= 0;
 
-			var currentImgText = $scope.params.image_picture.text;
-
-			setInterval(function(){
-                for(var x in defaultImgs){
-                    if(currentImgText == defaultImgs[x]){
-                        currentImgText = "";
-                        break;
-                    }
+                if(/^style[1-3]$/.test($scope.params.design.text)){
+                    currentImgText = usingDefault ? imgOne : $scope.params.image_picture.text;
                 }
 
-                if($scope.params.design.text == "style1"){
-                    $scope.params.image_picture.text = currentImgText.length == 0 ? imgOne : $scope.params.image_picture.text;
+				if(/^style[4-5]$/.test($scope.params.design.text)){
+                    currentImgText = usingDefault ? imgTwo : $scope.params.image_picture.text;
                 }
 
-                if($scope.params.design.text == "style2"){
-                    $scope.params.image_picture.text = currentImgText.length == 0 ? imgOne : $scope.params.image_picture.text;
-				}
+                if ($scope.params.image_picture.text != currentImgText) {
+                    $scope.params.image_picture.text = currentImgText;
+                }
 
-				if($scope.params.design.text == "style3"){
-                    $scope.params.image_picture.text = currentImgText.length == 0 ? imgOne : $scope.params.image_picture.text;
-				}
-				
-				if($scope.params.design.text == "style4"){
-                    $scope.params.image_picture.text = currentImgText.length == 0 ? imgTwo : $scope.params.image_picture.text;
-				}
-				
-				if($scope.params.design.text == "style5"){
-                    $scope.params.image_picture.text = currentImgText.length == 0 ? imgTwo : $scope.params.image_picture.text;
-				}
-				
-				$scope.$apply();
-            }, 100);
+                return currentImgText;
+            }
         }]);
     }
 
