@@ -473,16 +473,9 @@
         color: #333;
     }
 
-    .module-editor .knowledge-tabpane p {
-        margin-bottom: 20px;
-    }
-
-    .module-editor .knowledge-tabpane a {
-        border: 1px solid #3977AD;
-        padding: 6px 0;
-        width: 200px;
-        display: inline-block;
-        text-align: center;
+    .botui-app-container{
+        width: 100%;
+        height: 200px;
     }
 </style>
 <div ng-controller="moduleEditorController" class="module-editor">
@@ -510,13 +503,11 @@
     <!-- Tab panes -->
     <div class="tab-content">
         <div role="tabpanel" class="tab-pane knowledge-tabpane" id="Knowledge" ng-class="{true: 'active'}[show_type == 'knowledge' || !show_type]">
-            <p>
-                <a href="http://keepwork.com/official/help/index" target="_blank">keepwork帮助中心</a>
-            </p>
-            <p>
-                <a href="http://keepwork.com/official/help/yufa" target="_blank">markdown基础语法</a>
-            </p>
-            <!-- <p>{{lineContent ? lineContent : "知识库中暂无相关推荐内容" | translate}}</p> -->
+            <div id="knowlege-agent" class="botui-app-container">
+                <bot-ui></bot-ui>
+            </div>
+            <div id="knowledge-pattern">
+            </div>
         </div>
         <div role="tabpanel" class="tab-pane" ng-class="{true: 'active'}[show_type == 'editor']" id="Attr">
             <div id="editorSwiper" class="editor-swiper swiper-container swiper-container-horizontal">
@@ -601,9 +592,9 @@
                                     <i class="pull-right iconfont icon-enlarge" ng-click="openMultiText(data.data, 'text')"></i>
                                 </div>
                                 <div class="card-input-box">
-                                    <!-- <input type="text" 
-                                        class="card-input" 
-                                        ng-change="applyAttrChange();setShowResult(true)" 
+                                    <!-- <input type="text"
+                                        class="card-input"
+                                        ng-change="applyAttrChange();setShowResult(true)"
                                         ng-model="data.data.href" placeholder="链接"
                                         ng-blur="setShowResult(false)"
                                     > -->
@@ -711,7 +702,7 @@
     <!-- <div class="backdrop" ng-show="showResult"></div> -->
 </div>
 
-<!-- 
+<!--
 <style>
 .input_item_container {
 	margin: 10px 0px;
@@ -784,8 +775,8 @@
 				<div style="transform:scale(0.15,0.2); transform-origin:left top;">
 					<div wiki-html="design_view" ></div>
 				</div>
-				<div><button ng-click="click_apply_design($index)">APPLY</button></div>	
-			</div>	
+				<div><button ng-click="click_apply_design($index)">APPLY</button></div>
+			</div>
 		</div>
 	</div>
 </div>

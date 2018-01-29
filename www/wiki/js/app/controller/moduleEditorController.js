@@ -5,7 +5,8 @@ define([
     'helper/markdownwiki',
     'text!html/moduleEditor.html',
     'swiper',
-], function(app, util, markdownwiki, htmlContent, swiper){
+    'helper/knowledgeAgent'
+], function(app, util, markdownwiki, htmlContent, swiper, agent){
 	var objectEditor = {
 		data: {},
 		fields:[],
@@ -17,10 +18,10 @@ define([
 			console.log("object editor addInputField params error!");
 			return;
 		}
-		
+
 		field.key = field.key || field.id;
 		field.displayName = field.displayName || field.key;
-		self.fields.push(field);	
+		self.fields.push(field);
 	}
 
 	app.registerController("moduleEditorController", ['$scope', '$rootScope', '$uibModal', function($scope, $rootScope, $uibModal){
@@ -34,6 +35,7 @@ define([
         $scope.filelist = [];
         $scope.linkFilter = "";
         $scope.hasStyle = false;
+        $scope.agentEnable = false;
 
         var getFileList = function(){
             var username = $scope.user.username;
@@ -113,16 +115,16 @@ define([
 				$scope.editorDatas = item;
 			}
         }
-        
+
         // 点击菜单
         $scope.openMenuEditor = function(data) {
             console.log(data);
             config.services.datatreeEditorModal({
-                title: '菜单编辑器', 
+                title: '菜单编辑器',
                 keys: [
                     {key:'url', name: '链接', placeholder:"请输入链接"},
                 ],
-                showLocation: true, 
+                showLocation: true,
                 datatree: data.text
             }, function(result){
                 data.text = result;
@@ -238,8 +240,8 @@ define([
                 list = angular.copy($select.items),
                 FLAG = -1;
             //remove last user input
-            list = list.filter(function(item) { 
-                return item.id !== FLAG; 
+            list = list.filter(function(item) {
+                return item.id !== FLAG;
             });
             if (!search) {
                 $select.items = list;
@@ -247,7 +249,7 @@ define([
             else {
                 //manually add user input and set selection
                 var userInputItem = {
-                    id: FLAG, 
+                    id: FLAG,
                     url: search
                 };
                 $select.items = [userInputItem].concat(list);
@@ -295,6 +297,10 @@ define([
             throttle(applyAttrChange);
         }
 
+        $scope.enablePack = function(pack){
+            $scope.memoryContext = {}
+        }
+
 		$scope.close = function() {
 			var moduleEditorParams = config.shareMap.moduleEditorParams || {};
 			$scope.editorDatas = $scope.datas_stack.pop();
@@ -340,7 +346,7 @@ define([
                 //config.shareMap.moduleEditorParams = undefined;
             }
         }
-        
+
         $scope.applyAttrChange = function (text) {
             throttle(applyAttrChange);
 			util.$apply();
@@ -401,7 +407,7 @@ define([
             lineClassesMap = [];
             // $(".mod-container.active").removeClass("active");
         }
-        
+
         var setCodePosition = function(from, to){
             removeAllLineClass();
             var editor = editor || $rootScope.editor || {};
@@ -472,17 +478,22 @@ define([
             fakeIconDom = [];
         }
 
+        function initAgent(){
+            agent.init("agent", "/agent")
+            agent.botUI("knowlege-agent")
+        }
+
 		function init() {
             editor = editor || $rootScope.editor || {};
 			var moduleEditorParams = config.shareMap.moduleEditorParams || {};
 			config.shareMap.moduleEditorParams = moduleEditorParams;
 			//moduleEditorParams.$scope = $scope;
-			
+
 			moduleEditorParams.updateEditorObj = function(obj) {
                 $scope.editorDatas = get_order_list(obj);
                 util.$apply();
             }
-            
+
             var isFunction = function (functionToCheck) {
                 var getType = {};
                 return functionToCheck && getType.toString.call(functionToCheck) === '[object Function]';
@@ -503,7 +514,7 @@ define([
 
                 // setFakeIconPosition();
                 moduleEditorParams = config.shareMap.moduleEditorParams || {};
-                
+
                 var blockLineNumFrom = moduleEditorParams.wikiBlock.blockCache.block.textPosition.from;
                 var blockLineNumTo = moduleEditorParams.wikiBlock.blockCache.block.textPosition.to;
                 setCodePosition(blockLineNumFrom, blockLineNumTo);
@@ -518,7 +529,7 @@ define([
                 $scope.editorDatas = get_order_list(obj);
                 util.$apply();
                 initSwiper("editor");
-                
+
                 var selectObj = moduleEditorParams.selectObj;
 				if (selectObj) {
                     if (!isFunction(swiper["editor"].slideTo)) {
@@ -541,7 +552,7 @@ define([
                     $("#designSwiper div.design-view").css({
                         "transform": "scale(" + scaleSize + ")",
                         "transform-origin": "left top"
-                    });    
+                    });
                 });
 
             }
@@ -575,11 +586,15 @@ define([
             moduleEditorParams.setKnowledge = function(lineContent){
                 removeAllLineClass();
                 moduleEditorParams = config.shareMap.moduleEditorParams || {};
-                moduleEditorParams.show_type = "knowledge"; 
+                moduleEditorParams.show_type = "knowledge";
                 $scope.show_type = "knowledge";
                 $scope.lineContent = lineContent;
+                if(!$scope.agentEnable){
+                    $scope.agentEnable = true;
+                    initAgent();
+                }
             }
-            
+
 			// $scope.show_type = "editor";
             $scope.datas_stack = [];
             getFileList();
