@@ -232,11 +232,13 @@ function skills:api_getLikedStatus(params)
     local err, skills = yield()
     if (skills) then
         for i, skill in ipairs(skills) do
-            skill.usersLiked = skill.usersLiked or {}
-            skill.likedCount = skill.likedCount or #(skill.usersLiked)
-            skill.liked = self:is_visitor_in_usersLiked(params.visitor, skill.usersLiked)
-            skill.usersLiked = nil  -- do not show usersLiked unless necessary
-            skill._id = nil
+            skill = {
+                title = skill.title,
+                username = skill.username,
+                usersLiked = skill.usersLiked or {},
+                likedCount = skill.likedCount or #(skill.usersLiked),
+                liked = self:is_visitor_in_usersLiked(params.visitor, skill.usersLiked),
+            }
         end
     end
     return errors:wrap(err, skills)
@@ -254,21 +256,39 @@ function skills:api_getDetail(params)
     local err, result = yield()
     -- wrap the result
     if (result) then
+        local _, user_detail
         local usersLiked = {}
+        local user_model_instance = models.user:new()
         local limit = 50
         local liked, position = self:is_visitor_in_usersLiked(params.visitor, result.usersLiked)
         if (liked) then
-            usersLiked[1] = table.remove(result.usersLiked, position)
+            usersLiked[1] = {username = table.remove(result.usersLiked, position)}
             limit = 49
         end
         if (#result.usersLiked < limit) then limit = #result.usersLiked end
         for i = 1, limit do
-            usersLiked[(#usersLiked) + 1] = result.usersLiked[(#result.usersLiked) - (limit - i)]
+            usersLiked[(#usersLiked) + 1] = {username = result.usersLiked[(#result.usersLiked) - (limit - i)]}
         end
-        result.usersLiked = usersLiked
-        result.liked = liked
-        result.likedCount = result.likedCount or 0
-        result._id = nil
+
+        local finished_count = 0
+        for i, user in ipairs(usersLiked) do
+            -- get portrait of users
+            user_model_instance:db():findOne({["username"] = {user.username}},
+                function(err, user_detail)
+                    if (user_detail) then user.portrait = user_detail.portrait end
+                    finished_count = finished_count + 1
+                    if (finished_count == #usersLiked) then resume() end
+                end)
+            if (i == #usersLiked) then yield() end
+        end
+
+        result = {
+            title = result.title,
+            username = result.username,
+            usersLiked = usersLiked,
+            liked = liked,
+            likedCount = result.likedCount or 0
+        }
     end
     return errors:wrap(err, result)
 end
