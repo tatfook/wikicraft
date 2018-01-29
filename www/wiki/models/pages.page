@@ -30,7 +30,7 @@ end
 
 
 function pages:api_insert(params)
-    -- ensureAuthenticated()
+    ensureAuthenticated()
     local page, is_params_error, message = self:insert_validator(params)
     if (is_params_error) then
         return response:status(404):send({error={message=message,status=404}})
@@ -86,7 +86,7 @@ end
 
 
 function pages:api_updateTags(params)
-    -- ensureAuthenticated()
+    ensureAuthenticated()
     local page, is_params_error, message = self:update_tags_validator(params)
     if (is_params_error) then
         return response:status(404):send({error={message=message,status=404}})
@@ -138,12 +138,14 @@ end
 
 
 function pages:api_star(params)
+    ensureAuthenticated()
     local stars = models.pages_stars:new()
     return stars:star(params)
 end
 
 
 function pages:api_updateVisitCount(params)
+    ensureAuthenticated()
     local required_fields = {"url"}
     local is_params_error, message = validators.required_fields_validator(params, required_fields)
     if (is_params_error) then
@@ -189,7 +191,7 @@ end
 
 
 function pages:api_delete(params)
-    -- ensureAuthenticated()
+    ensureAuthenticated()
     local required_fields = {"url"}
     local is_params_error, message = validators.required_fields_validator(params, required_fields)
     if (is_params_error) then
