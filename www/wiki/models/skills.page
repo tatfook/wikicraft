@@ -30,7 +30,7 @@ end
 
 
 function skills:api_insert(params)
-    -- ensureAuthenticated()
+    ensureAuthenticated()
     local skill, is_params_error, message = self:insert_validator(params)
     if (is_params_error) then
         return response:status(404):send({error={message=message,status=404}})
@@ -100,7 +100,7 @@ end
 
 
 function skills:api_update(params)
-    -- ensureAuthenticated()
+    ensureAuthenticated()
     local skill, is_params_error, message = self:update_validator(params)
     if (is_params_error) then
         return response:status(404):send({error={message=message,status=404}})
@@ -145,7 +145,7 @@ end
 
 
 function skills:api_like(params)
-    -- ensureAuthenticated()
+    ensureAuthenticated()
     local skill, is_params_error, message = self:like_validator(params)
     if (is_params_error) then
         return response:status(404):send({error={message=message,status=404}})
@@ -296,6 +296,7 @@ end
 
 -- return 404 if skill exists
 function skills:api_checkExistence(params)
+    ensureAuthenticated()
     local skill, is_params_error, message = self:check_existence_validator(params)
     if (is_params_error) then
         return response:status(404):send({error={message=message,status=404}})
@@ -329,7 +330,7 @@ end
 
 
 function skills:api_delete(params)
-    -- ensureAuthenticated()
+    ensureAuthenticated()
     local required_fields = {"username", "title"}
     local is_params_error, message = validators.required_fields_validator(params, required_fields)
     if (is_params_error) then
