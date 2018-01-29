@@ -104,13 +104,13 @@
                 <a  ng-if="editorMode"
                     href="javascript:void(0)"
                     ng-click="viewEditorClick(params.media_img,$event)">
-                    <img ng-src="{{params.media_img.text}}">
+                    <img ng-src="{{getImagePictureText(params.media_img.text)}}">
                 </a>
                 <a  ng-class="{true:'clear-pointer'}[!params.input_qq.text.length]"
                     ng-if="!editorMode"
                     target="{{params.media_img.target ? params.media_img.target : '_blank'}}"
                     ng-href="{{getQQUrl()}}">
-                    <img ng-src="{{params.media_img.text}}">
+                    <img ng-src="{{getImagePictureText(params.media_img.text)}}">
                 </a>
             </div>
             <div class="qq-mod-head" ng-hide="params.link_title.is_mod_hide">
@@ -151,13 +151,13 @@
                 <a  ng-if="editorMode"
                     href="javascript:void(0)"
                     ng-click="viewEditorClick(params.media_img,$event)">
-                    <img ng-src="{{params.media_img.text}}">
+                    <img ng-src="{{getImagePictureText(params.media_img.text)}}">
                 </a>
                 <a  ng-class="{true:'clear-pointer'}[!params.input_qq.text.length]"
                     ng-if="!editorMode"
                     target="{{params.media_img.target ? params.media_img.target : '_blank'}}"
                     ng-href="{{getQQUrl()}}">
-                    <img ng-src="{{params.media_img.text}}">
+                    <img ng-src="{{getImagePictureText(params.media_img.text)}}">
                 </a>
             </div>
         </div>

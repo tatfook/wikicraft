@@ -92,33 +92,29 @@ define([
                 return $scope.params.input_qq.text.length == 0 ? "" : $scope.qqUrl;
             }
 
-            $scope.$watch("params", function(){
-                var imgOne = config.wikiModPath + 'adi/assets/imgs/qqMod.png';
-                var imgTwo = config.wikiModPath + 'adi/assets/imgs/qqModTwo.png';
+            var imgOne = config.wikiModPath + 'adi/assets/imgs/qqMod.png';
+            var imgTwo = config.wikiModPath + 'adi/assets/imgs/qqModTwo.png';
 
-                var defaultImgs = [imgOne, imgTwo];
+            var defaultImgs = [imgOne, imgTwo];
 
-                var currentImgText = $scope.params.media_img.text;
+            $scope.getImagePictureText = function(currentImgText) {
+                var media_img_text = '';
+                var usingDefault = !currentImgText || defaultImgs.indexOf(currentImgText) >= 0;
 
-                for(var x in defaultImgs){
-                    if(currentImgText == defaultImgs[x]){
-                        currentImgText = "";
-                        break;
-                    }
+                if(/^style1$/.test($scope.params.design.text)){
+                    currentImgText = usingDefault ? imgOne : $scope.params.media_img.text;
                 }
 
-                if($scope.params.design.text == "style1"){
-                    $scope.params.media_img.text = currentImgText.length == 0 ? imgOne : $scope.params.media_img.text;
-                    console.log($scope.params.media_img.text);
+				if(/^style2$/.test($scope.params.design.text)){
+                    currentImgText = usingDefault ? imgTwo : $scope.params.media_img.text;
                 }
 
-                if($scope.params.design.text == "style2"){
-                    $scope.params.media_img.text = currentImgText.length == 0 ? imgTwo : $scope.params.media_img.text;
-                    console.log($scope.params.media_img.text);
+                if ($scope.params.media_img.text != currentImgText) {
+                    $scope.params.media_img.text = currentImgText;
                 }
-            })
 
-                     
+                return currentImgText;
+            }
         }]);
     }
 
