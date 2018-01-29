@@ -72,6 +72,34 @@
         margin-right: 6px;
         vertical-align: sub;
     }
+
+    .user-sites .zhiding-icon{
+        position: absolute;
+        bottom: 19px;
+        right: 0;
+        cursor: pointer;
+        display: none;
+    }
+
+    .user-sites .sites-item:hover .zhiding-icon{
+        display: block;
+    }
+
+    .user-sites .stick-btn {
+        width: 22px;
+        height: 22px;
+        display: inline-block;
+        background-color: #E5F1FF;
+        color: #72AEFD;
+        font-size: 14px;
+        line-height: 22px;
+        text-align: center;
+        border-radius: 50%;
+    }
+
+    .user-sites .cancel-stick-btn{
+        transform: rotate(180deg);
+    }
 </style>
 <div class="user-sites" ng-controller="sitesCtrl">
     <h4 class="title">
@@ -103,7 +131,14 @@
                     <span>
                         <i class="iconfont icon-collection"></i>{{site.favoriteCount || 0}}
                     </span>
-                    <span class="stick-btn iconfont icon-zhiding" ng-show="params.type == 'created'" ng-click="toggleStickSite(site)">
+                </div>
+                <div class="zhiding-icon">
+                    <span class="stick-btn iconfont icon-zhiding1"
+                         ng-class="{true: 'cancel-stick-btn'}[params.type == 'stick' || site.isTop]"
+                         ng-show="params.type == 'created' || params.type == 'stick'"
+                         ng-click="toggleStickSite(site)"
+                         title="{{(params.type == 'stick' || site.isTop) ? '取消置顶' : '置顶'}}"
+                    >
                     </span>
                 </div>
             </div>
