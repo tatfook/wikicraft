@@ -66,7 +66,7 @@
         'bootstrap': "lib/bootstrap/js/bootstrap.min",
         'satellizer': 'lib/satellizer/satellizer.min',
         'bootstrap-treeview': 'lib/bootstrap-treeview/bootstrap-treeview.min',
-        'botui': 'lib/botui/botui.min',
+        'botui': 'lib/botui/botui',
         'vue': 'lib/vue/vue.min',
         //'github-api': 'lib/github-api/GitHub.bundle.min',
         //'cropper': 'lib/cropper/cropper.min',
