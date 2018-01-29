@@ -19,8 +19,8 @@
         font-size: 20px;
         display: inline-block;
         line-height: 1;
-        margin-top: 6px;
         font-weight: bold;
+        vertical-align: super;
     }
 
     .tags-header .ui-select-multiple.ui-select-bootstrap {
@@ -49,21 +49,27 @@
 
     .tags-header .editing-tag {
         display: flex;
+        margin-top: -1px;
     }
 
     .tags-header .btn-primary {
         font-size: 16px;
         padding: 5px 21px;
     }
+
+    .tags-header .showing-tag .nav{
+        display: inline-block;
+    }
 </style>
 
-<div ng-controller="pageTagsCtrl" class="tags-header container">
-    <ul class="nav" ng-hide="tagEditing">
-        <li class="tag-item" ng-repeat="tag in tags.tags">{{tag}}</li>
-        <li ng-click="editTags(true)">
-            <i class="iconfont icon-bianji"></i>
-        </li>
-    </ul>
+<div ng-controller="pageTagsCtrl" class="tags-header container" ng-hide="tags.tags.length <= 0 && !isSelf">
+    <div class="showing-tag" ng-hide="tagEditing">
+        <ul class="nav" ng-hide="tags.tags.length <= 0">
+            <li class="tag-item" ng-repeat="tag in tags.tags">{{tag}}</li>
+        </ul>
+        <span ng-click="editTags(true)" ng-show="isSelf" class="iconfont icon-bianji"></span>
+    </div>
+
     <div class="editing-tag" ng-show="tagEditing">
         <ui-select multiple tagging tagging-label="false" ng-model="tags.tags" theme="bootstrap" title="请输入标签..." on-select="tagSelect($item, $model)">
             <ui-select-match placeholder="请输入标签...">{{$item}}</ui-select-match>
