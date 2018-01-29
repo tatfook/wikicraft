@@ -1,4 +1,7 @@
 <style>
+    .header-container{
+        background-color: #FFF;
+    }
     header {
         /* box-shadow: 0 2px 5px rgba(44, 62, 80, .35); */
         border-bottom: 1px solid #DDD;
@@ -421,9 +424,9 @@
 </style>
 <style>
     .url-header .nav-bread-crumb {
-        max-width: 230px;
-        white-space: nowrap;
-        overflow: hidden;
+        /* max-width: 230px; */
+        /* white-space: nowrap; */
+        /* overflow: hidden; */
     }
 
     .url-header .nav-bread-crumb .breadcrumb {
@@ -467,7 +470,7 @@
 </style>
 
 
-<div ng-controller="headerController">
+<div ng-controller="headerController" class="header-container">
     <header class="navbar-fixed-top">
         <nav class="navbar navbar-default">
             <div class="container">
@@ -644,7 +647,7 @@
                         <!--</li>-->
                         <!--</ol>-->
                         <!--</li>-->
-                        <li class="icon" ng-show="isIconShow">
+                        <!-- <li class="icon" ng-show="isIconShow">
                             <img ng-src="{{imgsPath+'icon/wiki_edit.png'}}" alt="" ng-click="goWikiEditorPage()">
                         </li>
                         <li class="icon dropdown share-dropdown" ng-show="isIconShow">
@@ -658,16 +661,16 @@
                             <i ng-show="isCollect" class="iconfont icon-dianzan active" ng-click="doWorksFavorite($event,false)" alt=""></i>
                             <i ng-show="!isCollect" class="iconfont icon-dianzan" ng-click="doWorksFavorite($event,true)" alt=""></i>
                             <span class="text-muted" ng-click="goFans()">{{userFansCount || 0}}</span>
-                        </li>
-                        <li class="iconfont-icon" ng-show="!isIconShow" ng-click="goHomePage(true)">
+                        </li> -->
+                        <li class="iconfont-icon" ng-click="goHomePage(true)">
                             <i class="iconfont icon-feature"></i>
                             <span translate="功能"></span>
                         </li>
-                        <li class="iconfont-icon" ng-show="!isIconShow" ng-click="goApps()">
+                        <li class="iconfont-icon" ng-click="goApps()">
                             <i class="iconfont icon-yingyongguanli"></i>
                             <span translate="应用中心"></span>
                         </li>
-                        <li class="iconfont-icon" ng-show="!isIconShow">
+                        <li class="iconfont-icon">
                             <a href="http://keepwork.com/official/help/index">
                                 <i class="iconfont icon-bangzhu"></i>
                                 <span translate="帮助"></span>
@@ -729,7 +732,7 @@
         </nav>
     </header>
 
-    <div class="url-header container clearfix">
+    <div class="url-header container clearfix" ng-show="isIconShow">
         <ul class="nav navbar-left">
             <li id="js-prev-container" class="nav-bread-crumb">
                 <ol id="js-prev-ellipsis" class="prev-ellipsis">
