@@ -70,7 +70,7 @@ define([
 
         $scope.isUrlVideo = function(url) {
             var result = /(mp4|mov|amv|avi)$/.test(getNakedUrlWithoutQueryAndHash(url));
-            return result;
+            return false; //result; //disable video, enable it when adi is ready for video
         }
 
         $scope.isUrlImage = function(url) {
