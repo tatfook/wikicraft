@@ -4,15 +4,26 @@
 
 define([
     'jquery',
+    'markdown-it',
     "js-base32",
     "helper/errTranslate"
-], function ($, jsbase32, errTranslate) {
+], function ($, markdown_it, jsbase32, errTranslate) {
     var util = {
         stack:[],   // 堆栈操作模拟
         id:0,       // ID产生器 局部唯一性
         lastUrlObj:{}, // 记录最近一次URL信息
         urlRegex: /(https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9]\.[^\s]{2,})/,
     };
+
+    util.subMarkdownRender = (function() {
+        var md = new markdown_it({
+            html: true,
+            langPrefix: 'code-'
+        });
+        return function(text) {
+            return md.render(text);
+        }
+    })();
 
     util.getId = function () {
         this.id = this.id > 1000000 ? 0 : this.id+1;

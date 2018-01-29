@@ -137,14 +137,7 @@ define([
 			
 			wikiblock.init(initObj);
 
-			var md = new markdown_it({
-				html: true,
-				langPrefix: 'code-'
-			})
-            
-            $scope.multiText_desc2display = function(text) {
-                return md.render(text);
-            }
+            $scope.subMarkdownRender = util.subMarkdownRender;
 
 			$scope.projectImg = {
 				"background-image"    : 'url('+ $scope.params.image_picture.text +')',
