@@ -30,6 +30,7 @@ define([
         var designViewWidth = 350, win;
         var lineClassesMap = [];
         var fakeIconDom = [];
+        var moduleScope;
         $scope.filelist = [];
         $scope.linkFilter = "";
         $scope.hasStyle = false;
@@ -135,13 +136,9 @@ define([
 
         // 打开自定义Modal
         $scope.openModal = function(data){
-            var scope = config.shareMap.moduleEditorParams.wikiBlock.scope;
-
-            scope.applyAttrChange = function(){
-                throttle(applyAttrChange);
+            if(moduleScope.options && moduleScope.success && moduleScope.error){
+                config.services.selfDefinedModal(moduleScope.options, moduleScope.success, moduleScope.error);
             }
-
-            config.services.selfDefinedModal(scope.options, scope.success, scope.error);
         }
 
         // 多行文本弹窗
@@ -496,6 +493,12 @@ define([
                     $scope.hasStyle = true;
                 }else{
                     $scope.hasStyle = false;
+                }
+
+                moduleScope = config.shareMap.moduleEditorParams.wikiBlock.scope;
+
+                moduleScope.applyAttrChange = function(){
+                    throttle(applyAttrChange);
                 }
 
                 // setFakeIconPosition();

@@ -45,7 +45,6 @@ define([
             
             $scope.success = function(html){
                 $scope.params.modal_rich.data = html;
-                applyContent();
                 $scope.applyAttrChange();
             }
 
@@ -53,23 +52,17 @@ define([
                 console.log(msg);
             };
 
-            $scope.richClick = function(){
+            $scope.dbClick = function(){
                 config.services.selfDefinedModal($scope.options, $scope.success, $scope.error);
             }
 
             $scope.currentRichText = "__RICHTEXT__" + Date.now();
 
-            $scope.$watch("$viewContentLoaded", function(){
-                setTimeout(function(){
-                    applyContent();
-                }, 0)
-            });
-
-            function applyContent(){
-                var richText = document.querySelector('#' + $scope.currentRichText);
+            $scope.applyContent = function(data){
+                var richText = window.document.querySelector('#' + $scope.currentRichText);
 
                 if(richText){
-                    richText.innerHTML = $scope.params.modal_rich.data;
+                    richText.innerHTML = data;
                 }
             }
         }])
