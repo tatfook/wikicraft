@@ -2,14 +2,14 @@
  * @Author: ZhangKaitlyn 
  * @Date: 2018-01-19
  * @Last Modified by: none
- * @Last Modified time: 2018-01-26 17:53:32
+ * @Last Modified time: 2018-01-29 10:12:26
  */
 define([
-    'app', 
+    'app',
+    'helper/mdconf', 
     'text!wikimod/profile/html/certifications.html',
     'text!wikimod/profile/html/modalTemplate/addCertificationsModal.html',
-    'helper/mdconf',
-], function (app, htmlContent, addCertificationModalHtmlContent, mdconf) {
+], function (app, mdconf, htmlContent, addCertificationModalHtmlContent) {
     function registerController(wikiBlock) {
         app.registerController("certificationCtrl", ['$rootScope', '$scope', '$uibModal', function ($rootScope, $scope, $uibModal) {
             const modCmd = "```@profile/js/certifications";

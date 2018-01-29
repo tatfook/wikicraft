@@ -2,7 +2,7 @@
  * @Author: ZhangKaitlyn 
  * @Date: 2018-01-19
  * @Last Modified by: none
- * @Last Modified time: 2018-01-27 18:54:37
+ * @Last Modified time: 2018-01-29 10:41:12
  */
 define([
     'app', 
@@ -17,6 +17,7 @@ define([
             const modCmd = "```@profile/js/skills";
             var thisInBlockIndex;
             var thisContainerId;
+            $scope.skillsDetail = [];
 			wikiBlock.init({
 				scope:$scope,
 				params_template:{
@@ -44,8 +45,7 @@ define([
                         if (!data) {
                             return;
                         }
-                        console.log(data);
-                        $scope.skills[index].data = data
+                        $scope.skillsDetail[skill.title] = data;
                     }, function(err){
                         console.log(err);
                     })
@@ -123,8 +123,8 @@ define([
                     visitor: visitor,
                     username: $scope.userinfo.username
                 }, function(data){
-                    skill.data.liked = data.liked;
-                    var act = data.liked ? "取消点赞" : "点赞";
+                    $scope.skillsDetail[skill.title] = data; 
+                    var act = data.liked ? "点赞" : "取消点赞";
                     Message.info(act + "成功！");
                 })
             }
@@ -274,6 +274,11 @@ define([
                 var requiredResult = isRequiredEmptyAttr(requiredAttrs); 
                 if (requiredResult.boolResult) {
                     $scope.errMsg = requiredResult.attr + "不可为空";
+                    return;
+                }
+
+                if ($scope.editing) {
+                    $uibModalInstance.close($scope.addingSkill);
                     return;
                 }
 

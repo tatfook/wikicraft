@@ -158,7 +158,7 @@
             <li class="clearfix v-li" ng-repeat="skill in skills | limitTo: 5 track by $index">
                 <span class="title">{{skill.title}}</span>
                 <span class="level">{{skill.level}}</span>
-                <span class="pull-right iconfont icon-icondianzan" ng-class="{true:'active'}[!skill.data.liked]" ng-click="likeSkill(skill)"></span>
+                <span class="pull-right iconfont icon-icondianzan" ng-class="{true:'active'}[!skillsDetail[skill.title].liked]" ng-click="likeSkill(skill)"></span>
             </li>
         </ul>
         <div class="col-sm-6 skill-radar" id="skillRadar">
