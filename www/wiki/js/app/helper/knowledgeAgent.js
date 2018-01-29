@@ -156,23 +156,32 @@ define([
         var key = "ffd8fe19827f4db0b82ce3188d86f8f7"
         var api = "http://www.tuling123.com/openapi/api"
 
-        if (message === "exit") {
+        if (message === "bye" || message === "再见") {
             agent.parseBotData()
         } else {
-            util.get(api, {
-                key: key,
-                info: message,
-                userid: 123456
-            }, function (data) {
-                console.log(data)
-                agent.bot.message.bot({
-                    "delay": 500,
-                    "content": data.text
-                }).then(
-                    function () {
-                        agent.getClip("tuling")
-                    }
-                )
+            $.ajax({
+                url: api,
+                type: "POST",
+                dataType: "json",
+                //contentType:"application/json;charset=UTF-8",
+                data: {
+                    key: key,
+                    info: message,
+                    userid: 123456
+                },
+                success:function(result, statu, xhr) {
+                    agent.bot.message.bot({
+                        "delay": 500,
+                        "content": result.text
+                    }).then(
+                        function () {
+                            agent.getClip("聊一聊")
+                        }
+                    )
+                },
+                error:function(xhr, statu, error) {
+                    console.log(error)
+                }
             })
         }
     }

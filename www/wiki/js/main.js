@@ -69,7 +69,7 @@
 			//'html2canvas': libPathPrefix + 'html2canvas/html2canvas.min',
 
 			'vue': libPathPrefix + 'vue/vue.min',
-			'botui': libPathPrefix + 'botui/botui.min',
+			'botui': libPathPrefix + 'botui/botui',
 
 			// 自定义模块
 			'app': jsPathPrefix + 'app',
