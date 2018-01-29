@@ -94,19 +94,8 @@
         app.registerController("boardController", ['$scope', '$uibModal', '$sce', function ($scope, $uibModal, $sce) {
             if (wikiBlock.editorMode) {
                 $scope.mxClientEdit = true;
-                var modParams = wikiBlock.modParams.replace(/[\ \r\n]+/g, "");
-
-                if (typeof(modParams) == "string" && modParams.length == 0 || modParams == "blank") {
-                    $scope.mxClientStart = true;
-                    $scope.startNotice   = "点击此处开始编辑";
-                    util.$apply();
-                } else {
-                    initPreview(wikiBlock, function (svg) {
-                        $scope.preview = $sce.trustAsHtml(svg);
-                        util.$apply();
-                    });
-                    
-                }
+                
+                initEditMode();
             } else {
                 initPreview(wikiBlock, function (svg) {
                     $scope.preview = $sce.trustAsHtml(svg);
@@ -140,18 +129,32 @@
 
                     if(compressData){
                         wikiBlock.applyModParams(compressData);
+                        wikiBlock.modParams = compressData;
                     }else{
                         wikiBlock.applyModParams("blank");
+                        wikiBlock.modParams = "blank";
                     }
 
-                    wikiBlock.modParams = compressData;
+                    initEditMode();
+                }, function (params) {});
+            };
 
+            function initEditMode(){
+                var modParams = wikiBlock.modParams.replace(/[\ \r\n]+/g, "");
+                
+                if (typeof(modParams) == "string" && modParams.length == 0 || modParams == "blank") {
+                    $scope.mxClientStart = true;
+                    $scope.startNotice   = "点击此处开始编辑";
+                    $scope.preview = "";
+                    util.$apply();
+                } else {
+                    $scope.mxClientStart = false;
                     initPreview(wikiBlock, function (svg) {
                         $scope.preview = $sce.trustAsHtml(svg);
                         util.$apply();
                     });
-                }, function (params) {});
-            };
+                }
+            }
         }])
 
         app.registerController("boardEditorController", ['$scope', '$uibModalInstance', 'wikiBlock', function ($scope, $uibModalInstance, wikiBlock) {           
