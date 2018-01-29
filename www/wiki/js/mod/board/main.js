@@ -99,18 +99,18 @@
                 if (typeof(modParams) == "string" && modParams.length == 0 || modParams == "blank") {
                     $scope.mxClientStart = true;
                     $scope.startNotice   = "点击此处开始编辑";
-                    $scope.$apply();
+                    util.$apply();
                 } else {
                     initPreview(wikiBlock, function (svg) {
                         $scope.preview = $sce.trustAsHtml(svg);
-                        $scope.$apply();
+                        util.$apply();
                     });
                     
                 }
             } else {
                 initPreview(wikiBlock, function (svg) {
                     $scope.preview = $sce.trustAsHtml(svg);
-                    $scope.$apply();
+                    util.$apply();
                 });
             }
 
@@ -143,6 +143,13 @@
                     }else{
                         wikiBlock.applyModParams("blank");
                     }
+
+                    wikiBlock.modParams = compressData;
+
+                    initPreview(wikiBlock, function (svg) {
+                        $scope.preview = $sce.trustAsHtml(svg);
+                        util.$apply();
+                    });
                 }, function (params) {});
             };
         }])
