@@ -1202,16 +1202,15 @@ define([
     
                 //store and retrieve last avaliable .tag and .map
                 if (stack == 1) {
-                    tempToken.tag = token.tag || tempToken.tag;
                     tempToken.map = token.map || tempToken.map;
                 }
 
                 if (stack == 0) {
-                    token.tag = token.tag || tempToken.tag;
                     token.map = token.map || tempToken.map;
                     !stack && resultTokenList.push(token);
                 }
             });
+            // console.log('getCombinedTokenListByMarkdownText: ', tokenList, resultTokenList);
             return resultTokenList;
         }
 
@@ -1231,6 +1230,7 @@ define([
 
             var blockList = tokenList.map(function(token) {
                 var block = {
+                    tag: token.tag,
                     textPosition: {
                         from: token.map[0],
                         to: token.map[1]
@@ -1238,6 +1238,7 @@ define([
                     content: '',
                     htmlContent: ''
                 };
+
 
                 block.content = textLineList.filter(function(line, index) {
                     return index >= block.textPosition.from && index < block.textPosition.to;
