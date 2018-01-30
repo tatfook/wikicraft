@@ -337,23 +337,16 @@ define([
         // 收藏作品
         $scope.doWorksFavorite=function (event,doCollect) {
             var worksFavoriteRequest = function(isFavorite) {
-                if (!$rootScope.siteinfo) {
-                    return;
-                }
-                var params = {
-                    userId: $scope.user._id,
-					siteId: $rootScope.siteinfo._id
-                };
-
-                var url = config.apiUrlPrefix + 'user_favorite/' + (isFavorite ? 'favoriteSite' : 'unfavoriteSite');
-                util.post(url, params, function () {
-                    Message.info(isFavorite ? '作品已收藏' : '作品已取消收藏');
+                console.log(pageDetail);
+                util.post(config.apiUrlPrefix + "pages/star", {
+                    url: pageDetail.pathname,
+                    visitor: $scope.user.username
+                }, function(data){
+                    $scope.isCollect = data.starred;
+                    $scope.userFansCount = data.starredCount;
+                }, function(err){
+                    console.log(err);
                 });
-                if (isFavorite){
-                    $scope.userFansCount++;
-                }else{
-                    $scope.userFansCount--;
-                }
             };
 
             if (doCollect){

@@ -457,6 +457,7 @@
     .url-header li.icon {
         float: left;
         padding: 10px 15px;
+        cursor: pointer;
     }
 
     .url-header i.icon-dianzan {
@@ -775,7 +776,7 @@
                 </div>
             </li>
             <li class="icon collect-icon">
-                <i class="iconfont icon-dianzan" ng-click="doWorksFavorite($event,true)" alt=""></i>
+                <i class="iconfont icon-dianzan" ng-click="doWorksFavorite($event,isCollect)" alt=""></i>
                 <span class="text-muted" ng-click="goFans()">{{userFansCount || 0}}</span>
             </li>
         </ul>
