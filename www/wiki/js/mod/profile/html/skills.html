@@ -143,9 +143,9 @@
 </style>
 <div class="user-skills" ng-controller="skillCtrl">
     <h4 class="title">
-        我的技能
+        技能
         <span class="pull-right" ng-show="isSelf">
-            <i class="iconfont icon-tianjia" ng-click="showSkillModal()" ng-hide="editing"></i>
+            <i class="iconfont icon-tianjia" ng-click="showSkillModal()" ng-hide="editing && skills.length > 0"></i>
             <i class="iconfont" ng-show="skills.length > 0" ng-class="{true:'icon-fanhui', false:'icon-bianji'}[editing]" ng-click="editSkill()"></i>
         </span>
     </h4>
@@ -183,10 +183,10 @@
             <li class="clearfix v-li" ng-class="{true:'sub-skill'}[$index >4]" ng-repeat="skill in skills track by $index">
                 <span class="title">{{skill.title}}</span>
                 <span class="pull-right editing-toolbar">
-                    <span class="iconfont icon-shezhi" ng-click="setSkill($index)"></span>
-                    <span class="iconfont icon-shangyi" ng-click="shiftUp($index)"></span>
-                    <span class="iconfont icon-xiayi" ng-click="shiftDown($index)"></span>
-                    <span class="iconfont icon-shanchu1" ng-click="deleteSkill($index)"></span>
+                    <span class="iconfont icon-shezhi" title="设置" ng-click="setSkill($index)"></span>
+                    <span class="iconfont icon-shangyi" title="上移" ng-click="shiftUp($index)"></span>
+                    <span class="iconfont icon-xiayi" title="下移" ng-click="shiftDown($index)"></span>
+                    <span class="iconfont icon-shanchu1" title="删除" ng-click="deleteSkill($index)"></span>
                 </span>
             </li>
         </ul>

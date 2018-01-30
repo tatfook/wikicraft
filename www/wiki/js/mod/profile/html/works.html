@@ -216,9 +216,9 @@
 </style>
 <div class="user-works" ng-controller="worksCtrl">
     <h4 class="title">
-        我的作品
+        作品
         <span class="pull-right" ng-show="isSelf">
-            <i class="iconfont icon-tianjia" ng-hide="editing" ng-click="showModal()"></i>
+            <i class="iconfont icon-tianjia" ng-hide="editing && works.length > 0" ng-click="showModal()"></i>
             <i class="iconfont" ng-show="works.length > 0" ng-class="{true:'icon-fanhui', false:'icon-bianji'}[editing]" ng-click="editWork()"></i>
         </span>
     </h4>
@@ -248,10 +248,10 @@
                 </span>
             </div>
             <div class="editing-toolbar absolute-right" ng-show="editing">
-                <span class="iconfont icon-shezhi" ng-click="setWork($index)"></span>
-                <span class="iconfont icon-shangyi" ng-click="shiftUp($index)"></span>
-                <span class="iconfont icon-xiayi" ng-click="shiftDown($index)"></span>
-                <span class="iconfont icon-shanchu1" ng-click="deleteWork($index)"></span>
+                <span class="iconfont icon-shezhi" title="设置" ng-click="setWork($index)"></span>
+                <span class="iconfont icon-shangyi" title="上移" ng-click="shiftUp($index)"></span>
+                <span class="iconfont icon-xiayi" title="下移" ng-click="shiftDown($index)"></span>
+                <span class="iconfont icon-shanchu1" title="删除" ng-click="deleteWork($index)"></span>
             </div>
         </div>
     </div>

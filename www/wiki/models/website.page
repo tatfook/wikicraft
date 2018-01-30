@@ -620,7 +620,11 @@ function website:api_visitWebsite(params)
 	end
 
 	-- 增加站点访问量
-	self:api_updateVisitNum({username=params.username, sitename=params.sitename})
+    self:api_updateVisitNum({username=params.username, sitename=params.sitename})
+
+    -- 增加网页访问量
+    local pages = models.pages:new()
+    pages:updateVisitCount({url = params.url})
 
 	-- 添加访问记录
 	local userVisitHistoryDB = models.user_visit_history:new()

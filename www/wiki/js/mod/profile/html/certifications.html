@@ -61,9 +61,9 @@
 </style>
 <div class="user-certification" ng-controller="certificationCtrl">
     <h4 class="title">
-        我的认证
+        认证
         <span class="pull-right" ng-show="isSelf">
-            <i class="iconfont icon-tianjia" ng-click="showCertificationModal()" ng-hide="editing"></i>
+            <i class="iconfont icon-tianjia" ng-click="showCertificationModal()" ng-hide="editing && certifications.length > 0"></i>
             <i class="iconfont" ng-show="certifications.length > 0" ng-class="{true:'icon-fanhui', false:'icon-bianji'}[editing]" ng-click="editCertification()"></i>
         </span>
     </h4>
@@ -78,10 +78,10 @@
                 <td class="link ellipsis-1">{{certification.link}}</td>
                 <td class="time ellipsis-1">{{certification.getDate}}</td>
                 <td class="editing-toolbar" ng-show="editing">
-                    <span class="iconfont icon-shezhi" ng-click="setCertification($index)"></span>
-                    <span class="iconfont icon-shangyi" ng-click="shiftUp($index)"></span>
-                    <span class="iconfont icon-xiayi" ng-click="shiftDown($index)"></span>
-                    <span class="iconfont icon-shanchu1" ng-click="deleteCertification($index)"></span>
+                    <span class="iconfont icon-shezhi" title="设置" ng-click="setCertification($index)"></span>
+                    <span class="iconfont icon-shangyi" title="上移" ng-click="shiftUp($index)"></span>
+                    <span class="iconfont icon-xiayi" title="下移" ng-click="shiftDown($index)"></span>
+                    <span class="iconfont icon-shanchu1" title="删除" ng-click="deleteCertification($index)"></span>
                 </td>
             </tr>
         </table>
