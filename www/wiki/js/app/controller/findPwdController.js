@@ -29,7 +29,7 @@ define(['app',
                     history.back();
                 },3000);
             },function (err) {
-                console.log(err);
+                // console.log(err);
                 Message.info(err.message);
             });
         }
@@ -43,7 +43,7 @@ define(['app',
             util.post(config.apiUrlPrefix + 'user/findPwdTwo', {email:email,key:key,password:pwd}, function (data) {
                 $scope.step++;
             },function (err) {
-                console.log(err);
+                // console.log(err);
                 Message.info(err.message);
             });
         }
@@ -92,10 +92,10 @@ define(['app',
                 modal('controller/loginController', {
                     controller: 'loginController',
                 }, function (result) {
-                    console.log(result);
+                    // console.log(result);
                     // nowPage.replaceSelection(login.content);
                 }, function (result) {
-                    console.log(result);
+                    // console.log(result);
                 });
             }else{
                 util.go("home");

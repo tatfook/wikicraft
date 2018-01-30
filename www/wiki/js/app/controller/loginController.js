@@ -53,7 +53,7 @@ define([
 				//storage.sessionStorageSetItem("satellizer_token", data.token);
                 $auth.setToken(data.token);
                 Account.setUser(data.userinfo);
-                console.log("登录成功");
+                // console.log("登录成功");
                 if ($scope.isModal) {
                     $scope.$close(data.userinfo);
                 } else {
@@ -67,22 +67,22 @@ define([
         }
 
         $scope.qqLogin = function () {
-            console.log("QQ登录");
+            // console.log("QQ登录");
             Authenticate("qq");
         }
 
         $scope.wechatLogin = function () {
-            console.log("微信登录");
+            // console.log("微信登录");
             Authenticate("weixin");
         }
 
         $scope.sinaWeiboLogin = function () {
-            console.log("新浪微博登录");
+            // console.log("新浪微博登录");
             Authenticate("xinlangweibo");
         }
 
         $scope.githubLogin = function () {
-            console.log("github登录");
+            // console.log("github登录");
             Authenticate("github");
         }
 

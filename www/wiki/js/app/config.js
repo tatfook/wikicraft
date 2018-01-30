@@ -125,7 +125,7 @@
             if (trim_version == "MSIE9.0" || trim_version == "MSIE8.0" || trim_version == "MSIE7.0" || trim_version == "MSIE6.0") {
                 // alert("IE浏览器版本过低，请到指定网站去下载相关版本");
 				//然后跳到需要连接的下载网站
-				console.log(window.location);
+				// console.log(window.location);
 				if (window.location.pathname !== "/wiki/browers"){
 					window.location.href="/wiki/browers";
 				}

@@ -143,7 +143,7 @@ define([
                 action: item.action
             }).then(
                 function (res) {
-                    console.log(item)
+                    // console.log(item)
                     if (item.callback) {
                         item.callback(res.value)
                     } else {
@@ -186,7 +186,7 @@ define([
                     )
                 },
                 error: function (xhr, statu, error) {
-                    console.log(error)
+                    // console.log(error)
                 }
             })
         }

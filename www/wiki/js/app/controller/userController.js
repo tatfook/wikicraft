@@ -79,7 +79,7 @@ define([
                     }
                 }
             }, function (err) {
-                console.log(err);
+                // console.log(err);
             });
         }
 
@@ -96,10 +96,10 @@ define([
                     size: 'lg',
                     backdrop: true
                 }, function (result) {
-                    console.log(result);
+                    // console.log(result);
                     // nowPage.replaceSelection(login.content);
                 }, function (result) {
-                    console.log(result);
+                    // console.log(result);
                 });
                 return; // 登录后才能关注
             }
@@ -119,7 +119,7 @@ define([
 
             if(fansUser.concerned){//取消关注
                 util.post(config.apiUrlPrefix + 'user_fans/unattent', {userId:fansUser._id, fansUserId:$scope.user._id}, function () {
-                    console.log("取消关注成功");
+                    // console.log("取消关注成功");
                     Message.info("取消关注成功");
                     fansUser.concerned=false;
                     if (subInfo && subInfo == "fansOpt"){
@@ -133,7 +133,7 @@ define([
                 });
             }else{
                 util.post(config.apiUrlPrefix + 'user_fans/attent', {userId:fansUser._id, fansUserId:$scope.user._id}, function () {
-                    console.log("关注成功");
+                    // console.log("关注成功");
                     Message.info("关注成功");
                     fansUser.concerned=true;
                     if (subInfo && subInfo == "fansOpt"){
@@ -182,7 +182,7 @@ define([
 
         // 退出组织
         $scope.exitOrg = function (organization) {
-            console.log(organization);
+            // console.log(organization);
             config.services.confirmDialog({
                 "title": "删除提醒",
                 "theme": "danger",

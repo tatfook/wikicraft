@@ -770,7 +770,7 @@ define([
 		md.render = function(text) {
 			var tokens = this.parse(text);
 
-			console.log(tokens);
+			// console.log(tokens);
 
 			var htmlContent = "";
 			for (var i = 0; i < tokens.length; i++) {

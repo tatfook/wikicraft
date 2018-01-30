@@ -60,7 +60,7 @@ define([
 				var editorContainer = $('#editorContainer')[0];
 				var documentHeight = Math.max(document.body.scrollHeight,document.body.clientHeight);
 				var height = (documentHeight - editorContainer.offsetTop - 150) + 'px';
-				console.log(height);
+				// console.log(height);
 				$('#inputEditor').css('height', height);
 				$('#outputEditor').css('height', height);
 

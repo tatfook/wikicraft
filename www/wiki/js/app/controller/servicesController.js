@@ -19,7 +19,7 @@ define(['app',
             util.http("POST", config.apiUrlPrefix + "user_service/getByUsername", {username:$scope.user.username}, function (data) {
                 $scope.serviceList = data.serviceList;
             }, function (err) {
-                console.log(err);
+                // console.log(err);
             });
 
             $scope.renew = function (service) {

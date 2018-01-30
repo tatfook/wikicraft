@@ -152,7 +152,7 @@ define([
                 }, function (result) {
                     init();
                 }, function (result) {
-                    console.log(result);
+                    // console.log(result);
                 });
             };
         }]);

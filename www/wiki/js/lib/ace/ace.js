@@ -6388,7 +6388,7 @@ define("ace/apply_delta",["require","exports","module"], function(require, expor
 "use strict";
 
 function throwDeltaError(delta, errorText){
-    console.log("Invalid Delta:", delta);
+    // console.log("Invalid Delta:", delta);
     throw "Invalid Delta: " + errorText;
 }
 

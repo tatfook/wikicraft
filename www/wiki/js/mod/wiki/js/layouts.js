@@ -15,7 +15,7 @@ define([
         app.registerController("layoutsController", ["$scope", function ($scope) {
             $scope.modParams = getModParams(wikiblock);
             function init() {
-                console.log("layoutsController");
+                // console.log("layoutsController");
             }
             $scope.$watch("$viewContentLoaded", init);
         }]);

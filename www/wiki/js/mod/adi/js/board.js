@@ -202,7 +202,7 @@
 
                 convertMxToSvg(boardEditor, mxData, function(svg){
                     if(svg){
-                        console.log(svg);
+                        // console.log(svg);
                         // console.log(wikiBlock.modParams);
 
                         
@@ -217,7 +217,7 @@
                 // var diagram_board = mdconf.jsonToMd({"diagram_board":{"data":compressData}});
             }
 
-            console.log($scope.params);
+            // console.log($scope.params);
         }])
 
         app.registerController("boardEditorController", ['$scope', '$uibModalInstance', 'wikiBlock', function ($scope, $uibModalInstance, wikiBlock) {

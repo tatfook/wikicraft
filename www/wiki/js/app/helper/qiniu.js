@@ -36,16 +36,16 @@ define([
 			init: {
 				'FilesAdded': function(up, files) {
 					var self = this;
-					console.log(up);
-					console.log(files);
+					// console.log(up);
+					// console.log(files);
 					var filelist = [];
 					for (var i = 0; i < files.length; i++) {
 						filelist.push(files[i].name)
 					}
 					util.post(config.apiUrlPrefix + "bigfile/getByFilenameList", {filelist:filelist}, function(data){
-						console.log(data);
+						// console.log(data);
 						if (data.length) {
-							console.log("存在同名文件是否覆盖");
+							// console.log("存在同名文件是否覆盖");
 							return ;
 						}
 						self.start();
@@ -62,9 +62,9 @@ define([
 					//}
 				},
 				'FileUploaded': function(up, file, response) {
-					console.log(response);
-					console.log(up);
-					console.log(file);
+					// console.log(response);
+					// console.log(up);
+					// console.log(file);
 
 					var domain = up.getOption('domain');
 					var info = JSON.parse(response.response);
@@ -81,13 +81,13 @@ define([
 						channel:"qiniu",
 					}
 	
-					console.log(params);
+					// console.log(params);
 					//result.filename = info.key.replace(/\s/g, "");
 					//console.log(sourceLink);
 					util.post(config.apiUrlPrefix + 'bigfile/upload', params,	function(data){
 						data = data || {};
 						data.filename = params.filename;
-						console.log(data);
+						// console.log(data);
 						opt.success && opt.success(data);
 					}, function(){
 						util.post(config.apiUrlPrefix + "qiniu/deleteFile", {

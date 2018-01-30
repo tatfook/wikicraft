@@ -31,7 +31,7 @@ define([
 						file.size = Math.floor(file.size / 1024 / 1024 * 100) / 100;
 					}
 				}
-				console.log(data)
+				// console.log(data)
 			});
 		}
 
@@ -39,7 +39,7 @@ define([
 			util.post(config.apiUrlPrefix + "bigfile/deleteById", {_id:x._id}, function() {
 
 			}, function() {
-				console.log("删除失败");
+				// console.log("删除失败");
 			});
 		}
 

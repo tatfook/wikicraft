@@ -8,14 +8,14 @@ define(['app', 'text!wikimod/example/html/example.html'], function (app, htmlCon
             //console.log(wikiBlock);
             // 模块参数初始化相关表单值
             var modParams = wikiBlock.modParams || {};
-			console.log(modParams);
+			// console.log(modParams);
             $scope.title = modParams.title || "title";
             $scope.content = modParams.content || "hello wiki module!!!";
             $scope.isViewEdit = wikiBlock.editorMode;  // viewEdit 是否点击编辑按钮 <==> 视图编辑模式
 
             // 模块参数表单配置提交函数
             $scope.ok = function () {
-                console.log("-------------------");
+                // console.log("-------------------");
                 return;
                 modParams.title = $scope.title;
                 modParams.content = $scope.content;

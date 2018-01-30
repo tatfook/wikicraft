@@ -64,7 +64,7 @@ define([
         $scope.keys = options.keys;
 
         $scope.flattenedData = datatree.flattenTreeByChildren($scope.datatree);
-        console.log('flattenedData', $scope.flattenedData);
+        // console.log('flattenedData', $scope.flattenedData);
 
         $scope.getPathOfItem = function(item) {
             return datatree.getPathOfItemInflattenedData(item, $scope.flattenedData);

@@ -14,7 +14,7 @@ define(['app'], function (app) {
                 searchInput.on('blur', function(e) {
                     $scope.$apply(function() {
                         if ($select.search) {
-                            console.log($select.selected);
+                            // console.log($select.selected);
                             $select.selected[$select.selected.getBindField()] = $select.search;
                         }
                     });

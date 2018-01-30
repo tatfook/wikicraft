@@ -4,7 +4,7 @@
 	'helper/util'
 ], function (app, htmlContent, util) {
     app.controller('shareController', ['$scope' , '$http' , function ($scope,$http) {
-		console.log(util.getQueryObject());
+		// console.log(util.getQueryObject());
         $scope.parameter = util.getQueryObject();
 		$scope.count = 0;
 		$scope.isFirst = true;
@@ -17,7 +17,7 @@
 			$scope.count++;
 		
 			http("POST","api/mod/modelshare/models/modelshare/modify", params, function(data){
-				console.log(data);
+				// console.log(data);
 				if(data.error.id == 0){
 					alert("下载成功");
 				}else{
@@ -27,16 +27,16 @@
 		}
 		/*$scope.DownClick = function(){
 			$scope.count++;
-			console.log($scope.count);
+			// console.log($scope.count);
 			
 			http("POST","api/mod/modelshare/models/modelshare/modify",{"count" : $scope.count},function(data){
-					console.log(data);
+					// console.log(data);
 			});
 		}
 		
 		/*$scope.DownClick = function() {
 				$scope.count++;
-				console.log($scope.count);
+				// console.log($scope.count);
 			}*/
 			
 		if($scope.parameter.id){
@@ -142,7 +142,7 @@
 				"words"        : item.words,
 			}
 			http("POST","api/mod/modelshare/models/modelshare/modify", params, function(data){
-				console.log(data);
+				// console.log(data);
 				if(data.errcode == 1){
 					alert("修改成功");
 				}else{

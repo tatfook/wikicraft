@@ -230,7 +230,7 @@ define([
 						searchList.push(site);
 					}
 					$scope.searchList = searchList;
-					console.log($scope.searchList);
+					// console.log($scope.searchList);
 					util.$apply($scope);
 				},
 				error: function(xhr, status, error){
@@ -249,7 +249,7 @@ define([
         }
 
         function init() {
-            console.log('init search controller');
+            // console.log('init search controller');
             searchParams = util.getQueryObject() || searchParams;
             $scope.searchType = searchParams.searchType || "pageinfo";
             $scope.searchText = searchParams.keyword;
@@ -366,10 +366,10 @@ define([
                     size: 'lg',
                     backdrop: true
                 }, function (result) {
-                    console.log(result);
+                    // console.log(result);
                     // nowPage.replaceSelection(login.content);
                 }, function (result) {
-                    console.log(result);
+                    // console.log(result);
                 });
                 return; // 登录后才能关注
             }
@@ -381,15 +381,15 @@ define([
 
             if(fansUser.concerned){//取消关注
                 util.post(config.apiUrlPrefix + 'user_fans/unattent', {userId:fansUser._id, fansUserId:$scope.user._id}, function () {
-                    console.log("取消关注成功");
+                    // console.log("取消关注成功");
                     Message.info("取消关注成功");
                     fansUser.concerned=false;
                 });
             }else{
-                console.log(fansUser);
-                console.log($scope.user);
+                // console.log(fansUser);
+                // console.log($scope.user);
                 util.post(config.apiUrlPrefix + 'user_fans/attent', {userId:fansUser._id, fansUserId:$scope.user._id}, function () {
-                    console.log("关注成功");
+                    // console.log("关注成功");
                     Message.info("关注成功");
                     fansUser.concerned=true;
                 });

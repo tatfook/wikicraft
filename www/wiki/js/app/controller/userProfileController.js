@@ -111,7 +111,7 @@ define(['app',
                 dataForm.removeClass("sr-only");
 
                 var defaultDataSource = dataSource.getDefaultDataSource();
-				console.log(defaultDataSource);
+				// console.log(defaultDataSource);
 				
                 if (!defaultDataSource || !defaultDataSource.isInited()) {
                     Message.info("默认数据源失效");
@@ -181,7 +181,7 @@ define(['app',
 
             sensitiveWord.getAllSensitiveWords(checkSensitives).then(function(results) {
                 var isSensitive = results && results.length;
-                isSensitive && console.log("包含敏感词:" + results.join("|"));
+                // isSensitive && console.log("包含敏感词:" + results.join("|"));
                 trySaveProfile(isSensitive);
             });
 
@@ -252,7 +252,7 @@ define(['app',
                 }, 1000, 100);
                 //Message.info("邮件发送成功，请按邮件指引完成绑定");
             },function (err) {
-                console.log(err);
+                // console.log(err);
                 $scope.errorMsg = err.message;
             });
         };
@@ -290,7 +290,7 @@ define(['app',
 			util.post(config.apiUrlPrefix + "user/getByEmail", {
 			    "email": email
             }, function (result) {
-                console.log(result);
+                // console.log(result);
                 if (result && result.username != $scope.user.username){
                     $scope.emailErrMsg = "该邮箱已被绑定";
                     return;
@@ -515,7 +515,7 @@ define(['app',
             $scope.showItem = 'myCollection';
             var attentType = "user"; // or site
             $scope.clickCollectionUser = function () {
-                console.log('clickCollectionUser');
+                // console.log('clickCollectionUser');
                 if (attentType != "user") {
                     attentType = "user";
                     $scope.currentPage = 1;
@@ -527,7 +527,7 @@ define(['app',
             };
 
             $scope.clickCollectionWorks = function () {
-                console.log('clickCollectionWorks');
+                // console.log('clickCollectionWorks');
                 if (attentType != "work") {
                     attentType = "work";
                     $scope.currentPage = 1;
@@ -535,7 +535,7 @@ define(['app',
                 util.post(config.apiUrlPrefix + 'user_favorite/getByUserId', {userId:$scope.user._id, page:$scope.currentPage}, function (data) {
                     data = data ||{};
                     $scope.siteList = data.siteList;
-                    console.log($scope.siteList);
+                    // console.log($scope.siteList);
                 });
             };
             // 实现分页

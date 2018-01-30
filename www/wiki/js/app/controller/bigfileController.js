@@ -27,7 +27,7 @@ define([
         }
         $scope.cancel = function (params) {
             if ($scope.uploadingFiles && $scope.uploadingFiles.length > 0 && !$scope.finishUploading){
-                console.log("正在上传");
+                // console.log("正在上传");
                 var confirmObj = {
                     "title": "提示",
                     "confirmBtnClass": "btn-danger",
@@ -94,7 +94,7 @@ define([
                     "unUsed": (result.total - result.used) / biteToG
                 };
             }, function (err) {
-                console.log(err);
+                // console.log(err);
             }, false);
         };
 
@@ -361,7 +361,7 @@ define([
                                 getUserStoreInfo();
                             }, function(err){
                                 $scope.uploadingFiles[file.id].backStatus = "failed";
-                                console.log(err);
+                                // console.log(err);
                             });
                             $scope.startUpdating = false;
                             return;
@@ -387,9 +387,9 @@ define([
 								util.post(config.apiUrlPrefix + "qiniu/deleteFile", {
 									key:params.key,
 								}, function (result) {
-									console.log(result);
+									// console.log(result);
 								}, function (err) {
-									console.log(err);
+									// console.log(err);
 								});
 							});
 						};
@@ -397,8 +397,8 @@ define([
 
                     },
                     'Error': function(up, err, errTip) {
-                        console.log(up);
-                        console.log(err);
+                        // console.log(up);
+                        // console.log(err);
                         if ($scope.uploadingFiles && $scope.uploadingFiles[err.file.id]){
                             $scope.uploadingFiles[err.file.id].errTip = err.message + "(" + err.code + ")";
                             $scope.uploadingFiles[err.file.id].backStatus = "failed";
@@ -464,11 +464,11 @@ define([
                         qiniuBack = qiniu.uploader(option);
                     }else{
                         $scope.isUidErr = true;
-                        console.log("uid获取失败");
+                        // console.log("uid获取失败");
                     }
                 }, function () {
                     $scope.isUidErr = true;
-                    console.log("uid获取失败");
+                    // console.log("uid获取失败");
                 });
             }
 
@@ -481,11 +481,11 @@ define([
                     $scope.isUidErr = false;
                 }else{
                     $scope.isUidErr = true;
-                    console.log("uid获取失败");
+                    // console.log("uid获取失败");
                 }
             }, function () {
                 $scope.isUidErr = true;
-                console.log("uid获取失败");
+                // console.log("uid获取失败");
             });
         }
 
@@ -571,7 +571,7 @@ define([
 								// deleteFileSize += files[index].file.size;
 								cb && cb();
 							}, function (err) {
-								console.log(err);
+								// console.log(err);
 								errcb && errcb();
 							});
 						}
@@ -653,7 +653,7 @@ define([
                         file.filename = filename;
                         targetElem.html(filename);
                     }, function (err) {
-                        console.log(err);
+                        // console.log(err);
                     });
                 }
             });

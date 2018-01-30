@@ -36,7 +36,7 @@ define(['app', 'text!wikimod/example/html/modEditSimple.html'], function (app, h
 				}
 			});
 
-			console.log($scope.params);			
+			// console.log($scope.params);			
         }]);
     }
 

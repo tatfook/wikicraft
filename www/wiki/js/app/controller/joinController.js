@@ -44,7 +44,7 @@ define([
             if (checks.username){
                 sensitiveWord.getAllSensitiveWords(username).then(function(results) {
                     var isSensitive = results && results.length;
-                    isSensitive && console.log("包含敏感词:" + results.join("|"));
+                    // isSensitive && console.log("包含敏感词:" + results.join("|"));
                     doCheckUsername(isSensitive, username);
                 });
             }
@@ -111,7 +111,7 @@ define([
             sensitiveWord.checkSensitiveWord(params.username, function (foundWords, replacedStr) {
                 if (foundWords.length > 0){
                     isSensitive = true;
-                    console.log("包含敏感词:" + foundWords.join("|"));
+                    // console.log("包含敏感词:" + foundWords.join("|"));
                 }
             });
             if (isSensitive){
@@ -148,7 +148,7 @@ define([
 
             var url = type == "other" ? "user/bindThreeService" : "user/register";
             util.http("POST", config.apiUrlPrefix + url, params, function (data) {
-                console.log("注册成功");
+                // console.log("注册成功");
                 $auth.setToken(data.token);
                 Account.setUser(data.userinfo);
                 var _go = function () {
@@ -166,7 +166,7 @@ define([
                 // }
             }, function (error) {
                 $scope.errMsg = error.message;
-                console.log($scope.errMsg );
+                // console.log($scope.errMsg );
             });
         };
 
@@ -252,22 +252,22 @@ define([
         }
 
         $scope.qqLogin = function () {
-            console.log("QQ登录");
+            // console.log("QQ登录");
             Authenticate("qq");
         }
 
         $scope.wechatLogin = function () {
-            console.log("微信登录");
+            // console.log("微信登录");
             Authenticate("weixin");
         }
 
         $scope.sinaWeiboLogin = function () {
-            console.log("新浪微博登录");
+            // console.log("新浪微博登录");
             Authenticate("xinlangweibo");
         }
 
         $scope.githubLogin = function () {
-            console.log("github登录");
+            // console.log("github登录");
             Authenticate("github");
         }
 

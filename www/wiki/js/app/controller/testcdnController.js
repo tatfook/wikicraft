@@ -66,34 +66,34 @@ define([
         $scope.testApi = function () {
             $scope.apiTime = (new Date()).toString();
             http('GET', urlPrefix + '/api/wiki/models/test/get', {},function (data) {
-                console.log("测试API接口请求成功 ", data);
+                // console.log("测试API接口请求成功 ", data);
             }, function () {
-                console.log("测试API接口请求失败");
+                // console.log("测试API接口请求失败");
             });
         }
 
         $scope.updateFileContent = function (filename) {
             http('POST', urlPrefix + '/api/wiki/models/test/updateFileContent', {filename:filename}, function (data) {
-                console.log("更新" + filename + "文件请求成功 ", data);
+                // console.log("更新" + filename + "文件请求成功 ", data);
             }, function () {
-                console.log("更新" + filename + "文件请求失败");
+                // console.log("更新" + filename + "文件请求失败");
             });
         }
 
         $scope.testFile = function (filename) {
             http("GET", urlPrefix + '/wiki/test/' + filename, {}, function (data) {
-                console.log("测试"+filename+"文件请求成功 ", data);
+                // console.log("测试"+filename+"文件请求成功 ", data);
             }, function () {
-                console.log("测试"+filename+"文件请求失败");
+                // console.log("测试"+filename+"文件请求失败");
             });
         }
         
         $scope.testFileWithBust = function (filename, bust) {
             bust = bust || (new Date()).getTime();
             http("GET", urlPrefix + '/wiki/test/'+ filename +'?bust=' + bust, {}, function (data) {
-                console.log("测试"+filename + "?bust=" + bust +"文件请求成功 ", data);
+                // console.log("测试"+filename + "?bust=" + bust +"文件请求成功 ", data);
             }, function () {
-                console.log("测试"+filename + "?bust=" + bust +"文件请求失败");
+                // console.log("测试"+filename + "?bust=" + bust +"文件请求失败");
             });
         }
 
@@ -133,51 +133,51 @@ define([
         $scope.updateGitFile = function () {
             gitFileConentIndex++;
             gitFileConentIndex %= gitFileContentList.length;
-            console.log("当前git文件内容为:" + gitFileContentList[gitFileConentIndex]);
+            // console.log("当前git文件内容为:" + gitFileContentList[gitFileConentIndex]);
         };
 
         $scope.uploadFile = function () {
             if (!gitlabDataSource) {
-                console.log("数据源不可用");
+                // console.log("数据源不可用");
                 return;
             }
             $scope.gitUploadTime = (new Date()).toString();
             gitlabDataSource.writeFile({path:gitFilePath, content:gitFileContentList[gitFileConentIndex]}, function () {
-                console.log("上传git文件成功,文件内容:" + gitFileContentList[gitFileConentIndex]);
+                // console.log("上传git文件成功,文件内容:" + gitFileContentList[gitFileConentIndex]);
             }, function () {
-                console.log("上传git文件失败");
+                // console.log("上传git文件失败");
             })
         };
 
         $scope.downloadFile = function () {
             if (!gitlabDataSource) {
-                console.log("数据源不可用");
+                // console.log("数据源不可用");
                 return;
             }
 
             $scope.gitDownloadTime = (new Date()).toString();
             gitlabDataSource.setLastCommitId("master");
             gitlabDataSource.getRawContent({path:gitFilePath}, function (data) {
-               console.log("master获取文件内容为:"+data);
+            //    console.log("master获取文件内容为:"+data);
             }, function () {
-                console.log("master获取文件失败");
+                // console.log("master获取文件失败");
             });
         }
         $scope.updateGitFileCommitId = function () {
             if (!gitlabDataSource) {
-                console.log("数据源不可用");
+                // console.log("数据源不可用");
                 return;
             }
             gitlabDataSource.getLastCommitId(function (data) {
                 $scope.lastCommitId = data;
-                console.log("更新commitId成功:", $scope.lastCommitId);
+                // console.log("更新commitId成功:", $scope.lastCommitId);
             }, function () {
-                console.log("更新commitId失败");
+                // console.log("更新commitId失败");
             });
         }
         $scope.openGitFile = function () {
             if (!gitlabDataSource) {
-                console.log("数据源不可用");
+                // console.log("数据源不可用");
                 return;
             }
             //gitlabDataSource.setLastCommitId("master");
@@ -186,7 +186,7 @@ define([
 
         $scope.openGitFileWithCommitId = function () {
             if (!gitlabDataSource) {
-                console.log("数据源不可用");
+                // console.log("数据源不可用");
                 return;
             }
             window.open(gitlabDataSource.getContentUrlPrefix({path:gitFilePath}));
@@ -194,20 +194,20 @@ define([
 
         $scope.downloadFileWithCommitId = function () {
             if (!gitlabDataSource) {
-                console.log("数据源不可用");
+                // console.log("数据源不可用");
                 return;
             }
             $scope.gitDownloadWithShaTime = (new Date()).toString();
             gitlabDataSource.setLastCommitId($scope.lastCommitId || "master");
             gitlabDataSource.getRawContent({path:gitFilePath}, function (data) {
-                console.log("commitId("+ ($scope.lastCommitId || "master")+ ")获取文件内容为:"+data);
+                // console.log("commitId("+ ($scope.lastCommitId || "master")+ ")获取文件内容为:"+data);
             }, function () {
-                console.log("commitId("+ ($scope.lastCommitId || "master") + ")获取文件失败");
+                // console.log("commitId("+ ($scope.lastCommitId || "master") + ")获取文件失败");
             });
         }
 
         function init() {
-            console.log("contactController");
+            // console.log("contactController");
             
             Account.getUser(function (userinfo) {
                 var DataSource = undefined;
@@ -222,9 +222,9 @@ define([
 
                 gitlabDataSource = gitlab();
                 gitlabDataSource.init(DataSource, function () {
-                   console.log("内置数据源初始化成功");
+                //    console.log("内置数据源初始化成功");
                 }, function () {
-                    console.log("内置数据源初始化失败");
+                    // console.log("内置数据源初始化失败");
                 });
             });
 

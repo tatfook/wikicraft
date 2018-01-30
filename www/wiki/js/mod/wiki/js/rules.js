@@ -13,7 +13,7 @@ define([
             $scope.modParams = angular.copy(wikiblock.modParams || {});
 
             function init() {
-                console.log("----------init game header---------");
+                // console.log("----------init game header---------");
             }
 
             $scope.$watch("$viewContentLoaded", init);

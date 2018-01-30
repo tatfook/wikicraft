@@ -397,7 +397,7 @@ define([
             //oauth管理 删除
             $scope.deleteOauthRecord = function(clientId){
                 var oauthDeleteUrl = config.apiUrlPrefix + "oauth_app/";
-                console.log(oauthDeleteUrl);
+                // console.log(oauthDeleteUrl);
                 var con;
                 con = confirm("是否删除");
                 if(con == true){

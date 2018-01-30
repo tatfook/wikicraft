@@ -49,7 +49,7 @@ define([
             }
 
             $scope.error = function(msg){
-                console.log(msg);
+                // console.log(msg);
             };
 
             $scope.dbClick = function(){

@@ -188,7 +188,7 @@ define([], function () {
         //copy and remove __inner__*key* in result
         result = cloneObjWithoutCertainKeyRecursively(result, /^__inner__/);
 
-        console.log('result: ', result);
+        // console.log('result: ', result);
 
         return result;
     }

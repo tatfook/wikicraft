@@ -41,7 +41,7 @@ define([
             util.http("POST", config.apiUrlPrefix + 'admin/login', params, function (data) {
                 $auth.setToken(data.token);
                 Account.setUser(data.userinfo);
-                console.log("登录成功");
+                // console.log("登录成功");
                 util.go(urlPrefix + "index");
             }, function (error) {
                 $scope.errMsg = error.message;
