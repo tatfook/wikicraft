@@ -1550,6 +1550,13 @@ define([
                             allPageMap[currentPage.url] = currentPage;
                             currentSite = getCurrentSite();
                             initTree();
+                            util.post(config.apiUrlPrefix + "pages/insert", {
+                                url: currentPage.url 
+                            }, function(data){
+                                console.log(data);
+                            }, function(err){
+                                console.log(err);
+                            });
                         }
                     }, function (text, error) {
                         return;
