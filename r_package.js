@@ -10,7 +10,6 @@
     optimizeCss: 'standard',
     removeCombined:true,
     optimizeAllPluginResources: true,  // text 插件配置
-	generateSourceMaps: true,
 	skipDirOptimize: true,
     modules:[
         {
@@ -90,7 +89,7 @@
         'js-aho-corasick': "lib/js-aho-corasick/aho-corasick",
         'md5': "lib/md5",
         'swiper': "empty:",
-        'echarts-radar': "lib/echarts/echarts-radar",
+        'echarts-radar': "lib/echarts/echarts-radar.min",
 
         // 自定义模块
         'app': 'app',
