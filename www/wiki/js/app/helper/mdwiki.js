@@ -232,7 +232,7 @@ define([
 						block.$scope && block.$scope.$apply();
 					}
 				}, function () {
-					console.log("加载模块" + block.modName + "失败");
+					// console.log("加载模块" + block.modName + "失败");
 				});
             }
         }

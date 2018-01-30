@@ -78,21 +78,21 @@ define([
             $scope.agreeApply = function (apply) {
                 util.post(config.apiUrlPrefix + 'website_works/agreeWorksApply', apply, function () {
                     apply.isDeleted = true;
-                    console.log("作品审核通过");
+                    // console.log("作品审核通过");
                 });
             }
             // 拒绝作品申请
             $scope.refuseApply = function (apply) {
                 util.post(config.apiUrlPrefix + 'website_works/deleteById', apply, function () {
                     apply.isDeleted = true;
-                    console.log("作品审核拒绝");
+                    // console.log("作品审核拒绝");
                 });
             }
             // 移除作品
             $scope.removeWorks = function (works) {
                 util.post(config.apiUrlPrefix + 'website_works/deleteById', works, function () {
                     works.isDeleted = true;
-                    console.log("成功移除作品")
+                    // console.log("成功移除作品")
                 });
             }
             

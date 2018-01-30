@@ -15,7 +15,7 @@ define([
         app.registerController("chatController", ["$scope", function ($scope) {
             $scope.modParams = getModParams(wikiBlock);
             function init() {
-                console.log("init chat mod");
+                // console.log("init chat mod");
             }
 
             $scope.$watch("$viewContentLoaded", init);

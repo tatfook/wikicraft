@@ -13,7 +13,7 @@ define([
             $scope.modParams = angular.copy(wikiblock.modParams || {});
 
             function init() {
-                console.log("----------init knowledge Mod---------");
+                // console.log("----------init knowledge Mod---------");
             }
            
             var server = "121.14.117.220"; 

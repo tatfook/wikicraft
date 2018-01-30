@@ -10,7 +10,7 @@ define([
     function registerController(wikiblock) {
         app.registerController('resumeDetailController',['$scope', function ($scope) {
             $scope.imgsPath = config.wikiModPath + 'wiki/assets/imgs/';
-            console.log(wikiblock.modParams);
+            // console.log(wikiblock.modParams);
             $scope.modParams = angular.copy(wikiblock.modParams || {});
         }]);
     }

@@ -14,9 +14,9 @@ define([
             var modParams = wikiBlock.modParams || {};
 
 			function init() {
-				console.log("-------------------");
+				// console.log("-------------------");
 				if (!$scope.user.username) {
-					console.log("用户信息不存在,不支持上传");
+					// console.log("用户信息不存在,不支持上传");
 					return; 
 				}
 
@@ -30,10 +30,10 @@ define([
 					path:filename,
 					content:filecontent,
 				}, function(download_url){
-					console.log("文件的下载地址:", download_url);
+					// console.log("文件的下载地址:", download_url);
 					$scope.download_url = download_url;
 				},function() {
-					console.log("上传失败");
+					// console.log("上传失败");
 				});
 			}
 

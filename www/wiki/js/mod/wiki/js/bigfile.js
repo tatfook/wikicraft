@@ -42,7 +42,7 @@ define([
                 $scope.modParams = modParams;
                 if (modParams.channel == "qiniu") {
                     if (!modParams.fileId) {
-                        console.log("bigfile module params error!!!");
+                        // console.log("bigfile module params error!!!");
                         return;
                     }
 

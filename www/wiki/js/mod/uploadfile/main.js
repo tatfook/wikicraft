@@ -28,10 +28,10 @@ define([
 	                var ws = "ws://121.14.117.219/KnowledgeServer/websocket?username="+user;
 	                var websocket = new WebSocket(ws);
 	                websocket.onopen = function(evt) {
-	                    console.log("Connected to WebSocket server.");
+	                    // console.log("Connected to WebSocket server.");
 	                };
 	                websocket.onmessage = function(evt) {
-	                    console.log('Retrieved data from server: ' + evt.data);
+	                    // console.log('Retrieved data from server: ' + evt.data);
 	                    var content = evt.data;
 			            var json = eval('(' + content + ')');//解析成json对象
 			            //websocket连接成功
@@ -96,11 +96,11 @@ define([
 	                }
 
 	                websocket.onclose = function(evt) {
-	                    console.log("Disconnected");
+	                    // console.log("Disconnected");
 	                };
 
 	                websocket.onerror = function(evt) {
-	                  console.log('Error occured: ' + evt.data);
+	                //   console.log('Error occured: ' + evt.data);
 	                };
 	            });
 	            }
@@ -115,14 +115,14 @@ define([
 		            processData: false,
 		            contentType: false,
 		            success: function(res) {
-		                console.log(res);
+		                // console.log(res);
 		                var obj = JSON.parse(res);
 		                if (obj.code=="202")
-		                    console.log(obj.msg);
+		                    // console.log(obj.msg);
 		                if (obj.code=="203")
-		                    console.log(obj.msg);
+		                    // console.log(obj.msg);
 		                if (obj.code=="204") {
-		                	console.log(obj.msg);
+		                	// console.log(obj.msg);
 		                    alert(obj.msg);
 		                    $('#btn-file').attr('disabled',false); 
 			                $("#btn-file").css("background-color","#337ab7");
@@ -137,7 +137,7 @@ define([
 		                        processData: false,
 		                        contentType: false,
 		                        success: function(res) {
-		                            console.log(res);
+		                            // console.log(res);
 		                        },
 		                        error: function(msg) {
                                     alert("出错了，重新加载");
@@ -163,7 +163,7 @@ define([
 	                }
 		            let node = document.getElementsByName("Checkbox1"); 
 	                for(let i = 0;i < node.length; i++){
-	                 	console.log(i,node[i].checked);
+	                 	// console.log(i,node[i].checked);
 		                if(node[i].checked){                     //选中的单选框
 		                    let URL = node[i].nextSibling.innerHTML;  //获取URL 
 		                    let pagename = getDataName(URL);
@@ -178,17 +178,17 @@ define([
 		                        let filecontent = text;   //文件内容
 			                    filecontent = Base64.encode(filecontent);
 							    let filename = pagename;  //文件名
-							    console.log("md文件名："+filename);
+							    // console.log("md文件名："+filename);
 							    let dsInst = dataSource.getDataSource(user);   //站点名留空
-							    console.log("需要上传的md文件："+dsInst);
+							    // console.log("需要上传的md文件："+dsInst);
 							    dsInst.uploadFile({
 							        path:filename,
 							        content:filecontent,
 							    }, function(download_url){
-							    	console.log("文件的下载地址：",download_url);
+							    	// console.log("文件的下载地址：",download_url);
 							  	    $scope.download_url = download_url;					 
 									count = count+1;
-									console.log("输出标签的个数： "+count);
+									// console.log("输出标签的个数： "+count);
 									/*$("#uploadgite").append(
 				                	    "<li style=\"float :left;\">" + "<a class=\"link\" target=\"_blank\">" + download_url + "</a>" + "</li>");*/
 									var num1 = download_url.lastIndexOf("/");
@@ -205,11 +205,11 @@ define([
 									        path:filename,
 									        content:filecontent,
 									        }, function(download_url){
-									    	    console.log("这是失败进来的！")
-									    	    console.log("文件的下载地址：",download_url);
+									    	    // console.log("这是失败进来的！")
+									    	    // console.log("文件的下载地址：",download_url);
 									  	        $scope.download_url = download_url;					 
 											  	count = count+1;
-											  	console.log("输出标签的个数： "+count);
+											  	// console.log("输出标签的个数： "+count);
 											  	/*$("#uploadgite").append(
 						                	        "<li>" + "<a class=\"link\" target=\"_blank\">" + download_url + "</a>" + "</li>");*/
 											  	var num1 = download_url.lastIndexOf("/");
@@ -222,12 +222,12 @@ define([
 											  	return;    //终止重传
 									        },function(){
 									        	sleep(1000);
-				                                console.log("重传次数: " + num);
-									  	        console.log("上传失败！");
+				                                // console.log("重传次数: " + num);
+									  	        // console.log("上传失败！");
 									        }
 									    );
 								    } //end for() 循环   失败重传
-								  	console.log("上传失败！");
+								  	// console.log("上传失败！");
 								});
 						    }
 		                    
@@ -239,27 +239,27 @@ define([
 								request.open('GET', URL, true);
 								request.responseType = 'blob';
 							    request.onload = function() {
-								    console.log('request loaded.');
+								    // console.log('request loaded.');
 								    let reader = new FileReader();
-								    console.log('request.response',request.response);
+								    // console.log('request.response',request.response);
 								    reader.readAsDataURL(request.response);
 		                            reader.onload =  function(e) {
-								 	    console.log('reader loaded.');
+								 	    // console.log('reader loaded.');
 									    let num = e.target.result;
 							            image = num;
 							            let filecontent = image;   //文件内容
 								        let filename = pagename;  //文件名
-								        console.log("图片文件名："+filename);
+								        // console.log("图片文件名："+filename);
 								        let dsInst = dataSource.getDataSource(user);   //站点名留空
-								        console.log("需要上传的图片："+dsInst);
+								        // console.log("需要上传的图片："+dsInst);
 								        dsInst.uploadFile({
 								     		path:filename,
 								     		content:filecontent,
 								    	}, function(download_url){
-								    		console.log("文件的下载地址：",download_url);
+								    		// console.log("文件的下载地址：",download_url);
 								  	    	$scope.download_url = download_url;
 								  	    	count = count+1;
-								  	    	console.log("输出标签的个数： "+count);
+								  	    	// console.log("输出标签的个数： "+count);
 								  	        /*	$("#uploadgite").append(
 			                	              	"<li>" + "<a class=\"link\" target=\"_blank\">" + download_url + "</a>" + "</li>");*/
 								    	    var num1 = download_url.lastIndexOf("/");
@@ -275,11 +275,11 @@ define([
 										            path:filename,
 								     		        content:filecontent,
 										        }, function(download_url){
-										    	    console.log("这是失败进来的！")
-								    		        console.log("文件的下载地址：",download_url);
+										    	    // console.log("这是失败进来的！")
+								    		        // console.log("文件的下载地址：",download_url);
 								  	    	        $scope.download_url = download_url;
 								  	    	   	    count = count+1;
-								  	    		    console.log("输出标签的个数： "+count);
+								  	    		    // console.log("输出标签的个数： "+count);
 								  	       		    /*$("#uploadgite").append(
 			                	              		    "<li style=\"float :left;\">" + "<a class=\"link\" target=\"_blank\">" + download_url + "</a>" + "</li>");*/
 								  	       		    var num1 = download_url.lastIndexOf("/");
@@ -292,17 +292,17 @@ define([
 								  	       		    return;
 										        },function(){
 										        	sleep(1000);
-					                                console.log("重传次数: " + num);
-										  	        console.log("上传失败！");
+					                                // console.log("重传次数: " + num);
+										  	        // console.log("上传失败！");
 										        });    //end 失败重传
-								  	    	    console.log("上传失败！");
+								  	    	    // console.log("上传失败！");
 								  	        }        
 								        });
 		                            };
 		                        };
 								request.send();
 		                    } else{
-								console.log('type err!' + type);
+								// console.log('type err!' + type);
 							} 
 		                }//end if判断
 		            }//end  for 循环
@@ -345,7 +345,7 @@ define([
 		            let ctx = canvas.getContext("2d");
 		            ctx.drawImage(this, 0, 0);
 		            let dataURL = canvas.toDataURL("image/png");
-		            console.log("图像的文件流"+dataURL);
+		            // console.log("图像的文件流"+dataURL);
 		            alert(dataURL.replace(/^data:image\/(png|jpg);base64,/, ""));
 		        };
 		        img.src = url;

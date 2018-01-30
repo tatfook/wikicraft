@@ -24,7 +24,7 @@ define([
             var editPath = editModeHref.substr(editModeHref.indexOf('#')+1)
 
             var path = editModeHref.indexOf('#') === -1 ? util.parseUrl().pathname : editPath;
-            console.log(path)
+            // console.log(path)
             var params = path.split("/");
             var urlObj = $rootScope.urlObj;
 
@@ -55,7 +55,7 @@ define([
                         $scope.comment.userId = 18943;
                         $scope.submitComment();
                     }, function (result) {
-                        console.log(result);
+                        // console.log(result);
                     });
                 }
 
@@ -88,10 +88,10 @@ define([
                         return sensitiveWord.getAllSensitiveWords($scope.comment.content);
                     }).then(function(results) {
                         var isSensitive = results && results.length;
-                        isSensitive && console.log("包含敏感词:" + results.join("|"));
+                        // isSensitive && console.log("包含敏感词:" + results.join("|"));
                         trySaveComment(isSensitive);
                     }).catch(function(error) {
-                        console.log('error');
+                        // console.log('error');
                     });
 
                     function trySaveComment(isSensitive) {
@@ -103,7 +103,7 @@ define([
                     
                         util.post(config.apiUrlPrefix + 'website_comment/create', $scope.comment, function (data) {
                             $scope.comment.content = "";
-                            console.log(data);
+                            // console.log(data);
                             $scope.getCommentList();
                         });
                         

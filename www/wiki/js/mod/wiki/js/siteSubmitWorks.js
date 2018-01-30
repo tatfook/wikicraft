@@ -187,7 +187,7 @@ define([
 
                 sensitiveWord.getAllSensitiveWords(checkSensitives).then(function(results) {
                     var isSensitive = results && results.length;
-                    isSensitive && console.log("包含敏感词:" + results.join("|"));
+                    // isSensitive && console.log("包含敏感词:" + results.join("|"));
                     trySaveWork(isSensitive);
                 });
                 

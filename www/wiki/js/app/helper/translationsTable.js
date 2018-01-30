@@ -3085,7 +3085,7 @@ define([], function () {
         }
     });
 
-    console.log(translationsTable);
+    // console.log(translationsTable);
 
     return translationsTable;
 })

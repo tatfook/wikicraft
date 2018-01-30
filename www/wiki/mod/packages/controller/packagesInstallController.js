@@ -137,7 +137,7 @@
                 var gitRootStart = gitRoot[1].indexOf("/");
                 var gitRoot = gitRaw + gitRoot[1].substring(gitRootStart);
             } catch (err) {
-                console.log("url format error");
+                // console.log("url format error");
                 return;
             }
 

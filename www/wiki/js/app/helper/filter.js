@@ -11,7 +11,7 @@ define([
 	config.registerFilter("/wiki/iframeagent", function() {
 		var lastHash = undefined;
 		var hashChangeFire = function(){
-			console.log(window.location.hash);
+			// console.log(window.location.hash);
 			var hash_url = window.location.hash;
 			if(hash_url.indexOf("#")>=0){
 				var arglist = hash_url.substring(1).split("|");
@@ -52,12 +52,12 @@ define([
 	});
 
 	config.registerFilter("/wiki/filter", function(){
-		console.log("hello world");
+		// console.log("hello world");
 		$(window.document.body).html("<div>hello world</div>");
     });
 
     config.registerFilter("/wiki/browers", function(){
-        console.log("浏览器版本太低");
+        // console.log("浏览器版本太低");
         $(window.document.body).html(browersErrContent);
     });
 

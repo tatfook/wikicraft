@@ -40,7 +40,7 @@ define([
                 //console.log(response);
                 typeof cb == 'function' && cb(response.data);
             }).catch(function (response) {
-                console.log(response);
+                // console.log(response);
                 typeof errcb == 'function' && errcb(response);
             });
         }
@@ -210,7 +210,7 @@ define([
             self.lastCommitId = dataSource.lastCommitId || "master";
 
             if (!dataSource.dataSourceUsername || !dataSource.dataSourceToken || !dataSource.apiBaseUrl || !dataSource.rawBaseUrl) {
-                console.log("github data source init failed!!!");
+                // console.log("github data source init failed!!!");
                 errcb && errcb();
                 return;
             }
@@ -237,9 +237,9 @@ define([
                             }
                         }, function (data) {
                             //console.log(data);
-                            console.log("github create webhook success");
+                            // console.log("github create webhook success");
                         }, function () {
-                            console.log("github create webhook failed");
+                            // console.log("github create webhook failed");
                         });
                     }
                 });
@@ -350,7 +350,7 @@ define([
                     //console.log(response);
                     cb && cb(response.data);
                 }).catch(function (response) {
-                    console.log(response);
+                    // console.log(response);
                     errcb && errcb(response);
                 });
             };

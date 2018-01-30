@@ -15,7 +15,7 @@ define([
 	// 添加输入字段 {id:"html id". key:"key1.key2", type:"text!link|media", value:"字段值", isHide:false}
 	objectEditor.addInputField = function(field){
 		if (!field.id || !field.type) {
-			console.log("object editor addInputField params error!");
+			// console.log("object editor addInputField params error!");
 			return;
 		}
 
@@ -118,7 +118,7 @@ define([
 
         // 点击菜单
         $scope.openMenuEditor = function(data) {
-            console.log(data);
+            // console.log(data);
             config.services.datatreeEditorModal({
                 title: '菜单编辑器',
                 keys: [
@@ -130,9 +130,9 @@ define([
                 data.text = result;
                 //applyAttrChange();
 				throttle(applyAttrChange);
-                console.log(result);
+                // console.log(result);
             }, function(err){
-                console.log(err);
+                // console.log(err);
             });
         }
 
@@ -153,7 +153,7 @@ define([
                 size: "multi-text",
                 scope: $scope
             }).result.then(function(result){
-                console.log(result);
+                // console.log(result);
                 //applyAttrChange();
                 data[key] = result;
                 throttle(applyAttrChange);
@@ -163,7 +163,7 @@ define([
 
         // 图库弹窗
         $scope.showImageModal = function(data){
-            console.log(data);
+            // console.log(data);
             config.services.assetsManagerModal({
                 title: '选择图片',
                 nav: 'myImages' ,//or 'internetImage' or 'beautifyImage'
@@ -174,7 +174,7 @@ define([
                 }
             }, function(url) {
                 //handle url
-                console.log(data);
+                // console.log(data);
                 data.text = url;
                 //applyAttrChange();
 				throttle(applyAttrChange);
@@ -207,8 +207,8 @@ define([
 					throttle(applyAttrChange);
                 }
             }, function (text, error) {
-                console.log('text:' + text);
-                console.log('error:' + error);
+                // console.log('text:' + text);
+                // console.log('error:' + error);
                 return;
             });
         }
@@ -355,7 +355,7 @@ define([
 		$scope.click_apply_design = function(index) {
 			var moduleEditorParams = config.shareMap.moduleEditorParams || {};
 			var modParams = $scope.styles[index];
-            console.log(modParams);
+            // console.log(modParams);
             moduleEditorParams.wikiBlock.modParams.design.text = modParams.design.text;
             $scope.selectedDesign = modParams.design.text;
 			if (moduleEditorParams.wikiBlock) {
@@ -391,7 +391,7 @@ define([
                     "ch": editor.getLine(to).length
                 });
             }, function(cancel){
-                console.log("cancel delete");
+                // console.log("cancel delete");
             });
         }
 
@@ -438,7 +438,7 @@ define([
             }
 
             $(".ui-select-dropdown.dropdown-menu").on("mousewheel", function(event){
-                console.log(event);
+                // console.log(event);
                 event.stopPropagation();
             });
 
@@ -605,7 +605,7 @@ define([
 
     app.registerController("multiTextController", ["$scope", "$uibModalInstance", function($scope, $uibModalInstance){
         $scope.multiText = $scope.editingData;
-        console.log("multiTextController");
+        // console.log("multiTextController");
         $scope.cancel = function () {
             $uibModalInstance.dismiss('cancel');
         }

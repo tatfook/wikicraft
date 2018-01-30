@@ -9,9 +9,9 @@ define([
     'text!html/preview.html'
 ], function (app, markdownwiki, util, htmlContent) {
     app.registerController('previewController', ['$scope','$compile', function ($scope,$compile) {
-        console.log("previewCtrl");
+        // console.log("previewCtrl");
         var filename = window.location.search.replace('?','');
-        console.log(filename);
+        // console.log(filename);
         var md = markdownwiki({html:true});
 
         // 获取页面

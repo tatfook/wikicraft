@@ -35,7 +35,7 @@ define([
         try {
             return angular.fromJson(storage.localStorage.getItem(key));
         } catch (e) {
-            console.log(e);
+            // console.log(e);
             return undefined;
         }
         //return angular.fromJson(storage.localStorage.getItem(key));
@@ -57,7 +57,7 @@ define([
         try {
             return angular.fromJson(storage.sessionStorage.getItem(key));
         } catch (e) {
-            console.log(e);
+            // console.log(e);
             return undefined;
         }
         //return angular.fromJson(storage.sessionStorage.getItem(key));
@@ -109,12 +109,12 @@ define([
         };
 
         db.onerror = function (e) {
-            console.log("index db open error");
+            // console.log("index db open error");
             errcb && errcb();
         }
         
         db.onsuccess = function (e) {
-            console.log('index db open success');
+            // console.log('index db open success');
             indexedDB.indexDB = e.target.result;
             indexedDB.isOpen = true;
             _openFinish();
@@ -124,7 +124,7 @@ define([
 
         db.onupgradeneeded = function (e) {
             indexedDB.indexDB = e.target.result;
-            console.log('index db onupgradeneeded');
+            // console.log('index db onupgradeneeded');
 
             for (var i = 0; i < indexedDB.storeList.length; i++) {
                 var store = indexedDB.storeList[i];

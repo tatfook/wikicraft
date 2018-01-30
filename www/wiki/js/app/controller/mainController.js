@@ -355,7 +355,7 @@ define([
 							callback();
 						}
                     },function (err) {
-                        console.log(err);
+                        // console.log(err);
                         var errContent = notfoundHtmlContent;
                         util.html('#__UserSitePageContent__', errContent, $scope);
                     });
@@ -372,7 +372,7 @@ define([
 
                 var urlObj = $rootScope.urlObj;
                 // 置空用户页面内容
-                console.log(urlObj);
+                // console.log(urlObj);
                 setWindowTitle(urlObj);
 				
 				if (!util.isEditorPage()) {

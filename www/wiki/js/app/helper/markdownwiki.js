@@ -78,11 +78,11 @@ define([
 					module.renderAfter(wikiBlockObj);
 				}
 			} else {
-                console.log("wiki module define format error!!!");
+                // console.log("wiki module define format error!!!");
             }
         }, function (err) {
-            console.log(err);
-            console.log(wikiBlockObj.cmdName + " wiki module not exist!!!");
+            // console.log(err);
+            // console.log(wikiBlockObj.cmdName + " wiki module not exist!!!");
         });
     };
 
@@ -557,7 +557,7 @@ define([
 							moduleEditorParams.wikiBlock = self;
 							moduleEditorParams.updateEditorObj(self.format_params_template);
 						}
-                        console.log("更新wikiblock", moduleEditorParams);
+                        // console.log("更新wikiblock", moduleEditorParams);
 					}
                 }
                 
@@ -659,7 +659,7 @@ define([
 
             // the first block rendered block will go here, 
             if (blockCache.isWikiBlock) {
-                console.log('blockCache without cachedDom', blockCache);
+                // console.log('blockCache without cachedDom', blockCache);
                 //console.log("load and render block");
                 renderWikiBlock(mdwiki, block);
             } else {
@@ -926,12 +926,12 @@ define([
 				}
 
 			} else {
-                console.log(cm);
+                // console.log(cm);
                 // 非wiki mod todo
                 var moduleEditorParams = config.shareMap.moduleEditorParams || {};
                 moduleEditorParams.activeContainerId = "";
                 moduleEditorParams.show_type = "knowledge";
-                console.log("markwnwiki---line 838");
+                // console.log("markwnwiki---line 838");
 				moduleEditorParams.setKnowledge("");
 				util.$apply();
 			}

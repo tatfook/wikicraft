@@ -60,7 +60,7 @@ define([
 			}
 
 			$scope.refuse = function(){
-				console.log("user refuse auth");
+				// console.log("user refuse auth");
 				util.go("home");
 				return ;
 			}

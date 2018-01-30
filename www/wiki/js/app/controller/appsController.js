@@ -241,7 +241,7 @@ define(['app', 'helper/util', 'text!html/apps.html'], function (app, util, htmlC
         }
 
         function init() {
-            console.log("appsController");
+            // console.log("appsController");
             $scope.affix = $("#affix");
             $timeout(function () {
                 $anchorScroll.yOffset = 60;

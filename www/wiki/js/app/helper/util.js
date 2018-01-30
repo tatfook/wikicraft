@@ -297,7 +297,7 @@ define([
             //console.log(data);
             // debug use by wxa
             if (!data || !data.error) {
-                console.log(obj.url, data);
+                // console.log(obj.url, data);
                 errorCallback && errorCallback(data);
 				return;
             }
@@ -305,13 +305,13 @@ define([
                 //console.log(data.data);
                 callback && callback(data.data);
             } else {
-                console.log(obj.url, data);
+                // console.log(obj.url, data);
                 data.error && (data.error.message = errTranslate(data.error.message));
                 errorCallback && errorCallback(data.error);
             }
             //Loading.hideLoading();
         }).catch(function (response) {
-            console.log(response);
+            // console.log(response);
             //Loading.hideLoading();
             // 网络错误
             errorCallback && errorCallback( errTranslate(response.data) );
@@ -515,7 +515,7 @@ define([
     }
     // 驼峰转下划线
     util.humpToSnake = function (str) {
-		console.log(str);
+		// console.log(str);
         if (!str) {
             return str;
         }
@@ -545,7 +545,7 @@ define([
 			if (key_value.length > 0) {
 				result[key_value[0]] = key_value[1] || "";
 				if (decode) {
-					console.log(result[key_value[0]]);
+					// console.log(result[key_value[0]]);
 					result[key_value[0]] = decodeURIComponent(result[key_value[0]]);
 				}
 			}
