@@ -1550,6 +1550,13 @@ define([
                             allPageMap[currentPage.url] = currentPage;
                             currentSite = getCurrentSite();
                             initTree();
+                            util.post(config.apiUrlPrefix + "pages/insert", {
+                                url: currentPage.url 
+                            }, function(data){
+                                console.log(data);
+                            }, function(err){
+                                console.log(err);
+                            });
                         }
                     }, function (text, error) {
                         return;
@@ -1625,6 +1632,11 @@ define([
 
                         currentDataSource && currentDataSource.deleteFile({path: page.url + pageSuffixName}, function () {
                             // console.log("删除文件成功:");
+                            util.http("DELETE", config.apiUrlPrefix + "pages/delete", {
+                                url: page.url
+                            }, function(){}, function(err){
+                                console.log(err);
+                            })
                         }, function (response) {
                             // console.log("删除文件失败:");
                         });

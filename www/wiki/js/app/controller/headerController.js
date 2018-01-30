@@ -16,6 +16,8 @@ define([
         const SearchRangeText = ["全部内容", "当前站点", "我的网站"];
         $scope.urlObj = {};
         $scope.isIconShow = !util.isOfficialPage();
+        var pageDetail = util.parseUrl();
+        $scope.isUserPage = pageDetail.pathname.substring(1) == pageDetail.username;
         $scope.trendsType = "organization";
         $scope.isCollect=false;//是否已收藏当前作品
         $scope.searchRange = [];
@@ -60,6 +62,18 @@ define([
             }
         }
 
+        var initPageInfo = function(){
+            var url = pageDetail.pathname;
+            var visitor = $scope.user && $scope.user.username || "";
+            util.get(config.apiUrlPrefix + "pages/getDetail", {
+                url: url,
+                visitor: visitor
+            }, function(data){
+                $scope.isCollect = data.starred;
+                $scope.pageFansCount = data.starredCount;
+            })
+        }
+
         function init() {
             $scope.isJoin = (window.location.pathname == "/wiki/join") ? true : false;
             $scope.isSearch = (window.location.pathname == "/wiki/search") ? true : false;
@@ -96,6 +110,8 @@ define([
             }
 
             initSearchRange();
+
+            initPageInfo();
             // var container=document.getElementById("js-prev-container");
             // container.style.overflow="visible";
         }
@@ -335,23 +351,16 @@ define([
         // 收藏作品
         $scope.doWorksFavorite=function (event,doCollect) {
             var worksFavoriteRequest = function(isFavorite) {
-                if (!$rootScope.siteinfo) {
-                    return;
-                }
-                var params = {
-                    userId: $scope.user._id,
-					siteId: $rootScope.siteinfo._id
-                };
-
-                var url = config.apiUrlPrefix + 'user_favorite/' + (isFavorite ? 'favoriteSite' : 'unfavoriteSite');
-                util.post(url, params, function () {
-                    Message.info(isFavorite ? '作品已收藏' : '作品已取消收藏');
+                console.log(pageDetail);
+                util.post(config.apiUrlPrefix + "pages/star", {
+                    url: pageDetail.pathname,
+                    visitor: $scope.user.username
+                }, function(data){
+                    $scope.isCollect = data.starred;
+                    $scope.pageFansCount = data.starredCount;
+                }, function(err){
+                    console.log(err);
                 });
-                if (isFavorite){
-                    $scope.userFansCount++;
-                }else{
-                    $scope.userFansCount--;
-                }
             };
 
             if (doCollect){

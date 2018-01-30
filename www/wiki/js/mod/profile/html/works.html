@@ -1,0 +1,260 @@
+<style>
+    .user-works .works-list {
+        padding: 0 20px;
+        border: 1px solid #F2F2F2;
+        margin: 20px 0 40px;
+    }
+
+    .user-works .works-item {
+        display: flex;
+        border-bottom: 1px solid #F2F2F2;
+        color: #666;
+        padding: 20px 0;
+        position: relative;
+    }
+
+    .user-works .works-item:last-child {
+        border-bottom: none;
+    }
+
+    .user-works .works-item>img {
+        width: 120px;
+        height: 100px;
+        object-fit: cover;
+    }
+
+    .user-works .work-detail {
+        margin-left: 7px;
+        flex: 1;
+    }
+
+    .user-works .work-detail h4 {
+        margin: 0;
+        color: #333;
+    }
+
+    .user-works .work-detail p {
+        margin: 0;
+    }
+
+    .user-works .work-detail>.p-link,
+    .user-works .work-detail>.p-desc {
+        margin: 8px 0;
+    }
+
+    .user-works .work-detail>.p-tags>span {
+        padding: 1.5px 10px;
+        background-color: #E0F1FF;
+        margin-right: 12px;
+    }
+
+    .user-works .absolute-right {
+        position: absolute;
+        right: 0;
+        top: 23px;
+        color: #999;
+    }
+
+    .user-works .absolute-right>span {
+        margin-left: 10px;
+        font-size: 12px;
+    }
+
+    .user-works .work-other-msg img {
+        margin-right: 6px;
+        vertical-align: sub;
+    }
+
+    .user-works .work-other-msg .iconfont {
+        font-size: 22px;
+        display: inline-block;
+        width: auto;
+        margin-right: 6px;
+        vertical-align: sub;
+        line-height: 1;
+    }
+
+    .user-works .editing-toolbar .iconfont {
+        font-size: 24px;
+        margin-left: 5px;
+        color: #3977AD;
+    }
+
+    .add-modal {
+        font-size: 16px;
+    }
+
+    .add-modal .modal-body {
+        padding: 20px 78px 20px 15px;
+    }
+
+    .add-modal .form-horizontal .control-label {
+        text-align: right;
+    }
+
+    .add-modal .form-group-md {
+        margin-bottom: 20px;
+    }
+
+    .add-modal .form-group-md .control-label {
+        font-size: 16px;
+        font-weight: normal;
+        padding-top: 10px;
+    }
+
+    .add-modal .form-group-md .form-control {
+        padding: 10px 11px;
+        height: 42px;
+        font-size: 16px;
+    }
+
+    .add-modal .modal-footer .btn {
+        font-size: 16px;
+        width: 80px;
+        height: 42px;
+        margin-left: 17px;
+    }
+
+    .add-modal .modal-footer .btn-default {
+        color: #666;
+    }
+
+    .add-modal .preview-zone {
+        width: 160px;
+        height: 120px;
+        background-color: #FAFAFA;
+        border-radius: 5px;
+        border: 1px solid #DCDCDC;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 10px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .add-modal .preview-zone>img {
+        position: absolute;
+    }
+
+    .add-modal .preview-zone .preview {}
+
+    .add-modal .icon-add {
+        display: inline-block;
+        width: 32px;
+        height: 32px;
+        background-color: #AFD9FC;
+        color: #FFF;
+        text-align: center;
+        line-height: 26px;
+        font-size: 32px;
+        border-radius: 50%;
+    }
+
+    .add-modal .upload-zone {
+        display: flex;
+        align-items: flex-end;
+    }
+
+    .add-modal .upload-info {
+        margin-bottom: 0;
+        text-align: center;
+        cursor: pointer;
+        position: relative;
+    }
+
+    .add-modal .upload-info>input {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        opacity: 0;
+        cursor: pointer;
+    }
+
+    .add-modal .info {
+        display: block;
+        font-size: 14px;
+        color: #666;
+        margin-top: 10px;
+    }
+
+    .add-modal .result-img-box {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+    }
+
+    .add-modal .result-img-box>img {
+        width: 100%;
+        height: 100%;
+    }
+
+    .add-modal .result-img-box::before {
+        content: "";
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        display: none;
+    }
+
+    .add-modal .preview-zone:hover .result-img-box:before {
+        display: block;
+    }
+
+    .add-modal .upload-info.have-img {
+        display: none;
+    }
+
+    .add-modal .preview-zone:hover .upload-info.have-img {
+        display: block;
+    }
+
+    .add-modal .preview-zone:hover .upload-info.have-img .info {
+        color: #FFF;
+    }
+</style>
+<div class="user-works" ng-controller="worksCtrl">
+    <h4 class="title">
+        作品
+        <span class="pull-right" ng-show="isSelf">
+            <i class="iconfont icon-tianjia" ng-hide="editing && works.length > 0" ng-click="showModal()"></i>
+            <i class="iconfont" ng-show="works.length > 0" ng-class="{true:'icon-fanhui', false:'icon-bianji'}[editing]" ng-click="editWork()"></i>
+        </span>
+    </h4>
+    <div class="works-list">
+        <div class="empty-box" ng-hide="works.length>0">
+            <span class="iconfont icon-kongbaiyemian"></span>
+            <p translate="暂无相关内容..."></p>
+        </div>
+        <div class="works-item" ng-repeat="work in works track by $index" ng-show="works.length>0">
+            <img ng-src="{{work.logoUrl || getImageUrl('wiki_cover.jpg', imgsPath)}}">
+            <div class="work-detail">
+                <h4>{{work.title}}</h4>
+                <p class="p-link">
+                    <a ng-href="{{work.workLink}}" target="_blank">{{work.workLink}}</a>
+                </p>
+                <p class="p-desc">{{work.desc}}</p>
+                <p class="p-tags" ng-hide="work.isThirdLink">
+                    <span ng-repeat="tag in work.data.tags track by $index">{{tag}}</span>
+                </p>
+            </div>
+            <div class="work-other-msg absolute-right" ng-hide="editing || work.isThirdLink">
+                <span>
+                    <i class="iconfont icon-browse"></i>{{work.data.visitCount || 0}}
+                </span>
+                <span>
+                    <i class="iconfont icon-collection"></i>{{work.data.starredCount || 0}}
+                </span>
+            </div>
+            <div class="editing-toolbar absolute-right" ng-show="editing">
+                <span class="iconfont icon-shezhi" title="设置" ng-click="setWork($index)"></span>
+                <span class="iconfont icon-shangyi" title="上移" ng-click="shiftUp($index)"></span>
+                <span class="iconfont icon-xiayi" title="下移" ng-click="shiftDown($index)"></span>
+                <span class="iconfont icon-shanchu1" title="删除" ng-click="deleteWork($index)"></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="add-modal modal-parent"></div>
+</div>

@@ -474,6 +474,7 @@ define([
             } else {
                 content = content[0];
             }
+            console.log(path);
             //console.log(content);
             self.writeFile({
                 path: path,

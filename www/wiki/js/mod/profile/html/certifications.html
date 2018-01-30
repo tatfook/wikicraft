@@ -1,0 +1,91 @@
+<style>
+    .user-certification .ellipsis-1 {
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+    }
+
+    .user-certification .certifications-list {
+        padding: 12px 20px;
+        border: 1px solid #F2F2F2;
+        font-size: 16px;
+        color: #666;
+        margin: 24px 0 43px;
+    }
+
+    .user-certification table {
+        margin: 0;
+        border: none;
+    }
+
+    .user-certification table>tbody>tr>td {
+        border: none;
+        display: inline-block;
+        height: 32px;
+        line-height: 32px;
+        padding: 0;
+    }
+
+    .user-certification td.title {
+        width: 30%;
+    }
+
+    .user-certification td.link {
+        width: 50%;
+        padding: 0 5px;
+    }
+
+    .user-certification td.time {
+        width: 20%;
+        font-size: 14px;
+        color: #999;
+        text-align: right;
+    }
+
+    .user-certification .editing-certifications td.title{
+        width: 24%;
+    }
+
+    .user-certification .editing-certifications td.link{
+        width: 39%;
+    }
+
+    .user-certification .editing-certifications td.time{
+        width: 19%;
+    }
+
+    .user-certification .editing-certifications td.editing-toolbar{
+        width: 18%;
+        text-align: right;
+    }
+</style>
+<div class="user-certification" ng-controller="certificationCtrl">
+    <h4 class="title">
+        认证
+        <span class="pull-right" ng-show="isSelf">
+            <i class="iconfont icon-tianjia" ng-click="showCertificationModal()" ng-hide="editing && certifications.length > 0"></i>
+            <i class="iconfont" ng-show="certifications.length > 0" ng-class="{true:'icon-fanhui', false:'icon-bianji'}[editing]" ng-click="editCertification()"></i>
+        </span>
+    </h4>
+    <div class="certifications-list">
+        <div class="empty-box" ng-hide="certifications.length>0">
+            <span class="iconfont icon-kongbaiyemian"></span>
+            <p translate="暂无相关内容..."></p>
+        </div>
+        <table ng-show="certifications.length>0" ng-class="{true:'editing-certifications'}[editing]">
+            <tr class="certification-item" ng-repeat="certification in certifications">
+                <td class="title ellipsis-1">{{certification.title}}</td>
+                <td class="link ellipsis-1">{{certification.link}}</td>
+                <td class="time ellipsis-1">{{certification.getDate}}</td>
+                <td class="editing-toolbar" ng-show="editing">
+                    <span class="iconfont icon-shezhi" title="设置" ng-click="setCertification($index)"></span>
+                    <span class="iconfont icon-shangyi" title="上移" ng-click="shiftUp($index)"></span>
+                    <span class="iconfont icon-xiayi" title="下移" ng-click="shiftDown($index)"></span>
+                    <span class="iconfont icon-shanchu1" title="删除" ng-click="deleteCertification($index)"></span>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="add-certification-modal modal-parent"></div>
+</div>
