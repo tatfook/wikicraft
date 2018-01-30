@@ -16,6 +16,8 @@ define([
         const SearchRangeText = ["全部内容", "当前站点", "我的网站"];
         $scope.urlObj = {};
         $scope.isIconShow = !util.isOfficialPage();
+        var pageDetail = util.parseUrl();
+        $scope.isUserPage = pageDetail.pathname.substring(1) == pageDetail.username;
         $scope.trendsType = "organization";
         $scope.isCollect=false;//是否已收藏当前作品
         $scope.searchRange = [];

@@ -2,7 +2,7 @@
  * @Author: ZhangKaitlyn 
  * @Date: 2018-01-19
  * @Last Modified by: none
- * @Last Modified time: 2018-01-29 18:30:52
+ * @Last Modified time: 2018-01-30 11:11:11
  */
 define([
     'app', 
@@ -16,18 +16,39 @@ define([
             var thisInBlockIndex;
             var thisContainerId;
 			wikiBlock.init({
-				scope:$scope,
+                scope:$scope,
+                styles:[
+                    {
+                        design:{
+                            text: "style1"
+                        }
+                    }
+                ],
 				params_template:{
-                    is_leaf: true,
+                    design:{
+                        is_leaf: true,
+                        type: "text",
+                        editable: false,
+                        is_mod_hide: false,
+                        is_card_show: true,
+                        name: "样式",
+                        text: "style1",
+                        require: true,
+                    },
 					pageTags:{
                         is_leaf: true,
                         require: false,
+                        type: "pageTags",
+                        editable: true,
+                        is_mod_hide: false,
+                        is_card_show : true,
+                        name: "页面标签",
                         tags:[]
                     }
 				}
             });
             $scope.tags = {};
-            $scope.tags.tags = Array.from($scope.params && $scope.params.tags || []);
+            $scope.tags.tags = Array.from($scope.params && $scope.params.pageTags.tags || []);
             
             // 获取当前模块的index和containerId
             var getBlockIndex = function(){

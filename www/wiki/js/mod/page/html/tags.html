@@ -62,7 +62,7 @@
     }
 </style>
 
-<div ng-controller="pageTagsCtrl" class="tags-header container" ng-hide="tags.tags.length <= 0 && !isSelf">
+<div ng-controller="pageTagsCtrl" class="tags-header container" ng-hide="params.is_mod_hide || (tags.tags.length <= 0 && !isSelf)">
     <div class="showing-tag" ng-hide="tagEditing">
         <ul class="nav" ng-hide="tags.tags.length <= 0">
             <li class="tag-item" ng-repeat="tag in tags.tags">{{tag}}</li>
