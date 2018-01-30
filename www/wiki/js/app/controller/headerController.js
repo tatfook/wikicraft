@@ -62,6 +62,18 @@ define([
             }
         }
 
+        var initPageInfo = function(){
+            var url = pageDetail.pathname;
+            var visitor = $scope.user && $scope.user.username || "";
+            util.get(config.apiUrlPrefix + "pages/getDetail", {
+                url: url,
+                visitor: visitor
+            }, function(data){
+                $scope.isCollect = data.starred;
+                $scope.pageFansCount = data.starredCount;
+            })
+        }
+
         function init() {
             $scope.isJoin = (window.location.pathname == "/wiki/join") ? true : false;
             $scope.isSearch = (window.location.pathname == "/wiki/search") ? true : false;
@@ -98,6 +110,8 @@ define([
             }
 
             initSearchRange();
+
+            initPageInfo();
             // var container=document.getElementById("js-prev-container");
             // container.style.overflow="visible";
         }
@@ -343,7 +357,7 @@ define([
                     visitor: $scope.user.username
                 }, function(data){
                     $scope.isCollect = data.starred;
-                    $scope.userFansCount = data.starredCount;
+                    $scope.pageFansCount = data.starredCount;
                 }, function(err){
                     console.log(err);
                 });

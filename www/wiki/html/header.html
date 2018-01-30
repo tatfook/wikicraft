@@ -465,7 +465,13 @@
         line-height: 1;
     }
 
-    .url-header li>i.icon-dianzan+span {
+    .url-header i.icon-icondianzan.active{
+        color: #FE7532;
+        font-size: 30px;
+        line-height: 1;
+    }
+
+    .url-header li>i.iconfont+span {
         vertical-align: super;
     }
 </style>
@@ -776,8 +782,8 @@
                 </div>
             </li>
             <li class="icon collect-icon">
-                <i class="iconfont icon-dianzan" ng-click="doWorksFavorite($event,isCollect)" alt=""></i>
-                <span class="text-muted" ng-click="goFans()">{{userFansCount || 0}}</span>
+                <i class="iconfont " ng-class="{true: 'active icon-icondianzan', false: 'icon-dianzan'}[isCollect]" ng-click="doWorksFavorite($event,isCollect)" alt=""></i>
+                <span class="text-muted" ng-click="goFans()">{{pageFansCount || 0}}</span>
             </li>
         </ul>
     </div>
