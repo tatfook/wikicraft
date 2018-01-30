@@ -13,7 +13,7 @@ define([
             util.post(config.apiUrlPrefix + 'user/verifyEmailTwo', {}, function (data) {
                 Message.info("邮箱绑定成功");
             },function (err) {
-                console.log(err);
+                // console.log(err);
                 Message.info(err.message);
             });
         }else{

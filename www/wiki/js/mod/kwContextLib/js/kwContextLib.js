@@ -12,7 +12,7 @@ define([
             $scope.modParams = angular.copy(wikiblock.modParams || {});
 
             function init() {
-                console.log("----------init Keepwork context Mod---------");
+                // console.log("----------init Keepwork context Mod---------");
             }
             var context = getContext();
             getWords(context);
@@ -63,7 +63,7 @@ define([
                     success:function(result){
                         $("#keepwork-list").empty();
                         $(result.data.list).each(function(i, val){
-                            console.log(val.content);
+                            // console.log(val.content);
                             var index = "<div class='serial'>"+(i+1)+"</div>";
                             var content = "<div class='rule-content'><h2><a ng-click='getDetail(\""+val.url+"\")'>"+val.content+"</a></h2>" + "<p><a class=\"link\" onclick='getClick()'>" + val.url + "</a></p></div>";
                             $("#keepwork-list").append($compile(index+content)($scope));
@@ -83,7 +83,7 @@ define([
                     dataType: "json",
                     success:function(result){
                         //$("#content").empty();
-                        console.log(result);
+                        // console.log(result);
                         $("#keepwork-list").hide();
                         $("#keepwork-detail").show();
                         var title = result.data.tags;

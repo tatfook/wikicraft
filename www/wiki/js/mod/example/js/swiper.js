@@ -6,7 +6,7 @@ define(['app', 'text!wikimod/example/html/swiper.html'], function (app, htmlCont
     function registerController(wikiBlock) {
         app.registerController("swiperController", ['$scope',function ($scope) {
 			$scope.$watch("$viewContentLoaded", function(){
-				console.log("-----------------");
+				// console.log("-----------------");
 				var mySwiper = new Swiper ('.swiper-container', {
 					// Optional parameters
 				   	direction: 'vertical',

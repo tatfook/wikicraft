@@ -63,9 +63,7 @@ define([
                 langPrefix: 'code-',
             })
 
-            $scope.$watch('params', function(){
-				$scope.multiText_desc_md = md.render($scope.params.multiText_desc.text);
-			})
+            $scope.subMarkdownRender = util.subMarkdownRender;
 
             $scope.targetIf = $scope.params.multiText_desc.href.length == 0
         }])

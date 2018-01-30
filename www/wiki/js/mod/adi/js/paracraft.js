@@ -198,6 +198,10 @@ define([
 
 			wikiblock.init(initObj);
 
+			if($scope.params.media_logo.is_mod_hide && $scope.params.link_version.is_mod_hide && $scope.params.link_opus_id.is_mod_hide && $scope.params.multiText_desc.is_mod_hide && $scope.params.link_world_url.is_mod_hide && $scope.params.link_files_totals.is_mod_hide && $scope.params.link_username.is_mod_hide && $scope.params.link_update_date.is_mod_hide && $scope.params.link_world_name.is_mod_hide){
+				$scope.params.viewTimes.is_mod_hide = true;
+			}
+
 			$scope.checkEngine = function () {
                 $scope.showModal=true;
 
@@ -220,25 +224,6 @@ define([
             util.http("POST", viewTimesUrl, params, function (response) {
                 $scope.viewTimes = response.viewTimes;
             }, function (response) { });
-
-			// $scope.getImageUrl = function (logoUrl) {
-			// 	if(!logoUrl || !logoUrl.text || !logoUrl.text[0] || !logoUrl.text[0].url){
-			// 		return undefined;
-			// 	}
-
-			// 	var url = logoUrl.text[0].url;
-
-            //     if (!url)
-            //         return undefined;
-
-            //     if (url.indexOf("http") == 0)
-            //         return url + "?ver=" + $scope.params.version.text;
-
-            //     if (url[0] == '/')
-            //         url = url.substring(1);
-
-            //     return $scope.imgsPath + url + "?ver=" + $scope.params.version.text;
-			// }
 			
 			$scope.getSize = function(size){
 				if (size <= 1048576) {
@@ -248,14 +233,7 @@ define([
 				}
 			}
 
-			var md = new markdown_it({
-				html: true,
-				langPrefix: 'code-'
-			})
-
-			$scope.$watch('params', function(){
-				$scope.multiText_desc_md = md.render($scope.params.multiText_desc.text);
-			})
+            $scope.subMarkdownRender = util.subMarkdownRender;
 		}]);
     }
 

@@ -70,7 +70,7 @@ define([
 
         $scope.isUrlVideo = function(url) {
             var result = /(mp4|mov|amv|avi)$/.test(getNakedUrlWithoutQueryAndHash(url));
-            return result;
+            return false; //result; //disable video, enable it when adi is ready for video
         }
 
         $scope.isUrlImage = function(url) {
@@ -126,7 +126,14 @@ define([
         }
 
         function openBeautifyImage(url) {
-            if (window.xiuxiu && url) window.xiuxiu.loadPhoto(url);
+            var base64Regex = /^data:image\/(png|jpg|gif);base64,/;
+            var isBase64 = false;
+            if (url) {
+                isBase64 = base64Regex.test(url);
+                isBase64 && (url = url.replace(base64Regex, ''));
+            }
+
+            if (window.xiuxiu && url) window.xiuxiu.loadPhoto(url, isBase64);
             if ($scope.xiuxiuIsReady) return;
             config.loading.show();
             xiuxiuReady(function(xiuxiu) {
@@ -137,7 +144,7 @@ define([
                 }, 2000);
                 xiuxiu.onInit = function() {
                     xiuxiu.setUploadType(3);
-                    url && xiuxiu.loadPhoto(url);
+                    url && xiuxiu.loadPhoto(url, isBase64);
                     clearTimeout(loadingAutoHideTimer);
                     config.loading.hide();
                 }
@@ -172,7 +179,33 @@ define([
         }
 
         $scope.beautifyImage = function(img) {
-            $scope.toggleNav('beautifyImage', img.url);
+            if (urlFromQiniu(img.url)) {
+                getBase64ContentFromImage(img.url, function(base64Url) {
+                    $scope.toggleNav('beautifyImage', base64Url);
+                    util.$apply();
+                })
+            } else {
+                $scope.toggleNav('beautifyImage', img.url);
+            }
+
+            function urlFromQiniu(url) {
+                return /^https?\:\/\/[a-z0-9]+\.bkt\.clouddn\.com\//.test(url)
+            }
+
+            function getBase64ContentFromImage(url, cb) {
+                var img = new Image();
+                img.setAttribute('crossOrigin', 'anonymous');
+                img.onload = function () {
+                    var canvas = document.createElement("canvas");
+                    canvas.width =this.width;
+                    canvas.height =this.height;
+                    var ctx = canvas.getContext("2d");
+                    ctx.drawImage(this, 0, 0);
+                    var dataURL = canvas.toDataURL("image/png");
+                    cb(dataURL);
+                };
+                img.src = url;
+            }
         }
 
         $scope.removeImage = function(img) {

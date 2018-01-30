@@ -469,9 +469,8 @@
     }
 </style>
 
-
 <div ng-controller="headerController" class="header-container">
-    <header class="navbar-fixed-top">
+    <header ng-class="{true:'navbar-fixed-top'}[!isHeaderScroll]">
         <nav class="navbar navbar-default">
             <div class="container">
                 <!-- Brand and toggle get grouped for better mobile display -->

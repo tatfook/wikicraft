@@ -99,7 +99,7 @@ define(['app', 'helper/util',
                         $root.data.orginData = angular.copy($root.data.course);
                     }
                 }, function (rs) {
-                    console.log(rs);
+                    // console.log(rs);
                 });
 
                 util.$apply();
@@ -194,7 +194,7 @@ define(['app', 'helper/util',
                                 }
 
                             }, function (rs) {
-                                console.log(rs);
+                                // console.log(rs);
                             });
 
                         // 新增或修改的时候下拉选择的数据

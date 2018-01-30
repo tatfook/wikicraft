@@ -52,8 +52,8 @@ define([], function() {
                     data: me.data
                 }));
                 localStorage.removeItem(me._publishMemoryKey);
-                to  ? console.log('Tab ' + to + ' asked for the memoryStorage -> ' + me.id + ' send it')
-                    : console.log(me.id + ' publish data');  
+                // to  ? console.log('Tab ' + to + ' asked for the memoryStorage -> ' + me.id + ' send it')
+                //     : console.log(me.id + ' publish data');  
             },
             revealDataFromSessionStorage: function() {
                 var me = this;
@@ -91,7 +91,7 @@ define([], function() {
                         }
                         if (!msg) return;
                         if (msg.to && msg.to != me.id) return;
-                        console.log('Current tab get Memory from ' + msg.from, msg);
+                        // console.log('Current tab get Memory from ' + msg.from, msg);
                         me.setData(msg.data);
                     }
                 });

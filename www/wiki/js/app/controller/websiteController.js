@@ -13,7 +13,7 @@ define([
     'controller/editWebsiteController',
 ], function (app, Promise, util, storage, dataSource, htmlContent, newWebsiteHtmlContent, editWebsiteHtmlContent) {
     app.registerController('websiteController', ['$rootScope', '$scope', 'Account', function ($rootScope, $scope, Account) {
-        console.log("websiteController");
+        // console.log("websiteController");
         $scope.websites = [];
 
         function getUserSiteList() {
@@ -62,7 +62,7 @@ define([
             $scope.deleteWebsiteConfirmMsg = "确定删除 " + (site.displayName || site.name) + " 网站？";
             $scope.deleteWebsiteConfirmSite = site;
             $scope.deleteWebsiteWithGitlabData = false;
-            console.log(site);
+            // console.log(site);
             $('#deleteWebsiteConfirmModal').modal("show");
         };
 
@@ -91,7 +91,7 @@ define([
                     
                     var path = "/" + site.username + "/" + site.sitename;
                     currentDataSource.getTree({recursive:true, path: path},function (data) {
-                        console.log('currentDataSource.getTree: ', data);
+                        // console.log('currentDataSource.getTree: ', data);
                         if (!data || !data.map) return clearReject();
                         Promise.each(data.map(function(page) {
                             return deletePage(page);

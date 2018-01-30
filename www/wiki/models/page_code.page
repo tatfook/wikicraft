@@ -1,0 +1,30 @@
+<?npl
+--[[
+Title: Page code
+Author: big
+Date: 2018/1/25
+]]
+
+include_once("./abstract/base.page")
+
+local page_code = inherit(models.abstract.base, gettable("models.page_code"))
+page_code.db_name = "page_code"
+
+function page_code:ctor()
+
+end
+
+function page_code:get(params)
+    if(not params.url) then
+        return errors:wrap(errors.NOT_FOUND);
+    end
+
+    System.os.GetUrl({
+		url     = params.url,
+		method  = "GET",
+    }, resume);
+
+    local err, data = yield();
+
+    return errors:wrap(nil, {code = err});
+end

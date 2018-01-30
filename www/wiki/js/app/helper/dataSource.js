@@ -61,22 +61,22 @@ define([
                     }
                     self.initFinishCallbackList = [];
                     self.isInitFinish = true;
-                    console.log("-----data source init finished-----");
+                    // console.log("-----data source init finished-----");
                 }
             }
 
             var _init = function (dataSourceCfg, dataSourceInstance, i) {
                 if (!dataSourceInstance) {
-                    console.log("data source instance is null");
+                    // console.log("data source instance is null");
                     initFinish(i);
                     return;
                 }
                 self.registerDataSource(dataSourceCfg.sitename, dataSourceInstance);
                 dataSourceInstance.init(dataSourceCfg, function () {
-                    console.log(dataSourceCfg.dataSourceName + " data source init success");
+                    // console.log(dataSourceCfg.dataSourceName + " data source init success");
                     initFinish(i);
                 }, function () {
-                    console.log(dataSourceCfg.dataSourceName + " data source init failed");
+                    // console.log(dataSourceCfg.dataSourceName + " data source init failed");
                     initFinish(i);
                 });
             }

@@ -41,6 +41,7 @@ define([
 
                         $scope.OK = function () {
                             $scope.$close($scope.editor.$txt.html());
+                            // console.log($scope.editor.$txt.html())
                         }
 
                         $scope.$watch('$viewContentLoaded', init);

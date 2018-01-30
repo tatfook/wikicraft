@@ -24,7 +24,7 @@ define([
                 $(".swiper-container").height(minH);
                 var w = $("#__mainContent__");
                 w.css("min-height", minH);
-                console.log(minH);
+                // console.log(minH);
             }
 
             var init = function () {

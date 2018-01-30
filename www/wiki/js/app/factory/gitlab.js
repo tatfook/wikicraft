@@ -500,7 +500,7 @@ define([
             params.recursive = false
             params.isFetchAll = true;
             self.httpRequest("GET", url, params, function (data) {
-                console.log('gitlab.getImageList: ', data);
+                // console.log('gitlab.getImageList: ', data);
                 data && data.forEach && data.forEach(function(item) {
                     item.url = self.getRawContentUrlPrefix({sha:"master", path:'/'+item.path, token:"visitortoken"})
                 });
@@ -569,7 +569,7 @@ define([
 			self.keepworkSitename = dataSource.sitename;
 
             if (!dataSource.dataSourceUsername || !dataSource.dataSourceToken || !dataSource.apiBaseUrl || !dataSource.rawBaseUrl) {
-                console.log("gitlab data source init failed!!!");
+                // console.log("gitlab data source init failed!!!");
                 errcb && errcb();
                 return;
             }
@@ -614,9 +614,9 @@ define([
 						push_events: true,
 						enable_ssl_verification: false,
 					}, function () {
-						console.log("webhook create success");
+						// console.log("webhook create success");
 					}, function () {
-						console.log("webhook create failed");
+						// console.log("webhook create failed");
 					});
 				}
 			}, function () {

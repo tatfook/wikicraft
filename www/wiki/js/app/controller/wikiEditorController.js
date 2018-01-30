@@ -257,7 +257,7 @@ define([
                       $rootScope.img = $scope.img;
                       $uibModalInstance.close("img");
                     }, function(err) {
-                      console.log(err);
+                    //   console.log(err);
                       $scope.imgErr = "图片上传失败，请稍后重试";
                     });
             }else{
@@ -289,7 +289,7 @@ define([
         }
 
 		$scope.video_insert = function () {
-			console.log(result);
+			// console.log(result);
 			if ($scope.videoUrl) {
 				result.url = $scope.videoUrl;
 				result.isNetUrl = true;
@@ -332,7 +332,7 @@ define([
 
 					var currentDataSource = getCurrentDataSource();
 					if (!currentDataSource) {
-						console.log("当前数据不可用!!!");
+						// console.log("当前数据不可用!!!");
 						return;
 					}
 
@@ -348,7 +348,7 @@ define([
 				},
 
 				failed: function() {
-					console.log("上传文件失败");
+					// console.log("上传文件失败");
 				},
 			};
 			qiniu.upload(opt);
@@ -455,7 +455,7 @@ define([
                     $scope.activePageTemplate= $scope.pageTemplates[0];
                     $scope.websitePage.template = $scope.activePageTemplate.templates[0];
                 } catch (e) {
-                    console.log(e);
+                    // console.log(e);
                 }
             }, function () {
 
@@ -599,7 +599,7 @@ define([
                 }
             });//}}}
 
-            console.log("wikiEditorController");//{{{
+            // console.log("wikiEditorController");//{{{
             $rootScope.frameFooterExist = false;
             $rootScope.frameHeaderExist = false;
             $rootScope.userinfo = $rootScope.user;
@@ -943,14 +943,14 @@ define([
 
                 var currentDataSource = getCurrentDataSource();
                 var page = angular.copy(currentPage);
-                console.log(currentPage);
+                // console.log(currentPage);
                 var content = page.content || editor.getValue();
 				page.timestamp = (new Date()).getTime();
 				page.content = content;
                 var saveFailedCB = function () {
                     page.isModify = true;
                     storage.indexedDBSetItem(config.pageStoreName, page);
-                    console.log("---------save failed-------");
+                    // console.log("---------save failed-------");
                     errcb && errcb();
                 };
                 var saveSuccessCB = function () {
@@ -961,7 +961,7 @@ define([
                     storage.indexedDBSetItem(config.pageStoreName, page);
 					storage.sessionStorageRemoveItem(page.url);
                     indexDBDeletePage(page.url, true);
-                    console.log("---------save success-------");
+                    // console.log("---------save success-------");
 					updateLastCommitId(currentDataSource, page);
                     cb && cb();
                 };
@@ -1006,7 +1006,7 @@ define([
 				//console.log(params);
                 var currentDataSource = dataSource.getDataSource(params.username, params.sitename);
                 if (!currentDataSource) {
-                    console.log("current data source unset!!!");
+                    // console.log("current data source unset!!!");
                     return;
                 }
 
@@ -1028,7 +1028,7 @@ define([
                         cb && cb();
                         //console.log(data);
                     },function () {
-                        console.log("get pagelist failed!!!");
+                        // console.log("get pagelist failed!!!");
                         errcb && errcb();
                     });
                 } else {
@@ -1408,13 +1408,13 @@ define([
                     if (cmd.substr(0, 1) == '&') {
                         switch (cmd.substring(1)) {
                             case 'new':
-                                console.log('command:new');
+                                // console.log('command:new');
                                 break;
                             case 'ws':
-                                console.log('command:ws');
+                                // console.log('command:ws');
                                 break;
                             default:
-                                console.log('command:undefined!' + cmd);
+                                // console.log('command:undefined!' + cmd);
                                 break;
                         }
                     }
@@ -1456,7 +1456,7 @@ define([
                         }
                         return newText;
                     } catch (e) {
-                        console.log(e);
+                        // console.log(e);
                         return lines.slice(0, startPos + 1).join('\n') + '\n' + paramsText + '\n' + lines.slice(endPos).join('\n');
                     }
                 }
@@ -1476,7 +1476,7 @@ define([
                         "ch": 0
                     });
                 }, function (result) {
-                    console.log(result);
+                    // console.log(result);
                 });
             }//}}}
 
@@ -1521,7 +1521,7 @@ define([
                     try {
                         allWebstePageContent[pageUrl] = content;
                     } catch (e) {
-                        console.log(e);
+                        // console.log(e);
                     }
                     openPage(false);
                 }, function () {
@@ -1624,9 +1624,9 @@ define([
                         var currentDataSource = dataSource.getDataSource(page.username, page.sitename);
 
                         currentDataSource && currentDataSource.deleteFile({path: page.url + pageSuffixName}, function () {
-                            console.log("删除文件成功:");
+                            // console.log("删除文件成功:");
                         }, function (response) {
-                            console.log("删除文件失败:");
+                            // console.log("删除文件失败:");
                         });
 
                         storage.indexedDBDeleteItem(config.pageStoreName, page.url);
@@ -1670,7 +1670,7 @@ define([
 
             //关闭全部已打开
             $scope.cmd_closeAll = function (url) {//{{{
-				console.log(url);
+				// console.log(url);
 				url = url || "";
                 for (key in $scope.opens){
 					if (key.indexOf(url) >= 0) {
@@ -1681,7 +1681,7 @@ define([
 
             $scope.cmd_goSetting = function (urlKey, event) {//{{{
                 var website = allSiteMap[urlKey];
-                console.log(website);
+                // console.log(website);
                 event && event.stopPropagation();
                 storage.sessionStorageSetItem('userCenterContentType', 'editWebsite');
                 storage.sessionStorageSetItem("editWebsiteParams", website);
@@ -1723,7 +1723,7 @@ define([
 				
 				util.batchRun(fnList, function(){
                     callback();
-                    console.log("全部保存结束");
+                    // console.log("全部保存结束");
 				});
             };//}}}
 
@@ -1773,15 +1773,15 @@ define([
                     var path = websiteFile.url + config.pageSuffixName;
                     var currentDataSource = dataSource.getDataSource(websiteFile.username, websiteFile.sitename);
                     if (!currentDataSource) {
-                        console.log(websiteFile);
+                        // console.log(websiteFile);
                     } else {
                         currentDataSource.writeFile({path:path, content:"占位文件"}, function(){
-                            console.log("创建成功");
+                            // console.log("创建成功");
                             initTree();
                             allPageMap[websiteFile.url] = angular.copy(websiteFile);
                             //console.log(allPageMap);
                         }, function() {
-                            console.log("创建失败");
+                            // console.log("创建失败");
                         });
                     }
 				}, function (text, error) {
@@ -2050,8 +2050,8 @@ define([
                         editor.focus();
                     }
                 }, function (text, error) {
-                    console.log('text:' + text);
-                    console.log('error:' + error);
+                    // console.log('text:' + text);
+                    // console.log('error:' + error);
                     return;
                 });
             }
@@ -2093,8 +2093,8 @@ define([
                         editor.focus();
                     }
                 }, function (text, error) {
-                    console.log('text:' + text);
-                    console.log('error:' + error);
+                    // console.log('text:' + text);
+                    // console.log('error:' + error);
                     return;
                 });
             }
@@ -2105,7 +2105,7 @@ define([
                     templateUrl: config.htmlPath + "editorInsertImg.html",
                     controller: "imgCtrl",
                 }).result.then(function (provider) {
-                    console.log(provider);
+                    // console.log(provider);
                     if (provider == "img") {
                         var url = $rootScope.img.url;
                         var txt = $rootScope.img.txt;
@@ -2132,8 +2132,8 @@ define([
                         editor.focus();
                     }
                 }, function (text, error) {
-                    console.log('text:' + text);
-                    console.log('error:' + error);
+                    // console.log('text:' + text);
+                    // console.log('error:' + error);
                     return;
                 });
             }
@@ -2144,7 +2144,7 @@ define([
                     templateUrl: config.htmlPath + "editorInsertVideo.html",
                     controller: "videoCtrl",
                 }).result.then(function (result) {
-					console.log(result);
+					// console.log(result);
                     if (result) {
 						var videoContent = "";
 						if (result.isNetUrl) {
@@ -2170,7 +2170,7 @@ define([
                 });
                 bigfileModal.result.then(function (wikiBlock) {
                     isBigfileModalShow = false;
-                    console.log(wikiBlock);
+                    // console.log(wikiBlock);
                 }, function (files) {
                     isBigfileModalShow = false;
                     if (!files){
@@ -2178,7 +2178,7 @@ define([
                     }
 
                     var insertContent = "";
-                    console.log(files);
+                    // console.log(files);
                     if (files.pasteUrl){
                         insertContent = files.pasteUrl;
                     } else if (files.url){
@@ -2267,14 +2267,14 @@ define([
                                 this.start();
                             },
                             "BeforeUpload": function (up, file) {
-                                console.log("BeforeUpload");
+                                // console.log("BeforeUpload");
                             },
                             "UploadProgress": function (up, file) {
                                 var uploadInfo = "***网盘： 正在上传文件 " + file.loaded + "/" + file.size + "(" + file.percent + "%),上传完成后可以在网盘中进行管理，上传过程中请不要刷新窗口***";
                                 line_keyword_nofocus(dropFiles[file.name].insertLinum, uploadInfo, 0);
                             },
                             "FileUploaded": function (up, file, info) {
-                                console.log("FileUploaded");
+                                // console.log("FileUploaded");
                                 var lineNo = dropFiles[file.name].insertLinum;
                                 line_keyword_nofocus(lineNo, file.name);
                                 var params = {
@@ -2300,12 +2300,12 @@ define([
                                 }, false);
                             },
                             "UploadComplete": function (up, files, info) {
-                                console.log("UploadComplete");
+                                // console.log("UploadComplete");
                                 // setBigfileValue();
                             },
                             "Error": function (up, file, errTip) {
-                                console.log(file.file);
-                                console.log(dropFiles[file.name]);
+                                // console.log(file.file);
+                                // console.log(dropFiles[file.name]);
                                 line_keyword_nofocus(dropFiles[file.file.name].insertLinum, "***上传出错了，请重试，或者在网盘上传重试***", 0);
                             }
                         }
@@ -2319,10 +2319,10 @@ define([
                             };
                             qiniuBack = qiniu.uploader(option);
                         }else{
-                            console.log("uid获取失败");
+                            // console.log("uid获取失败");
                         }
                     }, function () {
-                        console.log("uid获取失败");
+                        // console.log("uid获取失败");
                     });
                 };
                 initQiniu();
@@ -2378,7 +2378,7 @@ define([
 					var fileReader = new FileReader();
 					var cursor = editor.getCursor();
 					fileReader.onloadstart = function () {
-                        console.log("fileLoadStart");
+                        // console.log("fileLoadStart");
                         var insertLineNum = getEmptyLine(cursor.line);
                         dropFiles[fileObj.name].insertLinum = insertLineNum;
                         var onloadInfo = "***正在获取文件 0/"+ fileObj.size +"***";
@@ -2393,7 +2393,7 @@ define([
 					fileReader.onload = function () {
                         if (fileObj.size > UpperLimit || /video\/\w+/.test(fileObj.type)){ // 上传到七牛
                             var cmd_bigfile = function(fileObj) {
-                                console.log(fileObj.name);
+                                // console.log(fileObj.name);
                                 var msg = "editorUploadFile";
                                 var data = dropFiles[fileObj.name];
                                 line_keyword_nofocus(dropFiles[fileObj.name].insertLinum, "**已选择使用上传工具上传 "+fileObj.name+"。**", 0);
@@ -2420,12 +2420,12 @@ define([
                                 if (confirmFilesQue.length > 0) {
                                     confirmFun(confirmFilesQue[0]);
                                     confirmFilesQue.shift();
-                                    console.log(confirmFilesQue);
+                                    // console.log(confirmFilesQue);
                                 }
                             }
 
                             var editorToQiniu = function(fileObj) {
-                                console.log("正在上传到七牛");
+                                // console.log("正在上传到七牛");
                                 $scope.storeInfoByte.used += fileObj.size || 0;
                             
                                 if ($scope.storeInfoByte.used > $scope.storeInfoByte.total){
@@ -2438,7 +2438,7 @@ define([
                                 if (confirmFilesQue.length > 0) {
                                     confirmFun(confirmFilesQue[0]);
                                     confirmFilesQue.shift();
-                                    console.log(confirmFilesQue);
+                                    // console.log(confirmFilesQue);
                                 }
                             }
 
@@ -2493,7 +2493,7 @@ define([
 
                             if (fileObj.size > BrowerUpperLimit) {
                                 if (isBigfileModalShow) {
-                                    console.log(isBigfileModalShow);
+                                    // console.log(isBigfileModalShow);
                                     cmd_bigfile();
                                     return;
                                 }
@@ -2509,7 +2509,7 @@ define([
                                 editorToQiniu(fileObj);
                             }
                         }else{ // 上传到数据源
-                            console.log("正在上传到数据源");
+                            // console.log("正在上传到数据源");
                             if (/image\/\w+/.test(fileObj.type)) {
                                 currentDataSource.uploadImage({content: fileReader.result}, function (img_url) {
                                     //console.log(img_url);
@@ -2526,7 +2526,7 @@ define([
                                     currentDataSource.getLastCommitId(callback, callback, false);
                                 }, function(response){
                                     Message.danger(response.data.message);
-                                    console.log(data);
+                                    // console.log(data);
                                 });
                             }
                         }
@@ -2573,9 +2573,9 @@ define([
                     backdrop: true,
                     scope: $scope
                 }, function (wikiBlock) {
-                    console.log(wikiBlock);
+                    // console.log(wikiBlock);
                 }, function (result) {
-                    console.log(result);
+                    // console.log(result);
                 });
             }//}}}
 
@@ -2616,7 +2616,7 @@ define([
                 //console.log("initEditor");
 				//{{{
                 if (editor || (!document.getElementById("source"))) {
-                    console.log("init editor failed");
+                    // console.log("init editor failed");
                     return;
                 }
 
@@ -2811,7 +2811,7 @@ define([
                             {
                                 filter: 'div',
                                 replacement: function (content) {
-                                    console.log(content);
+                                    // console.log(content);
                                     return '\n' + content + '\n';
                                 }
                             }
@@ -2846,7 +2846,7 @@ define([
                 //};
 
 				editor.on("cursorActivity", function(cm){
-					mdwiki.cursorActivity();					
+					mdwiki.cursorActivity();
 				});
 
                 editor.on("change", function (cm, changeObj) {
@@ -2953,7 +2953,7 @@ define([
                 // 下拉框选择比例
                 $scope.changeScale = function (scaleItem) {
                     $scope.enableTransform = false;
-                    console.log(scaleItem);
+                    // console.log(scaleItem);
                     resizeMod(scaleItem.scaleValue,scaleItem);
                 }
 
@@ -3350,7 +3350,7 @@ define([
                         size: 'lg',
                         backdrop: 'static'
                     }, function (wikiBlock) {
-                        console.log(wikiBlock);
+                        // console.log(wikiBlock);
                     }, function (result) {
                         if (result.finished){
                             var key = result.website.username + "_" + result.website.name;
@@ -3502,7 +3502,7 @@ define([
                 });
 
                 $('.toolbar-page-hotkey').on('click', function () {
-                    console.log('toolbar-page-hotkey');
+                    // console.log('toolbar-page-hotkey');
                     $('#hotkeyModal').modal({
                         keyboard: true
                     })
@@ -3577,7 +3577,7 @@ define([
                         resolve(result);
                     }, function (err) {
                         // console.log(err);
-                        reject(err);
+                        // reject(err);
                     }, false);
                 });
 
@@ -3599,7 +3599,7 @@ define([
                             fileUpload(file);
                         }
                     }, function (err) {
-                        console.log(err);
+                        // console.log(err);
                     });
 
                     e.preventDefault();

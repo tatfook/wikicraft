@@ -2,13 +2,15 @@ define([
 	'app',
 	'markdown-it',
     'helper/util',
-	'text!wikimod/adi/html/project.html',
+	'text!wikimod/adi/html/mix_position.html',
 ], function (app, markdown_it, util, htmlContent) {
 
     function registerController(wikiblock) {
-        app.registerController("pictureTextController", ['$scope','$sce', function ($scope, $sce) {
+        app.registerController("mixPositionController", ['$scope','$sce', function ($scope, $sce) {
 
-			$scope.editorMode = wikiblock.editorMode;
+			$scope.editorMode   = wikiblock.editorMode;
+			$scope.stitching    = config.wikiModPath + 'adi/assets/imgs/stitching.png';
+			$scope.projectImage = config.wikiModPath + 'adi/assets/imgs/pictureMod.png';
 
             initObj = {
 				scope  : $scope,
@@ -31,6 +33,18 @@ define([
                             "cover": "/wiki/js/mod/adi/assets/images/projectTwo.png"
 						},
 					},
+					{
+						"design": {
+                            "text":"style4",
+                            "cover": "/wiki/js/mod/adi/assets/images/上文下图.png"
+						},
+					},
+					{
+						"design": {
+                            "text":"style5",
+                            "cover": "/wiki/js/mod/adi/assets/images/上图下文.png"
+						},
+					},
 				],
 				params_template: {
 					design:{
@@ -42,7 +56,7 @@ define([
 						name         : "样式",
 						text         : "style1",
 						require      : true,
-					},
+                    },
 					image_picture:{
                         is_leaf      : true,
 						type         : "media",
@@ -51,7 +65,7 @@ define([
 						is_card_show : true,
                         is_mod_hide  : false,
                         name         : "picture",
-                        text         : config.wikiModPath + 'adi/assets/imgs/pictureMod.png',
+                        text         : "",
                         href         : "",
                     	require      : true,
 					},
@@ -120,23 +134,34 @@ define([
 				}
 			}
 
-			
 			wikiblock.init(initObj);
 
-			var md = new markdown_it({
-				html: true,
-				langPrefix: 'code-'
-			})
+			$scope.setImgBackground  = util.setImgBackground;
+            $scope.subMarkdownRender = util.subMarkdownRender;
 			
-			$scope.$watch('params', function(){
-				$scope.multiText_desc_md = md.render($scope.params.multiText_desc.text);
-			})
+			var imgOne = config.wikiModPath + 'adi/assets/imgs/pictureMod.png';
+			var imgTwo = config.wikiModPath + 'adi/assets/imgs/stitching.png'
 
-			$scope.projectImg = {
-				"background-image"    : 'url('+ $scope.params.image_picture.text +')',
-				"background-size"     : "cover",
-				"background-position" : "center center",
-			}
+            var defaultImgs = [imgOne, imgTwo];
+            
+            $scope.getImagePictureText = function(currentImgText) {
+                var image_picture_text = '';
+                var usingDefault = !currentImgText || defaultImgs.indexOf(currentImgText) >= 0;
+
+                if(/^style[1-3]$/.test($scope.params.design.text)){
+                    currentImgText = usingDefault ? imgOne : $scope.params.image_picture.text;
+                }
+
+				if(/^style[4-5]$/.test($scope.params.design.text)){
+                    currentImgText = usingDefault ? imgTwo : $scope.params.image_picture.text;
+                }
+
+                if ($scope.params.image_picture.text != currentImgText) {
+                    $scope.params.image_picture.text = currentImgText;
+                }
+
+                return currentImgText;
+            }
         }]);
     }
 

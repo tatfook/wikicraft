@@ -1,23 +1,24 @@
 <style>
-    .textContainerLeft{
+    .text-mod .style1 .textContainerLeft{
         text-align: left;
         width: 100%;
     }
-    .textContainerCenter{
+    .text-mod .style1 .textContainerCenter{
         text-align: center;
         width: 100%;
     }
-    .textTitle{
+    .text-mod .style1 .textTitle{
         margin-top: 40px;
+        height: 52px;
     }
-    .textTitle > a {
+    .text-mod .style1 .textTitle > a {
         font-weight: bold;
         font-size: 32px;
         width: 100%;
         color: #0f2639;
         font-family: 'Microsoft YaHei','Hiragino Sans GB',Helvetica,Arial,'Lucida Grande',sans-serif;
     }
-    .textContent {
+    .text-mod .style1 .textContent {
         font-size: 16px;
         line-height: 30px;
         text-indent: 28px;
@@ -26,44 +27,45 @@
         color: #0f2639 !important;
         font-family: 'Microsoft YaHei','Hiragino Sans GB',Helvetica,Arial,'Lucida Grande',sans-serif;
     }
-    .textContent :hover {
+    .text-mod .style1 .textContent :hover {
         color: #0f2639;
     }
-    .clear-pointer a{
+    .text-clear-pointer a{
         cursor: default !important;
     }
-    .text-no-href a{
+    .text-mod .style1 .text-no-href a{
         cursor: default;
     }
-    .multi-text-no-href > p {
+    .text-mod .style1 .multi-text-no-href > p {
         cursor: default;
     }
 </style>
 
-<div ng-controller="textController">
-    <div class="container">
-        <div class="textContainerLeft" ng-if="params.design.text == 'left'" ng-class="{true:'clear-pointer'}[editorMode]">
+<div ng-controller="textController" class="text-mod">
+    <div class="container style1">
+        <div class="textContainerLeft" ng-if="params.design.text == 'left'" ng-class="{true:'text-clear-pointer'}[editorMode]">
             <h1 ng-if="editorMode"
-                ng-hide="params.title.is_mod_hide" 
                 class='textTitle' 
                 ng-click="viewEditorClick(params.title, $event)">
-                <a target="{{params.title.target}}" 
-                    ng-href="{{params.title.href}}">
+                <a ng-hide="params.title.is_mod_hide" 
+                   target="{{params.title.target}}" 
+                   ng-href="{{params.title.href}}">
                     {{params.title.text}}
                 </a>
             </h1>
             <h1 ng-if="!editorMode" 
                 class='textTitle'
                 ng-class="{true: 'text-no-href'}[!params.title.href.length]">
-                <a target="{{params.title.target}}" 
-                    ng-href="{{params.title.href}}">
+                <a ng-hide="params.title.is_mod_hide" 
+                   target="{{params.title.target}}" 
+                   ng-href="{{params.title.href}}">
                     {{params.title.text}}
                 </a>
             </h1>
             <a class='textContent' 
                 ng-if="editorMode"
                 ng-hide="params.multiText_desc.is_mod_hide" 
-                ng-bind-html="multiText_desc_md"
+                ng-bind-html="subMarkdownRender(params.multiText_desc.text)"
                 ng-click="viewEditorClick(params.multiText_desc, $event)"
                 target="{{params.multiText_desc.target}}"
                 ng-href="{{params.multiText_desc.href}}">
@@ -72,35 +74,36 @@
                 ng-if="!editorMode"
                 ng-hide="params.multiText_desc.is_mod_hide" 
                 ng-class="{true:'multi-text-no-href'}[!params.multiText_desc.href.length]"
-                ng-bind-html="multiText_desc_md"
+                ng-bind-html="subMarkdownRender(params.multiText_desc.text)"
                 target="{{params.multiText_desc.target}}"
                 ng-href="{{params.multiText_desc.href}}">
             </a>
         </div>
         <div class="textContainerCenter" 
             ng-if="params.design.text == 'center'" 
-            ng-class="{true:'clear-pointer'}[editorMode]">
+            ng-class="{true:'text-clear-pointer'}[editorMode]">
             <h1 ng-if="editorMode" 
-                ng-hide="params.title.is_mod_hide" 
                 class='textTitle' 
                 ng-click="viewEditorClick(params.title, $event)">
-                <a target="{{params.title.target}}" 
-                    ng-href="{{params.title.href}}">
+                <a ng-hide="params.title.is_mod_hide" 
+                   target="{{params.title.target}}" 
+                   ng-href="{{params.title.href}}">
                     {{params.title.text}}
                 </a>
             </h1>
             <h1 ng-if="!editorMode" 
                 class='textTitle'>
-                <a target="{{params.title.target}}" 
-                    ng-class="{true: 'text-no-href'}[!params.title.href.length]"
-                    ng-href="{{params.title.href}}">
+                <a ng-hide="params.title.is_mod_hide" 
+                   target="{{params.title.target}}" 
+                   ng-class="{true: 'text-no-href'}[!params.title.href.length]"
+                   ng-href="{{params.title.href}}">
                     {{params.title.text}}
                 </a>
             </h1>
             <a class='textContent' 
                 ng-if="editorMode"
                 ng-hide="params.multiText_desc.is_mod_hide" 
-                ng-bind-html="multiText_desc_md"
+                ng-bind-html="subMarkdownRender(params.multiText_desc.text)"
                 ng-click="viewEditorClick(params.multiText_desc, $event)"
                 target="{{params.multiText_desc.target}}"
                 ng-href="{{params.multiText_desc.href}}">
@@ -108,7 +111,7 @@
             <a class='textContent' 
                 ng-if="!editorMode"
                 ng-hide="params.multiText_desc.is_mod_hide" 
-                ng-bind-html="multiText_desc_md"
+                ng-bind-html="subMarkdownRender(params.multiText_desc.text)"
                 target="{{params.multiText_desc.target}}"
                 ng-href="{{params.multiText_desc.href}}">
             </a>

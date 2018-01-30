@@ -1,0 +1,58 @@
+<style>
+    *{
+        margin: 0;
+        padding: 0;
+    }
+    .include-mod{
+        background-color: #dedede;
+        color: #333;
+        height: 110px;
+        line-height: 110px;
+        text-align: center;
+        font-size: 16px;
+        width:100%;
+        cursor: pointer;
+    }
+    .intake{
+        width:100%;
+    }
+    /* .viewIntake{
+        height:560px; 
+    }  */
+    .title-info{
+        text-indent: 38px;
+        line-height: 38px;
+        color:#a7a7a7;
+        height:38px;
+        width:100%;
+        font-size: 12px;
+        font-family:  "微软雅黑 Light";
+        background-color: #f5f5f5;
+        border-bottom: 3px dashed #ddd;
+        overflow: hidden;
+    }
+    .title-info span:last-child{
+        text-indent: 20px;
+    }  
+</style>
+<div ng-controller="includeController" ng-class="{true:'title-clear-pointer'}[editorMode]" class="style1">
+    <div>
+        <div class="include-mod" ng-if="params.url_img.href.length == 0" ng-hide="!editorMode || params.url_img.is_mod_hide">
+            配置引用文件
+        </div>
+        <div class="include" ng-if="params.url_img.href.length > 4" ng-hide="params.url_img.is_mod_hide">
+            <div class="title-info" ng-if="editorMode">
+                <span>引用</span>
+                <span>{{params.url_img.href}}</span>
+            </div>
+            <iframe ng-if="editorMode" class="intake" id="{{currentIframe}}"
+                    ng-src="{{pageUrl}}" scrolling="yes" 
+                    frameborder="0">
+            </iframe>
+            <iframe ng-if="!editorMode" class="intake" id="{{currentIframe}}"
+                    ng-src="{{pageUrl}}" scrolling="yes" 
+                    frameborder="0">
+            </iframe>
+        </div>
+    </div>
+</div>

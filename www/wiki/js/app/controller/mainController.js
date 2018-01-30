@@ -210,7 +210,7 @@ define([
                 
                 $rootScope.getBodyStyle = function () {
                     return {
-                        "padding-top": $rootScope.frameHeaderExist ? "52px" : "0px",
+                        "padding-top": ($rootScope.frameHeaderExist && !$rootScope.isHeaderScroll) ? "52px" : "0px",
                     };
                 }
 
@@ -276,6 +276,7 @@ define([
                 $rootScope.pageinfo = undefined;
                 $rootScope.tplinfo = undefined;
                 if (urlObj.username && urlObj.sitename) {
+                    $rootScope.isHeaderScroll = true;
                     util.http("POST", config.apiUrlPrefix + "website/getDetailInfo", {
                         username: urlObj.username,
                         sitename: urlObj.sitename,
@@ -354,7 +355,7 @@ define([
 							callback();
 						}
                     },function (err) {
-                        console.log(err);
+                        // console.log(err);
                         var errContent = notfoundHtmlContent;
                         util.html('#__UserSitePageContent__', errContent, $scope);
                     });
@@ -371,7 +372,7 @@ define([
 
                 var urlObj = $rootScope.urlObj;
                 // 置空用户页面内容
-                console.log(urlObj);
+                // console.log(urlObj);
                 setWindowTitle(urlObj);
 				
 				if (!util.isEditorPage()) {

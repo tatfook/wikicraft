@@ -17,7 +17,7 @@ define([
 
         $scope.newPage = function () {
             storage.sessionStorageSetItem("urlObj", util.parseUrl());
-            console.log(storage.sessionStorageGetItem("urlObj"));
+            // console.log(storage.sessionStorageGetItem("urlObj"));
             util.go("wikieditor");
         };
 
@@ -40,10 +40,10 @@ define([
                         username: username,
                         sitename: sitename
                     }, function(data){
-                        console.log(data);
+                        // console.log(data);
                         $scope.showNewPageBtn = true;
                     }, function (err) {
-                        console.log(err);
+                        // console.log(err);
                     });
                 }
             }

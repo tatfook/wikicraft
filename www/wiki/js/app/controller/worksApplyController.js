@@ -9,7 +9,7 @@ define(['app','helper/util', 'helper/storage', 'text!html/worksApply.html'], fun
         $scope.submitDisabled = "";
 
         $scope.worksSelectChange = function () {
-            console.log($scope.worksSelected);
+            // console.log($scope.worksSelected);
             $scope.worksSelected.length ? $("#submitId").removeAttr("disabled") : $("#submitId").attr({"disabled":"disabled"});
         };
 
@@ -27,7 +27,7 @@ define(['app','helper/util', 'helper/storage', 'text!html/worksApply.html'], fun
                 websiteId:websiteId,
             }
             util.http("POST", config.apiUrlPrefix + 'website_apply/worksBatchApply', params, function (data) {
-                console.log("投稿成功");
+                // console.log("投稿成功");
                 Message.info("投稿成功");
                 history.back();
             });

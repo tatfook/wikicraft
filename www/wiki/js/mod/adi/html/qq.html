@@ -1,0 +1,166 @@
+<style>
+    .qq .clear-pointer, .clear-pointer a{
+        cursor : default !important;
+    }
+    .qq .change {
+        position: fixed;
+        z-index: 100;
+    }
+    /* style1 css */
+    .qq .style1 {
+        height: 120px;
+        width: 100%;
+    }
+    .qq .style1 .qq-mod {
+        z-index: 1000;
+        position: fixed;
+        right: 10px;
+        top: 15%;
+        padding-top: 10px;
+        height: 100px;
+    }
+    .qq .style1 .qq-mod .qq-mod-img {
+        width: 70px;
+        height: 70px;
+        text-align: center;
+    }
+    .qq .style1 .qq-mod .qq-mod-img a img{
+        width: 70px;
+        height: 70px;
+        border-radius: 50%;
+    }
+    .qq .style1 .qq-mod .qq-mod-head {
+        text-align: center;
+        height: 20px;
+        width: 70px;
+     }
+     .qq .style1 .qq-mod .qq-mod-head p {
+        margin-top: 6px;
+        margin-bottom: 0;
+        overflow: hidden;
+    	text-overflow: ellipsis;
+    	white-space: nowrap;
+    }
+    .qq .style1 .qq-mod .qq-mod-head a {
+        text-decoration: none;
+        font-size: 14px;
+        color: #3977ad;
+    } 
+    .qq .style1 .qq-mod .qq-mod-head a:hover {
+        color: #000;
+    }
+
+    /* style2 css */
+    .qq .style2 {
+        height: 90px;
+        width: 100%;
+    }
+    .qq .style2 .qq-mod {
+        z-index: 1000;
+        position: fixed;
+        top: 15%;
+        right: 10px;
+        padding-top: 10px;
+        width: 150px;
+        height: 80px;
+    }
+    .qq .style2 .qq-mod .qq-mod-head {
+        float: right;
+        height: 20px;
+        margin-left: 8px;
+        margin-top: 36px;   
+        text-align: center;
+    }
+    .qq .style2 .qq-mod .qq-mod-head a {
+        padding: 3px 10px;
+        border: 1px solid #3977AD;
+        border-radius: 10px;
+        font-size: 14px;
+        text-decoration: none;
+        color: #3977ad;
+    }
+    .qq .style2 .qq-mod .qq-mod-head a :hover {
+        color: #000;
+    }
+    .qq .style2 .qq-mod .qq-mod-img {
+        float: right;
+        margin-top: 10px;
+        width: 50px;
+        height: 50px;
+        text-align: center;
+    }
+    .qq .style2 .qq-mod .qq-mod-img a img{
+        width: 50px;
+        height: 50px;
+    }
+</style>
+
+<div ng-controller="qqController" ng-class="{true:'clear-pointer'}[editorMode]" class="qq">
+
+    <!-- style1 html -->
+    <div ng-if='params.design.text=="style1"' class="style1" ng-class="{true:'change'}[!editorMode]">
+        <div class="qq-mod" ng-style="topStyle">
+            <div class="qq-mod-img" ng-hide="params.media_img.is_mod_hide">
+                <a  ng-if="editorMode"
+                    href="javascript:void(0)"
+                    ng-click="viewEditorClick(params.media_img,$event)">
+                    <img ng-src="{{getImagePictureText(params.media_img.text)}}">
+                </a>
+                <a  ng-class="{true:'clear-pointer'}[!params.input_qq.text.length]"
+                    ng-if="!editorMode"
+                    target="{{params.media_img.target ? params.media_img.target : '_blank'}}"
+                    ng-href="{{getQQUrl()}}">
+                    <img ng-src="{{getImagePictureText(params.media_img.text)}}">
+                </a>
+            </div>
+            <div class="qq-mod-head" ng-hide="params.link_title.is_mod_hide">
+                <p>
+                    <a  ng-if="editorMode"
+                        href="javascript:void(0)"
+                        ng-click="viewEditorClick(params.link_title,$event)">
+                        {{params.link_title.text}}
+                    </a>
+                    <a  ng-class="{true:'clear-pointer'}[!params.link_title.href.length]"
+                        ng-if="!editorMode"
+                        target="{{params.link_title.target ? params.link_title.target : '_blank'}}"
+                        ng-href="{{params.link_title.href}}">
+                        {{params.link_title.text}}
+                    </a>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- style2 html -->
+    <div ng-if='params.design.text=="style2"' class="style2" ng-class="{true:'change'}[!editorMode]">
+        <div class="qq-mod" ng-style="topStyle">
+            <div class="qq-mod-head" ng-hide="params.link_title.is_mod_hide"> 
+                <a  ng-if="editorMode"
+                    href="javascript:void(0)"
+                    ng-click="viewEditorClick(params.link_title,$event)">
+                    {{params.link_title.text}}
+                </a>
+                <a  ng-class="{true:'clear-pointer'}[!params.link_title.href.length]"
+                    ng-if="!editorMode"
+                    target="{{params.link_title.target ? params.link_title.target : '_blank'}}"
+                    ng-href="{{params.link_title.href}}">
+                    {{params.link_title.text}}
+                </a>
+            </div>  
+            <div class="qq-mod-img" ng-hide="params.media_img.is_mod_hide">
+                <a  ng-if="editorMode"
+                    href="javascript:void(0)"
+                    ng-click="viewEditorClick(params.media_img,$event)">
+                    <img ng-src="{{getImagePictureText(params.media_img.text)}}">
+                </a>
+                <a  ng-class="{true:'clear-pointer'}[!params.input_qq.text.length]"
+                    ng-if="!editorMode"
+                    target="{{params.media_img.target ? params.media_img.target : '_blank'}}"
+                    ng-href="{{getQQUrl()}}">
+                    <img ng-src="{{getImagePictureText(params.media_img.text)}}">
+                </a>
+            </div>
+        </div>
+    </div>
+
+</div>

@@ -129,7 +129,7 @@ define([
             var userDataSource = dataSource.getUserDataSource($scope.urlObj.username)
             var currentDataSource = userDataSource && userDataSource.getDataSourceBySitename($rootScope.siteinfo.name);
             if (!currentDataSource) {
-                console.log(userDataSource,$rootScope.siteinfo._id );
+                // console.log(userDataSource,$rootScope.siteinfo._id );
                 return;
             }
             
@@ -217,7 +217,7 @@ define([
         // 页面编辑页面
         $scope.goWikiEditorPage = function () {
             storage.sessionStorageSetItem("urlObj", util.parseUrl());
-            console.log(storage.sessionStorageGetItem("urlObj"));
+            // console.log(storage.sessionStorageGetItem("urlObj"));
             util.go("wikieditor");
         }
 
@@ -234,10 +234,10 @@ define([
                     size: 'lg',
                     backdrop: true
                 }, function (result) {
-                    console.log(result);
+                    // console.log(result);
                     // nowPage.replaceSelection(login.content);
                 }, function (result) {
-                    console.log(result);
+                    // console.log(result);
                 });
             } else {
                 util.go("home");
@@ -284,7 +284,7 @@ define([
 		};
 
         $scope.goUserCenterPage = function (contentType, subContentType) {
-            console.log(contentType, subContentType);
+            // console.log(contentType, subContentType);
             if (util.snakeToHump(window.location.pathname) == '/wiki/userCenter') {
                 $rootScope.$broadcast('userCenterContentType', contentType);
                 subContentType && $rootScope.$broadcast('userCenterSubContentType', subContentType);
@@ -298,7 +298,7 @@ define([
 		$scope.logout = function () {
 			Account.logout();
 			$rootScope.isLogin = false;
-			console.log(window.location.pathname);
+			// console.log(window.location.pathname);
 			if (/^\/wiki/.test(window.location.pathname)){
 				util.go('home');
 			}

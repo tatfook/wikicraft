@@ -144,7 +144,7 @@ define([
                     for (var i = 0; i < result.files.length; i++) {
                         (function (sha, filename) {
                             currentDataSource.rollbackFile(sha, filename, 'rollback file:' + filename, function () {
-                                console.log("rollback success");
+                                // console.log("rollback success");
                                 currentDataSource.getFile({path: filename}, function (data) {
                                     util.http('POST', config.apiUrlPrefix + 'website_pages/updateContentAndShaByUrl', {
                                         url: filename,
@@ -153,7 +153,7 @@ define([
                                     });
                                 });
                             }, function () {
-                                console.log("rollback failed");
+                                // console.log("rollback failed");
                             });
                         })(commit.sha, result.files[i].filename)
                     }

@@ -36,7 +36,7 @@ define([
             article = data.data || {};
             $scope.articleTitle = article.articleTitle || data.text;
             if (article.articleUrl) {
-                console.log(article);
+                // console.log(article);
                 $http.get(article.articleUrl).then(function (response) {
                     //console.log(response.data);
                     util.html("#articleContent", md.render(response.data), $scope);
@@ -45,7 +45,7 @@ define([
         }
 
         function init() {
-            console.log("test init");
+            // console.log("test init");
 
             $rootScope.frameHeaderExist = false;
             $rootScope.frameFooterExist = false;
@@ -56,7 +56,7 @@ define([
                 levels: 3,
                 showBorder:false,
                 onNodeSelected: function (event, data) {
-                    console.log("onNodeSelected");
+                    // console.log("onNodeSelected");
                     //console.log(data);
                     storage.sessionStorageSetItem('articleObj', data)
                     setArticle(data);

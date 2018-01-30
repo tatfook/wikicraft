@@ -5,7 +5,8 @@ define([
     'helper/markdownwiki',
     'text!html/moduleEditor.html',
     'swiper',
-], function(app, util, markdownwiki, htmlContent, swiper){
+    'helper/knowledgeAgent'
+], function(app, util, markdownwiki, htmlContent, swiper, agent){
 	var objectEditor = {
 		data: {},
 		fields:[],
@@ -14,13 +15,13 @@ define([
 	// 添加输入字段 {id:"html id". key:"key1.key2", type:"text!link|media", value:"字段值", isHide:false}
 	objectEditor.addInputField = function(field){
 		if (!field.id || !field.type) {
-			console.log("object editor addInputField params error!");
+			// console.log("object editor addInputField params error!");
 			return;
 		}
-		
+
 		field.key = field.key || field.id;
 		field.displayName = field.displayName || field.key;
-		self.fields.push(field);	
+		self.fields.push(field);
 	}
 
 	app.registerController("moduleEditorController", ['$scope', '$rootScope', '$uibModal', function($scope, $rootScope, $uibModal){
@@ -30,8 +31,11 @@ define([
         var designViewWidth = 350, win;
         var lineClassesMap = [];
         var fakeIconDom = [];
+        var moduleScope;
         $scope.filelist = [];
         $scope.linkFilter = "";
+        $scope.hasStyle = false;
+        $scope.agentEnable = false;
 
         var getFileList = function(){
             var username = $scope.user.username;
@@ -48,7 +52,7 @@ define([
 				});
 			}
         }
-			
+
 		// 转换数据格式
 		function get_order_list(obj){
 			//console.log(obj);
@@ -111,31 +115,32 @@ define([
 				$scope.editorDatas = item;
 			}
         }
-        
+
         // 点击菜单
         $scope.openMenuEditor = function(data) {
-            console.log(data);
+            // console.log(data);
             config.services.datatreeEditorModal({
-                title: '菜单编辑器', 
+                title: '菜单编辑器',
                 keys: [
                     {key:'url', name: '链接', placeholder:"请输入链接"},
                 ],
-                showLocation: true, 
+                showLocation: true,
                 datatree: data.text
             }, function(result){
                 data.text = result;
                 //applyAttrChange();
 				throttle(applyAttrChange);
-                console.log(result);
+                // console.log(result);
             }, function(err){
-                console.log(err);
+                // console.log(err);
             });
         }
 
-        // 打开绘图板
-        $scope.openBoard = function(data){
-            // 画板
-            config.services.selfDefinedModal(data.options, data.success, data.error);
+        // 打开自定义Modal
+        $scope.openModal = function(data){
+            if(moduleScope.options && moduleScope.success && moduleScope.error){
+                config.services.selfDefinedModal(moduleScope.options, moduleScope.success, moduleScope.error);
+            }
         }
 
         // 多行文本弹窗
@@ -148,7 +153,7 @@ define([
                 size: "multi-text",
                 scope: $scope
             }).result.then(function(result){
-                console.log(result);
+                // console.log(result);
                 //applyAttrChange();
                 data[key] = result;
                 throttle(applyAttrChange);
@@ -158,7 +163,7 @@ define([
 
         // 图库弹窗
         $scope.showImageModal = function(data){
-            console.log(data);
+            // console.log(data);
             config.services.assetsManagerModal({
                 title: '选择图片',
                 nav: 'myImages' ,//or 'internetImage' or 'beautifyImage'
@@ -169,7 +174,7 @@ define([
                 }
             }, function(url) {
                 //handle url
-                console.log(data);
+                // console.log(data);
                 data.text = url;
                 //applyAttrChange();
 				throttle(applyAttrChange);
@@ -202,8 +207,8 @@ define([
 					throttle(applyAttrChange);
                 }
             }, function (text, error) {
-                console.log('text:' + text);
-                console.log('error:' + error);
+                // console.log('text:' + text);
+                // console.log('error:' + error);
                 return;
             });
         }
@@ -235,8 +240,8 @@ define([
                 list = angular.copy($select.items),
                 FLAG = -1;
             //remove last user input
-            list = list.filter(function(item) { 
-                return item.id !== FLAG; 
+            list = list.filter(function(item) {
+                return item.id !== FLAG;
             });
             if (!search) {
                 $select.items = list;
@@ -244,7 +249,7 @@ define([
             else {
                 //manually add user input and set selection
                 var userInputItem = {
-                    id: FLAG, 
+                    id: FLAG,
                     url: search
                 };
                 $select.items = [userInputItem].concat(list);
@@ -292,6 +297,10 @@ define([
             throttle(applyAttrChange);
         }
 
+        $scope.enablePack = function(pack){
+            $scope.memoryContext = {}
+        }
+
 		$scope.close = function() {
 			var moduleEditorParams = config.shareMap.moduleEditorParams || {};
 			$scope.editorDatas = $scope.datas_stack.pop();
@@ -337,7 +346,7 @@ define([
                 //config.shareMap.moduleEditorParams = undefined;
             }
         }
-        
+
         $scope.applyAttrChange = function (text) {
             throttle(applyAttrChange);
 			util.$apply();
@@ -346,7 +355,7 @@ define([
 		$scope.click_apply_design = function(index) {
 			var moduleEditorParams = config.shareMap.moduleEditorParams || {};
 			var modParams = $scope.styles[index];
-            console.log(modParams);
+            // console.log(modParams);
             moduleEditorParams.wikiBlock.modParams.design.text = modParams.design.text;
             $scope.selectedDesign = modParams.design.text;
 			if (moduleEditorParams.wikiBlock) {
@@ -382,7 +391,7 @@ define([
                     "ch": editor.getLine(to).length
                 });
             }, function(cancel){
-                console.log("cancel delete");
+                // console.log("cancel delete");
             });
         }
 
@@ -398,7 +407,7 @@ define([
             lineClassesMap = [];
             // $(".mod-container.active").removeClass("active");
         }
-        
+
         var setCodePosition = function(from, to){
             removeAllLineClass();
             var editor = editor || $rootScope.editor || {};
@@ -429,12 +438,12 @@ define([
             }
 
             $(".ui-select-dropdown.dropdown-menu").on("mousewheel", function(event){
-                console.log(event);
+                // console.log(event);
                 event.stopPropagation();
             });
 
             swiper[type].destroy && swiper[type].destroy(true, true);
-            
+
             swiper[type] = new Swiper("#"+swiperContainerId,{
                 nextButton: '#' + swiperContainerId + ' .swiper-button-next',
                 prevButton: '#' + swiperContainerId + ' .swiper-button-prev',
@@ -443,8 +452,11 @@ define([
                 calculateHeight:true,
                 scrollbarHide: false,
                 slidesPerView: 'auto',
+                loop: false,
+                speed: 0,
+                grabCursor: true,
                 mousewheelControl: true,
-                resistanceRatio: 0,         // 不可脱离边缘
+                resistance: false,         // 不可脱离边缘
                 noSwiping: true,            // 在slide上增加类名 "swiper-no-swiping"，该slide无法拖动
             });
         }
@@ -466,26 +478,43 @@ define([
             fakeIconDom = [];
         }
 
+        function initAgent(){
+            agent.init("agent", "/agent")
+            agent.botUI("knowlege-agent")
+        }
+
 		function init() {
             editor = editor || $rootScope.editor || {};
 			var moduleEditorParams = config.shareMap.moduleEditorParams || {};
 			config.shareMap.moduleEditorParams = moduleEditorParams;
 			//moduleEditorParams.$scope = $scope;
-			
+
 			moduleEditorParams.updateEditorObj = function(obj) {
                 $scope.editorDatas = get_order_list(obj);
                 util.$apply();
             }
-            
+
             var isFunction = function (functionToCheck) {
                 var getType = {};
                 return functionToCheck && getType.toString.call(functionToCheck) === '[object Function]';
             }
 
 			moduleEditorParams.setEditorObj = function(obj) {
+                if(config.shareMap.moduleEditorParams.wikiBlock.styles.length > 0){
+                    $scope.hasStyle = true;
+                }else{
+                    $scope.hasStyle = false;
+                }
+
+                moduleScope = config.shareMap.moduleEditorParams.wikiBlock.scope;
+
+                moduleScope.applyAttrChange = function(){
+                    throttle(applyAttrChange);
+                }
+
                 // setFakeIconPosition();
                 moduleEditorParams = config.shareMap.moduleEditorParams || {};
-                
+
                 var blockLineNumFrom = moduleEditorParams.wikiBlock.blockCache.block.textPosition.from;
                 var blockLineNumTo = moduleEditorParams.wikiBlock.blockCache.block.textPosition.to;
                 setCodePosition(blockLineNumFrom, blockLineNumTo);
@@ -500,7 +529,7 @@ define([
                 $scope.editorDatas = get_order_list(obj);
                 util.$apply();
                 initSwiper("editor");
-                
+
                 var selectObj = moduleEditorParams.selectObj;
 				if (selectObj) {
                     if (!isFunction(swiper["editor"].slideTo)) {
@@ -523,7 +552,7 @@ define([
                     $("#designSwiper div.design-view").css({
                         "transform": "scale(" + scaleSize + ")",
                         "transform-origin": "left top"
-                    });    
+                    });
                 });
 
             }
@@ -557,11 +586,15 @@ define([
             moduleEditorParams.setKnowledge = function(lineContent){
                 removeAllLineClass();
                 moduleEditorParams = config.shareMap.moduleEditorParams || {};
-                moduleEditorParams.show_type = "knowledge"; 
+                moduleEditorParams.show_type = "knowledge";
                 $scope.show_type = "knowledge";
                 $scope.lineContent = lineContent;
+                if(!$scope.agentEnable){
+                    $scope.agentEnable = true;
+                    initAgent();
+                }
             }
-            
+
 			// $scope.show_type = "editor";
             $scope.datas_stack = [];
             getFileList();
@@ -572,7 +605,7 @@ define([
 
     app.registerController("multiTextController", ["$scope", "$uibModalInstance", function($scope, $uibModalInstance){
         $scope.multiText = $scope.editingData;
-        console.log("multiTextController");
+        // console.log("multiTextController");
         $scope.cancel = function () {
             $uibModalInstance.dismiss('cancel');
         }

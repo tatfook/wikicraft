@@ -62,7 +62,7 @@ define([
                     return function(cb, errcb){
                         require([page.contentUrl], function(content){
                             userDataSource.writeFile({
-                                path: page.pagepath, 
+                                path: page.pagepath,
                                 content: content
                             }, function(){
                                 cb && cb();
@@ -88,7 +88,7 @@ define([
                 var md = markdownwiki({breaks: true, isMainMd:true});
                 var content = data.content || "";
                 var mdContent = splitMainContent(content);
-                
+
                 var mdSub = markdownwiki({breaks: true});
                 topBlockList = mdSub.parse(mdContent.topContent);
                 subBlockList = mdSub.parse(mdContent.subContent);
@@ -163,7 +163,7 @@ define([
                 // $scope.trendsCount = data.trendsObj.total;
                 // $scope.active = data.activeObj;
                 // contributionCalendar("contributeCalendar",$scope.active);
-                
+
                 // isSelf: 自己
                 $rootScope.isSelf = ($scope.user && $scope.userinfo && ($scope.user._id == $scope.userinfo._id));
                 // isOthers: 他人(不包括自己和未登录)
@@ -187,7 +187,7 @@ define([
             });
             var profileDataPath = '/'+ userDataSource.keepwrokUsername +'_datas/' + ProfileDataFileName;
             userDataSource.writeFile({
-                path: profileDataPath, 
+                path: profileDataPath,
                 content: content
             }, function(){
                 Message.info("修改成功");

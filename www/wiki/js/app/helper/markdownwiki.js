@@ -10,7 +10,6 @@ define([
     'highlight',
 ], function (util, dataSource, mdconf, markdownit, hljs) {
 	var shortCmdMap = {
-		"@include":"@wiki/js/include",
 		"@mod":"@wiki/js/mod",
 		"@toc":"@wiki/js/toc",
     }
@@ -79,11 +78,11 @@ define([
 					module.renderAfter(wikiBlockObj);
 				}
 			} else {
-                console.log("wiki module define format error!!!");
+                // console.log("wiki module define format error!!!");
             }
         }, function (err) {
-            console.log(err);
-            console.log(wikiBlockObj.cmdName + " wiki module not exist!!!");
+            // console.log(err);
+            // console.log(wikiBlockObj.cmdName + " wiki module not exist!!!");
         });
     };
 
@@ -408,7 +407,8 @@ define([
 					}
 				}
 				return data;
-			},
+            },
+
 			init: function(obj) {
 				var getSelf = function(obj){
 					//console.log(obj);
@@ -557,7 +557,7 @@ define([
 							moduleEditorParams.wikiBlock = self;
 							moduleEditorParams.updateEditorObj(self.format_params_template);
 						}
-                        console.log("更新wikiblock", moduleEditorParams);
+                        // console.log("更新wikiblock", moduleEditorParams);
 					}
                 }
                 
@@ -567,7 +567,6 @@ define([
 				if (!self.blockCache.block.isTemplate) {
                     var modContainer = $(containerId);
 					var $rootScope = config.services.$rootScope;
-                    // console.log(modContainer);
                     modContainer.on("click", function (e) {
 						if (self.blockCache.block.isTemplate && !self.blockCache.block.isPageTemplate) {
 							//config.services.$rootScope.viewEditorClick(""+self.containerId+"");
@@ -579,30 +578,9 @@ define([
                         $(".mod-container.active").removeClass("active");
                         modContainer.addClass("active");
                         config.services.$rootScope.viewEditorClick(""+self.containerId+"");
-                        util.$apply();	
+                        util.$apply();
                     });
-					// $(containerId).on("mouseenter mouseleave", function(e) {
-					// 	if (e.handleObj.origType == "mouseenter") {
-					// 		var html_str = '<div style="position:relative"><div style="z-index:10; position:absolute; left:0px; right:0px;"><button class="btn" ng-click="viewEditorClick(\'' + self.containerId+ '\')">编辑</button><button class="btn" ng-click="viewDesignClick(\''+self.containerId+'\')">样式</button></div></div>';
-					// 		html_str = util.compile(html_str);
-					// 		$(containerId).prepend(html_str);
-					// 		util.$apply();	
-					// 	} else {
-					// 		$(containerId).children()[0].remove();
-					// 	}
-					// });
 				}
-
-				//if (moduleEditorParams.is_show && moduleEditorParams.wikiBlock && editor) {
-					//var cursor_pos = editor.getCursor();
-					//var cursor_line_no = cursor_pos ? cursor_pos.line : -1;
-					//var pos = blockCache.block.textPosition;
-					//if (cursor_line_no > pos.from && cursor_line_no < pos.to) {
-						////scope.viewEditorClick();
-						//moduleEditorParams.wikiBlock = self;
-						//console.log("更新wikiblock");
-					//}
-				//}
 			},
         };
 		blockCache.wikiBlockParams = wikiBlockParams;
@@ -614,6 +592,9 @@ define([
 
     // 设置模板内容
     function setMdWikiContent(mdwiki) {
+
+        // >>>>>>>>>>>>>>>>>>>>>>>> Render >>>>>>>>>>>>>>>>>>>>>>>>
+
         var blockList = mdwiki.blockList;
         var container = '#' + mdwiki.getMdWikiContainerId();
         var selector = '#' + mdwiki.getMdWikiContentContainerId();
@@ -627,6 +608,8 @@ define([
         var start = 0;
         for (var i = 0; i < blockList.length; i++) {
             var block = blockList[i];
+
+            //block.isTemplate means modName looks like @template
             if (block.isTemplate) {
                 if (block.isPageTemplate) {
 					for (var j = start; j < block.textPosition.from; j++) {
@@ -638,24 +621,45 @@ define([
                 continue;
             }
 
+            // What's this for? add some br???
             for (var j = start; j < block.textPosition.from; j++) {
                 $(selector).append('<br/>');
             }
             start = block.textPosition.to + 1;
 
+
+            // >>>>>>>>>>>>>>>>>>>>>>>> Render Mods >>>>>>>>>>>>>>>>>>>>>>>> 
+            // >>>>>>>>>>>>>>>>>>>>>>>> This is real important >>>>>>>>>>>>>
             var blockCache = block.blockCache;
-            //console.log(blockCache);
+            
+            // cached block will go here
             if (blockCache.domNode) {
-				blockCache.block.textPosition = block.textPosition;
+                // most mods render will come here
+                blockCache.block.textPosition = block.textPosition;
                 $(selector).append(blockCache.domNode);
+
+                if (blockCache.isWikiBlock && blockCache.newWikiBlock) {
+                    $.extend(true, blockCache.wikiBlock, blockCache.newWikiBlock);
+                    //notice $scope in wikiBlock
+
+                    try {
+                        blockCache.adiObj && blockCache.adiObj.scope && blockCache.adiObj.scope.onParamsChange && blockCache.adiObj.scope.onParamsChange();
+                    } catch(e) {}
+
+                    // console.log(blockCache);
+                    delete blockCache.newWikiBlock;
+                }
+
                 continue;
             }
 
+            // most original markdown render results will come here
             $(selector).append(blockCache.htmlContent);
             blockCache.domNode = $('#' + blockCache.containerId);
 
-            //console.log("render block:", blockCache);
+            // the first block rendered block will go here, 
             if (blockCache.isWikiBlock) {
+                // console.log('blockCache without cachedDom', blockCache);
                 //console.log("load and render block");
                 renderWikiBlock(mdwiki, block);
             } else {
@@ -687,30 +691,59 @@ define([
     }
 
     // mdwiki render
+    // the critical part of the render
+    /**
+     * 
+     * @param {* It's for getting the unique mdwiki object} mdwikiName 
+     * @param {* It's the current content of the editor} text 
+     */
     window.mdwikiRender = function (mdwikiName, text) {
         // 备份节点信息
         text = decodeURI(text);
         var mdwiki = getMdwiki(mdwikiName);
+
+        // this is the selector for temp
         var tempSelector = '#' + mdwiki.getMdWikiTempContentContainerId();
+
+        // this is the selector for the contentContainer
         var selector = '#' + mdwiki.getMdWikiContentContainerId();
+
+        // emtpy the temp first
         $(tempSelector).empty();
+
+        // save all the content in temp div
         $(tempSelector).append($(selector).children());
 
+        // the siteinfo
         var siteinfo = util.getAngularServices().$rootScope.siteinfo;
+
+        // the pageinfo
         var pageinfo = util.getAngularServices().$rootScope.pageinfo;
+
+        // the tplinfo
         var tplinfo = util.getAngularServices().$rootScope.tplinfo;
+
+        // what the fuck is the existTemplate, it's never used
         var existTemplate = isExistTemplate(mdwiki, text);
+
+        // this is the line count of the theme( if we can use ), which is used as prefix.
         mdwiki.templateLineCount = 0;
         mdwiki.template = {};
 
+        // the real render funciton, the most most critical things
         var _render = function () {
+
+            // get the blockList, blockCache is about here
             var blockList = mdwiki.parse(text);   // 会对 mdwikiObj.template 赋值
-			//console.log(text, mdwiki.template, mdwikiName);
+            //console.log(text, mdwiki.template, mdwikiName);
+            
+            // update the textPosition by templateLineCount
             for (var i = 0; i < blockList.length; i++) {
                 blockList[i].textPosition.from = blockList[i].textPosition.from - mdwiki.templateLineCount;
                 blockList[i].textPosition.to = blockList[i].textPosition.to - mdwiki.templateLineCount;
             }
 
+            // about template, what's this?
 			if (mdwiki.template) {
 				if (mdwiki.template.textPosition && mdwiki.template.textPosition.from < 0) {
 					mdwiki.template.isPageTemplate = false;
@@ -729,11 +762,16 @@ define([
 
         // 不存在内嵌模板 外置模板存在  页面允许使用外置模板
         //if (!existTemplate && tplinfo && pageinfo && pageinfo.pagename && pageinfo.pagename[0] != "_" && mdwiki.options.use_template) {
+
+        // if we can use theme( template ), get the theme content and combine the info to render
 		if (pageinfo && pageinfo.pagename && pageinfo.pagename[0] != "_" && mdwiki.options.use_template) {
             var currentDataSource = dataSource.getDataSource(pageinfo.username,pageinfo.sitename);
 			if (currentDataSource) {
+                // get theme content
 				currentDataSource.getRawContent({path:'/' + pageinfo.username + '/' + pageinfo.sitename + '/_theme' + config.pageSuffixName, isShowLoading:false}, function (content) {
-						//console.log(content);
+                    //console.log(content);
+                    
+                    // get the content, anc combine it with original text, put it in front of the file.
 					content = content || "";
 					text = content + '\n' + text;
 					mdwiki.templateLineCount = content.split('\n').length;
@@ -750,10 +788,15 @@ define([
     }
 
     // 新建mdwiki编辑器
+    // mdwiki, this is the very important part, render is here
     function markdownwiki(options) {
+
+        // mdwikiName is unique in memory
         var mdwikiName = "mdwiki_" + mdwikiMap.count++;
 
+        // config options
         options = options || {};
+
         // Enable HTML tags in source
         options.html = options.html == null ? true : options.html;
         // Autoconvert URL-like text to links
@@ -782,27 +825,49 @@ define([
         // private : internal markdown it renderer.
         //var md = markdownit(options).use(markdownit_wikicmd_plugin);
         var md = markdownit(options);
+
+        // override original md
         markdownit_rule_override(md, mdwikiName);
         //console.log(md.renderer.rules);
 
+        // the mdwiki is an empty object or a cached object with mdwikiName
         var mdwiki = getMdwiki(mdwikiName);
         mdwiki.editorMode = options.editorMode;
 		mdwiki.mode = options.mode || "normal";
+        
+        // this is the original md object
         mdwiki.md = md;
+
+        // the unique mdwikiName with a unique id
         mdwiki.mdwikiName = mdwikiName;
+
+        // renderCount, what's this for?
         mdwiki.renderCount = 0;
+
+        // this is the blockId for blockList
         mdwiki.blockId = 0; // 块id自增
+
+        // options
         mdwiki.options = options;
+
+        // blockCacheMap for caching with text, but it should not be text?
         mdwiki.blockCacheMap = {};
-		mdwiki.isMainMd = options.isMainMd;
+
+        // isMainMd, will be true in wikiEditorController
+        mdwiki.isMainMd = options.isMainMd;
+        
+        // callbacks
 		mdwiki.renderAfterCBMap = {
 			//"$anchorScroll": config.services.$anchorScroll,
 		};
 
+        // if it's for wikiEditor, share it in public
 		if (mdwiki.isMainMd) {
+            // config.shareMap is public
 			config.shareMap["mdwiki"] = mdwiki;
 		}
 
+        // container_selector is target Container selector for rendering
         if (options.container_selector) {
             mdwiki.bindRenderContainer(options.container_selector);
         }
@@ -861,12 +926,12 @@ define([
 				}
 
 			} else {
-                console.log(cm);
+                // console.log(cm);
                 // 非wiki mod todo
                 var moduleEditorParams = config.shareMap.moduleEditorParams || {};
                 moduleEditorParams.activeContainerId = "";
                 moduleEditorParams.show_type = "knowledge";
-                console.log("markwnwiki---line 838");
+                // console.log("markwnwiki---line 838");
 				moduleEditorParams.setKnowledge("");
 				util.$apply();
 			}
@@ -877,10 +942,13 @@ define([
         mdwiki.render = function (text) {
             text = encodeURI(text);
             if (mdwiki.mdwikiContainerSelector) {
+
+                // window.mdwikiRender is the most important part
                 mdwikiRender(mdwikiName, text);
                 return;
             }
 
+            // shit, the codes below never executed.
             mdwiki.clearBlockCache();
             var mdwikiContainerId = mdwiki.getMdWikiContainerId();
             var mdwikiContentContainerId = mdwiki.getMdWikiContentContainerId();
@@ -892,18 +960,53 @@ define([
             return htmlContent + scriptContent;
         }
 
-        mdwiki.bindRenderContainer = function (selector, tplSelector) {
+
+        /**
+            the selector is .result-html usually. 
+            check the codes in wikiEditorController
+            mdwiki.bindRenderContainer(".result-html", ".tpl-header-container");
+         */
+        mdwiki.bindRenderContainer = function (
+            selector, /* .result-html */
+            tplSelector 
+        ) {
+            // console.error('mdwiki.bindRenderContainer: ', selector, tplSelector);
             tplSelector = tplSelector || ".tpl-header-container";
+
             mdwiki.mdwikiContainerSelector = selector;
+
+            // containerId is related with mdwiki mdwikiName
             var mdwikiContainerId = mdwiki.getMdWikiContainerId();
+
+            // containerContainerId is the container_container with mdwikiName
             var mdwikiContentContainerId = mdwiki.getMdWikiContentContainerId();
+
+            // containerContainerId with temp_ as prefix
             var mdwikiTempContentContainerId = mdwiki.getMdWikiTempContentContainerId();
             //var htmlContent = '<div style="margin: 0px 10px" id="' + mdwikiContainerId + '"><div id="' + mdwikiContentContainerId + '"></div><div id="' + mdwikiTempContentContainerId + '"></div></div>';
-			var tplheaderContent = '<tplheader data-mdwikiname="' + mdwiki.mdwikiName + '"></tplheader>';
+            
+            // tplheaderContent, which is for layout
+            var tplheaderContent = '<tplheader data-mdwikiname="' + mdwiki.mdwikiName + '"></tplheader>';
+        
+            // htmlContent is thing which likes the following html
+            // <div class="result-html">
+            //     <div class="wikiEditor" id="_mdwiki_container_mdwiki_2">
+            //         <div id="_mdwiki_content_container_mdwiki_2">
+            //              ... the rendered results will be put in here ...
+            //         </div>
+            //         <div id="_mdwiki_temp_content_container_mdwiki_2"></div>
+            //     </div>
+            // </div>
 			var htmlContent = '<div class="wikiEditor" id="' + mdwikiContainerId + '">' + '<div id="' + mdwikiContentContainerId + '"></div><div id="' + mdwikiTempContentContainerId + '"></div></div>';
+
+            // clear the cached using block in blockList
             mdwiki.clearBlockCache();
             //$(selector).html(htmlContent);
+
+            // insert htmlContent in .result-html
             util.html(selector, htmlContent);
+
+            // inset layout controller in .tpl-header-container
             util.html(tplSelector, tplheaderContent);
         }
 
@@ -921,6 +1024,14 @@ define([
             mdwiki.editor = editor;
         }
 
+        /**
+         * @param {*} token 
+         * return wikiBlock {
+                modName: modName,
+                cmdName: cmdname,
+                modParams: modParams, //all the info for the view controller 
+            }
+         */
         mdwiki.parseWikiBlock = function (token) {
             var wikiCmdRE = /^\s*([\/@][\w_\/]+)/;
             var wikiModNameRE = /^[\/@]+([\w_]+)/;
@@ -934,6 +1045,7 @@ define([
             catch (e) {
 				//var params = mdconf.toJson(token.content).params;
 
+                //this is the core part, convert mdToJson
 				var params = mdconf.mdToJson(token.content);
                 modParams = params || token.content;
             }
@@ -945,84 +1057,90 @@ define([
             }
 
             // 模板信息
+            // isTemplate means modName equals to @template
             if (modName == "template") {
                 wikiBlock.isTemplate = true;
             }
             return wikiBlock;
         }
 
+        /**
+         * @param {*} text it sould be the text for one rendered block
+         * @param {*} token token is from the tokenList, mk.parse(text) => tokenList
+         */
         mdwiki.getBlockCache = function (text, token) {
-			var isWikiBlock = token.type == "fence" && token.tag == "code" && /^\s*([\/@][\w_\/]+)/.test(token.info);
             var idx = "wikiblock_" + mdwikiName + "_" + mdwiki.renderCount + '_' + mdwiki.blockId++;
-            var modClass = "mod-container";
+            //isWikiBlock: something like ```@project ```
+            var isWikiBlock = token.type == "fence" && token.tag == "code" && /^\s*([\/@][\w_\/]+)/.test(token.info);
+
+            //new rendered view container div
             var htmlContent = '<div id="' + idx + '"' + '></div>';
-            var blockCache = undefined;
 
-            //console.log(token);
-			var adiWikiBlockCache = ((config.shareMap.moduleEditorParams || {}).wikiBlock || {}).blockCache;
-            var blockCacheList = mdwiki.blockCacheMap[text];
-            for (var i = 0; blockCacheList && i < blockCacheList.length; i++) {
-                blockCache = blockCacheList[i];
-                if (!blockCache.domNode) {
-                    continue;
-                }
+            //generate cacheKey
+            var cacheKey = isWikiBlock ? token.info : text;
+            var blockCacheList = mdwiki.blockCacheMap[cacheKey];
 
-                if (!blockCache.isUsing) {  // 返回一个未被使用缓存块
-					if (adiWikiBlockCache && 
-							adiWikiBlockCache.wikiBlock && 
-							blockCache.wikiBlock && 
-							blockCache.wikiBlock.cmdName == adiWikiBlockCache.wikiBlock.cmdName) {
-						continue;
-					}
-					//if (adiWikiBlockCache && adiWikiBlockCache.block.textPosition.form == blockCache.block.textPosition.from) {
-						//continue;
-					//}
-                    blockCache.isUsing = true;
-                    return blockCache;
+            // try to pick unused cache part and return
+            var blockCache = blockCacheList && blockCacheList.filter(function(blockCache) {
+                return blockCache.domNode && !blockCache.isUsing;
+            })[0];
+
+            // if find any cached block, use it and return;
+            if (blockCache) {
+                if (isWikiBlock && blockCache.text != text) {
+                    blockCache.newWikiBlock = mdwiki.parseWikiBlock(token);
                 }
+                return (blockCache.isUsing = true, blockCache);
             }
 
-            // 创建缓存对象
+            // create new blockCache, if not found
             blockCache = {
-                containerId: idx,
+                text: text,
+                containerId: idx, //containerId is uid for the container div which contains rendered block
                 htmlContent: htmlContent,
                 renderContent: mdwiki.md.render(text),
                 isUsing: true,
-                isWikiBlock: false,
+                isWikiBlock: isWikiBlock,
                 wikiBlock: undefined,
             }
-			// console.log(text, token, blockCache.renderContent);
+
+            //special handle for h1 h2 h3 h4 h5 h6, add a link for h* title
 			if (/^[hH][1-6]$/.test(token.tag)) {
-				var title = text.replace(/^[ ]*[#]*[ ]*/,"");
+                var title = text.replace(/^[ ]*[#]*[ ]*/,"");
 				var tag = token.tag;
 				title = title.replace(/[\r\n]*$/,"");
-				//var encodeTitle = encodeURI(title);
 				blockCache.renderContent = '<div class="wiki_page_inner_link"><a class="glyphicon glyphicon-link" name="' + title + '" href="#/#' + title + '"></a>'+ blockCache.renderContent + '</div>';
-				// console.log(blockCache.renderContent);
 			}
 
-            if (token.type == "fence" && token.tag == "code" && /^\s*([\/@][\w_\/]+)/.test(token.info)) {
+            //special handle for mod
+            if (isWikiBlock) {
+                // wikiBlock actually is parsed data info in mod block
+                // cmdName, modName, modParams: all the info parsed from the block of text, which will be rendered
                 var wikiBlock = mdwiki.parseWikiBlock(token);
                 blockCache.isTemplate = wikiBlock.isTemplate;
-                //blockCache.htmlContent = '<div id="' + idx + '"></div>';
-                blockCache.htmlContent = '<div id="' + idx + '"' + ' class="' + modClass + '"' +'></div>';
+                blockCache.htmlContent = '<div id="' + idx + '"' + ' class="mod-container"' +'></div>';
                 blockCache.wikiBlock = wikiBlock;
-                blockCache.isWikiBlock = true;
-
-                //blockCache.htmlContent = '<div style="position: relative;"><div style="position: absolute;"><button class="btn">编辑</button></div><div id="' + idx + '"></div></div>';
             }
-            mdwiki.blockCacheMap[text] = mdwiki.blockCacheMap[text] || [];
-            mdwiki.blockCacheMap[text].push(blockCache);
+
+            mdwiki.blockCacheMap[cacheKey] = mdwiki.blockCacheMap[cacheKey] || [];
+            mdwiki.blockCacheMap[cacheKey].push(blockCache);
 
             return blockCache;
         }
 
         mdwiki.clearBlockCache = function () {
+            // check every cache by key, actually, the key is the text string now
             for (key in mdwiki.blockCacheMap) {
+
+                // the blockCacheList with the string
                 var blockCacheList = mdwiki.blockCacheMap[key];
+
+                // some BlockCache can be preserved, save it in newBlockCacheList
                 var newBlockCacheList = [];
                 for (var i = 0; blockCacheList && i < blockCacheList.length; i++) {
                     var blockCache = blockCacheList[i];
+
+                    // if blockCache is not used, preserve it.
                     if (blockCache.isUsing) {
                         blockCache.isUsing = false;   // 将使用状态改为未使用状态 下次未使用则删除
                         newBlockCacheList.push(blockCache);
@@ -1030,9 +1148,13 @@ define([
                         blockCache.domNode && blockCache.domNode.remove();
                     }
                 }
+
+                // save some preserved blockCache
                 if (newBlockCacheList.length > 0) {
                     mdwiki.blockCacheMap[key] = newBlockCacheList;
                 } else {
+
+                    // remove empty list
                     delete mdwiki.blockCacheMap[key];
                 }
             }
@@ -1062,70 +1184,81 @@ define([
 			//console.log(pageinfo, pagePath, modParams);
 
 			return false;
-		}
+        }
 
-        // 解析文本
-        mdwiki.parse = function (text) {
-			//console.log(text);
-            var textLineList = text.split('\n');
+        /**
+         * this is for handle _open & _close type of token, they often appear as paired tokens.
+         * heading (h1, h2, h3, h4, h5, ... ), table ... is often affected.
+         */
+        function getCombinedTokenListByMarkdownText(text) {
             var tokenList = md.parse(text, {});
-            var blockList = [];
+            var resultTokenList = [];
             var stack = 0;
-            var maxValue = 99999999;
-            var block = {
-                textPosition: {from: maxValue, to: 0},
-                htmlContent: '',
-                content: '',
-                info: '',
-            }
-			mdwiki.template = undefined;
-            for (var i = 0; i < tokenList.length; i++) {
-                var token = tokenList[i];
-                if (token.type.indexOf('_open') >= 0) {
-                    stack++;
+
+            var tempToken = {};
+            tokenList.forEach(function(token) {
+                token.type.indexOf('_open') >= 0 && (stack++);
+                token.type.indexOf('_close') >= 0 && (stack--);
+    
+                //store and retrieve last avaliable .tag and .map
+                if (stack == 1) {
+                    tempToken.tag = token.tag || tempToken.tag;
+                    tempToken.map = token.map || tempToken.map;
                 }
-                if (token.type.indexOf('_close') >= 0) {
-                    stack--;
-                }
-				block.tag = token.tag || block.tag;
-                // 获取文本位置
-                block.textPosition.from = block.textPosition.from == maxValue && token.map ? token.map[0] : block.textPosition.from;
-                block.textPosition.to = token.map ? token.map[1] : block.textPosition.to;
-                /*
-                 if (token.map) {
-                 if (block.textPosition.from > token.map[0])
-                 block.textPosition.from = token.map[0];
-                 if (block.textPosition.to < token.map[1])
-                 block.textPosition.to = token.map[1];
-                 }
-                 */
+
                 if (stack == 0) {
-                    for (var j = block.textPosition.from; j < block.textPosition.to; j++) {
-                        block.content += textLineList[j] + '\n';
-                    }
-                    // 获取的对应的html标签内容
-                    block.blockCache = mdwiki.getBlockCache(block.content, token);
-					block.blockCache.block = block;
-                    block.isTemplate = block.blockCache.isTemplate;
-                    if (mdwiki.options.use_template && block.blockCache.isTemplate && mdwiki.templateMatch(block.blockCache.wikiBlock)) {
-                        mdwiki.template = block;
-                    }
-                    blockList.push(block);
-                    // 重置初始状态
-                    block = {
-                        textPosition: {from: maxValue, to: 0},
-                        htmlContent: '',
-                        content: '',
-                    }
+                    token.tag = token.tag || tempToken.tag;
+                    token.map = token.map || tempToken.map;
+                    !stack && resultTokenList.push(token);
                 }
-            }
+            });
+            return resultTokenList;
+        }
+
+        /**
+         * convert text into blockList,
+         * blockList contain domNode or htmlContent,
+         * domNode & htmlContent are used for render
+         * they may use cache
+         * 
+         * check mdwikiRender & _render to learn them
+         * 
+         * @param {*} text It sould be editor content normaly
+         */
+        mdwiki.parse = function (text) {
+            var textLineList = text.split('\n');
+            var tokenList = getCombinedTokenListByMarkdownText(text);
+
+            var blockList = tokenList.map(function(token) {
+                var block = {
+                    textPosition: {
+                        from: token.map[0],
+                        to: token.map[1]
+                    },
+                    content: '',
+                    htmlContent: ''
+                };
+
+                block.content = textLineList.filter(function(line, index) {
+                    return index >= block.textPosition.from && index < block.textPosition.to;
+                }).join('\n') + '\n';
+
+                block.blockCache = mdwiki.getBlockCache(block.content, token);
+
+                block.blockCache.block = block;
+                block.isTemplate = block.blockCache.isTemplate;
+                if (mdwiki.options.use_template && block.blockCache.isTemplate && mdwiki.templateMatch(block.blockCache.wikiBlock)) {
+                    mdwiki.template = block;
+                }
+
+                return block;
+            });
+
             mdwiki.clearBlockCache();
             mdwiki.blockList = blockList;
-			//console.log(tokenList);
-			//console.log(blockList);
-			//console.log(mdwiki.tempate);
             return blockList;
         }
+
         return mdwiki;
     }
 

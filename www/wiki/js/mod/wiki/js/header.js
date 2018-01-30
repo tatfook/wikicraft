@@ -36,7 +36,7 @@ define([
 
                 util.http("POST", config.apiUrlPrefix + "user_favorite/favoriteUser", params, function (data) {
                     Message.info("关注成功");
-                    console.log(data);  // 申请成功
+                    // console.log(data);  // 申请成功
                 });
             }
 

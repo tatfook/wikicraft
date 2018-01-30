@@ -84,7 +84,7 @@ define([
             $scope.clickAgreeMemeber = function (apply) {
                 util.post(config.apiUrlPrefix + 'website_member/agreeMemberApply', apply, function () {
                     apply.isDelete = true;
-                    console.log("同意成员加入");
+                    // console.log("同意成员加入");
                 });
             };
 
@@ -92,7 +92,7 @@ define([
             $scope.clickRefuseMember = function (apply) {
                 util.post(config.apiUrlPrefix + 'website_member/deleteById', apply, function () {
                     apply.isDelete = true;
-                    console.log("拒绝成员加入");
+                    // console.log("拒绝成员加入");
                 });
             };
 

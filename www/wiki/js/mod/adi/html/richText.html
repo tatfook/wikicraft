@@ -1,0 +1,39 @@
+<style>
+    .rich .editor-mode{
+        text-align: center;
+        height: 150px;
+        background-color: rgba(228, 227, 227, 0.845);
+        font-size: 32px;
+        line-height: 150px;
+    }
+    .rich .notice{
+        height: 30px;
+        line-height: 30px;
+        padding-left: 15px;
+        background-color: rgba(228, 227, 227, 0.845);
+    }
+    .rich .content{
+        max-width: 1170px;
+        word-wrap:break-word;
+    }
+</style>
+
+<div ng-controller="richController"
+     class="rich"
+     ng-hide="params.modal_rich.is_mod_hide">
+    <div ng-hide="!editorMode"
+         ng-dblclick="dbClick()"
+         ng-if="params.modal_rich.data.length == 0"
+         class="editor-mode">
+        <span>双击编辑-富文本</span>
+    </div>
+
+    <div ng-if="params.modal_rich.data.length > 0" >
+        <div class="notice"
+             ng-hide="!editorMode"
+             ng-dblclick="richClick()">编辑-富文本</div>
+
+        <div class="content container"
+             id="{{currentRichText}}" ng-bind-html="applyContent(params.modal_rich.data)"></div>
+    </div>
+</div>

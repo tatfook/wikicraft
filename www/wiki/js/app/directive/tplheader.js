@@ -75,9 +75,9 @@ define([
                         backdrop: true,
                         scope: $scope
                     }, function (wikiBlock) {
-                        console.log(wikiBlock);
+                        // console.log(wikiBlock);
                     }, function (result) {
-                        console.log(result);
+                        // console.log(result);
                     });
                 }
 
@@ -94,9 +94,9 @@ define([
 
 				$scope.click = function(){
 					template = mdwiki.template;
-					console.log(template, mdwiki);
+					// console.log(template, mdwiki);
 					if (!template) {
-						console.log("新建模板");
+						// console.log("新建模板");
 						var defaultTemplate = "```@template/js/layout\n# urlmatch\n- text:\n```\n";
 						mdwiki.editor.replaceRange(defaultTemplate, {line: 0, ch: 0}, {line:0,ch: 0});
 						config.shareMap.moduleEditorParams.wikiBlockStartPost = 0;

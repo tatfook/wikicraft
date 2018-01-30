@@ -1,4 +1,4 @@
-﻿<style>
+<style>
     body {
         background-color: #f2f2f2;
     }
@@ -169,31 +169,33 @@
         }
 
         .pay-main-field .field-item {
-            height: 40px;
+            /* height: 40px; */
             line-height: 40px;
             margin-bottom: 28px;
+            /* min-width: 280px; */
         }
 
         .pay-main-field .field-item .desc {
-            float: left;
+            /* float: left; */
             font-size: 13px;
-            width: 120px;
+            /* width: 120px; */
             text-align: right;
         }
 
         .pay-main-field .field-item input , .pay-main-field .field-item .price-field{
-            margin-left: 90px;
+            /* margin-left: 90px; */
             display: block;
         }
 
         .pay-main-field .field-item input[type="text"] {
-            width: 185px;
+            max-width: 185px;
             border-radius: 4px;
             padding: 0px;
             border: 0;
             border: 1px solid #dddddd;
             padding-left: 10px;
             color: #666666;
+            min-height: 40px;
         }
 
         .pay-main-field .field-item input[name="price"] {
@@ -235,6 +237,7 @@
 
         .pay-main-user {
             width: 615px;
+            margin: 0 auto;
         }
 
         .pay-main-logo {
@@ -258,6 +261,7 @@
 
         .pay-main-field {
             float: left;
+            width: 440px;
         }
 
         .pay-main-field .field-item {
@@ -286,6 +290,7 @@
             border: 1px solid #dddddd;
             padding-left: 10px;
             color: #666666;
+            min-height:40px;
         }
 
         .pay-main-field .field-item input[name="price"] {
@@ -326,6 +331,8 @@
 
         .pay-main .alipay-pay-qrcode {
            position: relative;
+           max-width: 180px;
+           margin: 0 auto;
         }
 
         .pay-main .wechat-pay-qrcode {
@@ -333,6 +340,7 @@
             height: 395px;
             background: url("/wiki/assets/imgs/pay-qrcode-wechat-bg.png") no-repeat center;
             padding: 23px;
+            margin: 0 auto;
         }
 
         .pay-main .wechat-pay-qrcode .money {
@@ -442,7 +450,7 @@
             </div>
         </div>
         <div class="pay-main-outside clearfix">
-            <div class="pay-main-method">
+            <div class="pay-main-method" ng-if="!alipayCallback">
                 <div class="pay-item">
                     <ul class="clearfix">
                         <li ng-class="{active: method == 'wechat'}" ng-click="onChange('wechat')">
@@ -542,8 +550,8 @@
                         </div>
                         <div class="success-operate">
                             <a ng-click="goMypay()" translate="查看支付记录"></a>
-                            {{ "或" | translate }}
-                            <a ng-click="back()" translate="返回"></a>
+                            <span ng-if="!alipayCallback">或</span>
+                            <a ng-click="back()" translate="返回" ng-if="!alipayCallback"></a>
                         </div>
                     </div>
                 </div>

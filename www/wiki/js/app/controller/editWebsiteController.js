@@ -90,7 +90,7 @@ define([
                 $scope.domain = "";
 			},function(data){
 				if (data.id==7) {
-					console.log("域名已存在");
+					// console.log("域名已存在");
 				}	
 			});
         };
@@ -117,7 +117,7 @@ define([
                 sensitiveWord.checkSensitiveWord(tagName, function (foundWords, replacedStr) {
                     if (foundWords.length > 0){
                         isSensitive = true;
-                        console.log("包含敏感词:" + foundWords.join("|"));
+                        // console.log("包含敏感词:" + foundWords.join("|"));
                         return false;
                     }
                 });
@@ -163,8 +163,8 @@ define([
                     sensitiveWord.checkSensitiveWord(word, function (foundWords, replacedStr) {
                         if (foundWords.length > 0){
                             isSensitive = true;
-                            console.log("包含敏感词:" + foundWords.join("|"));
-                            console.log(replacedStr);
+                            // console.log("包含敏感词:" + foundWords.join("|"));
+                            // console.log(replacedStr);
                             return false;
                         }
                     });
@@ -309,7 +309,7 @@ define([
             $scope.deleting = group;
             $scope.deleting.type = type;
             $("#deleteModal").modal("show");
-            console.log($scope.deleting);
+            // console.log($scope.deleting);
         };
 
 		$scope.deleteShareGroup = function(group) {
@@ -432,7 +432,7 @@ define([
             util.post(config.apiUrlPrefix + 'data_source/get', {username:name, apiBaseUrl:siteDataSource.apiBaseUrl}, function(dataSourceUser) {
                 if (!dataSourceUser || dataSourceUser.length == 0) {
                     Message.info("用户不在此站点的数据源中, 不可添加!!!");
-                    console.log("数据源用户不存在");
+                    // console.log("数据源用户不存在");
                     if (users.length>0){
                         saveUser(users.shift(), group, users);
                     }else{
@@ -555,7 +555,7 @@ define([
         }
 		
 		$scope.changeDataSource = function() {
-			console.log($scope.dataSourceName);
+			// console.log($scope.dataSourceName);
 		}
 
         function init() {

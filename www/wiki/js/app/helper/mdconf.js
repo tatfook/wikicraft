@@ -15,7 +15,29 @@ define([
 		}
 
 		return true;
-	}
+    }
+
+    /**
+     * For multiline string value, replace \n with "\\n"
+     */
+    mdconf.jsonToMdEncodeValue = function(value) {
+        if (typeof value == 'string') {
+            return value.replace(/\n/g, '\\n');
+        }
+
+        return value;
+    }
+
+    /**
+     * For multiline string value, replace "\\n" with \n
+     */
+    mdconf.mdToJsonDecodeValue = function(value) {
+        if (typeof value == 'string') {
+            return value.replace(/\\n/g, '\n');
+        }
+
+        return value;
+    }
 
 	mdconf.toMod = function(text) {
 		var self = this;
@@ -123,7 +145,7 @@ define([
 					value = value;
 				}
 
-				curConf[key] = value;
+				curConf[key] = mdconf.mdToJsonDecodeValue(value);
 			}
 		}
 
@@ -168,7 +190,7 @@ define([
 		}
 		
 		return confConvert(conf);
-	}
+    }
 
 	mdconf.filter = function(key) {
 		if (key && key.indexOf("$") == 0){
@@ -198,7 +220,7 @@ define([
 					if (value == undefined || mdconf.filter(key) || typeof(value) == "object") {
 						continue;
 					}
-					text += "- " + key + " : " + value + "\n";
+					text += "- " + key + " : " + mdconf.jsonToMdEncodeValue(value) + "\n";
 				}
 				for (var key in obj) {
 					// 写对象值

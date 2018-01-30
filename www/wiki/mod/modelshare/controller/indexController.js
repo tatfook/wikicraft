@@ -14,7 +14,7 @@
 		
 		http("POST", apiUrl + "/getListCount", function(data){
 			$scope.totalItems = data.data;
-			console.log(data)
+			// console.log(data)
 		});
 
 		//查找数据
@@ -28,7 +28,7 @@
 			
 			http("POST", apiUrl + "/getList", params, function(data){
 				$scope.list = data.data;
-				console.log(data)
+				// console.log(data)
 			});
 		}
 		
@@ -45,7 +45,7 @@
 			
 			http("POST", apiUrl + "/getListNew", params, function(data){
 				$scope.list = data.data;
-				console.log(data)
+				// console.log(data)
 			});
 		}
 		
@@ -60,7 +60,7 @@
 			
 			http("POST", apiUrl + "/getListHot", params, function(data){
 				$scope.list = data.data;
-				console.log(data)
+				// console.log(data)
 			});
 		}
 		

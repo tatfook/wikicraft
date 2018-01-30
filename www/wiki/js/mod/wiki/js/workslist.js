@@ -140,7 +140,7 @@ define([
 
             $scope.goScroll = function (index) {
                 var id = "featureList"+index;
-                console.log(id);
+                // console.log(id);
                 document.getElementById(id).scrollIntoView();
             }
 

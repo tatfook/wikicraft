@@ -160,8 +160,12 @@ function pay:api_createCharge(params)
 	apiParams.currency   = "cny";
 	apiParams.app        = {id = self.appId};
 
-	if(apiParams.channel == "alipay_pc_direct") then
-		apiParams.extra = {success_url = "http://keepwork.com/wiki/pay"};
+	if(apiParams.channel == "alipay_wap") then
+		if(not query.redirect) then
+			return errors:wrap(errors.REQUEST_PARAMS_ERROR);
+		end
+
+		apiParams.extra = {success_url = query.redirect};
 	elseif(apiParams.channel == "wx_pub_qr") then
 		apiParams.extra = {product_id = trade_no};
 	end
@@ -304,6 +308,7 @@ function pay:api_getTrade()
 end
 
 function pay:api_getTradeOne(params)
+	response:status(503);
 	local err, query = self:validateQuery(params);
 
 	if(not query.username or not query.trade_no) then
@@ -313,10 +318,12 @@ function pay:api_getTradeOne(params)
 	self:db():findOne({["+username+trade_no"] = {query.username, tostring(query.trade_no)}}, resume);
 	local err, trade = yield();
 
-	if not err then
+	if not err and trade then
+		response:status(200);
 		return errors:wrap(nil, trade);
 	else
-		return errors:wrap(errors.SERVER_INNER_ERROR);
+		response:status(404);
+		return errors:wrap(errors.NOT_FOUND);
 	end
 end
 

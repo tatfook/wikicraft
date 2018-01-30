@@ -44,6 +44,35 @@ define([
 						href:"http://www.baidu.com", // 默认值
 						require: true, // 必填字段 没有使用默认值(默认值得有)
                     },
+                    // switch: {
+                    //     is_leaf: true,
+                    //     type: 'switch',
+                    //     editable: true,
+                    //     is_card_show: true,
+                    //     is_mod_hide: false,
+                    //     name: '阅读权限',
+                    //     desc: '只限VIP阅读完整内容'
+                    // },
+                    // input: {
+                    //     is_leaf: true,
+                    //     type: 'input',
+                    //     editable: true,
+                    //     is_card_show: true,
+                    //     is_mod_hide: false,
+                    //     name: 'QQ调用',
+                    //     label: 'QQ号',
+                    //     text: '23432442314'
+                    // },
+                    // url: {
+                    //     is_leaf: true,
+                    //     type: 'url',
+                    //     editable: true,
+                    //     is_card_show: true,
+                    //     is_mod_hide: false,
+                    //     name: '引用',
+                    //     label: '选择或输入URL',
+                    //     href: ''
+                    // },
                     board:{
                         is_leaf: true,
                         type: "diagram",
