@@ -12,6 +12,8 @@ include_once("./elasticsearch.page")
 include_once("./validators.page")
 include_once("./pages_stars.page")
 include_once("./website.page")
+include_once("./tags.page")
+include_once("./user_tags.page")
 
 
 local pages = inherit(models.abstract.base, gettable("models.pages"))
@@ -103,6 +105,12 @@ function pages:api_updateTags(params)
         -- if (result) then self:insert_to_es(params) end
     end
     result = {url = result.url, tags = result.tags}
+
+    local tags_model = models.tags:new()
+    local user_tags_model = models.user_tags:new()
+    tags_model:insert(result)
+    user_tags_model:insert(result)
+
     return errors:wrap(err, result)
 end
 

@@ -30,7 +30,10 @@ function pages_stars:star(params)
         return response:status(404):send({error={message=message,status=404}})
     end
     local splited_url = commonlib.split(params.url, "/")
-    local siteUrl = format("/%s/%s", splited_url[1], splited_url[2])
+    local username = splited_url[1] or ""
+    local sitename = splited_url[2] or ""
+    if (sitename ~= "") then sitename = "/" .. sitename end
+    local siteUrl = format("/%s%s", username, sitename)
     local star = {url = params.url, starredUser = params.visitor, siteUrl = siteUrl}
     self:db():findOne({["+url+starredUser"] = {star.url, star.starredUser}}, resume)
     local err, result = yield()

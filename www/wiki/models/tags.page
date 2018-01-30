@@ -5,8 +5,9 @@ Author: ZhengJiabiao
 Date: 2018/1
 Desc: tags in pages,only to be used in backend data analysis
 ]]
+
+
 include_once("./abstract/base.page")
-include_once("./user.page")
 include_once("./elasticsearch.page")
 include_once("./validators.page")
 
@@ -24,7 +25,53 @@ function tags:ctor()
 end
 
 
-function tags:api_insert(params)
+-- to insert an tags array
+function tags:insert(params)
+    if (not params.tags) or (not params.url) then
+        return errors:wrap(REQUEST_PARAMS_ERROR)
+    end
+
+    local splited_url = commonlib.split(params.url, "/")
+    local username = splited_url[1]
+    local tags_to_insert = {}
+    local finished_count = 0
+    local tag, is_params_error, _
+    local clean_tags = {}
+    local unique_tags = {}
+
+    -- validate tags
+    for i, tag_title in ipairs(params.tags) do
+        tag, is_params_error, _ = self:insert_validator({title = tag_title, username = username})
+
+        -- ensure tags are unique in clean_tags
+        if (not is_params_error) and (not unique_tags[tags.title])then 
+            clean_tags[(#clean_tags) + 1 ] = tag
+        end
+        unique_tags[tag.title] = true
+    end
+
+    -- check existence of tags and insert tags not exist
+    for i, tag in ipairs(clean_tags) do
+        self:db():findOne({["+title"] = {tag.title}},
+            function(err, data)
+                if (not data) then
+                    self:db():insertOne({["+title"] = {tag.title}}, tag, function(err, data) end)
+                end
+                finished_count = finished_count + 1
+                if (finished_count == #clean_tags) then resume() end
+            end
+        )
+        if (i == #clean_tags) then
+            yield()
+            finished_count = 0
+        end
+    end
+
+    return errors:wrap(nil)
+end
+
+
+function tags:insertOne(params)
     -- self:ensureAuthenticated()
     local tag, is_params_error, message = self:insert_validator(params)
     if (is_params_error) then
@@ -47,8 +94,6 @@ function tags:insert_validator(params)
     local clean_data
     local required_fields = {"title", "username"}
     local fields_length = {title=30, username=30}
-    local user_model_instance = models.user:new()
-    local are_they_sensitive_fields = {"title"}
     local validators = models.validators:new()
     local validate_tasks = {
         {
@@ -57,12 +102,6 @@ function tags:insert_validator(params)
         }, {
             validator = validators.fields_length_validator,
             condition = fields_length
-        }, {
-            validator = validators.users_existence_validator,
-            condition = user_model_instance
-        }, {
-            validator = validators.sensitive_words_validator,
-            condition = are_they_sensitive_fields
         }
     }
     validators:add_validate_tasks(validate_tasks, params)
@@ -136,4 +175,3 @@ function tags:delete_in_es(params)
     }
     return es:deleteOne(params)
 end
-
