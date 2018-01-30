@@ -66,7 +66,8 @@
 			'md5': libPathPrefix + "md5",
 			'swiper': libPathPrefix + "swiper/swiper.min",
 			'reveal': libPathPrefix + "reveal",
-			'echarts-radar': libPathPrefix + "echarts/echarts-radar",
+			// 'echarts-radar': libPathPrefix + "echarts/echarts-radar",
+			'echarts-radar': libPathPrefix + "echarts/echarts-radar.min",
 			//'html2canvas': libPathPrefix + 'html2canvas/html2canvas.min',
 
 			'vue': libPathPrefix + 'vue/vue.min',
