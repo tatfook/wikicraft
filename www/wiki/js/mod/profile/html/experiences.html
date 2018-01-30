@@ -1,0 +1,90 @@
+<style>
+    .user-experience .ellipsis-1 {
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+    }
+
+    .user-experience .experiences-list {
+        padding: 12px 20px;
+        border: 1px solid #F2F2F2;
+        font-size: 16px;
+        color: #666;
+        margin: 24px 0 43px;
+    }
+
+    .user-experience table {
+        margin: 0;
+        border: none;
+    }
+
+    .user-experience table>tbody>tr>td {
+        border: none;
+        display: inline-block;
+        height: 32px;
+        line-height: 32px;
+        padding: 0;
+    }
+
+    .user-experience td.title {
+        width: 30%;
+    }
+
+    .user-experience td.link {
+        width: 50%;
+        padding: 0 5px;
+    }
+
+    .user-experience td.time {
+        width: 20%;
+        font-size: 14px;
+        color: #999;
+    }
+
+    .user-experience .editing-experiences td.title{
+        width: 24%;
+    }
+
+    .user-experience .editing-experiences td.link{
+        width: 39%;
+    }
+
+    .user-experience .editing-experiences td.time{
+        width: 19%;
+    }
+
+    .user-experience .editing-experiences td.editing-toolbar{
+        width: 18%;
+        text-align: right;
+    }
+</style>
+<div class="user-experience" ng-controller="experienceCtrl">
+    <h4 class="title">
+        我的经历
+        <span class="pull-right" ng-show="isSelf">
+            <i class="iconfont icon-tianjia" ng-click="showExperienceModal()" ng-hide="editing"></i>
+            <i class="iconfont" ng-show="experiences.length > 0" ng-class="{true:'icon-fanhui', false:'icon-bianji'}[editing]" ng-click="editExperience()"></i>
+        </span>
+    </h4>
+    <div class="experiences-list">
+        <div class="empty-box" ng-hide="experiences.length>0">
+            <span class="iconfont icon-kongbaiyemian"></span>
+            <p translate="暂无相关内容..."></p>
+        </div>
+        <table ng-show="experiences.length>0" ng-class="{true:'editing-experiences'}[editing]">
+            <tr class="experience-item" ng-repeat="experience in experiences">
+                <td class="title ellipsis-1">{{experience.title}}</td>
+                <td class="link ellipsis-1">{{experience.link}}</td>
+                <td class="time ellipsis-1">{{experience.startDate+"至"+experience.endDate}}</td>
+                <td class="editing-toolbar" ng-show="editing">
+                    <span class="iconfont icon-shezhi" ng-click="setExperience($index)"></span>
+                    <span class="iconfont icon-shangyi" ng-click="shiftUp($index)"></span>
+                    <span class="iconfont icon-xiayi" ng-click="shiftDown($index)"></span>
+                    <span class="iconfont icon-shanchu1" ng-click="deleteExperience($index)"></span>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="add-experience-modal modal-parent"></div>
+</div>

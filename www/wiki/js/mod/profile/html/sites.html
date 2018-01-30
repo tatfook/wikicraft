@@ -1,0 +1,170 @@
+<style>
+    .user-sites .sites-list {
+        padding: 0 20px;
+        border: 1px solid #F2F2F2;
+        margin: 20px 0 40px;
+    }
+
+    .user-sites .sites-item {
+        display: flex;
+        border-bottom: 1px solid #F2F2F2;
+        color: #666;
+        padding: 20px 0;
+        position: relative;
+    }
+
+    .user-sites .sites-item:last-child {
+        border-bottom: none;
+    }
+
+    .user-sites .sites-item>img {
+        width: 120px;
+        height: 100px;
+        object-fit: cover;
+    }
+
+    .user-sites .site-detail {
+        margin-left: 7px;
+        flex: 1;
+    }
+
+    .user-sites .site-detail h4 {
+        margin: 0;
+        color: #333;
+    }
+
+    .user-sites .site-detail p {
+        margin: 0;
+    }
+
+    .user-sites .site-detail>.p-link,
+    .user-sites .site-detail>.p-desc {
+        margin: 8px 0;
+    }
+
+    .user-sites .site-detail>.p-tags>span {
+        padding: 1.5px 10px;
+        background-color: #E0F1FF;
+        margin-right: 12px;
+    }
+
+    .user-sites .site-other-msg {
+        position: absolute;
+        right: 0;
+        top: 23px;
+        color: #999;
+    }
+
+    .user-sites .site-other-msg>span {
+        margin-left: 10px;
+    }
+
+    .user-sites .site-other-msg .iconfont {
+        font-size: 22px;
+        display: inline-block;
+        width: auto;
+        margin-right: 6px;
+        vertical-align: sub;
+        line-height: 1;
+    }
+
+    .user-sites .site-other-msg img {
+        margin-right: 6px;
+        vertical-align: sub;
+    }
+
+    .user-sites .zhiding-icon{
+        position: absolute;
+        bottom: 19px;
+        right: 0;
+        cursor: pointer;
+        display: none;
+    }
+
+    .user-sites .sites-item:hover .zhiding-icon{
+        display: block;
+    }
+
+    .user-sites .stick-btn {
+        width: 22px;
+        height: 22px;
+        display: inline-block;
+        background-color: #E5F1FF;
+        color: #72AEFD;
+        font-size: 14px;
+        line-height: 22px;
+        text-align: center;
+        border-radius: 50%;
+    }
+
+    .user-sites .cancel-stick-btn{
+        transform: rotate(180deg);
+    }
+</style>
+<div class="user-sites" ng-controller="sitesCtrl">
+    <h4 class="title">
+        {{getModTitle(params.type)}}
+    </h4>
+    <div class="sites-list">
+        <div class="empty-box" ng-hide="sites[params.type].length > 0">
+            <span class="iconfont icon-kongbaiyemian"></span>
+            <p translate="暂无相关内容..."></p>
+        </div>
+        <!-- 创建的网站、置顶内容、参与的网站 -->
+        <div class="sites-box" ng-show="params.type != 'concerned' && sites[params.type].length > 0">
+            <div class="sites-item" ng-hide="params.type == 'stick' && !site.isTop" ng-repeat="site in sites[params.type] track by $index">
+                <img ng-src="{{site.logoUrl}}">
+                <div class="site-detail">
+                    <h4>{{site.name}}</h4>
+                    <p class="p-link">
+                        <a ng-href="{{'/'+ site.username+'/'+site.name}}" target="_blank">{{'/'+ site.username+'/'+site.name}}</a>
+                    </p>
+                    <p class="p-desc">{{site.desc || "暂无简介"}}</p>
+                    <p class="p-tags">
+                        <span ng-repeat="tag in site.tags track by $index">{{tag}}</span>
+                    </p>
+                </div>
+                <div class="site-other-msg">
+                    <span>
+                        <i class="iconfont icon-browse"></i>{{site.visitCount || 0}}
+                    </span>
+                    <span>
+                        <i class="iconfont icon-collection"></i>{{site.favoriteCount || 0}}
+                    </span>
+                </div>
+                <div class="zhiding-icon">
+                    <span class="stick-btn iconfont icon-zhiding1"
+                         ng-class="{true: 'cancel-stick-btn'}[params.type == 'stick' || site.isTop]"
+                         ng-show="params.type == 'created' || params.type == 'stick'"
+                         ng-click="toggleStickSite(site)"
+                         title="{{(params.type == 'stick' || site.isTop) ? '取消置顶' : '置顶'}}"
+                    >
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 关注网站 -->
+        <div class="sites-item" ng-show="params.type == 'concerned' && sites[params.type].length > 0" ng-repeat="site in sites[params.type] track by $index">
+            <img ng-src="{{site.siteinfo.logoUrl}}">
+            <div class="site-detail">
+                <h4>{{site.siteinfo.name}}</h4>
+                <p class="p-link">
+                    <a ng-href="{{'/'+ site.siteinfo.username+'/'+site.siteinfo.name}}" target="_blank">{{'/'+ site.siteinfo.username+'/'+site.siteinfo.name}}</a>
+                </p>
+                <p class="p-desc">{{site.siteinfo.desc || "暂无简介"}}</p>
+                <p class="p-tags">
+                    <span ng-repeat="tag in site.siteinfo.tags track by $index">{{tag}}</span>
+                </p>
+            </div>
+            <div class="site-other-msg">
+                <span>
+                    <i class="iconfont icon-browse"></i>{{site.visitCount || 0}}
+                </span>
+                <span>
+                    <i class="iconfont icon-collection"></i>{{site.favoriteCount || 0}}
+                </span>
+            </div>
+        </div>
+    </div>
+</div>

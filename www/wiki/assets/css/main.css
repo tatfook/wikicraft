@@ -116,6 +116,10 @@ textarea{
     text-align: center;
     color: #999;
     font-size: 16px;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
 }
 .empty-box .iconfont {
     font-size: 145px;
