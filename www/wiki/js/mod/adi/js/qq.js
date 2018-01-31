@@ -89,7 +89,7 @@ define([
             $scope.qqUrl = "http://wpa.qq.com/msgrd?v=3&uin=" + $scope.params.input_qq.text + "&site=qq&menu=yes";
 
             $scope.getQQUrl = function(){
-                return $scope.params.input_qq.text.length == 0 ? "" : $scope.qqUrl;
+                return $scope.params.input_qq.text == null ? "" : $scope.qqUrl;
             }
 
             var imgOne = config.wikiModPath + 'adi/assets/imgs/qqMod.png';
