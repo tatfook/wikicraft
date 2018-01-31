@@ -173,9 +173,9 @@ define([
 
                             getTrade(charge);
 
-                            setTimeout(function(){
-                                document.body.removeChild(ifr);
-                            }, 5000);
+                            // setTimeout(function(){
+                            //     document.body.removeChild(ifr);
+                            // }, 5000);
                         }
                     });
                 }else{
