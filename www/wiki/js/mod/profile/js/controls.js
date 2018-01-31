@@ -2,7 +2,7 @@
  * @Author: ZhangKaitlyn 
  * @Date: 2018-01-19
  * @Last Modified by: none
- * @Last Modified time: 2018-01-26 14:46:07
+ * @Last Modified time: 2018-01-31 11:14:39
  */
 define([
     'app',
@@ -27,7 +27,10 @@ define([
                 }
                 var path = '/'+ userDataSource.keepwrokUsername +'_datas/' + type + ".md";
                 console.log(path);
-                userDataSource.getFile({path: path}, function (data) {
+                userDataSource.getFile({
+                    path: path,
+                    ref: 'master'
+                }, function (data) {
                     var content = data.content || "";
                     mdContent[type] = content;
                     initView(type);
