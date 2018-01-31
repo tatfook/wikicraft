@@ -234,7 +234,7 @@
             <span class="iconfont icon-kongbaiyemian"></span>
             <p translate="暂无相关内容..."></p>
         </div>
-        <div class="works-item" ng-repeat="work in works track by $index" ng-show="works.length>0">
+        <div class="works-item" ng-repeat="work in works track by $index" ng-show="works.length>0 && work">
             <img ng-src="{{work.logoUrl || getImageUrl('wiki_cover.jpg', imgsPath)}}">
             <div class="work-detail">
                 <h4><a ng-href="{{work.workLink}}" target="_blank">{{work.title}}</a></h4>

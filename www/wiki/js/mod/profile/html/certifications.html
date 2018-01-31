@@ -73,7 +73,7 @@
             <p translate="暂无相关内容..."></p>
         </div>
         <table ng-show="certifications.length>0" ng-class="{true:'editing-certifications'}[editing]">
-            <tr class="certification-item" ng-repeat="certification in certifications track by $index">
+            <tr class="certification-item" ng-repeat="certification in certifications track by $index" ng-show="certification">
                 <td class="title ellipsis-1">{{certification.title}}</td>
                 <td class="link ellipsis-1">{{certification.link}}</td>
                 <td class="time ellipsis-1">{{certification.getDate}}</td>
