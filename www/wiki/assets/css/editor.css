@@ -543,14 +543,6 @@ select.resize-view {
     color: #3977AD;
 }
 
-.att-edit-box {
-    height: 280px;
-    z-index: 4;
-    background-color: #FFF;
-    border-left: 1px solid #EEE;
-    padding: 0;
-    z-index: 1;
-}
 .editingLine{
     border-right: 4px solid #FFAC36;
 }

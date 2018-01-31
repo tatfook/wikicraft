@@ -477,8 +477,32 @@
         width: 100%;
         height: 200px;
     }
+
+    .iconfont.icon-shouqi1 {
+        display: inline-block;
+    }
+
+    .iconfont.icon-shouqi1.down {
+        transform: rotateZ(180deg);
+    }
+
+    .att-edit-box {
+        z-index: 4;
+        background-color: #FFF;
+        border-left: 1px solid #EEE;
+        padding: 0;
+        z-index: 1;
+    }
+
+    .att-edit-box.view-is-open {
+        height: 280px;
+    }
+
+    .att-edit-box.view-is-close {
+        height: 30px;
+    }
 </style>
-<div ng-controller="moduleEditorController" class="module-editor">
+<div ng-controller="moduleEditorController" class="module-editor att-edit-box" ng-class="{'view-is-open': viewIsOpen, 'view-is-close': !viewIsOpen}">
     <!-- Nav tabs -->
     <ul class="nav nav-tabs" role="tablist">
         <li role="presentation" ng-show="show_type == 'knowledge' || !show_type" ng-class="{true: 'active'}[show_type == 'knowledge' || !show_type]"
@@ -493,6 +517,12 @@
             ng-click="tabTo('design')">
             <a href="#StyleSetting" aria-controls="StyleSetting" role="tab" data-toggle="tab" translate="样式"></a>
         </li>
+        <li ng-click="viewIsOpen = !viewIsOpen" class="pull-right">
+            <a class="btn">
+                <i class="iconfont icon-shouqi1" ng-class="{up: !viewIsOpen, down: viewIsOpen}"></i>
+                {{viewIsOpen ? "隐藏" : "展开" | translate}}
+            </a>
+        </li>
         <!-- 删除模块按钮 -->
         <li ng-hide="show_type == 'knowledge' || !show_type" ng-click="deleteMod()" class="pull-right">
             <a class="btn">
@@ -501,7 +531,7 @@
     </ul>
 
     <!-- Tab panes -->
-    <div class="tab-content">
+    <div class="tab-content" ng-hide="!viewIsOpen">
         <div role="tabpanel" class="tab-pane knowledge-tabpane" id="Knowledge" ng-class="{true: 'active'}[show_type == 'knowledge' || !show_type]">
             <div id="knowlege-agent" class="botui-app-container">
                 <bot-ui></bot-ui>
