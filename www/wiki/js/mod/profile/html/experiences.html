@@ -58,7 +58,7 @@
         text-align: right;
     }
 </style>
-<div class="user-experience" ng-controller="experienceCtrl">
+<div class="user-experience" ng-controller="experienceCtrl" ng-hide="experiences.length <=0 && !isSelf">
     <h4 class="title">
         经历
         <span class="pull-right" ng-show="isSelf">

@@ -127,7 +127,7 @@
         transform: rotate(180deg);
     }
 </style>
-<div class="user-sites" ng-controller="sitesCtrl">
+<div class="user-sites" ng-controller="sitesCtrl" ng-hide="sites[params.type].length <=0 && !isSelf">
     <h4 class="title">
         {{getModTitle(params.type)}}
     </h4>

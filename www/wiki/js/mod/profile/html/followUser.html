@@ -1,4 +1,9 @@
 <style>
+    .follow-users{
+        border: 1px solid #F2F2F2;
+        margin: 9px;
+    }
+    
     .follow-users .follow-users-list {
         margin: 15px -9px 31px;
     }
@@ -50,7 +55,7 @@
         font-weight: lighter;
     }
 </style>
-<div class="follow-users" ng-controller="followsUserCtrl">
+<div class="follow-users" ng-controller="followsUserCtrl" ng-hide="followUserList.length <=0 && !isSelf">
     <h4 class="title">
         关注的作者
     </h4>

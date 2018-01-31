@@ -59,7 +59,7 @@
         text-align: right;
     }
 </style>
-<div class="user-certification" ng-controller="certificationCtrl">
+<div class="user-certification" ng-controller="certificationCtrl" ng-hide="certifications.length <=0 && !isSelf">
     <h4 class="title">
         认证
         <span class="pull-right" ng-show="isSelf">

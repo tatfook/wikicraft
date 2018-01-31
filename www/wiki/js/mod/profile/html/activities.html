@@ -1,4 +1,8 @@
 <style>
+    .user-activities .empty-box{
+        border: 1px solid #F2F2F2;
+        margin: 20px 0 24px;
+    }
     .user-activities .active-row {
         height: 80px;
         line-height: 80px;
@@ -40,7 +44,7 @@
         -webkit-text-stroke: 1px #7FC4FF;
     }
 </style>
-<div class="user-activities clearfix" ng-controller="activitiesCtrl">
+<div class="user-activities clearfix" ng-controller="activitiesCtrl" ng-hide="trendsList.length <=0 && !isSelf">
     <h4 class="title" translate="活动">
     </h4>
     <div class="empty-box" ng-hide="trendsCount>0">

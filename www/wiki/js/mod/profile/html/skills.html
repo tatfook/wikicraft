@@ -142,7 +142,7 @@
         background-color: #E4E4E4;
     }
 </style>
-<div class="user-skills" ng-controller="skillCtrl">
+<div class="user-skills" ng-controller="skillCtrl" ng-hide="skills.length <=0 && !isSelf">
     <h4 class="title">
         技能
         <span class="pull-right" ng-show="isSelf">

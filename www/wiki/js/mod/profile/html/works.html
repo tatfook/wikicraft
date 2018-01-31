@@ -221,7 +221,7 @@
         color: #FFF;
     }
 </style>
-<div class="user-works" ng-controller="worksCtrl">
+<div class="user-works" ng-controller="worksCtrl" ng-hide="works.length <=0 && !isSelf">
     <h4 class="title">
         作品
         <span class="pull-right" ng-show="isSelf">
