@@ -175,7 +175,7 @@ define([
 
                             setTimeout(function(){
                                 document.body.removeChild(ifr);
-                            }, 1500);
+                            }, 5000);
                         }
                     });
                 }else{
