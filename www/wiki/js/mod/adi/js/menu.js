@@ -53,7 +53,44 @@ define(['app', 'text!wikimod/adi/html/menu.html'], function (app, htmlContent) {
                 }
             });
 
-            // console.log($scope.params);			
+            // console.log($scope.params);
+            // $scope.$watch("$viewContentLoaded", function(){
+            //     setTimeout(function(){
+            //         let uls = document.querySelectorAll(".menuUl"); //获取所有的ul
+            //         console.log(uls)
+            //         console.log(document.querySelectorAll(".menuUl"))
+            //         let lis = document.querySelectorAll(".menuLi"); //获取所有的li
+            //         console.log(lis)
+            //         console.log(document.querySelectorAll(".menuLi"))
+            //         console.log(document.querySelector("#tanbingfeng"))
+            //         let liWidth = document.querySelector("#tanbingfeng .menuUl").offsetWidth-2
+            //         for (let i = uls.length - 1; i >= 0; i--) {
+            //                 if(uls[i].parentNode.nodeName === "LI") {
+            //                     uls[i].style.left = liWidth + "px"; 
+            //                 }
+            //             }
+            //             for (var i = 0; i < lis.length; i++) {
+            //                 if( lis[i].children.length === 1) { //没有下一级菜单直接删除
+            //                     lis[i].children[0].outerHTML = "";
+            //                 };
+            //             }
+            //         for (let i = 0; i < lis.length; i++) { // 控制每一个li
+            //                 lis[i].onmouseover = function() {
+            //                     if( lis[i].children.length === 2) {
+            //                         this.children[1].classList.remove("hide");
+            //                         this.children[1].classList.add("show");
+            //                     } 
+            //                 }
+            //                 lis[i].onmouseout = function() {
+            
+            //                     if( lis[i].children.length === 2) {
+            //                         this.children[1].classList.remove("show");
+            //                         this.children[1].classList.add("hide");
+            //                     }
+            //                 }
+            //             }			
+            //     },0)
+            // });			
         }]);
     }
 
