@@ -73,14 +73,14 @@
             <p translate="暂无相关内容..."></p>
         </div>
         <table ng-show="certifications.length>0" ng-class="{true:'editing-certifications'}[editing]">
-            <tr class="certification-item" ng-repeat="certification in certifications">
+            <tr class="certification-item" ng-repeat="certification in certifications track by $index">
                 <td class="title ellipsis-1">{{certification.title}}</td>
                 <td class="link ellipsis-1">{{certification.link}}</td>
                 <td class="time ellipsis-1">{{certification.getDate}}</td>
                 <td class="editing-toolbar" ng-show="editing">
                     <span class="iconfont icon-shezhi" title="设置" ng-click="setCertification($index)"></span>
-                    <span class="iconfont icon-shangyi" title="上移" ng-click="shiftUp($index)"></span>
-                    <span class="iconfont icon-xiayi" title="下移" ng-click="shiftDown($index)"></span>
+                    <span class="iconfont icon-shangyi" ng-disabled="$index == 0" title="上移" ng-click="shiftUp($index)"></span>
+                    <span class="iconfont icon-xiayi" ng-disabled="$index + 1 == certifications.length"title="下移" ng-click="shiftDown($index)"></span>
                     <span class="iconfont icon-shanchu1" title="删除" ng-click="deleteCertification($index)"></span>
                 </td>
             </tr>

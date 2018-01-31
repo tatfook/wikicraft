@@ -76,6 +76,7 @@
         text-align: center;
         line-height: 36px;
         font-size: 20px;
+        cursor: pointer;
     }
 
     .user-skills span.icon-icondianzan.active{
@@ -158,7 +159,7 @@
             <li class="clearfix v-li" ng-repeat="skill in skills | limitTo: 5 track by $index">
                 <span class="title">{{skill.title}}</span>
                 <span class="level">{{skill.level}}</span>
-                <span class="pull-right iconfont icon-icondianzan" ng-class="{false:'active'}[!skillsDetail[skill.title].liked]" ng-click="likeSkill(skill)"></span>
+                <span class="pull-right iconfont icon-icondianzan" title="{{!skillsDetail[skill.title].liked ? '取消点赞':'点赞'}}" ng-class="{false:'active'}[!skillsDetail[skill.title].liked]" ng-click="likeSkill(skill)"></span>
             </li>
         </ul>
         <div class="col-sm-6 skill-radar" id="skillRadar">
@@ -184,8 +185,8 @@
                 <span class="title">{{skill.title}}</span>
                 <span class="pull-right editing-toolbar">
                     <span class="iconfont icon-shezhi" title="设置" ng-click="setSkill($index)"></span>
-                    <span class="iconfont icon-shangyi" title="上移" ng-click="shiftUp($index)"></span>
-                    <span class="iconfont icon-xiayi" title="下移" ng-click="shiftDown($index)"></span>
+                    <span class="iconfont icon-shangyi" ng-disabled="$index == 0" title="上移" ng-click="shiftUp($index)"></span>
+                    <span class="iconfont icon-xiayi" ng-disabled="$index + 1 == skills.length" title="下移" ng-click="shiftDown($index)"></span>
                     <span class="iconfont icon-shanchu1" title="删除" ng-click="deleteSkill($index)"></span>
                 </span>
             </li>

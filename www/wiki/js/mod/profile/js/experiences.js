@@ -2,7 +2,7 @@
  * @Author: ZhangKaitlyn 
  * @Date: 2018-01-19
  * @Last Modified by: none
- * @Last Modified time: 2018-01-26 17:38:52
+ * @Last Modified time: 2018-01-31 16:25:53
  */
 define([
     'app', 
@@ -93,12 +93,18 @@ define([
             };
 
             $scope.shiftUp = function(index){
+                if (index < 1) {
+                    return;
+                }
                 var prev = index - 1;
                 $scope.experiences[prev] = $scope.experiences.splice((prev + 1), 1, $scope.experiences[prev])[0];
                 modifyExperiencesMd();
             };
 
             $scope.shiftDown = function(index){
+                if (index >= ($scope.experiences.length - 1)) {
+                    return;
+                }
                 var prev = index;
                 $scope.experiences[prev] = $scope.experiences.splice((prev + 1), 1, $scope.experiences[prev])[0];
                 modifyExperiencesMd();

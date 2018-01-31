@@ -256,8 +256,8 @@
             </div>
             <div class="editing-toolbar absolute-right" ng-show="editing">
                 <span class="iconfont icon-shezhi" title="设置" ng-click="setWork($index)"></span>
-                <span class="iconfont icon-shangyi" title="上移" ng-click="shiftUp($index)"></span>
-                <span class="iconfont icon-xiayi" title="下移" ng-click="shiftDown($index)"></span>
+                <span class="iconfont icon-shangyi" ng-disabled="$index == 0" title="上移" ng-click="shiftUp($index)"></span>
+                <span class="iconfont icon-xiayi" ng-disabled="$index + 1 == works.length" title="下移" ng-click="shiftDown($index)"></span>
                 <span class="iconfont icon-shanchu1" title="删除" ng-click="deleteWork($index)"></span>
             </div>
         </div>

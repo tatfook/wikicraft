@@ -72,14 +72,14 @@
             <p translate="暂无相关内容..."></p>
         </div>
         <table ng-show="experiences.length>0" ng-class="{true:'editing-experiences'}[editing]">
-            <tr class="experience-item" ng-repeat="experience in experiences">
+            <tr class="experience-item" ng-repeat="experience in experiences track by $index">
                 <td class="title ellipsis-1">{{experience.title}}</td>
                 <td class="link ellipsis-1">{{experience.link}}</td>
                 <td class="time ellipsis-1">{{experience.startDate+"至"+experience.endDate}}</td>
                 <td class="editing-toolbar" ng-show="editing">
                     <span class="iconfont icon-shezhi" title="设置" ng-click="setExperience($index)"></span>
-                    <span class="iconfont icon-shangyi" title="上移" ng-click="shiftUp($index)"></span>
-                    <span class="iconfont icon-xiayi" title="下移" ng-click="shiftDown($index)"></span>
+                    <span class="iconfont icon-shangyi" ng-disabled="$index == 0" title="上移" ng-click="shiftUp($index)"></span>
+                    <span class="iconfont icon-xiayi" ng-disabled="$index + 1 == experiences.length" title="下移" ng-click="shiftDown($index)"></span>
                     <span class="iconfont icon-shanchu1" title="删除" ng-click="deleteExperience($index)"></span>
                 </td>
             </tr>
