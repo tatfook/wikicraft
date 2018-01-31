@@ -44,6 +44,10 @@ define([
             }
             
             $scope.success = function(html){
+                if(html == "<p><br></p>"){
+                    html = "";
+                }
+
                 $scope.params.modal_rich.data = html;
                 $scope.applyAttrChange();
             }
@@ -80,6 +84,8 @@ define([
 		app.registerController("richEditorController", ['$scope', '$uibModalInstance', 'wikiBlock', function ($scope, $uibModalInstance, wikiBlock) {
             $scope.init = function() {
                 $scope.editor = new wangEditor('richEditor');
+
+                $scope.editor.config.printLog = false;
                 $scope.editor.create();
 
                 if(typeof(wikiBlock.modParams.modal_rich.data) == "string"){
