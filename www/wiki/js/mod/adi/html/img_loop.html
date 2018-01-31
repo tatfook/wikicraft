@@ -25,12 +25,33 @@
            bottom: 0;
            left:0;
        }
-       .carouselImg{
-           height:600px;
-           width:100%;
-           background-position:center !important;
-           background-size: cover !important;
-       }
+       @media screen and (max-width: 1980px) {
+            .carouselImg{
+                height:600px;
+                width:100%;
+                background-position:center !important;
+                background-size: cover !important;
+            }
+        }
+        @media screen and (max-width:768px) {
+            .carouselImg{
+                height:150px;
+                width:100%;
+                background-position:center !important;
+                background-size: cover !important;
+            }
+            .carousel-indicators li{
+                width: 20px !important;
+                height:2px !important;
+            }
+            .displayBar{
+                height:15px;
+            }
+            .carousel-indicators{
+                z-index: 10;
+                bottom :-10px !important;
+            }
+        }
        
    </style>
    <div ng-controller="carouselController">
