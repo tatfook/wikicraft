@@ -2,7 +2,61 @@
     .project-mod a{
         color: black;
     }
-
+    @media screen and (max-width:1980px) {
+        .project-mod .style1 .picture-body .picture-img{
+        float: left;
+        width:490px;
+        height:701px;
+        text-align: center;
+        line-height: 250px;
+        }
+        .project-mod .style1 .picture-body .projectImg{
+            width:490px;
+            height:701px;
+        }
+    }
+    @media screen and (max-width:1200px) {
+        .picture-body{
+            position: relative
+        }
+        .project-mod .style1 .picture-body .picture-span > h1{
+            font-size: 25px !important;
+            position: absolute;
+            top:0px;
+            left:0;
+        }
+        .project-mod .style1 .picture-body .picture-span > h2{
+            position: absolute;
+            top:40px;
+            left:0;
+        }
+        .project-mod .style1 .picture-body .picture-img{
+            position: absolute;
+            top:100px;
+            width: 100%;
+        }
+        .project-mod .style1 .picture-body .picture-span{
+            margin-top: 517px;
+            margin-left: 0 !important;
+            width: 100%;
+        }
+        .project-mod .style1 .picture-body .picture-span .span-one > span{
+            width: 100% !important;
+        }
+        .picture-btn{
+            position: absolute;
+            right:0;
+            top:50px;
+        }
+    }
+    @media screen and (max-width:768px) {
+        .project-mod .style1 .picture-body .picture-img{
+            width: 100%;
+        }
+        .project-mod .style1 .picture-body .picture-img img{
+            max-height:400px;
+        }
+    }
     /* style1 css */
     .project-mod .style1 .picture-one{
         padding-top: 30px;
@@ -16,17 +70,7 @@
     .project-mod .style1 .picture-one span a{
         white-space: pre-wrap;
     }
-    .project-mod .style1 .picture-body .picture-img{
-        float: left;
-        width:490px;
-        height:701px;
-        text-align: center;
-        line-height: 250px;
-    }
-    .project-mod .style1 .picture-body .projectImg{
-        width:490px;
-        height:701px;
-    }
+    
     .project-mod .style1 .picture-body .picture-img img{
         width:100%;
     }
