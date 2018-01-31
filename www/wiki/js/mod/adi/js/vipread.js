@@ -5,12 +5,9 @@ define([
 ], function (app, util, htmlContent) {
 
     function registerController(wikiBlock) {
-        app.registerController("vipreadController", ['$scope','$sce', 'Account', 'modal', function ($scope, $sce, Account, modal) {
-            var containerId, container, containerHeight;
-
+        app.registerController("vipreadController", ['$rootScope', '$scope','$sce', 'Account', 'modal', function ($rootScope, $scope, $sce, Account, modal) {
             $scope.modParams  = wikiBlock.modParams;
             $scope.editorMode = wikiBlock.editorMode;
-            $scope.isVip      = false;
 
             wikiBlock.init({
                 scope  : $scope,
@@ -31,50 +28,42 @@ define([
 				}
             });
 
-            var shield = function () {
-                var mdwiki = config.shareMap["mdwiki"];
-                
-                if(!$scope.params.switch_vipread.is_mod_hide){
-                    if($scope.isVip){
-                        document.querySelector("#" + wikiBlock.containerId).style.display = "none";
-                    }else{
-                        containerId = mdwiki.getMdWikiContentContainerId();
-                        container   = $("#" + containerId);
-                        vipBlock    = document.querySelector("#" + wikiBlock.containerId);
+            var rearrangement = function(){
+                var mdwiki      = config.shareMap["mdwiki"];
+                var containerId = mdwiki.getMdWikiContentContainerId();
+                var container   = $("#" + containerId);
+                var vipBlock    = document.querySelector("#" + wikiBlock.containerId);
 
-                        var innerElement = container[0];
+                var innerElement = container[0];
 
-                        for(var i = 0; i < innerElement.childNodes.length; i++){
-                            if(innerElement.childNodes[i].id == wikiBlock.containerId){
-                                innerElement.childNodes[i].remove();
-                            }
-                        }
-
-                        container.css({"height":"300px", "overflow":"hidden"});
-
-                        // for(var i = 0; i < innerElement.childNodes.length; i++){
-                        //     if(i >= 1){
-                        //         innerElement.childNodes[i].style.display = "none";
-                        //     }else{
-                        //         innerElement.childNodes[i].style.maxHeight = "150px";
-                        //         innerElement.childNodes[i].style.overflow = "hidden";
-                        //     }
-                        // }
-
-                        innerElement.prepend(vipBlock);
+                for(var i = 0; i < innerElement.childNodes.length; i++){
+                    if(innerElement.childNodes[i].id == wikiBlock.containerId){
+                        innerElement.childNodes[i].remove();
                     }
-                }else{
-                    document.querySelector("#" + wikiBlock.containerId).style.display = "none";
                 }
-            };
+
+                // for(var i = 0; i < innerElement.childNodes.length; i++){
+                //     if(i >= 1){
+                //         innerElement.childNodes[i].style.display = "none";
+                //     }else{
+                //         innerElement.childNodes[i].style.maxHeight = "150px";
+                //         innerElement.childNodes[i].style.overflow = "hidden";
+                //     }
+                // }
+
+                innerElement.prepend(vipBlock);
+
+                if($scope.isVip){
+                    container.css({"height":"auto", "overflow":"none"});
+                }else{
+                    container.css({"height":"300px", "overflow":"hidden"});
+                }
+            }
 
             var init = function () {
-                var mdwiki = config.shareMap["mdwiki"];
-
-                if(wikiBlock.editorMode){
-
-                }else{
-                    shield();
+                if(!wikiBlock.editorMode){
+                    setUserVip();
+                    rearrangement();
                 }
             };
 
@@ -92,19 +81,26 @@ define([
                     init();
                 });
             };
+            
 
-            $scope.$watch("$viewContentLoaded", function () {
-                if (Account.isAuthenticated()){
-                    $scope.user    = Account.getUser();
-                    $scope.isLogin = true;
+            $rootScope.$watch("isLogin", function(newValue, oldValue){
+                $scope.$watch("$viewContentLoaded", function () {
+                    $scope.isLogin = newValue;
+                    init();
+                });
+            });
+
+            function setUserVip(){
+                if($scope.isLogin){
+                    $scope.user = Account.getUser();
 
                     if($scope.user.vipInfo.endDate){
                         $scope.isVip = true;
                     }
+                }else{
+                    $scope.isVip = false;
                 }
-
-                init();
-            });
+            }
         }]);
     }
 
