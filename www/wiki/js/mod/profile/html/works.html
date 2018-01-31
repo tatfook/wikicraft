@@ -30,7 +30,14 @@
 
     .user-works .work-detail h4 {
         margin: 0;
+    }
+
+    .user-works .work-detail h4 > a{
         color: #333;
+    }
+
+    .user-works .work-detail h4 > a:hover{
+        color: #3977AD;
     }
 
     .user-works .work-detail p {
@@ -230,7 +237,7 @@
         <div class="works-item" ng-repeat="work in works track by $index" ng-show="works.length>0">
             <img ng-src="{{work.logoUrl || getImageUrl('wiki_cover.jpg', imgsPath)}}">
             <div class="work-detail">
-                <h4>{{work.title}}</h4>
+                <h4><a ng-href="{{work.workLink}}" target="_blank">{{work.title}}</a></h4>
                 <p class="p-link">
                     <a ng-href="{{work.workLink}}" target="_blank">{{work.workLink}}</a>
                 </p>

@@ -2,7 +2,7 @@
  * @Author: ZhangKaitlyn 
  * @Date: 2018-01-19
  * @Last Modified by: none
- * @Last Modified time: 2018-01-31 11:14:39
+ * @Last Modified time: 2018-01-31 14:56:31
  */
 define([
     'app',
@@ -26,7 +26,6 @@ define([
                     return mdContent[type];
                 }
                 var path = '/'+ userDataSource.keepwrokUsername +'_datas/' + type + ".md";
-                console.log(path);
                 userDataSource.getFile({
                     path: path,
                     ref: 'master'

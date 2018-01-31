@@ -49,7 +49,14 @@
 
     .user-sites .site-detail h4 {
         margin: 0;
+    }
+
+    .user-sites .site-detail h4 > a{
         color: #333;
+    }
+
+    .user-sites .site-detail h4 > a:hover{
+        color: #3977AD;
     }
 
     .user-sites .site-detail p {
@@ -137,7 +144,7 @@
                     <span class="iconfont icon-lock" ng-show="site.visibility == 'private' && params.type == 'created'" title="私有网站"></span>
                 </div>
                 <div class="site-detail">
-                    <h4>{{site.name}}</h4>
+                    <h4><a ng-href="{{'/'+ site.username+'/'+site.name}}" target="_blank">{{site.name}}</a></h4>
                     <p class="p-link">
                         <a ng-href="{{'/'+ site.username+'/'+site.name}}" target="_blank">{{'/'+ site.username+'/'+site.name}}</a>
                     </p>
@@ -166,7 +173,7 @@
         <div class="sites-item" ng-show="params.type == 'concerned' && sites[params.type].length > 0" ng-repeat="site in sites[params.type] track by $index">
             <img ng-src="{{site.siteinfo.logoUrl}}">
             <div class="site-detail">
-                <h4>{{site.siteinfo.name}}</h4>
+                <h4><a ng-href="{{'/'+ site.siteinfo.username+'/'+site.siteinfo.name}}" target="_blank">{{site.siteinfo.name}}</a></h4>
                 <p class="p-link">
                     <a ng-href="{{'/'+ site.siteinfo.username+'/'+site.siteinfo.name}}" target="_blank">{{'/'+ site.siteinfo.username+'/'+site.siteinfo.name}}</a>
                 </p>

@@ -2,7 +2,7 @@
  * @Author: ZhangKaitlyn 
  * @Date: 2018-01-19
  * @Last Modified by: none
- * @Last Modified time: 2018-01-31 10:02:45
+ * @Last Modified time: 2018-01-31 14:56:01
  */
 define([
     'app', 
@@ -100,7 +100,6 @@ define([
                         "works": $scope.works
                     }) + "\n```\n"
                 }
-                console.log(newItemObj.content);
                 $rootScope.$broadcast("changeProfileMd", newItemObj);
             }
 

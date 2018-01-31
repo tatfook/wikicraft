@@ -2,7 +2,7 @@
  * @Author: ZhangKaitlyn 
  * @Date: 2018-01-19
  * @Last Modified by: none
- * @Last Modified time: 2018-01-27 16:18:37
+ * @Last Modified time: 2018-01-31 14:57:25
  */
 define([
     'app', 
@@ -19,7 +19,6 @@ define([
 				}
 			});
 
-            console.log($scope.params);
             $scope.isFold = true;
 
             $scope.toggleFold = function(){
