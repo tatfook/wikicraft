@@ -2850,6 +2850,16 @@ define([], function () {
             "en": "glance over"
         },
         {
+            "_key": "隐藏",
+            "zh-cn": "隐藏",
+            "en": "Hide"
+        },
+        {
+            "_key": "展开",
+            "zh-cn": "展开",
+            "en": "Open"
+        },
+        {
             "_key": "拆分",
             "zh-cn": "拆分",
             "en": "split"
