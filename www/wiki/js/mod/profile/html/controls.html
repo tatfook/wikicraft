@@ -84,7 +84,7 @@
     }
 </style>
 <div ng-controller="profileControlCtrl">
-    <div class="control-bar container clearfix">
+    <div class="control-bar container clearfix" ng-show="isSelf">
         <div class="item-container">
             <a class="item" href="/wiki/user_center?userCenterContentType=newWebsite" target="_blank">
                 <img ng-src="{{imgsPath + 'icon/wiki_new_site.png'}}" alt="">
