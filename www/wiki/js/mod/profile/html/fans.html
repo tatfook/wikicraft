@@ -18,6 +18,14 @@
         padding: 0 28px;
         margin-top: 20px;
     }
+
+    .user-fans h4 > a{
+        color: #333;
+    }
+
+    .user-fans h4 > a:hover{
+        color: #3977AD;
+    }
 </style>
 <div class="user-fans" ng-controller="fansCtrl">
     <h4 class="title">粉丝</h4>
@@ -28,7 +36,7 @@
         </div>
         <div class="fans-item" ng-repeat="fans in fansList" ng-show="fansList.length > 0">
             <img ng-src="{{fans.userinfo.logoUrl || getImageUrl('default_portrait.png',imgsPath)}}" alt="">
-            <h4>{{fans.userinfo.displayName || fans.userinfo.username}}</h4>
+            <h4><a ng-href="{{'/' + fans.userinfo.username}}">{{fans.userinfo.displayName || fans.userinfo.username}}</a></h4>
         </div>
     </div>
 </div>

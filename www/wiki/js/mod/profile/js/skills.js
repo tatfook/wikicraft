@@ -2,7 +2,7 @@
  * @Author: ZhangKaitlyn 
  * @Date: 2018-01-19
  * @Last Modified by: none
- * @Last Modified time: 2018-01-29 10:41:12
+ * @Last Modified time: 2018-01-31 10:50:51
  */
 define([
     'app', 
@@ -123,6 +123,11 @@ define([
                     visitor: visitor,
                     username: $scope.userinfo.username
                 }, function(data){
+                    if (!data) {
+                        var act = (data && !data.liked) ? "取消点赞" : "点赞";
+                        Message.danger(act + "失败，请稍后重试");
+                        return;
+                    }
                     $scope.skillsDetail[skill.title] = data; 
                     var act = data.liked ? "点赞" : "取消点赞";
                     Message.info(act + "成功！");

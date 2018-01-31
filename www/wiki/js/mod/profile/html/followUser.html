@@ -1,17 +1,19 @@
 <style>
     .follow-users .follow-users-list {
-        border: 1px solid #F2F2F2;
-        padding: 0 20px;
-        margin: 24px 0 40px;
+        margin: 15px -9px 31px;
     }
 
     .follow-users .follow-users-item {
-        display: flex;
-        padding: 20px 0;
-        border-bottom: 1px solid #F2F2F2;
+        padding: 9px;
     }
 
-    .follow-users .follow-users-item>img {
+    .follow-users .follow-users-item .inner-box{
+        display: flex;
+        padding: 25px 15px 20px 36px;
+        border: 1px solid #F2F2F2;
+    }
+
+    .follow-users .follow-users-item .inner-box > img {
         width: 60px;
         height: 60px;
         object-fit: cover;
@@ -22,34 +24,52 @@
     .follow-users .btn-followed {
         padding: 0;
         font-size: 14px;
-        border: 1px solid #3977AD;
+        border: 1px solid #999;
         width: 68px;
         height: 28px;
         line-height: 28px;
+        color: #999;
+        margin-top: 15px;
+        cursor: initial;
+    }
+
+    .follow-users h4{
+        margin: 0 0 10px;
+    }
+
+    .follow-users h4 > a{
+        color: #333;
+    }
+
+    .follow-users h4 > a:hover{
         color: #3977AD;
+    }
+
+    .follow-users p.location{
+        color: #999;
+        font-weight: lighter;
     }
 </style>
 <div class="follow-users" ng-controller="followsUserCtrl">
     <h4 class="title">
         关注的作者
     </h4>
-    <div class="follow-users-list">
+    <div class="follow-users-list clearfix">
         <div class="empty-box" ng-hide="followUserList.length > 0">
             <span class="iconfont icon-kongbaiyemian"></span>
             <p translate="暂无相关内容..."></p>
         </div>
-        <div class="follow-users-item" ng-repeat="followUser in followUserList track by $index" ng-show="followUserList.length > 0">
-            <img ng-src="{{followUser.userinfo.logoUrl || getImageUrl('default_portrait.png',imgsPath)}}">
-            <div class="follow-user-detail">
-                <h4>{{followUser.userinfo.displayName || followUser.userinfo.username}}</h4>
-                <p class="location">
-                    <i class="iconfont icon-shiliangzhinengduixiang"></i>
-                    {{followUser.userinfo.location || "未知地点"}}
-                </p>
-                <div class="btn btn-followed">已关注</div>
-            </div>
-            <div class="work-other-msg">
-                <img ng-src="work.logoUrl" ng-repeat="work in followUser.userinfo.works" alt="">
+        <div class="follow-users-item col-sm-4" ng-repeat="followUser in followUserList track by $index" ng-show="followUserList.length > 0">
+            <div class="inner-box">
+                <img ng-src="{{followUser.userinfo.logoUrl || getImageUrl('default_portrait.png',imgsPath)}}">
+                <div class="follow-user-detail">
+                    <h4><a ng-href="{{'/' + followUser.userinfo.username}}">{{followUser.userinfo.displayName || followUser.userinfo.username}}</a></h4>
+                    <p class="location">
+                        <i class="iconfont icon-shiliangzhinengduixiang"></i>
+                        {{followUser.userinfo.location || "未知地点"}}
+                    </p>
+                    <div class="btn btn-followed">已关注</div>
+                </div>
             </div>
         </div>
     </div>

@@ -2,7 +2,7 @@
  * @Author: ZhangKaitlyn 
  * @Date: 2018-01-19
  * @Last Modified by: none
- * @Last Modified time: 2018-01-27 16:12:26
+ * @Last Modified time: 2018-01-31 10:02:45
  */
 define([
     'app', 
@@ -41,6 +41,9 @@ define([
 
             var getWorksMsgByUrl = function(){
                 $scope.works.map(function(work, index){
+                    if (!work || !work.workLink) {
+                        return;
+                    }
                     var link = work.workLink;
                     var linkParams = link.split("/");
                     var startIndex = link.search(keepworkReg);
