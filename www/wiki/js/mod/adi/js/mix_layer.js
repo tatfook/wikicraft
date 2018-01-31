@@ -138,49 +138,68 @@ define([
             $scope.imgHeight = "__MIXIMG__" + Date.now();
             $scope.divHeight = "__MIXDIV__" + Date.now();
 
-            $scope.$watch("$viewContentLoaded", function(){
+            $scope.onParamsChange = function(){
                 setTimeout(function(){
                     var miximg = document.querySelector('#' + $scope.imgHeight);
                     var mixdiv = document.querySelector('#' + $scope.divHeight);
-
+        
                     if(mixdiv.offsetHeight > 649 && mixdiv.offsetHeight < 1739){
                         miximg.style.height = mixdiv.offsetHeight + 'px';
                         $scope.mixFontColor = {
                             'color' : 'rgb(255, 255, 255)' 
                         }
                     }
-
-                    if(mixdiv.offsetHeight > 1739){
+                    if(mixdiv.offsetHeight < 649){
                         if($scope.params.design.text == "style7" ||
-                           $scope.params.design.text == "style8" ||
-                           $scope.params.design.text == "style9"){
-                            mixdiv.style.marginTop = 430 + 'px';
+                        $scope.params.design.text == "style8" ||
+                        $scope.params.design.text == "style9"){
+                            mixdiv.style.marginTop = 0;
                         }
-
                         if($scope.params.design.text == "style4" ||
-                           $scope.params.design.text == "style5" ||
-                           $scope.params.design.text == "style6"){
-                             mixdiv.style.marginTop = 510 + 'px';
+                        $scope.params.design.text == "style5" ||
+                        $scope.params.design.text == "style6"){
+                            mixdiv.style.marginTop = 0;
                         }
-
+    
                         if($scope.params.design.text == "style1" ||
-                           $scope.params.design.text == "style2" ||
-                           $scope.params.design.text == "style3"){
-                            mixdiv.style.marginTop = 694 + 'px';
+                        $scope.params.design.text == "style2" ||
+                        $scope.params.design.text == "style3"){
+                            mixdiv.style.marginTop = 0;
                             miximg.style.height    = 694 + 'px';
                         }
-                        
                         $scope.mixFontColor = {
-                            'color' : 'black' 
+                            'color' : 'rgb(255, 255, 255)' 
                         }
                     }
+        
+                    if(mixdiv.offsetHeight > 1739){
+                        if($scope.params.design.text == "style7" ||
+                            $scope.params.design.text == "style8" ||
+                            $scope.params.design.text == "style9"){
+                                mixdiv.style.marginTop = 430 + 'px';
+                        }
+        
+                        if($scope.params.design.text == "style4" ||
+                            $scope.params.design.text == "style5" ||
+                            $scope.params.design.text == "style6"){
+                                mixdiv.style.marginTop = 510 + 'px';
+                            }
+        
+                        if($scope.params.design.text == "style1" ||
+                            $scope.params.design.text == "style2" ||
+                            $scope.params.design.text == "style3"){
+                                mixdiv.style.marginTop = 694 + 'px';
+                                miximg.style.height    = 694 + 'px';
+                        }
+                                
+                        $scope.mixFontColor = {
+                            'color' : 'black' 
+                            }
+                        }
                 }, 0);
-            })
-            
 
-            // if($scope.params.multiText_content.text.length > mixDesc.length){
-            //     $scope.$watch("$viewContentLoaded", $scope.mixImgHeight);
-            // }            
+            }
+                      
         }]);
     }
 
