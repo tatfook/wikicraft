@@ -149,6 +149,28 @@ define([
                             'color' : 'rgb(255, 255, 255)' 
                         }
                     }
+                    if(mixdiv.offsetHeight < 649){
+                        if($scope.params.design.text == "style7" ||
+                        $scope.params.design.text == "style8" ||
+                        $scope.params.design.text == "style9"){
+                            mixdiv.style.marginTop = 0;
+                        }
+                        if($scope.params.design.text == "style4" ||
+                        $scope.params.design.text == "style5" ||
+                        $scope.params.design.text == "style6"){
+                            mixdiv.style.marginTop = 0;
+                        }
+    
+                        if($scope.params.design.text == "style1" ||
+                        $scope.params.design.text == "style2" ||
+                        $scope.params.design.text == "style3"){
+                            mixdiv.style.marginTop = 0;
+                            miximg.style.height    = 694 + 'px';
+                        }
+                        $scope.mixFontColor = {
+                            'color' : 'rgb(255, 255, 255)' 
+                        }
+                    }
         
                     if(mixdiv.offsetHeight > 1739){
                         if($scope.params.design.text == "style7" ||
