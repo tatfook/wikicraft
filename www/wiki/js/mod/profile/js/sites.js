@@ -2,7 +2,7 @@
  * @Author: ZhangKaitlyn 
  * @Date: 2018-01-19
  * @Last Modified by: none
- * @Last Modified time: 2018-01-27 18:50:14
+ * @Last Modified time: 2018-02-01 15:45:31
  */
 define([
     'app', 
@@ -71,7 +71,7 @@ define([
                     return;
                 }
                 util.post(config.apiUrlPrefix + "site_user/getSiteListByMemberName", {
-                    memberName: "kaitlyn",
+                    memberName: $scope.userinfo.username,
                 }, function(data){
                     data = data || [];
                     for (var i = data.length - 1; i>=0; i--){
