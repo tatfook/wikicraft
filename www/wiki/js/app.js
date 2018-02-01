@@ -24,7 +24,8 @@ define([
     };
 
 	//console.log("app");
-	app.ng_app = angular.module('webapp', ['ui.bootstrap', 'ui.select', 'pascalprecht.translate', 'satellizer', 'ngSanitize', 'toggle-switch',]).run(function ($injector) {
+	app.ng_app = angular.module('webapp', ['ui.bootstrap', 'ui.select', 'pascalprecht.translate', 'satellizer', 'ngSanitize', 'toggle-switch',]).run(function () {
+		var $injector = angular.injector(["ng", "satellizer"]);
 		config.angularBootstrap = true;
         app.angularBootstrap = true;
 		app.ng_objects.$injector = $injector;
