@@ -52,7 +52,7 @@ define([
 
             $scope.$watch("$viewContentLoaded", function(){
                 setTimeout(function(){
-                    if (Account.isAuthenticated() && Account.user) {
+                    if (Account.isAuthenticated() && Account.user){
                         $scope.otherUserinfo.username = Account.user.username;
                     }
                 }, 0);
@@ -252,7 +252,7 @@ define([
             }();
 
             $scope.$watch("otherUserinfo.username", function (newValue, oldValue) {
-                getUserinfo();
+                setTimeout(getUserinfo, 0);
             });
 
             $scope.$watch("goods", function (newValue, oldValue) {
