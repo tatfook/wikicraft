@@ -247,7 +247,7 @@
     }
 </style>
 
-<div ng-controller="mixPositionController" ng-class="{true : 'project-clear-pointer'}[editorMode]" class="project-mod">
+<div ng-class="{true : 'project-clear-pointer'}[mode]" class="project-mod">
 
     <!-- style1 -->
     <div ng-if='params.design.text=="style1"' class="style1">
@@ -255,12 +255,12 @@
             <div class="picture-body clearfix">
                 <div class="picture-img">
                     <div ng-hide="params.image_picture.is_mod_hide">
-                        <a ng-if="editorMode"
+                        <a ng-if="mode"
                         ng-click="viewEditorClick(params.image_picture, $event)"
                         href="javascript:void(0)">
                             <img ng-src="{{getImagePictureText(params.image_picture.text)}}">
                         </a>
-                        <a ng-if="!editorMode"
+                        <a ng-if="!mode"
                         ng-class="{true : 'project-clear-pointer'}[params.image_picture.href.length == 0]"
                         target="{{params.image_picture.target ? params.image_picture.target : '_blank' }}"
                         ng-href="{{params.image_picture.href}}"
@@ -271,13 +271,13 @@
                 </div>
                 <div class="picture-span">
                     <h1>
-                        <a ng-if="editorMode"
+                        <a ng-if="mode"
                            ng-hide="params.link_headline.is_mod_hide"
                            ng-click="viewEditorClick(params.link_headline, $event)"
                            href="{{params.link_headline.href}}">
                             {{params.link_headline.text}}
                         </a>
-                        <a ng-if="!editorMode"
+                        <a ng-if="!mode"
                            ng-hide="params.link_headline.is_mod_hide"
                            ng-class="{true : 'project-clear-pointer'}[params.link_headline.href.length == 0]"
                            target="{{params.link_headline.target ? params.link_headline.target : '_blank'}}"
@@ -286,13 +286,13 @@
                         </a>
                     </h1>
                     <h2>
-                        <a ng-if="editorMode"
+                        <a ng-if="mode"
                            ng-hide="params.link_sublink.is_mod_hide"
                            ng-click="viewEditorClick(params.link_sublink, $event)"
                            href="javascript:void(0)">
                             {{params.link_sublink.text}}
                         </a>
-                        <a ng-if="!editorMode"
+                        <a ng-if="!mode"
                            ng-hide="params.link_sublink.is_mod_hide"
                            target="{{params.link_sublink.target ? params.link_sublink.target : '_blank'}}"
                            ng-href="{{params.link_sublink.href}}"
@@ -302,12 +302,12 @@
                     </h2>
                     <div class="span-one">
                         <span>
-                            <a ng-if="editorMode"
+                            <a ng-if="mode"
                                ng-hide="params.multiText_desc.is_mod_hide"
                                ng-click="viewEditorClick(params.multiText_desc, $event)"
                                href="javascript:void(0)"
                                ng-bind-html="subMarkdownRender(params.multiText_desc.text)"></a>
-                            <a ng-if="!editorMode"
+                            <a ng-if="!mode"
                                ng-hide="params.multiText_desc.is_mod_hide"
                                target="{{params.multiText_desc.target ? params.multiText_desc.target : '_blank'}}"
                                ng-href="{{params.multiText_desc.href}}"
@@ -315,14 +315,14 @@
                                ng-bind-html="subMarkdownRender(params.multiText_desc.text)"></a>
                         </span>
                         <div ng-hide="params.link_more.is_mod_hide" class="picture-btn">
-                            <a ng-if="editorMode"
+                            <a ng-if="mode"
                                class="btn btn-primary"
                                style="color:rgb(255, 255, 255);"
                                ng-click="viewEditorClick(params.link_more, $event)"
                                href="javascript:void(0)">
                                 {{params.link_more.text}}
                             </a>
-                            <a ng-if="!editorMode"
+                            <a ng-if="!mode"
                                target="{{params.link_more.target ? params.link_more.target : '_blank'}}"
                                class="btn btn-primary"
                                style="color:rgb(255, 255, 255);"
@@ -344,12 +344,12 @@
                 <div class="project-spans">
                     <h1>
                         <div ng-hide="params.link_headline.is_mod_hide">
-                            <a ng-if="editorMode"
+                            <a ng-if="mode"
                                 ng-click="viewEditorClick(params.link_headline, $event)"
                                 href="javascript:void(0)">
                                 {{params.link_headline.text}}
                             </a>
-                            <a ng-if="!editorMode"
+                            <a ng-if="!mode"
                                 target="{{params.link_headline.target ? params.link_headline.target : '_blank'}}"
                                 ng-class="{true : 'project-clear-pointer'}[params.link_headline.href.length == 0]"
                                 ng-href="{{params.link_headline.href}}">
@@ -359,12 +359,12 @@
                     </h1>
                     <h2>
                         <div ng-hide="params.link_sublink.is_mod_hide">
-                            <a ng-if="editorMode"
+                            <a ng-if="mode"
                                 ng-click="viewEditorClick(params.link_sublink, $event)"
                                 href="javascript:void(0)">
                                 {{params.link_sublink.text}}
                             </a>
-                            <a ng-if="!editorMode"
+                            <a ng-if="!mode"
                                 target="{{params.link_sublink.target ? params.link_sublink.target : '_blank'}}"
                                 ng-class="{true : 'project-clear-pointer'}[params.link_sublink.href.length == 0]"
                                 ng-href="{{params.link_sublink.href}}">
@@ -373,11 +373,11 @@
                         </div>
                     </h2>
                     <div ng-hide="params.multiText_desc.is_mod_hide">
-                        <a ng-if="editorMode"
+                        <a ng-if="mode"
                            href="javascript:void(0)"
                            ng-click="viewEditorClick(params.multiText_desc, $event)"
                            ng-bind-html="subMarkdownRender(params.multiText_desc.text)"></a>
-                        <a ng-if="!editorMode"
+                        <a ng-if="!mode"
                            target="{{params.multiText_desc.target ? params.multiText_desc.target : '_blank'}}"
                            ng-class="{true : 'project-clear-pointer'}[params.multiText_desc.href.length == 0]"
                            ng-href="{{params.multiText_desc.href}}" ng-bind-html="subMarkdownRender(params.multiText_desc.text)"></a>
@@ -385,12 +385,12 @@
                 </div>
                 <div class="project-image">
                     <div ng-hide="params.image_picture.is_mod_hide">
-                        <a ng-if="editorMode"
+                        <a ng-if="mode"
                            ng-click="viewEditorClick(params.image_picture, $event)"
                            href="javascript:void(0)">
                             <div ng-style="setImgBackground(getImagePictureText(params.image_picture.text))"></div>
                         </a>
-                        <a ng-if="!editorMode"
+                        <a ng-if="!mode"
                            target="{{params.image_picture.target ? params.image_picture.target : '_blank'}}"
                            ng-class="{true:'project-clear-pointer'}[params.image_picture.href.length == 0]"
                            ng-href="{{params.image_picture.href}}">
@@ -400,14 +400,14 @@
                 </div>
             </div>
             <div ng-hide="params.link_more.is_mod_hide">
-                <a ng-if="editorMode"
+                <a ng-if="mode"
                    class="btn btn-primary project-btn"
                    ng-click="viewEditorClick(params.link_more, $event)"
                    style="color:rgb(255, 255, 255);"
                    href="javascript:void(0)">
                     {{params.link_more.text}}
                 </a>
-                <a ng-if="!editorMode"
+                <a ng-if="!mode"
                    class="btn btn-primary project-btn"
                    style="color:rgb(255, 255, 255);"
                    target="{{params.link_more.target ? params.link_more.target : '_blank'}}"
@@ -424,13 +424,13 @@
         <div class="picture-one container">
             <div class="picture-body clearfix">
                 <div class="picture-img">
-                    <a ng-if="editorMode"
+                    <a ng-if="mode"
                        ng-hide="params.image_picture.is_mod_hide"
                        ng-click="viewEditorClick(params.image_picture, $event)"
                        href="javascript:void(0)">
                         <img ng-src="{{getImagePictureText(params.image_picture.text)}}">
                     </a>
-                    <a ng-if="!editorMode"
+                    <a ng-if="!mode"
                        ng-hide="params.image_picture.is_mod_hide"
                        target="{{params.image_picture.target ? params.image_picture.target : '_blank' }}"
                        ng-href="{{params.image_picture.href}}"
@@ -441,12 +441,12 @@
                 <div class="picture-span">
                     <h1>
                         <div ng-hide="params.link_headline.is_mod_hide">
-                            <a ng-if="editorMode"
+                            <a ng-if="mode"
                                ng-click="viewEditorClick(params.link_headline, $event)"
                                href="{{params.link_headline.href}}">
                                 {{params.link_headline.text}}
                             </a>
-                            <a ng-if="!editorMode"
+                            <a ng-if="!mode"
                                target="{{params.link_headline.target ? params.link_headline.target : '_blank'}}"
                                ng-class="{true : 'project-clear-pointer'}[params.link_headline.href.length == 0]"
                                ng-href="{{params.link_headline.href}}">
@@ -456,12 +456,12 @@
                     </h1>
                     <h2>
                         <div ng-hide="params.link_sublink.is_mod_hide">
-                            <a ng-if="editorMode"
+                            <a ng-if="mode"
                                ng-click="viewEditorClick(params.link_sublink, $event)"
                                href="javascript:void(0)">
                                 {{params.link_sublink.text}}
                             </a>
-                            <a ng-if="!editorMode"
+                            <a ng-if="!mode"
                                target="{{params.link_sublink.target ? params.link_sublink.target : '_blank'}}"
                                ng-class="{true : 'project-clear-pointer'}[params.link_sublink.href.length == 0]"
                                ng-href="{{params.link_sublink.href}}">
@@ -471,13 +471,13 @@
                     </h2>
                     <div class="span-one">
                         <span>
-                            <a ng-if="editorMode"
+                            <a ng-if="mode"
                                 ng-hide="params.multiText_desc.is_mod_hide"
                                 ng-click="viewEditorClick(params.multiText_desc, $event)"
                                 href="javascript:void(0)"
                                 ng-click="viewEditorClick(params.multiText_desc, $event)"
                                 ng-bind-html="subMarkdownRender(params.multiText_desc.text)"></a>
-                            <a ng-if="!editorMode"
+                            <a ng-if="!mode"
                                 ng-hide="params.multiText_desc.is_mod_hide"
                                 target="{{params.multiText_desc.target ? params.multiText_desc.target : '_blank'}}"
                                 ng-href="{{params.multiText_desc.href}}"
@@ -485,14 +485,14 @@
                                 ng-bind-html="subMarkdownRender(params.multiText_desc.text)"></a>
                         </span>
                         <div ng-hide="params.link_more.is_mod_hide" class="picture-btn">
-                            <a ng-if="editorMode"
+                            <a ng-if="mode"
                                class="btn btn-primary"
                                style="color:rgb(255, 255, 255);"
                                ng-click="viewEditorClick(params.link_more, $event)"
                                href="javascript:void(0)">
                                 {{params.link_more.text}}
                             </a>
-                            <a ng-if="!editorMode"
+                            <a ng-if="!mode"
                                target="{{params.link_more.target ? params.link_more.target : '_blank'}}"
                                class="btn btn-primary"
                                style="color:rgb(255, 255, 255);"
@@ -511,12 +511,12 @@
 
         <div class="stitching-span">
             <h2>
-                <a ng-if="editorMode"
+                <a ng-if="mode"
                    ng-hide="params.link_headline.is_mod_hide"
                    ng-click="viewEditorClick(params.link_headline, $event)"
                    href="javascript:void(0)">
                 {{params.link_headline.text}}</a>
-                <a ng-if="!editorMode"
+                <a ng-if="!mode"
                    ng-hide="params.link_headline.is_mod_hide"
                    ng-class="{true : 'clear-pointer'}[params.link_headline.href.length == 0]"
                    target="{{params.link_headline.target ? params.link_headline.target : '_blank'}}"
@@ -524,12 +524,12 @@
                 {{params.link_headline.text}}</a>
             </h2>
             <h3>
-                <a ng-if="editorMode"
+                <a ng-if="mode"
                    ng-hide="params.link_sublink.is_mod_hide"
                    ng-click="viewEditorClick(params.link_sublink, $event)"
                    href="javascript:void(0)">
                 {{params.link_sublink.text}}</a>
-                <a ng-if="!editorMode"
+                <a ng-if="!mode"
                    ng-hide="params.link_sublink.is_mod_hide"
                    ng-class="{true : 'clear-pointer'}[params.link_sublink.href.length == 0]"
                    target="{{params.link_sublink.target ? params.link_sublink.target : '_blank'}}"
@@ -537,12 +537,12 @@
                 {{params.link_sublink.text}}</a>
             </h3>
             <span>
-                <a ng-if="editorMode"
+                <a ng-if="mode"
                    ng-hide="params.multiText_desc.is_mod_hide"
                    ng-click="viewEditorClick(params.multiText_desc, $event)"
                    href="javascript:void(0)"
                    ng-bind-html="subMarkdownRender(params.multiText_desc.text)"></a>
-                <a ng-if="!editorMode"
+                <a ng-if="!mode"
                    ng-hide="params.multiText_desc.is_mod_hide"
                    target="{{params.multiText_desc.target ? params.multiText_desc.target : '_blank'}}"
                    ng-href="{{params.multiText_desc.href}}"
@@ -551,13 +551,13 @@
             </span>
         </div>
         <div class="stitching-img">
-            <a ng-if="editorMode"
+            <a ng-if="mode"
                ng-hide="params.image_picture.is_mod_hide"
                ng-click="viewEditorClick(params.image_picture, $event)"
                href="javascript:void(0)">
                <img ng-src="{{getImagePictureText(params.image_picture.text)}}">
             </a>
-            <a ng-if="!editorMode"
+            <a ng-if="!mode"
                ng-hide="params.image_picture.is_mod_hide"
                ng-class="{true : 'clear-pointer'}[params.image_picture.href.length == 0]"
                target="{{params.image_picture.target ? params.image_picture.target : '_blank' }}"
@@ -572,13 +572,13 @@
     <div ng-if='params.design.text=="style5"' class="style5 container">
 
         <div class="stitching-img">
-            <a ng-if="editorMode"
+            <a ng-if="mode"
                ng-hide="params.image_picture.is_mod_hide"
                ng-click="viewEditorClick(params.image_picture, $event)"
                href="javascript:void(0)">
                <img ng-src="{{getImagePictureText(params.image_picture.text)}}">
             </a>
-            <a ng-if="!editorMode"
+            <a ng-if="!mode"
                ng-hide="params.image_picture.is_mod_hide"
                ng-class="{true : 'clear-pointer'}[params.image_picture.href.length == 0]"
                target="{{params.image_picture.target ? params.image_picture.target : '_blank' }}"
@@ -589,12 +589,12 @@
         </div>
         <div class="stitching-span">
             <h2>
-                <a ng-if="editorMode"
+                <a ng-if="mode"
                    ng-hide="params.link_headline.is_mod_hide"
                    ng-click="viewEditorClick(params.link_headline, $event)"
                    href="javascript:void(0)">
                 {{params.link_headline.text}}</a>
-                <a ng-if="!editorMode"
+                <a ng-if="!mode"
                    ng-hide="params.link_headline.is_mod_hide"
                    ng-class="{true : 'clear-pointer'}[params.link_headline.href.length == 0]"
                    target="{{params.link_headline.target ? params.link_headline.target : '_blank'}}"
@@ -602,12 +602,12 @@
                 {{params.link_headline.text}}</a>
             </h2>
             <h3>
-                <a ng-if="editorMode"
+                <a ng-if="mode"
                    ng-hide="params.link_sublink.is_mod_hide"
                    ng-click="viewEditorClick(params.link_sublink, $event)"
                    href="javascript:void(0)">
                 {{params.link_sublink.text}}</a>
-                <a ng-if="!editorMode"
+                <a ng-if="!mode"
                    ng-hide="params.link_sublink.is_mod_hide"
                    ng-class="{true : 'clear-pointer'}[params.link_sublink.href.length == 0]"
                    target="{{params.link_sublink.target ? params.link_sublink.target : '_blank'}}"
@@ -615,12 +615,12 @@
                 {{params.link_sublink.text}}</a>
             </h3>
             <span>
-                <a ng-if="editorMode"
+                <a ng-if="mode"
                     ng-hide="params.multiText_desc.is_mod_hide"
                     ng-click="viewEditorClick(params.multiText_desc, $event)"
                     href="javascript:void(0)"
                     ng-bind-html="subMarkdownRender(params.multiText_desc.text)"></a>
-                <a ng-if="!editorMode"
+                <a ng-if="!mode"
                    ng-hide="params.multiText_desc.is_mod_hide"
                    target="{{params.multiText_desc.target ? params.multiText_desc.target : '_blank'}}"
                    ng-href="{{params.multiText_desc.href}}"

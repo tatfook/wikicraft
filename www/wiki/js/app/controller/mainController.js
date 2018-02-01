@@ -5,6 +5,7 @@
 define([
     'app',
     'markdown-it',
+    'helper/mdwiki',
     'helper/markdownwiki',
     'helper/storage',
     'helper/util',
@@ -17,7 +18,7 @@ define([
     'controller/userController',
     'controller/notfoundController',
     'controller/crosController',
-], function (app, markdownit, markdownwiki, storage, util, mdconf, dataSource, loading, homeHtmlContent, headerHtmlContent, footerHtmlContent, userHtmlContent, notfoundHtmlContent, crosHtmlContent) {
+], function (app, markdownit, mdwiki, markdownwiki, storage, util, mdconf, dataSource, loading, homeHtmlContent, headerHtmlContent, footerHtmlContent, userHtmlContent, notfoundHtmlContent, crosHtmlContent) {
 	var md = markdownwiki({breaks: true, isMainMd:true});
 
     app.controller('mainController', [
@@ -30,6 +31,7 @@ define([
         '$auth',
         '$compile',
         '$translate',
+		'$uibModal',
         'Account',
         'Message',
         'github',
@@ -50,6 +52,7 @@ define([
             $auth,
             $compile,
             $translate,
+			$uibModal,
             Account,
             Message,
             github,
@@ -112,6 +115,17 @@ define([
                     confirmDialog:confirmDialog,
                     realnameVerifyModal:realnameVerifyModal
                 });
+
+				app.objects.Account = Account;
+				app.objects.Message = Message;
+				app.objects.modal = modal;
+				app.objects.config = config;
+				app.objects.util = util;
+				app.objects.mdwiki = mdwiki;
+				app.objects.dataSource = dataSource;
+
+				app.ng_objects.$uibModal = $uibModal;
+				app.ng_objects.$sce = $sce;
 
                 $rootScope.imgsPath = config.imgsPath;
                 $rootScope.cssPath = config.cssPath;

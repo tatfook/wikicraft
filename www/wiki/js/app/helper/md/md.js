@@ -127,6 +127,9 @@ define([
 		var link_text = regs[1];
 		var link_href = regs[2];
 		var link_str = '<a href="'+ link_href +'">' + link_text + '</a>';
+		if (link_href.indexOf("http://") == 0 || link_href.indexOf("https://") == 0) {
+			link_str = '<a target="_blank" href="'+ link_href +'">' + link_text + '</a>';
+		}
 		var link_render = obj.md.rule_render["a"];
 		if (link_render) {
 			link_str = link_render({md:obj.md, text:match_str, link_text:link_text, link_href:link_href}) || link_str;
@@ -760,8 +763,8 @@ define([
 				token.htmlContent = render_token(token)
 				token.content = md.md_special_char_unescape(token.content);
 				token.text = md.md_special_char_unescape(token.text);
-				token.start++;
-				token.end++;
+				//token.start++;
+				//token.end++;
 				token.htmlContent = md.md_special_char_unescape(token.htmlContent);
 			}
 			return tokens;
@@ -770,7 +773,7 @@ define([
 		md.render = function(text) {
 			var tokens = this.parse(text);
 
-			// console.log(tokens);
+			console.log(tokens);
 
 			var htmlContent = "";
 			for (var i = 0; i < tokens.length; i++) {

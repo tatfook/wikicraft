@@ -31,12 +31,12 @@
         text-align: center;
     }
 </style>
-<div ng-controller="vipreadController">
+<div "vipreadController">
     <div ng-show="isLogin" class="vip-more-permission">
-        <p ng-show="!editorMode">
+        <p ng-show="!mode">
             <a ng-show="!isVip" href="/wiki/vip"><span class="fa fa-lock"></span>成为VIP，才能查看更多</a>
         </p>
-        <p ng-show="editorMode" class="switch-notice">
+        <p ng-show="mode" class="switch-notice">
             <!-- <span class="fa fa-lock"></span> -->
             本网页内容，仅限VIP用户浏览全部 <br />
             <span ng-if="params.switch_vipread.is_mod_hide">（关闭）</span>
@@ -44,7 +44,7 @@
         </p>
     </div>
     <div ng-show="!isLogin" class="vip-more-permission">
-        <p ng-show="!editorMode">
+        <p ng-show="!mode">
             <a ng-click="goLoginModal()">登录后，才能查看更多</a>
         </p>
     </div>

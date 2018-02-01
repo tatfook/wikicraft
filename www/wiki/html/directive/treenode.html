@@ -1,0 +1,11 @@
+
+<div>
+	<div>
+		nodeContent
+	</div>
+	<div ng-if="node.showSubNode">
+		<div ng-repeat="x in node.nodes track by $index">
+			<treenode data-node="x" data-level="level + 1" data-node-html="nodeHtml"></treenode>
+		</div>
+	</div>
+</div>

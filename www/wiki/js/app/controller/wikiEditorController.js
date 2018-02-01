@@ -8,6 +8,7 @@ define([
     'markdown-it',
     'to-markdown',
     'codemirror',
+    'helper/mdwiki',
     'helper/markdownwiki',
     'helper/util',
     'helper/storage',
@@ -35,10 +36,11 @@ define([
     'codemirror/addon/scroll/annotatescrollbar',
     'codemirror/addon/display/fullscreen',
     'bootstrap-treeview'
-], function (app, /*html2canvas,*/ markdownit, toMarkdown, CodeMirror, markdownwiki, util, storage, dataSource, mdconf, qiniu, htmlContent, editWebsiteHtmlContent, bigfileContent, moduleEditorContent) {
+], function (app, /*html2canvas,*/ markdownit, toMarkdown, CodeMirror, mdwikifunc, markdownwiki, util, storage, dataSource, mdconf, qiniu, htmlContent, editWebsiteHtmlContent, bigfileContent, moduleEditorContent) {
     var otherUserinfo = undefined;
     var pageSuffixName = config.pageSuffixName;
-    var mdwiki = markdownwiki({editorMode: true, breaks: true, isMainMd:true});
+    //var mdwiki = markdownwiki({editorMode: true, breaks: true, isMainMd:true});
+    var mdwiki = mdwikifunc({mode: "editor", editorMode: true, breaks: true, isMainMd:true, containerId:"result-html"});
     var editor;
     var allWebsites = [];
     var allWebstePageContent = {};
@@ -53,6 +55,9 @@ define([
     var treeNodeExpandedMap = {};    // 展开节点
     var pagelistMap = {};            // 页列表映射
     var urlParamsMap = {};           // url 参数映射
+
+	app.objects.editormd = mdwiki;
+	app.objects.editor = editor;
 
 	// 判断对象是否为空
 	function isEmptyObject(obj) {
@@ -1232,8 +1237,8 @@ define([
 						}
 
 						var moduleEditorParams = config.shareMap.moduleEditorParams;
-						moduleEditorParams.show_type = "knowledge";
-						moduleEditorParams.setKnowledge("");
+						//moduleEditorParams.show_type = "knowledge";
+						//moduleEditorParams.setKnowledge("");
                         setEditorValue(page, content);
 					}
                     getCurrentPageContent(page, function (data) {
@@ -1482,11 +1487,11 @@ define([
 
             $rootScope.insertMod = function(type){
                 var moduleEditorParams = config.shareMap.moduleEditorParams || {};
-                var modPositon = moduleEditorParams.wikiBlock.blockCache.block.textPosition;
+                var token = moduleEditorParams.block.token;
                 if (type == "before") {
-                    $scope.openWikiBlock(modPositon.from, type);
+                    $scope.openWikiBlock(token.start, type);
                 }else {
-                    $scope.openWikiBlock(modPositon.to, type);
+                    $scope.openWikiBlock(token.end, type);
                 }
             }
 
@@ -2846,7 +2851,7 @@ define([
                 //};
 
 				editor.on("cursorActivity", function(cm){
-					mdwiki.cursorActivity();
+					mdwiki.cursorActivity && mdwiki.cursorActivity();
 				});
 
                 editor.on("change", function (cm, changeObj) {
@@ -2869,7 +2874,7 @@ define([
                         //if((!currentSite || currentSite.sensitiveWordLevel & 1) <= 0){
                             //text = filterSensitive(text) || text;
                         //}
-                        mdwiki.render(text);
+                        mdwiki.render(text, undefined, true);
 
                         //var toLineInfo = changeObj && editor.lineInfo(changeObj.to.line);
                         //moduleEditorParams.show_type = "knowledge";
@@ -2878,7 +2883,7 @@ define([
                         timer = undefined;
                     })(isStopRender));
                 });
-                mdwiki.bindRenderContainer(".result-html", ".tpl-header-container");
+                //mdwiki.bindRenderContainer(".result-html", ".tpl-header-container");
                 editor.focus();
                 setEditorHeight();
 //}}}
@@ -2933,10 +2938,10 @@ define([
                     }
                     var scaleSize = val || getScaleSize();
                     setTimeout(function () {
-                        $('#' + mdwiki.getMdWikiContainerId()).css({
-                            "transform": "scale(" + scaleSize + ")",
-                            "transform-origin": "left top"
-                        });
+						$('#result-html').css({
+							"transform": "scale(" + scaleSize + ")",
+							"transform-origin": "left top"
+						});
                     });
                     if (scaleSize<=$scope.scales[0].scaleValue){//显示的最小比例时，禁用缩小按钮
                         $scope.forbidScale=true;
@@ -3224,18 +3229,18 @@ define([
                         var initHegiht = editor.getScrollInfo().top + editor.heightAtLine(0);
                         var index = 0;
                         var block;
-                        var blockList = mdwiki.blockList;
+                        var blockList = mdwiki.template.blockList;
                         for (index = 0; index < blockList.length - 1; index++) {
                             block = blockList[index];
-                            if (block.blockCache.isTemplate)
+                            if (block.isTemplate || !block.$element)
                                 continue;
 
-                            if (editor.heightAtLine(block.textPosition.from) >= initHegiht)
+                            if (editor.heightAtLine(block.token.start) >= initHegiht)
                                 break;
                         }
                         block = blockList[index];
-						if ($('#' + block.blockCache.containerId)[0]) {
-							$('#preview').scrollTop($('#' + block.blockCache.containerId)[0].offsetTop * scaleSize);
+						if (block.$element) {
+							$('#preview').scrollTop(block.$element[0].offsetTop * scaleSize);
 						}
                     }, 100);
                 });
@@ -3254,19 +3259,19 @@ define([
                             var initHeight = editor.getScrollInfo().top + editor.heightAtLine(0);
                             var index = 0;
                             var block;
-                            var blockList = mdwiki.blockList;
+                            var blockList = mdwiki.template.blockList;
                             var scrollTop = $('#preview')[0].scrollTop;
                             for (index = 0; index < blockList.length - 1; index++) {
                                 block = blockList[index];
-                                if (block.blockCache.isTemplate)
+                                if (block.isTemplate || !block.$element)
                                     continue;
-                                if (scrollTop <= $('#' + block.blockCache.containerId)[0].offsetTop * scaleSize) {
+                                if (scrollTop <= block.$element[0].offsetTop * scaleSize) {
                                     //console.log(scrollTop, $('#' + block.blockCache.containerId)[0].offsetTop,scaleSize);
                                     break;
                                 }
                             }
                             block = blockList[index];
-                            editor.scrollTo(0, editor.getScrollInfo().top + editor.heightAtLine(block.textPosition.from) - initHeight);
+                            editor.scrollTo(0, editor.getScrollInfo().top + editor.heightAtLine(block.token.start) - initHeight);
                         }, 100);
                     }
                 });
