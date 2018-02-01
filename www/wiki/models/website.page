@@ -409,8 +409,22 @@ function website:api_getAllByUsername(params)
 
 	self:db():find({["+username"]={params.username, limit=1000}}, resume)
 	local err, sites = yield()
+
+	local pages = models.pages:new()
+	local finished_count = 0
+
 	for i, site in ipairs(sites) do
-		site.isTop = site.isTop or false  -- 显示
+		site.isTop = site.isTop or false  -- 是否置顶
+		-- 设置网站tags为index的tags
+		pages:db():findOne({url = format("%s/%s/index", site.username, site.sitename)},
+			function (err, page)
+				local page = page or {}
+				site.tags = page.tags or {}
+				finished_count = finished_count + 1
+				if (finished_count == #sites) then resume() end
+			end
+		)
+		if (i == #sites) then yield() end
 	end
 	return errors:wrap(err, sites)
 end
@@ -620,11 +634,11 @@ function website:api_visitWebsite(params)
 	end
 
 	-- 增加站点访问量
-    self:api_updateVisitNum({username=params.username, sitename=params.sitename})
+	self:api_updateVisitNum({username=params.username, sitename=params.sitename})
 
-    -- 增加网页访问量
-    local pages = models.pages:new()
-    pages:updateVisitCount({url = params.url})
+	-- 增加网页访问量
+	local pages = models.pages:new()
+	pages:updateVisitCount({url = params.url})
 
 	-- 添加访问记录
 	local userVisitHistoryDB = models.user_visit_history:new()
