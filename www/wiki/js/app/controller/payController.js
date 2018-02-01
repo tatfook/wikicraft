@@ -51,6 +51,7 @@ define([
             }
 
             if (Account.isAuthenticated() && Account.user) {
+                alert(Account.user.username);
                 $scope.otherUserinfo.username = Account.user.username;
             }
 
