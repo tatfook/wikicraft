@@ -11,6 +11,7 @@
     removeCombined:true,
     optimizeAllPluginResources: true,  // text 插件配置
 	skipDirOptimize: true,
+	generateSourceMaps: true,
     modules:[
         {
             name:'main',
