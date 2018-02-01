@@ -2,7 +2,7 @@
  * @Author: ZhangKaitlyn 
  * @Date: 2018-01-19
  * @Last Modified by: none
- * @Last Modified time: 2018-01-30 11:11:11
+ * @Last Modified time: 2018-01-31 15:53:52
  */
 define([
     'app', 
@@ -47,8 +47,8 @@ define([
                     }
 				}
             });
-            $scope.tags = {};
-            $scope.tags.tags = Array.from($scope.params && $scope.params.pageTags.tags || []);
+            $scope.pageTags = {};
+            $scope.pageTags.tags = Array.from($scope.params && $scope.params.pageTags.tags || []);
             
             // 获取当前模块的index和containerId
             var getBlockIndex = function(){
@@ -72,13 +72,13 @@ define([
                     index: getBlockIndex(),
                     containerId: thisContainerId,
                     content: modCmd + "\n" + mdconf.jsonToMd({
-                        "tags": $scope.tags.tags
+                        "pageTags.tags": $scope.pageTags.tags
                     }) + "\n```\n",
                     isTopContent: true
                 }
                 $rootScope.$broadcast("changeProfileMd", newItemObj);
                 util.post(config.apiUrlPrefix + 'pages/updateTags', {
-                    tags: $scope.tags.tags,
+                    tags: $scope.pageTags.tags,
                     url: "/" + $scope.userinfo.username
                 }, function(data){
                     console.log(data);

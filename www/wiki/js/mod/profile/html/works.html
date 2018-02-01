@@ -30,7 +30,14 @@
 
     .user-works .work-detail h4 {
         margin: 0;
+    }
+
+    .user-works .work-detail h4 > a{
         color: #333;
+    }
+
+    .user-works .work-detail h4 > a:hover{
+        color: #3977AD;
     }
 
     .user-works .work-detail p {
@@ -214,7 +221,7 @@
         color: #FFF;
     }
 </style>
-<div class="user-works" ng-controller="worksCtrl">
+<div class="user-works" ng-controller="worksCtrl" ng-hide="works.length <=0 && !isSelf">
     <h4 class="title">
         作品
         <span class="pull-right" ng-show="isSelf">
@@ -227,10 +234,10 @@
             <span class="iconfont icon-kongbaiyemian"></span>
             <p translate="暂无相关内容..."></p>
         </div>
-        <div class="works-item" ng-repeat="work in works track by $index" ng-show="works.length>0">
+        <div class="works-item" ng-repeat="work in works track by $index" ng-show="works.length>0 && work">
             <img ng-src="{{work.logoUrl || getImageUrl('wiki_cover.jpg', imgsPath)}}">
             <div class="work-detail">
-                <h4>{{work.title}}</h4>
+                <h4><a ng-href="{{work.workLink}}" target="_blank">{{work.title}}</a></h4>
                 <p class="p-link">
                     <a ng-href="{{work.workLink}}" target="_blank">{{work.workLink}}</a>
                 </p>
@@ -249,8 +256,8 @@
             </div>
             <div class="editing-toolbar absolute-right" ng-show="editing">
                 <span class="iconfont icon-shezhi" title="设置" ng-click="setWork($index)"></span>
-                <span class="iconfont icon-shangyi" title="上移" ng-click="shiftUp($index)"></span>
-                <span class="iconfont icon-xiayi" title="下移" ng-click="shiftDown($index)"></span>
+                <span class="iconfont icon-shangyi" ng-disabled="$index == 0" title="上移" ng-click="shiftUp($index)"></span>
+                <span class="iconfont icon-xiayi" ng-disabled="$index + 1 == works.length" title="下移" ng-click="shiftDown($index)"></span>
                 <span class="iconfont icon-shanchu1" title="删除" ng-click="deleteWork($index)"></span>
             </div>
         </div>

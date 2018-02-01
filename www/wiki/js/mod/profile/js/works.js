@@ -2,7 +2,7 @@
  * @Author: ZhangKaitlyn 
  * @Date: 2018-01-19
  * @Last Modified by: none
- * @Last Modified time: 2018-01-27 16:12:26
+ * @Last Modified time: 2018-01-31 16:22:20
  */
 define([
     'app', 
@@ -41,6 +41,9 @@ define([
 
             var getWorksMsgByUrl = function(){
                 $scope.works.map(function(work, index){
+                    if (!work || !work.workLink) {
+                        return;
+                    }
                     var link = work.workLink;
                     var linkParams = link.split("/");
                     var startIndex = link.search(keepworkReg);
@@ -97,7 +100,6 @@ define([
                         "works": $scope.works
                     }) + "\n```\n"
                 }
-                console.log(newItemObj.content);
                 $rootScope.$broadcast("changeProfileMd", newItemObj);
             }
 
@@ -129,12 +131,18 @@ define([
             };
 
             $scope.shiftUp = function(index){
+                if (index < 1) {
+                    return;
+                }
                 var prev = index - 1;
                 $scope.works[prev] = $scope.works.splice((prev + 1), 1, $scope.works[prev])[0];
                 modifyWorksMd();
             };
 
             $scope.shiftDown = function(index){
+                if (index >= ($scope.works.length - 1)) {
+                    return;
+                }
                 var prev = index;
                 $scope.works[prev] = $scope.works.splice((prev + 1), 1, $scope.works[prev])[0];
                 modifyWorksMd();

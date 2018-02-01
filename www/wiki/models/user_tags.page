@@ -37,7 +37,7 @@ function user_tags:insert(params)
 
     for i, tag_title in ipairs(params.tags) do
         tag, is_params_error, _ = self:insert_validator({title = tag_title, username = username})
-        if (not is_params_error) and (not unique_tags[tags.title])then 
+        if (not is_params_error) and (not unique_tags[tag.title]) then 
             clean_tags[(#clean_tags) + 1 ] = tag
         end
         unique_tags[tag.title] = true

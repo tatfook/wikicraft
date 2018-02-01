@@ -83,7 +83,6 @@ define([
 
         var getUserProfileData = function(){
             var profileDataPath = '/'+ userDataSource.keepwrokUsername +'_datas/' + ProfileDataFileName;
-            console.log(profileDataPath);
             userDataSource.getFile({path: profileDataPath, ref: 'master'}, function (data) {
                 var md = markdownwiki({breaks: true, isMainMd:true});
                 var content = data.content || "";
@@ -131,7 +130,6 @@ define([
                 console.error("用户名不存在");
                 return;
             }
-            console.log(username);
             getProfileData(username);
 
             util.post(config.apiUrlPrefix + 'user/getDetailByName', {username:username}, function (data) {
@@ -179,12 +177,15 @@ define([
 
         var saveNewProfileToGit = function(){
             var content = "";
+            var subPartContent = "";
             topBlockList.map(function(block){
                 content += block.content;
             });
             subBlockList.map(function(block){
-                content += block.content;
+                subPartContent += block.content;
             });
+            $rootScope.subMdContent = subPartContent;
+            content += subPartContent;
             var profileDataPath = '/'+ userDataSource.keepwrokUsername +'_datas/' + ProfileDataFileName;
             userDataSource.writeFile({
                 path: profileDataPath,
