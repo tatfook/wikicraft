@@ -50,10 +50,13 @@ define([
                 getTrade(trade);
             }
 
-            if (Account.isAuthenticated() && Account.user) {
-                alert(Account.user.username);
-                $scope.otherUserinfo.username = Account.user.username;
-            }
+            $scope.$watch("$viewContentLoaded", function(){
+                setTimeout(function(){
+                    if (Account.isAuthenticated() && Account.user) {
+                        $scope.otherUserinfo.username = Account.user.username;
+                    }
+                }, 0);
+            });
 
             if (queryArgs.username) {
                 $scope.otherUserinfo.username = queryArgs.username;
