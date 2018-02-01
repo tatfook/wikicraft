@@ -108,6 +108,26 @@ function site_user:api_getSiteListByMemberName(params)
 		end
 	end
 
+	local pages = models.pages:new()
+	local finished_count = 0
+	local url = ""
+	for i, site in ipairs(result) do
+		site = site.siteinfo
+		site.isTop = site.isTop or false  -- 是否置顶
+		-- 设置网站tags为index的tags
+		url = format("/%s", site.username)
+		if (site.sitename) then url = format("%s/%s/index", url, site.sitename) end
+		pages:db():findOne({url = url},
+			function (err, page)
+				page = page or {}
+				site.tags = page.tags or {}
+				finished_count = finished_count + 1
+				if (finished_count == #result) then resume() end
+			end
+		)
+		if (i == #result) then yield() end
+	end
+	
 	return errors:wrap(nil, result)
 end
 

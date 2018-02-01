@@ -426,7 +426,6 @@ function website:api_getAllByUsername(params)
 				if (finished_count == #sites) then resume() end
 			end
 		)
-		
 		if (i == #sites) then yield() end
 	end
 	return errors:wrap(err, sites)
