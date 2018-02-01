@@ -416,9 +416,9 @@ function website:api_getAllByUsername(params)
 	for i, site in ipairs(sites) do
 		site.isTop = site.isTop or false  -- 是否置顶
 		-- 设置网站tags为index的tags
-		pages:db():findOne({url = format("%s/%s/index", site.username, site.sitename)},
+		pages:db():findOne({url = format("/%s/%s/index", site.username, site.sitename)},
 			function (err, page)
-				local page = page or {}
+				page = page or {}
 				site.tags = page.tags or {}
 				finished_count = finished_count + 1
 				if (finished_count == #sites) then resume() end
