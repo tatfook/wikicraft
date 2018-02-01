@@ -413,10 +413,10 @@ function website:api_getAllByUsername(params)
 	local pages = models.pages:new()
 	local finished_count = 0
 	local url = ""
-	for i, site in ipairs(sites) do
+	for i, site in ipairs(sites or {}) do
 		site.isTop = site.isTop or false  -- 是否置顶
 		-- 设置网站tags为index的tags
-		url = format("/%s", site.username)
+		url = format("/%s", site.username or "")
 		if (site.sitename) then url = format("%s/%s/index", url, site.sitename) end
 		pages:db():findOne({url = url},
 			function (err, page)
