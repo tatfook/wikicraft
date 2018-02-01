@@ -543,6 +543,10 @@ select.resize-view {
     color: #3977AD;
 }
 
+.module-editor-container {
+    padding: 0;
+}
+
 .editingLine{
     border-right: 4px solid #FFAC36;
 }
