@@ -31,7 +31,7 @@ define([
 		app.ng_objects.$rootScope = $injector.get("$rootScope");
 		app.ng_objects.$compile = $injector.get("$compile");
 		app.ng_objects.$http = $injector.get("$http");
-		app.ng_objects.$sce = $injector.get("$sce");
+		//app.ng_objects.$sce = $injector.get("$sce");
 		app.ng_objects.$auth = $injector.get("$auth");
 		app.ng_objects.$timeout = $injector.get("$timeout");
 	});

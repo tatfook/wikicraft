@@ -103,6 +103,7 @@
         // html dir
         'html': '../html',
 		'css': '../assets/css',
+		'wikimod': 'mod',
 
 		'helper/sensitiveWord':"empty:"
     },
