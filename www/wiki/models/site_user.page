@@ -111,7 +111,7 @@ function site_user:api_getSiteListByMemberName(params)
 	local pages = models.pages:new()
 	local finished_count = 0
 	local url = ""
-	for i, site in ipairs(result) do
+	for i, site in ipairs(result or {}) do
 		site = site.siteinfo
 		site.isTop = site.isTop or false  -- 是否置顶
 		-- 设置网站tags为index的tags
