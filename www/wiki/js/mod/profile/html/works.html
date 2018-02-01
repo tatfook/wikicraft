@@ -32,11 +32,11 @@
         margin: 0;
     }
 
-    .user-works .work-detail h4 > a{
+    .user-works .work-detail h4>a {
         color: #333;
     }
 
-    .user-works .work-detail h4 > a:hover{
+    .user-works .work-detail h4>a:hover {
         color: #3977AD;
     }
 
@@ -144,8 +144,6 @@
         position: absolute;
     }
 
-    .add-modal .preview-zone .preview {}
-
     .add-modal .icon-add {
         display: inline-block;
         width: 32px;
@@ -230,14 +228,18 @@
         </span>
     </h4>
     <div class="works-list">
-        <div class="empty-box" ng-hide="works.length>0">
-            <span class="iconfont icon-kongbaiyemian"></span>
-            <p translate="暂无相关内容..."></p>
+        <div class="empty-to-edit" ng-hide="works.length>0">
+            <p>
+                <span>尚未发表相关内容，请添加</span>
+                <i class="iconfont icon-tianjia" ng-click="showModal()"></i>
+            </p>
         </div>
         <div class="works-item" ng-repeat="work in works track by $index" ng-show="works.length>0 && work">
             <img ng-src="{{work.logoUrl || getImageUrl('wiki_cover.jpg', imgsPath)}}">
             <div class="work-detail">
-                <h4><a ng-href="{{work.workLink}}" target="_blank">{{work.title}}</a></h4>
+                <h4>
+                    <a ng-href="{{work.workLink}}" target="_blank">{{work.title}}</a>
+                </h4>
                 <p class="p-link">
                     <a ng-href="{{work.workLink}}" target="_blank">{{work.workLink}}</a>
                 </p>
