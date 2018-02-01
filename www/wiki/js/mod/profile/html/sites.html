@@ -179,7 +179,9 @@
 
         <!-- 关注网站 -->
         <div class="sites-item" ng-show="params.type == 'concerned' && sites[params.type].length > 0" ng-repeat="site in sites[params.type] track by $index">
-            <img ng-src="{{site.siteinfo.logoUrl}}">
+            <div class="site-profile">
+                <img ng-src="{{site.siteinfo.logoUrl}}">
+            </div>
             <div class="site-detail">
                 <h4>
                     <a ng-href="{{'/'+ site.siteinfo.username+'/'+site.siteinfo.name}}" target="_blank">{{site.siteinfo.name}}</a>
