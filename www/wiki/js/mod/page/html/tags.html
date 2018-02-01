@@ -1,4 +1,7 @@
 <style>
+    .tags-container{
+        background-color: #FFF;
+    }
     .tags-header {
         color: #3977AD;
         padding: 10px 15px;
@@ -58,26 +61,27 @@
         padding: 5px 21px;
     }
 
-    .tags-header .showing-tag .nav{
+    .tags-header .showing-tag .nav {
         display: inline-block;
     }
 </style>
+<div class="tags-container" ng-controller="pageTagsCtrl" ng-hide="params.is_mod_hide || (pageTags.tags.length <= 0 && !isSelf)">
+    <div class="tags-header container">
+        <div class="showing-tag" ng-hide="tagEditing">
+            <ul class="nav" ng-hide="pageTags.tags.length <= 0">
+                <li class="tag-item" ng-repeat="tag in pageTags.tags">{{tag}}</li>
+            </ul>
+            <span ng-click="editTags(true)" ng-show="isSelf" class="iconfont icon-bianji"></span>
+        </div>
 
-<div ng-controller="pageTagsCtrl" class="tags-header container" ng-hide="params.is_mod_hide || (pageTags.tags.length <= 0 && !isSelf)">
-    <div class="showing-tag" ng-hide="tagEditing">
-        <ul class="nav" ng-hide="pageTags.tags.length <= 0">
-            <li class="tag-item" ng-repeat="tag in pageTags.tags">{{tag}}</li>
-        </ul>
-        <span ng-click="editTags(true)" ng-show="isSelf" class="iconfont icon-bianji"></span>
-    </div>
-
-    <div class="editing-tag" ng-show="tagEditing">
-        <ui-select multiple tagging tagging-label="false" ng-model="pageTags.tags" theme="bootstrap" title="请输入标签..." on-select="tagSelect($item, $model)">
-            <ui-select-match placeholder="请输入标签...">{{$item}}</ui-select-match>
-            <ui-select-choices repeat="tag in pageTags.tags | filter:$select.search">
-                {{tag}}
-            </ui-select-choices>
-        </ui-select>
-        <div class="btn btn-primary" ng-click="editTags(false)">完 成</div>
+        <div class="editing-tag" ng-show="tagEditing">
+            <ui-select multiple tagging tagging-label="false" ng-model="pageTags.tags" theme="bootstrap" title="请输入标签..." on-select="tagSelect($item, $model)">
+                <ui-select-match placeholder="请输入标签...">{{$item}}</ui-select-match>
+                <ui-select-choices repeat="tag in pageTags.tags | filter:$select.search">
+                    {{tag}}
+                </ui-select-choices>
+            </ui-select>
+            <div class="btn btn-primary" ng-click="editTags(false)">完 成</div>
+        </div>
     </div>
 </div>

@@ -483,7 +483,7 @@ select.resize-view {
 }
 
 .wikiEditor .mod-container{
-    border: 2px dashed transparent;
+    /* border: 2px dashed transparent; */
     position: relative;
 }
 .wikiEditor .mod-container.active{

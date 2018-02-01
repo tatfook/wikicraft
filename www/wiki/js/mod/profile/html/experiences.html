@@ -41,19 +41,19 @@
         color: #999;
     }
 
-    .user-experience .editing-experiences td.title{
+    .user-experience .editing-experiences td.title {
         width: 24%;
     }
 
-    .user-experience .editing-experiences td.link{
+    .user-experience .editing-experiences td.link {
         width: 39%;
     }
 
-    .user-experience .editing-experiences td.time{
+    .user-experience .editing-experiences td.time {
         width: 19%;
     }
 
-    .user-experience .editing-experiences td.editing-toolbar{
+    .user-experience .editing-experiences td.editing-toolbar {
         width: 18%;
         text-align: right;
     }
@@ -67,9 +67,11 @@
         </span>
     </h4>
     <div class="experiences-list">
-        <div class="empty-box" ng-hide="experiences.length>0">
-            <span class="iconfont icon-kongbaiyemian"></span>
-            <p translate="暂无相关内容..."></p>
+        <div class="empty-to-edit" ng-hide="experiences.length>0">
+            <p>
+                <span>尚未发表相关内容，请添加</span>
+                <i class="iconfont icon-tianjia" ng-click="showExperienceModal()"></i>
+            </p>
         </div>
         <table ng-show="experiences.length>0" ng-class="{true:'editing-experiences'}[editing]">
             <tr class="experience-item" ng-repeat="experience in experiences track by $index" ng-show="experience">

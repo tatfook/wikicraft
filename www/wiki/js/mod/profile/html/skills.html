@@ -3,7 +3,7 @@
         padding-bottom: 47px;
     }
 
-    .user-skills .empty-box {
+    .user-skills .empty-to-edit {
         border: 1px solid #F2F2F2;
         margin: 20px 0 0;
     }
@@ -79,7 +79,7 @@
         cursor: pointer;
     }
 
-    .user-skills span.icon-icondianzan.active{
+    .user-skills span.icon-icondianzan.active {
         color: #FE7532;
     }
 
@@ -129,16 +129,16 @@
         -webkit-text-stroke: 1px #7FC4FF;
     }
 
-    .user-skills .editing-skill{
+    .user-skills .editing-skill {
         border: 1px solid #F2F2F2;
         margin-top: 20px;
     }
 
-    .user-skills .editing-v-skill-ul{
+    .user-skills .editing-v-skill-ul {
         padding: 15px 20px 28px;
     }
 
-    .user-skills .sub-skill .title{
+    .user-skills .sub-skill .title {
         background-color: #E4E4E4;
     }
 </style>
@@ -150,16 +150,19 @@
             <i class="iconfont" ng-show="skills.length > 0" ng-class="{true:'icon-fanhui', false:'icon-bianji'}[editing]" ng-click="editSkill()"></i>
         </span>
     </h4>
-    <div class="empty-box" ng-hide="skills.length>0">
-        <span class="iconfont icon-kongbaiyemian"></span>
-        <p translate="暂无相关内容..."></p>
+    <div class="empty-to-edit" ng-hide="skills.length>0">
+        <p>
+            <span>尚未发表相关内容，请添加</span>
+            <i class="iconfont icon-tianjia" ng-click="showSkillModal()"></i>
+        </p>
     </div>
     <div class="main-skill clearfix" ng-show="skills.length>0 && !editing">
         <ul class="col-sm-6 v-skill-ul">
             <li class="clearfix v-li" ng-repeat="skill in skills | limitTo: 5 track by $index">
                 <span class="title">{{skill.title}}</span>
                 <span class="level">{{skill.level}}</span>
-                <span class="pull-right iconfont icon-icondianzan" title="{{!skillsDetail[skill.title].liked ? '取消点赞':'点赞'}}" ng-class="{false:'active'}[!skillsDetail[skill.title].liked]" ng-click="likeSkill(skill)"></span>
+                <span class="pull-right iconfont icon-icondianzan" title="{{!skillsDetail[skill.title].liked ? '取消点赞':'点赞'}}" ng-class="{false:'active'}[!skillsDetail[skill.title].liked]"
+                    ng-click="likeSkill(skill)"></span>
             </li>
         </ul>
         <div class="col-sm-6 skill-radar" id="skillRadar">
