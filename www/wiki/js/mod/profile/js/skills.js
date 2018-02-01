@@ -2,7 +2,7 @@
  * @Author: ZhangKaitlyn 
  * @Date: 2018-01-19
  * @Last Modified by: none
- * @Last Modified time: 2018-01-31 16:25:47
+ * @Last Modified time: 2018-02-01 19:39:39
  */
 define([
     'app', 
@@ -73,7 +73,6 @@ define([
             }
 
             var modifySkillsMd = function(){
-                initRadar();
                 var newItemObj = {
                     index: getBlockIndex(),
                     containerId: thisContainerId,
@@ -136,6 +135,9 @@ define([
 
             $scope.editSkill = function(){
                 $scope.editing = !$scope.editing;
+                setTimeout(function(){
+                    initRadar();
+                });
             };
 
             $scope.setSkill = function(index){
