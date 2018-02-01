@@ -230,6 +230,9 @@ function pay:api_createCharge(params)
 
 	if(not err) then
 		response:status(200);
+
+		chargeObject.headers = request.headers;
+
 		return errors:wrap(nil, chargeObject);
 	else
 		return errors:wrap(errors.SERVER_INNER_ERROR);
