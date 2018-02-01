@@ -139,9 +139,9 @@ function user_favorite:api_getByUserId(params)
 	local finished_count = 0
 	local url = ""
 	for i, site in ipairs(data or {}) do
-		site = site.siteinfo
+		site = site.siteinfo or {}
 		-- 设置网站tags为index的tags
-		url = format("/%s", site.username)
+		url = format("/%s", site.username or "")
 		if (site.sitename) then url = format("%s/%s/index", url, site.sitename) end
 		pages:db():findOne({url = url},
 			function (err, page)
