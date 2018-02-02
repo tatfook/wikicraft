@@ -53,7 +53,8 @@ define(['app', 'text!wikimod/adi/html/menu.html'], function (app, htmlContent) {
                 }
             });
 
-            // console.log($scope.params);			
+            // console.log($scope.params);
+
         }]);
     }
 
