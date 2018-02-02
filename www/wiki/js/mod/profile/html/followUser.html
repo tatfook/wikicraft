@@ -1,9 +1,9 @@
 <style>
-    .follow-users .empty-box{
+    .follow-users .empty-box {
         border: 1px solid #F2F2F2;
         margin: 9px;
     }
-    
+
     .follow-users .follow-users-list {
         margin: 15px -9px 31px;
     }
@@ -12,18 +12,22 @@
         padding: 9px;
     }
 
-    .follow-users .follow-users-item .inner-box{
+    .follow-users .follow-users-item .inner-box {
         display: flex;
         padding: 25px 15px 20px 36px;
         border: 1px solid #F2F2F2;
     }
 
-    .follow-users .follow-users-item .inner-box > img {
+    .follow-users .follow-users-item .inner-box>img {
         width: 60px;
         height: 60px;
         object-fit: cover;
         border-radius: 50%;
         margin-right: 16px;
+    }
+
+    .follow-users .follow-user-detail{
+        min-width: 0;
     }
 
     .follow-users .btn-followed {
@@ -39,31 +43,34 @@
         cursor: pointer;
     }
 
-    .follow-users .btn-followed:active{
+    .follow-users .btn-followed:active {
         box-shadow: none;
     }
 
-    .follow-users .btn-followed.active{
+    .follow-users .btn-followed.active {
         border: 1px solid #3977AD;
         color: #3977AD;
         box-shadow: none;
     }
 
-    .follow-users h4{
+    .follow-users h4 {
         margin: 0 0 10px;
     }
 
-    .follow-users h4 > a{
+    .follow-users h4>a {
         color: #333;
     }
 
-    .follow-users h4 > a:hover{
+    .follow-users h4>a:hover {
         color: #3977AD;
     }
 
-    .follow-users p.location{
+    .follow-users p.location {
         color: #999;
         font-weight: lighter;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
 </style>
 <div class="follow-users" ng-controller="followsUserCtrl" ng-hide="followUserList.length <=0 && !isSelf">
@@ -79,12 +86,14 @@
             <div class="inner-box">
                 <img ng-src="{{followUser.userinfo.logoUrl || getImageUrl('default_portrait.png',imgsPath)}}">
                 <div class="follow-user-detail">
-                    <h4><a ng-href="{{'/' + followUser.userinfo.username}}">{{followUser.userinfo.displayName || followUser.userinfo.username}}</a></h4>
-                    <p class="location">
+                    <h4>
+                        <a ng-href="{{'/' + followUser.userinfo.username}}">{{followUser.userinfo.displayName || followUser.userinfo.username}}</a>
+                    </h4>
+                    <p class="location" title="{{followUser.userinfo.location || '未知地点'}}">
                         <i class="iconfont icon-shiliangzhinengduixiang"></i>
                         {{followUser.userinfo.location || "未知地点"}}
                     </p>
-                    <div class="btn btn-followed" ng-show="isSelf" ng-class="{true:'active'}[followUser.concerned == false]" ng-click="toggleFollowUser(followUser)" >{{(followUser.concerned == false) ? '继续关注' : '已关注'}}</div>
+                    <div class="btn btn-followed" ng-show="isSelf" ng-class="{true:'active'}[followUser.concerned == false]" ng-click="toggleFollowUser(followUser)">{{(followUser.concerned == false) ? '继续关注' : '已关注'}}</div>
                 </div>
             </div>
         </div>
