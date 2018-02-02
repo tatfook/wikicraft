@@ -25,6 +25,7 @@ define([
         '$scope',
         '$rootScope',
         '$sce',
+		'$timeout',
         '$location',
 		'$anchorScroll',
         '$http',
@@ -46,6 +47,7 @@ define([
             $scope,
             $rootScope,
             $sce,
+			$timeout,
             $location,
             $anchorScroll,
             $http,
@@ -73,6 +75,7 @@ define([
                 config.services = {
                     $rootScope: $rootScope,
                     $sce: $sce,
+					$timeout: $timeout,
                     $http: $http,
                     $compile: $compile,
                     $auth: $auth,
@@ -124,6 +127,11 @@ define([
 				app.objects.mdwiki = mdwiki;
 				app.objects.dataSource = dataSource;
 
+				app.ng_objects.$rootScope = $rootScope;
+				app.ng_objects.$compile = $compile;
+				app.ng_objects.$http = $http;
+				app.ng_objects.$auth = $auth;
+				app.ng_objects.$timeout = $timeout;
 				app.ng_objects.$uibModal = $uibModal;
 				app.ng_objects.$sce = $sce;
 

@@ -2,7 +2,7 @@
 define([
 ], function(){
 	var escape_ch = "@";
-	var special_str = '`*_{}[]()#+-.!>\\';
+	var special_str = '`*_{}[]()#+-.!>\\' + '\'"<>&'; // 覆盖html禁止字符
 
 	// markdown 特殊字符转义
 	function md_special_char_escape(text) {
@@ -50,7 +50,7 @@ define([
 	}
 
 	// 是否是空行
-	function is_empty_list(line) {
+	function is_empty_line(line) {
 		if (line.trim() == "") {
 			return true;
 		}
@@ -303,7 +303,7 @@ define([
 			return false;
 		};
 
-		if (!is_empty_list(last_line) || !is_blockcode_flag(cur_line)) {
+		if (!is_empty_line(last_line) || !is_blockcode_flag(cur_line)) {
 			return ;
 		}
 
@@ -378,12 +378,12 @@ define([
 	function br(obj) {
 		var cur_line = obj.lines[obj.start];
 		var i = 0, htmlContent = "", text = cur_line , content="";	
-		if (!is_empty_list(cur_line) || obj.lines.length == (obj.start + 1) || !is_empty_list(obj.lines[obj.start+1])) {
+		if (!is_empty_line(cur_line) || obj.lines.length == (obj.start + 1) || !is_empty_line(obj.lines[obj.start+1])) {
 			return;
 		}
 
 		for (i = obj.start + 1; i < obj.lines.length; i++) {
-			if (!is_empty_list(obj.lines[i])) {
+			if (!is_empty_line(obj.lines[i])) {
 				break;
 			}
 			htmlContent += "<br/>";
@@ -401,15 +401,64 @@ define([
 		}
 	}
 
+	// html代码
+	function htmlcode(obj, env) {
+		var cur_line = obj.lines[obj.start];
+
+		//console.log(cur_line);
+		if (!/^@<[-\w\d]+/.test(cur_line)) {
+			return;
+		}
+
+		var text = cur_line, i = 0, single_line = cur_line;
+		for (i = obj.start + 1; i < obj.lines.length; i++) {
+			var line = obj.lines[i];
+			if (is_empty_line(line)) {
+				break;
+			}	
+			single_line += line;
+			text += "\n" + line;
+		}
+		
+		var regs = single_line.match(/^@<([-\w\d]+).*@>.*@<\/([-\w]+)@>$/);
+		//console.log(single_line, regs);
+		if (!regs || !regs[1] || !regs[2] || regs[1] != regs[2]) {
+			return;
+		}
+
+		var token = {
+			tag: "html",
+			content: text,
+			text: text,
+			htmlContent: text,
+			start: obj.start,
+			end: i,
+		};
+
+		return token;
+	}
+
 	// 段落
 	function paragraph(obj, env) {
+		var _escape = function(str) {
+			str = str.replace(/@&/g, "&amp;");
+			str = str.replace(/@</g, "&lt;");
+			str = str.replace(/@>/g, "&gt;");
+			str = str.replace(/@'/g, "&apos;");
+			str = str.replace(/@"/g, "&quot;");
+			// 空格非保留字
+			str = str.replace(/ /g, "&nbsp;");
+
+			return str;
+		} 
+
 		var is_paragraph_line = function(line) {
 			if (is_hr(line)
 					|| is_list(line) 
 					|| is_blockquote(line) 
 					|| is_header(line) 
 					|| line.indexOf("@`@`@`") == 0
-					|| is_empty_list(line)) {
+					|| is_empty_line(line)) {
 				return false;
 			}
 
@@ -421,33 +470,36 @@ define([
 			return;
 		}
 
-		var content = cur_line, i = 0;
+		var i = 0, text = cur_line, htmlContent = _escape(cur_line);
 		for (i = obj.start+1; i < obj.lines.length; i++) {
 			var line = obj.lines[i];
 			if (!is_paragraph_line(line)) {
 				break;
 			}
-			content += "<br/>" + line;
+			text += "\n" + line;
+			htmlContent += "<br/>" + _escape(line);
 		}
 
 		var token = {
 			tag: "p",
-			content: content,
-			text: content,
+			htmlContent: htmlContent,
+			content: text,
+			text: text,
 			start: obj.start,
 			end:i,
 		}
 		
 		if (env && env.is_sub_tag) {
-			token.htmlContent = obj.md.line_parse(token.content);
+			token.htmlContent = obj.md.line_parse(token.htmlContent);
 		} else {
-			token.htmlContent = '<' + token.tag + '>' + obj.md.line_parse(token.content) + '</' + token.tag + '>';
+			token.htmlContent = '<' + token.tag + '>' + obj.md.line_parse(token.htmlContent) + '</' + token.tag + '>';
 		}
 
 		var paragraph_render = obj.md.rule_render["paragraph"];
 		if (paragraph_render) {
-			token.htmlContent = paragraph_render({md:obj.md, content: content, text:content, is_sub_tag:env.is_sub_tag})  || token.htmlContent;
+			token.htmlContent = paragraph_render({md:obj.md, content: text, text:text, is_sub_tag:env.is_sub_tag})  || token.htmlContent;
 		}
+
 		return token;
 	}
 
@@ -461,7 +513,7 @@ define([
 		var content = cur_line.substring(2), i = 0, text = cur_line;
 		for (i = obj.start + 1; i < obj.lines.length; i++) {
 			var line = obj.lines[i];
-			if (is_empty_list(line)) {
+			if (is_empty_line(line)) {
 				break;
 			}
 			text += "\n" + line;
@@ -514,7 +566,7 @@ define([
 		for (i = obj.start + 1; i <= obj.lines.length; i++) {
 			var line = obj.lines[i] || "";
 			var ret = is_list(line);
-			if (is_empty_list(line)) {
+			if (is_empty_line(line)) {
 				token.end = i;
 				token.subtokens = obj.md.block_parse(token.content, {start:i, is_sub_tag:true});
 				subtokens.push(token);
@@ -720,6 +772,7 @@ define([
 		md.register_block_rule(list);
 		md.register_block_rule(table);
 
+		md.register_block_rule(htmlcode);
 		// 段落需放最后
 		md.register_block_rule(paragraph);
 

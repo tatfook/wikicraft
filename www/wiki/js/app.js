@@ -25,16 +25,18 @@ define([
 
 	//console.log("app");
 	app.ng_app = angular.module('webapp', ['ui.bootstrap', 'ui.select', 'pascalprecht.translate', 'satellizer', 'ngSanitize', 'toggle-switch',]).run(function () {
-		var $injector = angular.injector(["ng", "satellizer"]);
-		config.angularBootstrap = true;
-        app.angularBootstrap = true;
-		app.ng_objects.$injector = $injector;
-		app.ng_objects.$rootScope = $injector.get("$rootScope");
-		app.ng_objects.$compile = $injector.get("$compile");
-		app.ng_objects.$http = $injector.get("$http");
-		//app.ng_objects.$sce = $injector.get("$sce");
-		app.ng_objects.$auth = $injector.get("$auth");
-		app.ng_objects.$timeout = $injector.get("$timeout");
+		//var $injector = angular.injector(["ng", "satellizer"]);
+		//var $injector = angular.injector();
+		//config.angularBootstrap = true;
+        //app.angularBootstrap = true;
+		//app.ng_objects.$injector = $injector;
+		//app.ng_objects.$rootScope = $injector.get("$rootScope");
+		//app.ng_objects.$compile = $injector.get("$compile");
+		//app.ng_objects.$http = $injector.get("$http");
+		////app.ng_objects.$sce = $injector.get("$sce");
+		//app.ng_objects.$auth = $injector.get("$auth");
+		//app.ng_objects.$timeout = $injector.get("$timeout");
+		
 	});
 
 	app.ng_app.config(['$controllerProvider', '$httpProvider', '$authProvider','$locationProvider','$translateProvider','$compileProvider', function ($controllerProvider, $httpProvider, $authProvider, $locationProvider, $translateProvider, $compileProvider) {
