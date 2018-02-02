@@ -37,6 +37,47 @@ define([
         });
     }
 
+	function md_link_render(obj) {
+		var pageinfo = config.services.$rootScope.pageinfo;
+
+		if (!pageinfo) {
+			return; 
+		}
+
+		var href = obj.md.md_special_char_unescape(obj.link_href);
+		var text = obj.md.md_special_char_unescape(obj.link_text);
+		//console.log(obj);
+		//console.log(href);
+		var currentDataSource = dataSource.getDataSource(pageinfo.username,pageinfo.sitename);
+		if (currentDataSource && href.indexOf("private_token=visitortoken") >=0 ) {
+			href = href.replace('private_token=visitortoken','private_token=' + currentDataSource.getToken());
+		}
+		
+		return '<wiki-link href="' + href + '">' + text + '<wiki-link>';
+	}
+
+	function md_image_render(obj) {
+		var pageinfo = config.services.$rootScope.pageinfo;
+		if (!pageinfo) {
+			return; 
+		}
+
+		var href = obj.md.md_special_char_unescape(obj.image_href);
+		var text = obj.md.md_special_char_unescape(obj.image_text);
+		//console.log(obj);
+		//console.log(href);
+		var currentDataSource = dataSource.getDataSource(pageinfo.username,pageinfo.sitename);
+		if (currentDataSource && href.indexOf("private_token=visitortoken") >=0 ) {
+			href = href.replace('private_token=visitortoken','private_token=' + currentDataSource.getToken());
+		}
+		
+		return '<img src="' + href + '" alt="' + text + '"/>';
+	}
+
+	function md_rule_override(md) {
+		md.register_rule_render("a", md_link_render);
+		md.register_rule_render("img", md_image_render);
+	}
     // md 构造函数
     function mdwiki(options) {
 		options = options || {};
@@ -52,6 +93,8 @@ define([
 		md.mode = options.mode || "normal";
         md.$scope = options.$scope;
 		md.isBindContainer = false;
+
+		md_rule_override(md.md);
 
 		var templateContent = '<div ng-repeat="$kp_block in $kp_block.blockList track by $index" ng-if="!$kp_block.isTemplate"><wiki-block-container data-params="' + encodeMdName +'"></wiki-block-container></div>';
 		var blankTemplateContent = '<div class="container">' + templateContent + '</div>';
