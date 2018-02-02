@@ -350,6 +350,21 @@ define([
 
         // 收藏作品
         $scope.doWorksFavorite=function (event,doCollect) {
+            if (!Account.isAuthenticated()) {
+                Message.info("登录后才能关注");
+                modal('controller/loginController', {
+                    controller: 'loginController',
+                    size: 'lg',
+                    backdrop: true
+                }, function (result) {
+                    console.log(result);
+                    $scope.doWorksFavorite(event, doCollect);
+                    // nowPage.replaceSelection(login.content);
+                }, function (result) {
+                    console.log(result);
+                });
+                return; // 登录后才能关注
+            }
             var worksFavoriteRequest = function(isFavorite) {
                 console.log(pageDetail);
                 util.post(config.apiUrlPrefix + "pages/star", {

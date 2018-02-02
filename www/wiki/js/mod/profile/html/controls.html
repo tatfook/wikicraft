@@ -83,6 +83,24 @@
         line-height: 1;
         margin-left: 20px;
     }
+
+    .user-main-content h4.title .iconfont.icon-fanhui {
+        font-weight: normal;
+        font-size: 26px;
+    }
+
+    .user-main-content .editing-toolbar .iconfont {
+        font-size: 24px;
+        margin-left: 5px;
+        color: #3977AD;
+        cursor: pointer;
+        line-height: 1;
+    }
+
+    .user-main-content .editing-toolbar .iconfont[disabled] {
+        cursor: not-allowed;
+        opacity: 0.6;
+    }
 </style>
 <div ng-controller="profileControlCtrl">
     <div class="control-bar container clearfix" ng-show="isSelf">
