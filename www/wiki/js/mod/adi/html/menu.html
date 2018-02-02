@@ -39,7 +39,7 @@
     }
 
     .menu > .container > ul > li > .sub-menu{
-        /* display: none; */
+        display: none;
         position: absolute;
         width: auto;
         z-index: 9999;
@@ -66,10 +66,10 @@
     .menu-right > .container > ul{
         padding-left: 0;
         background: none;
+        float: right;
     }
 
     .menu-right > .container > ul > li{
-        float: right;
         background-position-x: 0;
     }
     .clear-pointer a{
@@ -113,6 +113,7 @@
             </div>
         </div>
     </div>
+
     <div ng-if="params.design.text == 'right'  && !params.menu_menu.is_mod_hide">
         <div class="menu menu-right">
             <div class="container">
