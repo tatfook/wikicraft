@@ -48,7 +48,7 @@ define([
 				}
             });
             $scope.pageTags = {};
-            $scope.pageTags.tags = Array.from($scope.params && $scope.params.pageTags.tags || []);
+            $scope.pageTags.tags = util.arrayFrom($scope.params && $scope.params.pageTags.tags || []);
             $rootScope.isSelf = ($scope.user && $scope.userinfo && ($scope.user._id == $scope.userinfo._id));
             
             // 获取当前模块的index和containerId

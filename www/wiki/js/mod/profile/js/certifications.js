@@ -9,7 +9,8 @@ define([
     'helper/mdconf', 
     'text!wikimod/profile/html/certifications.html',
     'text!wikimod/profile/html/modalTemplate/addCertificationsModal.html',
-], function (app, mdconf, htmlContent, addCertificationModalHtmlContent) {
+    'helper/util',
+], function (app, mdconf, htmlContent, addCertificationModalHtmlContent, util) {
     function registerController(wikiBlock) {
         app.registerController("certificationCtrl", ['$rootScope', '$scope', '$uibModal', function ($rootScope, $scope, $uibModal) {
             const modCmd = "```@profile/js/certifications";
@@ -31,7 +32,7 @@ define([
                 }
             });
             
-            $scope.certifications = Array.from($scope.params.certifications);
+            $scope.certifications = util.arrayFrom($scope.params.certifications);
             $scope.editing = false;
 
             // 获取当前模块的index和containerId
