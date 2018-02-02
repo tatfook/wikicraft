@@ -51,7 +51,7 @@ define([
                     })
                 })
             }
-            $scope.skills = Array.from($scope.params.skills);
+            $scope.skills = util.arrayFrom($scope.params.skills);
             getSkillLikeStatus();
             $scope.editing = false;
             

@@ -69,7 +69,7 @@ define([
             }
             
 
-            $scope.works = Array.from($scope.params.works);
+            $scope.works = util.arrayFrom($scope.params.works);
             $scope.userinfo.worksCount = $scope.works.length;
             $scope.editing = false;
             getWorksMsgByUrl();

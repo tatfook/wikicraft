@@ -238,6 +238,13 @@ define([
         this.stack.push(obj);
     }
 
+    util.arrayFrom = function(obj) {
+        if(Array.isArray(obj)) return obj;
+        var result = [];
+        for(var i in obj) result[i] = obj[i];
+        return result;
+    }
+
     util.pop = function () {
         return this.stack.pop();
     }

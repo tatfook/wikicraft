@@ -9,7 +9,8 @@ define([
     'text!wikimod/profile/html/experiences.html',
     'text!wikimod/profile/html/modalTemplate/addExperienceModal.html',
     'helper/mdconf',
-], function (app, htmlContent, addExperienceModalHtmlContent, mdconf) {
+    'helper/util',
+], function (app, htmlContent, addExperienceModalHtmlContent, mdconf, util) {
     function registerController(wikiBlock) {
         app.registerController("experienceCtrl", ['$rootScope', '$scope', '$uibModal', function ($rootScope, $scope, $uibModal) {
             const modCmd = "```@profile/js/experiences";
@@ -33,7 +34,7 @@ define([
                 }
             });
             
-            $scope.experiences = Array.from($scope.params.experiences);
+            $scope.experiences = util.arrayFrom($scope.params.experiences);
             $scope.editing = false;
 
             // 获取当前模块的index和containerId
