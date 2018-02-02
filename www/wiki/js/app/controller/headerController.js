@@ -17,7 +17,7 @@ define([
         $scope.urlObj = {};
         $scope.isIconShow = !util.isOfficialPage();
         var pageDetail = util.parseUrl();
-        $scope.isUserPage = pageDetail.pathname.substring(1) == pageDetail.username;
+        $scope.isUserPage = (pageDetail.username && pageDetail.pathname.substring(1) == pageDetail.username);
         $scope.trendsType = "organization";
         $scope.isCollect=false;//是否已收藏当前作品
         $scope.searchRange = [];
