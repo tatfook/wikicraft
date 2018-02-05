@@ -1,0 +1,32 @@
+<div class="menu">
+    <div class="container">
+        <ul class="clearfix">
+            <li ng-repeat="item in $ctrl.menu.text">
+                <a ng-if="!$ctrl.editorMode" 
+                   ng-href="{{item.url}}" 
+                   target="_blank">
+                   {{item.name}}
+                </a>
+                <a ng-if="$ctrl.editorMode" 
+                   ng-click="$ctrl.viewEditorClick($ctrl.menu, $event)" 
+                   class="edit" 
+                   href="javascript:void(0)">{{item.name}}
+                </a>
+                <ul class="sub-menu">
+                    <li ng-repeat="subItem in item.children">
+                        <a ng-if="!$ctrl.editorMode" 
+                           ng-href="{{subItem.url}}" 
+                           target="_blank">
+                           {{subItem.name}}
+                        </a>
+                        <a ng-if="$ctrl.editorMode" 
+                           ng-click="$ctrl.viewEditorClick($ctrl.menu, $event)" 
+                           href="javascript:void(0)">
+                           {{subItem.name}}
+                        </a>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+</div>

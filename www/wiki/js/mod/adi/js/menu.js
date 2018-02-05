@@ -2,7 +2,7 @@
  * Created by big on 2017/12/19.
  */
 
-define(['app', 'text!wikimod/adi/html/menu.html'], function (app, htmlContent) {
+define(['app', 'text!wikimod/adi/html/menu.html', "wikimod/adi/component/menu/menu"], function (app, htmlContent) {
     function registerController(wikiblock) {
         app.registerController("menuController", ['$scope',function ($scope) {
 
