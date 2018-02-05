@@ -24,11 +24,11 @@ define([
     };
 
 	//console.log("app");
-	app.ng_app = angular.module('webapp', ['ui.bootstrap', 'ui.select', 'pascalprecht.translate', 'satellizer', 'ngSanitize', 'toggle-switch',]).run(function () {
+	app.ng_app = angular.module('webapp', ['ui.bootstrap', 'ui.select', 'pascalprecht.translate', 'satellizer', 'ngSanitize', 'toggle-switch',]).run(["$injector", function ($injector) {
 		//var $injector = angular.injector(["ng", "satellizer"]);
 		//var $injector = angular.injector();
-		//config.angularBootstrap = true;
-        //app.angularBootstrap = true;
+		config.angularBootstrap = true;
+		app.angularBootstrap = true;
 		//app.ng_objects.$injector = $injector;
 		//app.ng_objects.$rootScope = $injector.get("$rootScope");
 		//app.ng_objects.$compile = $injector.get("$compile");
@@ -37,7 +37,7 @@ define([
 		//app.ng_objects.$auth = $injector.get("$auth");
 		//app.ng_objects.$timeout = $injector.get("$timeout");
 		
-	});
+	}]);
 
 	app.ng_app.config(['$controllerProvider', '$httpProvider', '$authProvider','$locationProvider','$translateProvider','$compileProvider', function ($controllerProvider, $httpProvider, $authProvider, $locationProvider, $translateProvider, $compileProvider) {
 		app.ng_objects.$controllerProvider = $controllerProvider;
@@ -119,15 +119,15 @@ define([
 
     // 提供动态注册控制器接口
     app.registerController = function (name, constructor) {
-        if (app.ng_objects.controller_map[name]) {
-            return;
-        }
+        //if (app.ng_objects.controller_map[name]) {
+            //return;
+        //}
         if (app.angularBootstrap) {
             app.ng_objects.$controllerProvider.register(name, constructor);
         } else {
             app.ng_app.controller(name, constructor);
         }
-        app.ng_objects.component_map[name] = constructor;
+        //app.ng_objects.component_map[name] = constructor;
     };
 
     // 注册组件

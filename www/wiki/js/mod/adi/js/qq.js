@@ -71,7 +71,7 @@ define([
 		modParams.link_title.text = modParams.link_title.text || modParams.link_title.$data.text;
 		modParams.link_title.href = modParams.link_title.href || modParams.link_title.$data.href;
 
-		console.log(modParams);
+		//console.log(modParams);
 		return modParams;
 	}
 
