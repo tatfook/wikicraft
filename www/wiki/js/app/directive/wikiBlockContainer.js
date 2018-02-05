@@ -45,6 +45,7 @@ define([
 				var isTemplate = $attrs.template;
 				var $rootScope = app.ng_objects.$rootScope;
 				var block = extendBlock($scope, mdName, index);
+				var md = getMd(mdName);
 				
 				//console.log(block.isTemplate, mdName, index);
 				if (!block) {
@@ -54,6 +55,7 @@ define([
 				$element.addClass("mod-container");
 				block.$element = $element; // 双向滚动时会用到
 				$scope.insertMod = $rootScope.insertMod;
+				$scope.isShowAddIcon = md && md.mode == "editor" && block.isWikiBlock;
 				$scope.clickContainer = function($event) {
 					if ($event) {
 						$event.stopPropagation();

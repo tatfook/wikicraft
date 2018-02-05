@@ -19,7 +19,8 @@ define([
     'controller/notfoundController',
     'controller/crosController',
 ], function (app, markdownit, mdwiki, markdownwiki, storage, util, mdconf, dataSource, loading, homeHtmlContent, headerHtmlContent, footerHtmlContent, userHtmlContent, notfoundHtmlContent, crosHtmlContent) {
-	var md = markdownwiki({breaks: true, isMainMd:true});
+	//var md = markdownwiki({breaks: true, isMainMd:true});
+	var md = mdwiki();
 
     app.controller('mainController', [
         '$scope',
@@ -189,10 +190,10 @@ define([
                     return $sce.trustAsHtml(config.services.markdownit.render(text || ""));
                 }
 
-				$anchorScroll.yOffset = 100;
-				md.registerRenderAfterCallback("$anchorScroll", function(){
-					$anchorScroll();
-				});
+				//$anchorScroll.yOffset = 100;
+				//md.registerRenderAfterCallback("$anchorScroll", function(){
+					//$anchorScroll();
+				//});
             }
 
             // 底部高度自适应
