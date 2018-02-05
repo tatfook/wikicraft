@@ -8,42 +8,28 @@ define([
     'helper/dataSource',
     'helper/markdownwiki'
 ], function (app, util, dataSource, markdownwiki) {
-    function registerController(wikiBlock) {
-        app.registerController("defaultTemplateController", ['$rootScope','$scope', function ($rootScope, $scope) {
-            function init() {
-                var moduleParams = wikiBlock.modParams || {};
-                //console.log(moduleParams);
-                $scope.style = {
-                    'background-color': moduleParams.backgroundColor,
-                    'width':moduleParams.width,
-                    "height": moduleParams.height || "100%" ,
-                    'background-image': moduleParams.backgroundImage,
-                };
+	
+    function render(wikiBlock) {
+		var $scope = wikiBlock.$scope;
+		var moduleParams = wikiBlock.modParams || {};
+		//console.log(moduleParams);
+		$scope.style = {
+			'background-color': moduleParams.backgroundColor,
+			'width':moduleParams.width,
+			"height": moduleParams.height || "100%" ,
+			'background-image': moduleParams.backgroundImage,
+		};
 
-                $scope.class = moduleParams.class;
+		$scope.class = moduleParams.class;
+		$scope.footerpage = moduleParams.footerpage;
 
-                if(moduleParams.footerpage &&  moduleParams.footerpage!=""){
-                    var footerPageMD = markdownwiki({html:true, use_template:false});
-                    var pageinfo = $rootScope.pageinfo;
-                    var ds = dataSource.getDataSource(pageinfo.username, pageinfo.sitename);
-                    var pathPrefix = $scope.pageinfo.username + '/' + $scope.pageinfo.sitename + '/';
-                    ds.getRawContent({path: pathPrefix + moduleParams.footerpage + config.pageSuffixName}, function (content) {
-                        util.html('#_footerPageContentId', footerPageMD.render(content||''), $scope);
-                    });
-                }
-            }
-
-            // init();
-            $scope.$watch('$viewContentLoaded', init);
-        }]);
+		return '<div ng-class="class" ng-style="style">' + wikiBlock.templateContent + 
+			'<wikipage data-content-type="md" data-content-url="footerpage"></wikipage></div>';
     }
 
     return {
-        render: function (wikiBlock) {
-            registerController(wikiBlock);
-            return '<div ng-controller="defaultTemplateController" ng-class="class" ng-style="style">'+ wikiBlock.content + '<div id="_footerPageContentId"></div></div>'
-        }
-    }
+        render: render,
+	}
 });
 
 /*

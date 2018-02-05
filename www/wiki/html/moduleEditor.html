@@ -572,14 +572,14 @@
                                         <img ng-src="{{data.text}}" alt="">
                                     </div>
                                     <div class="fake-nav fake-bottom-nav clearfix">
-                                        <div class="col-xs-6" ng-click="showImageModal(data.data)" translate="修改"></div>
+                                        <div class="col-xs-6" ng-click="showImageModal(data)" translate="修改"></div>
                                         <div class="col-xs-6" ng-click="setLink('href', data)" translate="设置"></div>
                                     </div>
                                 </div>
                             </div>
                             <!-- 菜单编辑 -->
                             <div ng-if="data.$data.type == 'menu'" class="center-center">
-                                <button class="btn menu-btn" ng-click="openMenuEditor(data.data)" translate="打开菜单编辑器"></button>
+                                <button class="btn menu-btn" ng-click="openMenuEditor(data)" translate="打开菜单编辑器"></button>
                             </div>
                             <!-- 绘图板编辑 -->
                             <div ng-if="data.$data.type == 'modal'" class="center-center">
