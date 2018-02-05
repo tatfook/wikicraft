@@ -74,10 +74,6 @@ define([
             })
         }
 
-        var initUrlInfo = function(){
-            console.log(pageDetail);
-        }
-
         function init() {
             $scope.isJoin = (window.location.pathname == "/wiki/join") ? true : false;
             $scope.isSearch = (window.location.pathname == "/wiki/search") ? true : false;
@@ -116,8 +112,6 @@ define([
             initSearchRange();
 
             initPageInfo();
-
-            initUrlInfo();
             // var container=document.getElementById("js-prev-container");
             // container.style.overflow="visible";
         }
