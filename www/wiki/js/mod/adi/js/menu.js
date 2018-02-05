@@ -4,6 +4,7 @@
 
 define(['app', 'text!wikimod/adi/html/menu.html', "wikimod/adi/component/menu/menu"], function (app, htmlContent) {
     function registerController(wikiblock) {
+        console.log("menu wikimod registered \n");
         app.registerController("menuController", ['$scope',function ($scope) {
 
 			$scope.editorMode = wikiblock.editorMode;

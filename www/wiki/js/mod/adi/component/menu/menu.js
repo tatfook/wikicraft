@@ -8,7 +8,8 @@ define([
     'app', 
     'text!wikimod/adi/component/menu/menu.template.html'
 ], function (app, template_text) {
-    app.component("adiMenu", {
+
+    app.registerComponent("adiMenu", {
         require :  { editorMode: '^editorMode' },
         template: template_text,
         bindings: {
@@ -16,7 +17,7 @@ define([
             menu: "<",
         },
         controller: function(){
-
         }
     });
+    
 });

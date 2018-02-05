@@ -18,6 +18,7 @@ define([
 	});
 
 	app.registerController = app.controller;
+	app.registerComponent = app.component;
 
 	app.config(['$controllerProvider', '$httpProvider', '$authProvider','$locationProvider','$translateProvider','$compileProvider', function ($controllerProvider, $httpProvider, $authProvider, $locationProvider, $translateProvider, $compileProvider) {
 		//$locationProvider.hashPrefix('!');
@@ -28,6 +29,13 @@ define([
 				$controllerProvider.register(name, constructor);
 			} else {
 				app.controller(name, constructor);
+			}
+		};
+		app.registerComponent = function (name, constructor) {
+			if (config.angularBootstrap) {
+				$compileProvider.component(name, constructor);
+			} else {
+				app.component(name, constructor);
 			}
         };
 
