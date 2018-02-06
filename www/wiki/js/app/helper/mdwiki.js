@@ -205,12 +205,13 @@ define([
                 var modName = cmdName.match(wikiModNameRE)[1];
                 var modParams = undefined;
                 try {
-                    modParams = angular.fromJson(content)
+                    modParams = angular.fromJson(content.trim())
                 }
                 catch (e) {
                     modParams = mdconf.mdToJson(content) || content;
                 }
 
+				//console.log(modParams);
 				if (block.cmdName != cmdName) {
 					block.wikimod = undefined;
 				}

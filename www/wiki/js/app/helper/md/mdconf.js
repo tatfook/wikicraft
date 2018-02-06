@@ -38,6 +38,7 @@ define([
 
 	// md 转json对象
 	mdconf.mdToJson = function(text) {
+		//console.log(text);
 		if (typeof(text) != "string") {
 			return text;
 		}

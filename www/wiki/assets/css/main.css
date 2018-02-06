@@ -78,6 +78,10 @@ a:hover {
     max-width:100%;
 }
 
+img {
+	max-width: 100%;
+	width: 100%;
+}
 body{
     font-family: "微软雅黑";
     padding-top: 56px;

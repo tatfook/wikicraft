@@ -119,15 +119,15 @@ define([
 
     // 提供动态注册控制器接口
     app.registerController = function (name, constructor) {
-        //if (app.ng_objects.controller_map[name]) {
-            //return;
-        //}
+		if (app.ng_objects.controller_map[name]) {
+			return;
+		}
         if (app.angularBootstrap) {
             app.ng_objects.$controllerProvider.register(name, constructor);
         } else {
             app.ng_app.controller(name, constructor);
         }
-        //app.ng_objects.component_map[name] = constructor;
+		app.ng_objects.component_map[name] = constructor;
     };
 
     // 注册组件

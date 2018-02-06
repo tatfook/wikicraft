@@ -172,7 +172,7 @@ define([
 
 	function em(obj) {
 		var text = obj.text;
-		var reg_str = /@\*(.+?)@\*/;
+		var reg_str = / @\*(.+?)@\* /;
 		var regs = text.match(reg_str);
 		var htmlstr = "", em_render;	
 		if (regs){
@@ -186,7 +186,7 @@ define([
 			return em(obj);
 		}
 
-		reg_str = /@_(.*?)@_/;
+		reg_str = / @_(.*?)@_ /;
 		regs = text.match(reg_str);
 		if (regs){
 			htmlstr = '<em>' + regs[1] + '</em>';
@@ -204,7 +204,7 @@ define([
 
 	function strong(obj) {
 		var text = obj.text;
-		var reg_str = /@\*@\*(.+?)@\*@\*/;
+		var reg_str = / @\*@\*(.+?)@\*@\* /;
 		var regs = text.match(reg_str);
 		var htmlstr = "", strong_render;	
 		if (regs){
@@ -218,7 +218,7 @@ define([
 			return strong(obj);
 		}
 
-		reg_str = /@_@_(.*?)@_@_/;
+		reg_str = / @_@_(.*?)@_@_ /;
 		regs = text.match(reg_str);
 		if (regs){
 			htmlstr = '<strong>' + regs[1] + '</strong>';

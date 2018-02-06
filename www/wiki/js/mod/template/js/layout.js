@@ -248,7 +248,7 @@ define([
 		var templateContent = "";
 		for (var i = 0; i < params.rows.length; i++) {
 			var row = params.rows[i];
-			templateContent += '<div ng-class="params.rows[' + i + '].class" ng-style="params.rows[' + i +'].style">\n';
+			templateContent += '<div class="clearfix" ng-class="params.rows[' + i + '].class" ng-style="params.rows[' + i +'].style">\n';
 			for (var j = 0; j < row.cols.length; j++) {
 				var col = row.cols[j];
 				var colStr = "params.rows[" + i + "].cols[" + j + "]";
