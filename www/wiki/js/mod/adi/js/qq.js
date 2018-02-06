@@ -138,6 +138,8 @@ define([
 
 			return currentImgText;
 		}
+
+		return htmlContent;
     }
 
     return {

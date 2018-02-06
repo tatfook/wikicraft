@@ -446,12 +446,12 @@ define([
 			} else if (type == "styles") {
 				totalRenderLen = $scope.params.styles ? $scope.params.styles.length : 0;
 			}
-            if (renderedSlidesLen != totalRenderLen) { // ng-repeat渲染完成才能初始化swiper
-                setTimeout(function(){
-                    initSwiper(type);
-                }, 10);
-                return;
-            }
+            //if (renderedSlidesLen != totalRenderLen) { // ng-repeat渲染完成才能初始化swiper
+                //setTimeout(function(){
+                    //initSwiper(type);
+                //}, 10);
+                //return;
+            //}
 
             $(".ui-select-dropdown.dropdown-menu").on("mousewheel", function(event){
                 // console.log(event);

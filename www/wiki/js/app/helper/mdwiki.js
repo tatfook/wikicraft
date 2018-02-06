@@ -32,7 +32,8 @@ define([
 		//block.blockUrl = requireUrl;  // 暂时以cmdName标识唯一模块
         require([requireUrl], function (mod) {
             cb && cb(mod, cmdName);
-        }, function () {
+        }, function (e) {
+			console.log(e);
             errcb && errcb(cmdName);
         });
     }
@@ -306,7 +307,7 @@ define([
 							self.wikimod = {cmdName: cmdName, mod: mod};
 							_render(self.wikimod.mod);
 						}, function () {
-							console.log("加载模块" + block.modName + "失败");
+							console.log("加载模块" + block.cmdName + "失败");
 							error && error();
 						});
 					}
