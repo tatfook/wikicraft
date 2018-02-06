@@ -97,7 +97,13 @@ define([
         }
 
         function updateContentView() {
-            //TODO: item search sort algorithem
+            var sortIndexFn = function(x, y) {
+                return x.sortIndex < y.sortIndex ? -1 : 1;
+            }
+
+            var classifySortIndexFn = function(x, y) {
+                return x.classifySortIndex < y.classifySortIndex ? -1 : 1;
+            }
 
             if ($scope.filterNavType !== 'all' && $scope.filterNavType !== 'favorite') {
                 var classifyNames = $scope.filterNavType.split('>');
@@ -105,29 +111,49 @@ define([
                 var subClassifyName = classifyNames[1];
 
                 // classifyName support multi treeview group
-                // item.classifyName pattern: 标题>大标题:文档>一级文档:...
-                $scope.wikiBlockListFilteredToDisplay = $scope.wikiBlockListDataStore.filter(function (item) {
+                // item.classifyName pattern: 标题>大标题!1:文档>一级文档!2.5:...
+                // !1 means classifySortIndex === 1
+                // !2.5 means classifySortIndex === 2.5
+                $scope.wikiBlockListFilteredToDisplay = $scope.wikiBlockListDataStore.filter(function (item, wikiBlockIndex) {
                     if (!item || !item.classifyName) return false;
 
-                    var itemClassifies = item.classifyName.split(':');
+                    var itemClassifies = item.classifyName.split(':').map(function(x) {
+                        var tempArr = x.split('!');
+                        return {
+                            name: tempArr[0],
+                            classifySortIndex: util.getFirstAvailableNumber(tempArr[1], item.sortIndex, wikiBlockIndex)
+                        }
+                    });
 
-                    return itemClassifies.filter(function(itemClassifyItem) {
-                        var itemClassifyNames = itemClassifyItem.split('>');
+                    var classifySortIndex = util.getFirstAvailableNumber(itemClassifies[0] && itemClassifies[0].classifySortIndex, item.sortIndex);
+
+                    var result = itemClassifies.filter(function(itemClassifyItem) {
+                        var itemClassifyNames = itemClassifyItem.name.split('>');
                         var itemClassifyName = itemClassifyNames[0];
                         var itemSubClassifyName = itemClassifyNames[1];
     
-                        return (classifyName == itemClassifyName) && (
+                        var result = (classifyName == itemClassifyName) && (
                             subClassifyName ? subClassifyName == itemSubClassifyName : true
                         );
-                    }).length;
-                });
+
+                        result && (classifySortIndex = itemClassifyItem.classifySortIndex);
+
+                        return result;
+                    }).length > 0;
+
+                    if (result) {
+                        item.classifySortIndex = classifySortIndex;
+                    };
+
+                    return result;
+                }).sort(classifySortIndexFn);
                 return;
             }
 
             if ($scope.filterNavType == 'favorite') {
                 $scope.wikiBlockListFilteredToDisplay = $scope.wikiBlockListDataStore.filter(function (item) {
                     return item && item.myfavorite;
-                });
+                }).sort(sortIndexFn);
                 return;
             }
 
@@ -163,14 +189,14 @@ define([
                     }),
                     options
                 );
-                $scope.wikiBlockListFilteredToDisplay = fuse.search($scope.filterQueryStr);
+                $scope.wikiBlockListFilteredToDisplay = fuse.search($scope.filterQueryStr).sort(sortIndexFn);
                 return;
             }
 
             // for all without filterQueryStr
             $scope.wikiBlockListFilteredToDisplay = $scope.wikiBlockListDataStore.filter(function (item) {
                 return item;
-            });
+            }).sort(sortIndexFn);
         }
 
         function getWikiBlockData(type, callback) {      
@@ -195,6 +221,7 @@ define([
                 if ( !(data.moduleList && data.moduleList.forEach) ) return;
                 data.moduleList && data.moduleList.forEach && data.moduleList.forEach(function(item) {
                     item.myfavorite = type === 'favorite'; //for 个人收藏
+                    item.sortIndex = util.getFirstAvailableNumber(item.sortIndex, item._id);
                     $scope.wikiBlockListDataStore[item._id] = item;
                 });
                 postCacheInfo[type] = true;
