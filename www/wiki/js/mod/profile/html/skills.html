@@ -162,7 +162,7 @@
             <li class="clearfix v-li" ng-repeat="skill in skills | limitTo: 5 track by $index">
                 <span class="title">{{skill.title}}</span>
                 <span class="level">{{skill.level}}</span>
-                <span class="pull-right iconfont icon-icondianzan" title="{{!skillsDetail[skill.title].liked ? '取消点赞':'点赞'}}" ng-class="{false:'active'}[!skillsDetail[skill.title].liked]"
+                <span class="pull-right iconfont icon-icondianzan" title="{{!skillsDetail[skill.title].liked ? '点赞':'取消点赞'}}" ng-class="{false:'active'}[!skillsDetail[skill.title].liked]"
                     ng-click="likeSkill(skill)"></span>
             </li>
         </ul>
@@ -173,7 +173,8 @@
         <ul class="h-skill-ul clearfix">
             <li class="clearfix h-li" ng-repeat="skill in skills | limitTo: (5 - skills.length) track by $index">
                 <span class="title">{{skill.title}}</span>
-                <span class="pull-right iconfont icon-icondianzan"></span>
+                <span class="pull-right iconfont icon-icondianzan" title="{{!skillsDetail[skill.title].liked ? '点赞':'取消点赞'}}" ng-class="{false:'active'}[!skillsDetail[skill.title].liked]"
+                    ng-click="likeSkill(skill)"></span>
             </li>
         </ul>
         <div class="other-skill-footer">
