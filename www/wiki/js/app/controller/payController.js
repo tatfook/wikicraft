@@ -50,9 +50,13 @@ define([
                 getTrade(trade);
             }
 
-            if (Account.isAuthenticated() && Account.user) {
-                $scope.otherUserinfo.username = Account.user.username;
-            }
+            $scope.$watch("$viewContentLoaded", function(){
+                setTimeout(function(){
+                    if (Account.isAuthenticated() && Account.user){
+                        $scope.otherUserinfo.username = Account.user.username;
+                    }
+                }, 0);
+            });
 
             if (queryArgs.username) {
                 $scope.otherUserinfo.username = queryArgs.username;
@@ -166,16 +170,17 @@ define([
                 if(confirm("使用微信H5支付，必须安装微信后才能继续，请问是否安装了微信客户端？")){
                     createCharge(params, function (charge) {
                         if(charge && charge.credential && charge.credential.wx_wap){
-                            var ifr = document.createElement("iframe"); 
-                            ifr.setAttribute('src', charge.credential.wx_wap); 
-                            ifr.setAttribute('style', 'display:none');
-                            document.body.appendChild(ifr);
+                            window.location.href = charge.credential.wx_wap;
+                            // var ifr = document.createElement("iframe"); 
+                            // ifr.setAttribute('src', charge.credential.wx_wap); 
+                            // ifr.setAttribute('style', 'display:none');
+                            // document.body.appendChild(ifr);
 
-                            getTrade(charge);
+                            // getTrade(charge);
 
-                            setTimeout(function(){
-                                document.body.removeChild(ifr);
-                            }, 1500);
+                            // setTimeout(function(){
+                            //     document.body.removeChild(ifr);
+                            // }, 5000);
                         }
                     });
                 }else{
@@ -247,7 +252,7 @@ define([
             }();
 
             $scope.$watch("otherUserinfo.username", function (newValue, oldValue) {
-                getUserinfo();
+                setTimeout(getUserinfo, 0);
             });
 
             $scope.$watch("goods", function (newValue, oldValue) {

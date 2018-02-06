@@ -5,10 +5,18 @@ Author: wuxiangan
 Date: 2017/04/13
 ]]
 include_once("./abstract/base.page")
+include_once("./elasticsearch.page")
+include_once("./website.page")
+include_once("./validators.page")
+
 
 -- 暂时不用
 local sitepage = inherit(models.abstract.base, gettable("models.sitepage"))
 sitepage.db_name = "sitepage"
+
+local es = models.elasticsearch:new()
+es:connect({index="kw_pages"})
+local validators = models.validators:new()
 
 function sitepage:ctor() 
 	self:addfield("username","string")         -- username
@@ -55,4 +63,79 @@ function sitepage:api_deleteByUrl(params)
 	self:db():delete({["+url"]={params.url}}, resume)
 
 	return errors:wrap(yield())
+end
+
+
+function sitepage:api_insertOrUpdateToES(params)
+	local page = {}
+	page.type = "pages"
+
+	if ((not params.username) or (not params.sitename) or 
+		(not params.pagename) or (not params.access_url ) or
+		(not params.url) or (not params.pagetype)) then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+
+	params.content = params.content or ""
+
+	-- 过滤不需要的参数
+	page.username = params.username
+	page.sitename = params.sitename
+	page.pagename = params.pagename
+	page.access_url = params.access_url
+	page.url = params.url
+	page.pagetype = params.pagetype
+	page.tags = params.tags
+
+	-- 如网站ES私有，则不写入ES
+	local website_model = models.website:new()
+	website_model:db():findOne({username=params.username, sitename=params.sitename}, resume)
+	local err, site = yield()
+
+	if (not site) or (site.visibility == "private") then
+		return errors:wrap(nil)
+	end
+
+	-- content tags 处理
+	page.content = self:content_handler(params.content)
+
+	-- 查询page是否已存在
+	local exist_page = es:findOne({type=params.type, access_url=params.access_url})
+	local now = ParaGlobal.GetDateFormat("yyyy-MM-dd ") .. ParaGlobal.GetTimeFormat("H:mm:ss")
+	page.updatetime = now
+
+	if (#(exist_page.data.data.hits.hits) > 0) then
+		page.id = exist_page.data.data.hits.hits[1]._id
+		es:updateOne(page)
+	else
+		page.createtime = now
+		es:insertOne(page)
+	end
+
+	return errors:wrap(nil)
+end
+
+
+-- todo:移除markdown语法,调用md转字符串接口
+function sitepage:content_handler(content)
+    -- content = string.gsub(content, "[#%-%|%*{}:%s]", '')
+    -- content = string.gsub(content, "!-%[[%w%W]-%]%([%w%W]-%)", '')
+    return content
+end
+
+
+function sitepage:api_deleteInES(params)
+	params.type = "page"
+
+	if (not params.access_url) then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+
+	local exist_page = es:findOne({type=params.type, access_url=params.access_url})
+	if (#exist_page.data.data.hits.hits > 0) then
+		params.id = exist_page.data.data.hits.hits[1]._id
+		es:deleteOne(params)
+	end
+
+	return errors:wrap(nil)
 end

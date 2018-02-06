@@ -1,12 +1,14 @@
 
 define([
-	'app',
+    'app',
+    'jquery',
 	'helper/util',
     'helper/markdownwiki',
     'text!html/moduleEditor.html',
     'swiper',
     'helper/knowledgeAgent'
-], function(app, util, markdownwiki, htmlContent, swiper, agent){
+
+], function(app, $, util, markdownwiki, htmlContent, swiper, agent){
 	var moduleEditorParams = config.shareMap.moduleEditorParams || {};
 	config.shareMap.moduleEditorParams = moduleEditorParams;
 
@@ -39,6 +41,11 @@ define([
         $scope.linkFilter = "";
         $scope.hasStyle = false;
         $scope.agentEnable = false;
+        $scope.viewIsOpen = true;
+
+        $scope.$watch('viewIsOpen', function() {
+            $(window).trigger('resize');
+        });
 
         var getFileList = function(){
             var username = $scope.user.username;

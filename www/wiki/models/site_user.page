@@ -9,6 +9,7 @@ Date: 2017/06/08
 include_once("./abstract/base.page")
 include_once("./group_user.page")
 include_once("./website.page")
+include_once("./pages.page")
 
 local site_user = inherit(models.abstract.base, gettable("models.site_user"))
 site_user.db_name = "site_user"
@@ -100,10 +101,31 @@ function site_user:api_getSiteListByMemberName(params)
 	local result = {}
 	for _, siteUser in ipairs(siteUserList or {}) do
 		if siteUser.username ~= params.memberName then
-			result[#result+1] = {}
-			result[#result]["siteuser"] = siteUser
-			result[#result]["siteinfo"] = websiteDB:api_getWithDataSourceByName({username=siteUser.username, sitename=siteUser.sitename}).data
+			result[#result+1] = {
+				siteuser = siteUser,
+				siteinfo = websiteDB:api_getWithDataSourceByName({username=siteUser.username, sitename=siteUser.sitename}).data
+			}
 		end
+	end
+
+	local pages = models.pages:new()
+	local finished_count = 0
+	local url = ""
+	for i, site in ipairs(result or {}) do
+		site = site.siteinfo or {}
+		site.isTop = site.isTop or false  -- 是否置顶
+		-- 设置网站tags为index的tags
+		url = format("/%s", site.username or "")
+		if (site.sitename) then url = format("%s/%s/index", url, site.sitename) end
+		pages:db():findOne({url = url},
+			function (err, page)
+				page = page or {}
+				site.tags = page.tags or {}
+				finished_count = finished_count + 1
+				if (finished_count == #result) then resume() end
+			end
+		)
+		if (i == #result) then yield() end
 	end
 	
 	return errors:wrap(nil, result)
@@ -127,19 +149,3 @@ function site_user:api_getSiteByName(params)
 
 	return errors:wrap(nil, {siteUser=siteUser, siteinfo=siteinfo})
 end
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

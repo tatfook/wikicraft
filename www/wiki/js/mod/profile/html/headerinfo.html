@@ -1,0 +1,186 @@
+<style>
+    .user-header {
+        background-color: #222C33;
+        color: #FFF;
+        text-align: center;
+        padding: 40px 0 15px;
+    }
+
+    .user-header .img-text {
+        display: flex;
+        align-items: center;
+    }
+
+    .user-header .img-text>div {
+        flex: 1;
+        text-align: left;
+    }
+
+    .user-header .img-text .profile {
+        text-align: right;
+        margin-right: 15px;
+    }
+
+    .user-header .profile>img {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+    }
+
+    .user-header .img-text h2 {
+        margin: 0;
+    }
+
+    .user-header .img-text p {
+        font-size: 12px;
+        margin: 0;
+        margin-top: 15px;
+    }
+
+    .user-header .detail-msg {
+        margin: 0;
+        margin-top: 10px;
+    }
+
+    .user-header .detail-msg i {
+        margin: 0 5px 0 20px;
+        font-size: 16px;
+        vertical-align: middle;
+    }
+
+    .user-header .intro {
+        margin-top: 25px;
+        font-size: 12px;
+        position: relative;
+    }
+
+    .user-header .intro.one-line{
+        margin-bottom: 17px;
+    }
+
+    .user-header .intro p {
+        margin-bottom: 0;
+    }
+
+    .user-header .intro p:first-child {
+        line-height: 18px;
+    }
+
+    .user-header .intro p.is-fold {
+        max-height: 18px;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        line-height: 18px;
+    }
+
+    .user-header .intro p:last-child {
+        font-size: 16px;
+        color: #3977AD;
+        margin-top: 11px;
+        cursor: pointer;
+    }
+
+    .user-header .visibility-hidden {
+        position: absolute;
+        pointer-events: none;
+        opacity: 0;
+        top: 0;
+        z-index: -1;
+        line-height: 18px;
+    }
+
+    .user-header .rotate-icon {
+        display: inline-block;
+        transform: rotate(180deg);
+    }
+
+    .user-header .main-msg {
+        margin: 0;
+        margin-top: 20px;
+        font-size: 0;
+    }
+
+    .user-header .main-msg>span {
+        font-size: 12px;
+        padding: 0 13px;
+        border-right: 2px solid #FFF;
+    }
+
+    .user-header .main-msg>span>a {
+        color: #FFF;
+    }
+
+    .user-header .main-msg>span>a:hover {
+        color: #3977AD;
+    }
+
+    .user-header .main-msg>span:last-child {
+        border-right: none;
+    }
+
+    .user-header .btn-concern {
+        width: 168px;
+        height: 32px;
+        padding: 0;
+        line-height: 30px;
+        font-size: 16px;
+        margin-top: 18px;
+    }
+
+    .user-other .detail-msg {
+        margin-top: 15px;
+    }
+</style>
+
+
+<div class="user-header" ng-class="{false:'user-other'}[isSelf]" ng-controller="userMsgCtrl">
+    <div class="container">
+        <div class="img-text">
+            <div class="profile">
+                <img ng-src="{{userinfo.portrait || imgsPath+'wiki_default_profile.jpg'}}" alt="">
+            </div>
+            <div class="text">
+                <h2>{{userinfo.displayName || userinfo.username}}</h2>
+                <p>{{ "注册于" + userinfo.joindate}}</p>
+            </div>
+        </div>
+        <p class="main-msg">
+            <span>
+                {{userinfo.worksCount || 0}} {{"作品" | translate}}
+            </span>
+            <span>
+                {{followUserTotal || 0}} {{"关注" | translate}}
+            </span>
+            <span>
+                {{fansCount || 0}} {{"profile_fans" | translate}}
+            </span>
+        </p>
+        <p ng-show="isOthers">
+            <span class="btn btn-primary btn-concern" ng-click="favoriteUser(userinfo, 'fansOpt')">
+                {{userinfo.concerned?translate("取消关注"):translate("关 注")}}
+            </span>
+        </p>
+        <p class="detail-msg">
+            <span class="location" ng-show="userinfo.location">
+                <i class="iconfont icon-shiliangzhinengduixiang"></i>
+                <span>{{userinfo.location}}</span>
+            </span>
+            <span class="email" ng-show="userinfo.email">
+                <i class="iconfont icon-youxiang"></i>
+                <span>{{userinfo.email}}</span>
+            </span>
+            <span class="homepage">
+                <i class="iconfont icon-lianjie1"></i>
+                <span>{{"http://keepwork.com/" + userinfo.username}}</span>
+            </span>
+        </p>
+        <div class="intro" ng-class="{true:'one-line'}[!isExceed]">
+            <p id="show-content" ng-class="{true:'is-fold'}[isFold]">{{params.desc || userinfo.introduce || '暂无简介'}}</p>
+            <p class="visibility-hidden" id="fake-content">{{params.desc || userinfo.introduce || '暂无简介'}}</p>
+            <p ng-click="toggleFold()" ng-show="isExceed">{{isFold ? '更多' : '收起'}}
+                <span class="iconfont icon-zhankai" ng-class="{false:'rotate-icon'}[isFold]"></span>
+            </p>
+        </div>
+    </div>
+</div>

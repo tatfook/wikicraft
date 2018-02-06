@@ -1,0 +1,42 @@
+<style>
+    .user-fans .fans-item {
+        padding-top: 22px;
+        float: left;
+        margin-right: 44px;
+    }
+
+    .user-fans .fans-item>img {
+        width: 60px;
+        height: 60px;
+        object-fit: cover;
+        border-radius: 50%;
+    }
+
+    .user-fans .fans-list {
+        min-height: 250px;
+        border: 1px solid #F2F2F2;
+        padding: 0 28px;
+        margin-top: 20px;
+    }
+
+    .user-fans h4 > a{
+        color: #333;
+    }
+
+    .user-fans h4 > a:hover{
+        color: #3977AD;
+    }
+</style>
+<div class="user-fans" ng-controller="fansCtrl" ng-hide="fansList.length <=0 && !isSelf">
+    <h4 class="title">{{"profile_fans" | translate}}</h4>
+    <div class="fans-list">
+        <div class="empty-box" ng-hide="fansList.length > 0">
+            <span class="iconfont icon-kongbaiyemian"></span>
+            <p translate="暂无相关内容..."></p>
+        </div>
+        <div class="fans-item" ng-repeat="fans in fansList" ng-show="fansList.length > 0">
+            <img ng-src="{{fans.userinfo.logoUrl || getImageUrl('default_portrait.png',imgsPath)}}" alt="">
+            <h4><a ng-href="{{'/' + fans.userinfo.username}}">{{fans.userinfo.displayName || fans.userinfo.username}}</a></h4>
+        </div>
+    </div>
+</div>

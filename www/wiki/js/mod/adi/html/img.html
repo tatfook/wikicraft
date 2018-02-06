@@ -16,6 +16,43 @@
         background-position: center center;
         background-size: cover;
     }
+    @media only screen and (max-width:414px){
+        .img .photo-container1{
+        width: 100%;
+        height: 154px;
+        overflow: hidden;
+        }
+        .img .photo-container2 {
+        width:100%;
+        height:154px;
+        overflow: hidden;
+        }
+    }
+@media screen and (min-width:420px) and (max-width:768px) {
+    .img .photo-container1{
+        width: 100%;
+        height: 320px;
+        overflow: hidden;
+        }
+        .img .photo-container2 {
+        width:100%;
+        height:320px;
+        overflow: hidden;
+        }
+}
+@media screen and (min-width:770px) and (max-width:1024px) {
+    .img .photo-container1{
+        width: 100%;
+        height: 420px;
+        overflow: hidden;
+        }
+        .img .photo-container2 {
+        width:100%;
+        height:420px;
+        overflow: hidden;
+        }
+}
+
 </style>
 <div class="img">
     <a href="{{mode=='editor' ? '' : params.media_img.href}}">

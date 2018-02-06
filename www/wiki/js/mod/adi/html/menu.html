@@ -66,10 +66,10 @@
     .menu-right > .container > ul{
         padding-left: 0;
         background: none;
+        float: right;
     }
 
     .menu-right > .container > ul > li{
-        float: right;
         background-position-x: 0;
     }
     .clear-pointer a{
@@ -80,8 +80,8 @@
 <div ng-class="{true : 'clear-pointer', false : 'clear'}[mode=='editor']">
     <div ng-if="params.design.text == 'left' && !params.menu_menu.is_mod_hide">
         <div class="menu">
-            <div class="container">
-                <ul class="clearfix">
+            <div id="tanbingfeng" class="container">
+                <ul class="clearfix menuUl">
                     <li ng-repeat="item in params.menu_menu.text">
                         <a ng-if="mode!='editor'" 
                            ng-href="{{item.url}}" 
@@ -93,8 +93,8 @@
                            class="edit" 
                            href="javascript:void(0)">{{item.name}}
                         </a>
-                        <ul class="sub-menu">
-                            <li ng-repeat="subItem in item.children">
+                        <ul class="sub-menu menuUl">
+                            <li class="menuLi" ng-repeat="subItem in item.children">
                                 <a ng-if="mode!='editor'" 
                                    ng-href="{{subItem.url}}" 
                                    target="_blank">
@@ -109,9 +109,10 @@
                         </ul>
                     </li>
                 </ul>
-        </div>
+            </div>
         </div>
     </div>
+
     <div ng-if="params.design.text == 'right'  && !params.menu_menu.is_mod_hide">
         <div class="menu menu-right">
             <div class="container">

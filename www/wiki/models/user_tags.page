@@ -1,0 +1,91 @@
+<?npl
+--[[
+Title: tags of users
+Author: ZhengJiabiao
+Date: 2018/1
+Desc: tags of users,only to be used in backend data analysis
+]]
+
+
+include_once("./abstract/base.page")
+include_once("./elasticsearch.page")
+include_once("./validators.page")
+
+
+local user_tags = inherit(models.abstract.base, gettable("models.user_tags"))
+user_tags.db_name = "user_tags"
+
+
+function user_tags:ctor()
+    self:addfield("tag", "string", false, 30)
+    self:addfield("username", "string", false, 30)
+end
+
+
+function user_tags:insert(params)
+    if (not params.tags) or (not params.url) then
+        return errors:wrap(REQUEST_PARAMS_ERROR)
+    end
+
+    local splited_url = commonlib.split(params.url, "/")
+    local username = splited_url[1]
+    local tags_to_insert = {}
+    local finished_count = 0
+    local tag, is_params_error, _
+    local clean_tags = {}
+    local unique_tags = {}
+
+    for i, tag_title in ipairs(params.tags) do
+        tag, is_params_error, _ = self:insert_validator({title = tag_title, username = username})
+        if (not is_params_error) and (not unique_tags[tag.title]) then 
+            clean_tags[(#clean_tags) + 1 ] = tag
+        end
+        unique_tags[tag.title] = true
+    end
+
+    for i, tag in ipairs(clean_tags) do
+        self:db():findOne({["+title+username"] = {tag.title, tag.username}},
+            function(err, data)
+                if (not data) then
+                    self:db():insertOne({["+title+username"] = {tag.title, tag.username}}, tag, function(err, data) end)
+                end
+                finished_count = finished_count + 1
+                if (finished_count == #clean_tags) then resume() end
+            end
+        )
+        if (i == #clean_tags) then
+            yield()
+            finished_count = 0
+        end
+    end
+
+    return errors:wrap(nil)
+end
+
+
+function user_tags:insert_validator(params)
+    local clean_data
+    local required_fields = {"title", "username"}
+    local fields_length = {title=30, username=30}
+    local validators = models.validators:new()
+    local validate_tasks = {
+        {
+            validator = validators.required_fields_validator,
+            condition = required_fields
+        }, {
+            validator = validators.fields_length_validator,
+            condition = fields_length
+        }
+    }
+    validators:add_validate_tasks(validate_tasks, params)
+    local is_params_error, message = validators:get_validate_result()
+
+    if (not is_params_error) then
+        clean_data = {
+            title = params.title,
+            username = params.username,
+        }
+    end
+    return clean_data, is_params_error, message
+end
+

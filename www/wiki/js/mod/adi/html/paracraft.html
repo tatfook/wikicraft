@@ -341,21 +341,18 @@
                    href="javascript:void(0)">
                     {{params.link_world_name.text}}
                 </a>
-                <a ng-if="mode!='editor'"
-                   ng-hide="params.link_world_name.is_mod_hide"
-                   ng-class="{true:'world-clear-pointer'}[params.link_world_name.href.length == 0]"
-                   target="{{params.link_world_name.target ? params.link_world_name.target : '_blank'}}"
-                   ng-href="{{params.link_world_name.href}}">{{params.link_world_name.text}}</a>
+                <a ng-if="mode!='editor'" ng-hide="params.link_world_name.is_mod_hide" ng-class="{true:'world-clear-pointer'}[params.link_world_name.href.length == 0]"
+                   target="{{params.link_world_name.target ? params.link_world_name.target : '_blank'}}" ng-href="{{params.link_world_name.href}}">{{params.link_world_name.text}}</a>
 
-                <p ng-hide="params.link_update_date.is_mod_hide || params.link_version.is_mod_hide" class="info pull-right">
-                    <a ng-if="mode=='editor'" ng-click="viewEditorClick(params.link_update_date, $event)" href="javascript:void(0)">{{params.link_update_date.text + " 版本：" + params.link_version.text}}</a>
-                    <a ng-if="mode!='editor'"
-                       ng-class="{true:'world-clear-pointer'}[params.link_update_date.href.length == 0]"
+                <p ng-hide="params.link_version.is_mod_hide" class="info pull-right">
+                    <a ng-if="mode=='editor'" href="javascript:void(0)">{{ "&nbsp;&nbsp;" + " 版本：" + params.link_version.text}}</a>
+                    <a ng-if="mode!='editor'" ng-class="{true:'world-clear-pointer'}[params.link_update_date.href.length == 0]"
                        target="{{params.link_update_date.target ? params.link_update_date.target : '_blank'}}"
                        ng-href="{{params.link_update_date.href}}">
-                        {{params.link_update_date.text + " 版本：" + params.link_version.text}}
+                        {{params.link_version.text}}
                     </a>
                 </p>
+                
             </h4>
             <div class="inner clearfix">
                 <p>

@@ -8,6 +8,7 @@ include_once("./abstract/base.page")
 include_once("./user.page")
 include_once("./website.page")
 include_once("./user_trends.page")
+include_once("./pages.page")
 
 local user_favorite = inherit(models.abstract.base, gettable("models.user_favorite"))
 user_favorite.db_name = "user_favorite";
@@ -132,6 +133,25 @@ function user_favorite:api_getByUserId(params)
 	local websiteDB = models.website:new()
 	for _, value in pairs(data or {}) do
 		value["siteinfo"] = websiteDB:api_getById({websiteId=value.siteId}).data
+	end
+
+	local pages = models.pages:new()
+	local finished_count = 0
+	local url = ""
+	for i, site in ipairs(data or {}) do
+		site = site.siteinfo or {}
+		-- 设置网站tags为index的tags
+		url = format("/%s", site.username or "")
+		if (site.sitename) then url = format("%s/%s/index", url, site.sitename) end
+		pages:db():findOne({url = url},
+			function (err, page)
+				page = page or {}
+				site.tags = page.tags or {}
+				finished_count = finished_count + 1
+				if (finished_count == #data) then resume() end
+			end
+		)
+		if (i == #data) then yield() end
 	end
 	
 	return errors:wrap(nil, {total=total, siteList=data})

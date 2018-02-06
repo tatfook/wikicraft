@@ -1,0 +1,136 @@
+<style>
+    .add-skill-modal {
+        font-size: 16px;
+    }
+
+    .add-skill-modal .modal-body {
+        padding: 20px 78px 20px 15px;
+    }
+
+    .add-skill-modal .form-horizontal .control-label {
+        text-align: right;
+    }
+
+    .add-skill-modal .form-group-md {
+        margin-bottom: 20px;
+    }
+
+    .add-skill-modal .form-group-md .control-label {
+        font-size: 16px;
+        font-weight: normal;
+        padding-top: 10px;
+    }
+
+    .add-skill-modal .form-group-md .form-control {
+        padding: 10px 11px;
+        height: 42px;
+        font-size: 16px;
+    }
+
+    .add-skill-modal .modal-footer .btn {
+        font-size: 16px;
+        width: 80px;
+        height: 42px;
+        margin: 0 0 0 17px;
+        border-radius: 4px;
+    }
+
+    .add-skill-modal .modal-footer .btn-primary {
+        background-color: #337ab7;
+        border-color: #2e6da4;
+    }
+
+    .add-skill-modal .modal-footer .btn-default {
+        color: #666;
+    }
+
+    .add-skill-modal textarea {
+        min-height: 113px;
+    }
+
+    .add-skill-modal .fake-select .btn-default {
+        text-align: left;
+        height: 42px;
+        font-size: 16px;
+        position: relative;
+    }
+
+    .add-skill-modal .fake-select .glyphicon {
+        position: absolute;
+        right: 5px;
+        top: 10px;
+        color: #999;
+        -webkit-text-stroke: 2px #FFF;
+        font-size: 20px;
+    }
+
+    .add-skill-modal .fake-select ul {
+        border: 1px solid #DDD;
+        margin-top: 1px;
+        padding-bottom: 5px;
+        position: absolute;
+        background-color: #FFF;
+        left: 15px;
+        right: 15px;
+    }
+
+    .add-skill-modal .fake-select ul>li {
+        height: 30px;
+        line-height: 30px;
+        padding: 0 17px;
+        color: #666;
+        cursor: pointer;
+    }
+
+    .add-skill-modal .fake-select ul>li:hover {
+        background-color: #DDD;
+        color: #3977AD;
+    }
+</style>
+<div id="addSkillModal">
+    <div class="modal-header">
+        <button type="button" class="close" ng-click="cancel()">
+            <span aria-hidden="true">&times;</span>
+        </button>
+        <h3 class="modal-title">{{editing ? "修改技能" : "添加技能"}}</h3>
+    </div>
+    <div class="modal-body">
+        <form class="form-horizontal">
+            <div class="form-group form-group-md">
+                <label for="inputName" class="col-sm-3 control-label">技能名称：</label>
+                <div class="col-sm-9">
+                    <input ng-disabled="editing" type="text" class="form-control" ng-model="addingSkill.title" id="inputName">
+                </div>
+            </div>
+            <div class="form-group form-group-md">
+                <label for="inputDesc" class="col-sm-3 control-label sr-only">技能介绍：</label>
+                <div class="col-sm-9 col-sm-offset-3">
+                    <textarea class="form-control" id="inputDesc" ng-model="addingSkill.desc"></textarea>
+                </div>
+            </div>
+            <div class="form-group form-group-md">
+                <label for="inputLevel" class="col-sm-3 control-label">熟练度：</label>
+                <div class="col-sm-9">
+                    <div class="fake-select">
+                        <button id="skillSelectLabel" class="btn btn-block btn-default" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            {{addingSkill.level || "选择熟练度"}}
+                            <span class="glyphicon glyphicon-chevron-down"></span>
+                        </button>
+                        <ul class="dropdown-menu" aria-labelledby="skillSelectLabel">
+                            <li ng-click="selectLevel('1')">1</li>
+                            <li ng-click="selectLevel('2')">2</li>
+                            <li ng-click="selectLevel('3')">3</li>
+                            <li ng-click="selectLevel('4')">4</li>
+                            <li ng-click="selectLevel('5')">5</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="modal-footer">
+        <span class="text-danger">{{errMsg}}</span>
+        <button type="button" class="btn btn-primary" ng-click="submitAddingSkill()">{{editing ? "保存" : "添加"}}</button>
+        <button type="button" class="btn btn-default" ng-click="cancel()">取消</button>
+    </div>
+</div>
