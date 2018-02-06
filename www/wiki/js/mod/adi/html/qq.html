@@ -95,19 +95,19 @@
     }
 </style>
 
-<div ng-class="{true:'clear-pointer'}[mode]" class="qq">
+<div ng-class="{true:'clear-pointer'}[mode=='editor']" class="qq">
 
     <!-- style1 html -->
-    <div ng-if='params.design.text=="style1"' class="style1" ng-class="{true:'change'}[!mode]">
+    <div ng-if='params.design.text=="style1"' class="style1" ng-class="{true:'change'}[mode!='editor']">
         <div class="qq-mod" ng-style="topStyle">
             <div class="qq-mod-img" ng-hide="params.media_img.is_mod_hide">
-                <a  ng-if="mode"
+                <a  ng-if="mode=='editor'"
                     href="javascript:void(0)"
                     ng-click="viewEditorClick(params.media_img,$event)">
                     <img ng-src="{{getImagePictureText(params.media_img.text)}}">
                 </a>
                 <a  ng-class="{true:'clear-pointer'}[!params.input_qq.text.length]"
-                    ng-if="!mode"
+                    ng-if="mode!='editor'"
                     target="{{params.media_img.target ? params.media_img.target : '_blank'}}"
                     ng-href="{{getQQUrl()}}">
                     <img ng-src="{{getImagePictureText(params.media_img.text)}}">
@@ -115,13 +115,13 @@
             </div>
             <div class="qq-mod-head" ng-hide="params.link_title.is_mod_hide">
                 <p>
-                    <a  ng-if="mode"
+                    <a  ng-if="mode=='editor'"
                         href="javascript:void(0)"
                         ng-click="viewEditorClick(params.link_title,$event)">
                         {{params.link_title.text}}
                     </a>
                     <a  ng-class="{true:'clear-pointer'}[!params.link_title.href.length]"
-                        ng-if="!mode"
+                        ng-if="mode!='editor'"
                         target="{{params.link_title.target ? params.link_title.target : '_blank'}}"
                         ng-href="{{params.link_title.href}}">
                         {{params.link_title.text}}
@@ -132,29 +132,29 @@
     </div>
 
     <!-- style2 html -->
-    <div ng-if='params.design.text=="style2"' class="style2" ng-class="{true:'change'}[!mode]">
+    <div ng-if='params.design.text=="style2"' class="style2" ng-class="{true:'change'}[mode!='editor']">
         <div class="qq-mod" ng-style="topStyle">
             <div class="qq-mod-head" ng-hide="params.link_title.is_mod_hide"> 
-                <a  ng-if="mode"
+                <a  ng-if="mode=='editor'"
                     href="javascript:void(0)"
                     ng-click="viewEditorClick(params.link_title,$event)">
                     {{params.link_title.text}}
                 </a>
                 <a  ng-class="{true:'clear-pointer'}[!params.link_title.href.length]"
-                    ng-if="!mode"
+                    ng-if="mode!='editor'"
                     target="{{params.link_title.target ? params.link_title.target : '_blank'}}"
                     ng-href="{{params.link_title.href}}">
                     {{params.link_title.text}}
                 </a>
             </div>  
             <div class="qq-mod-img" ng-hide="params.media_img.is_mod_hide">
-                <a  ng-if="mode"
+                <a  ng-if="mode=='editor'"
                     href="javascript:void(0)"
                     ng-click="viewEditorClick(params.media_img,$event)">
                     <img ng-src="{{getImagePictureText(params.media_img.text)}}">
                 </a>
                 <a  ng-class="{true:'clear-pointer'}[!params.input_qq.text.length]"
-                    ng-if="!mode"
+                    ng-if="mode!='editor'"
                     target="{{params.media_img.target ? params.media_img.target : '_blank'}}"
                     ng-href="{{getQQUrl()}}">
                     <img ng-src="{{getImagePictureText(params.media_img.text)}}">

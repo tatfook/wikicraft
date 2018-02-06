@@ -60,7 +60,7 @@
                     <p>{{comment.content}}</p>
                 </div>
                 <a class="delete-btn" ng-show="user._id == comment.userId" ng-click="deleteComment(comment)">删除</a>
-                <a class="delete-btn" ng-show="{{mode}}" ng-click="deleteComment(comment)">删除</a>
+                <a class="delete-btn" ng-show="{{mode=='editor'}}" ng-click="deleteComment(comment)">删除</a>
             </div>
         </div>
         <div class="comment-input">

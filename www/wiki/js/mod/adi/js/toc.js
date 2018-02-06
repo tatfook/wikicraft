@@ -114,7 +114,7 @@ define([
 		$scope.params = wikiBlock.modParams || {};
 		$scope.params.design = $scope.params.design || "style1";
 		$scope.mode = wikiBlock.mode;
-		console.log($scope.params, wikiBlock);
+		//console.log($scope.params, wikiBlock);
 		if ($scope.params.isHome) {
 			var scrollElement = $(window);
 			var tocContent = wikiBlock.$element;

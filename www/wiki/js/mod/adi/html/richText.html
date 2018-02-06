@@ -20,7 +20,7 @@
 
 <div class="rich"
      ng-hide="params.modal_rich.is_mod_hide">
-    <div ng-hide="!mode"
+    <div ng-hide="mode!='editor'"
          ng-dblclick="dbClick()"
          ng-if="params.modal_rich.data.length == 0"
          class="editor-mode">
@@ -29,7 +29,7 @@
 
     <div ng-if="params.modal_rich.data.length > 0" >
         <div class="notice"
-             ng-hide="!mode"
+             ng-hide="mode!='editor'"
              ng-dblclick="richClick()">编辑-富文本</div>
 
         <div class="content container"
