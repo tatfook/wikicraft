@@ -41,7 +41,7 @@ define([
 		for (var key in params_template) {
 			if (key == "design") {
 				modParams.design = modParams.design || {};
-				modParams.design.text = params_template[key].text;
+				modParams.design.text = modParams.design.text || params_template[key].text;
 			} else {
 				modParams[key] = modParams[key] || {};
 				modParams[key]["$data"] = params_template[key];
