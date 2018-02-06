@@ -174,29 +174,30 @@ define([
 
                     var pageUrlArr = page.url.split("/");
                     var pageUrlLen = pageUrlArr.length;
-                    if (pageUrlLen != (index + 1)) {
-                        if (pageUrlLen == (index + 2)) { // 文件夹
-                            page.foldname = pageUrlArr[index] + " " + FoldPostfix; // 从url获取文件夹名
-                            page.foldpath = pageUrlArr.splice(0, pageUrlLen-1).join("/");
-                            page.isFold = true;
+                    if (pageUrlLen != (index + 1) && pageUrlLen != (index + 2)) { // 过滤子级文件（不包括文件夹）
+                        return false;
+                    }
 
-                            if (pagesObj[page.foldname] && pagesObj[page.foldname].isFold) {
-                                if (page.pagename == 'index') {
-                                    conflictPages.push({
-                                        index: pagesObj[page.foldname].index,
-                                        pageDetail: page
-                                    });
-                                }
-                                return false;
-                            }
-                            page.index = pageIndex ++;
-                            pagesObj[page.foldname] = page;
-                            return true;
+                    if (pageUrlLen == (index + 2)) { //文件夹
+                        page.foldname = pageUrlArr[index] + " " + FoldPostfix; // 从url获取文件夹名
+                        page.foldpath = pageUrlArr.splice(0, pageUrlLen-1).join("/");
+                        page.isFold = true;
+                    }
+
+                    if (pagesObj[page.foldname] && pagesObj[page.foldname].isFold) { // 文件夹已记录过
+                        switch (page.pagename) {
+                            case "index":
+                                conflictPages.push({
+                                    index: pagesObj[page.foldname].index,
+                                    pageDetail: page
+                                });
+                                break;
                         }
                         return false;
                     }
+                    
                     page.index = pageIndex ++;
-                    pagesObj[page.pagename] = page;
+                    pagesObj[page.foldname || page.pagename] = page;
                     return true;
                 });
                 
