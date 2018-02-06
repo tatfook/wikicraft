@@ -7,7 +7,11 @@ define([
     'text!html/moduleEditor.html',
     'swiper',
     'helper/knowledgeAgent'
+
 ], function(app, $, util, markdownwiki, htmlContent, swiper, agent){
+	var moduleEditorParams = config.shareMap.moduleEditorParams || {};
+	config.shareMap.moduleEditorParams = moduleEditorParams;
+
 	var objectEditor = {
 		data: {},
 		fields:[],
@@ -58,6 +62,31 @@ define([
 				});
 			}
         }
+
+		function getOrderDatas(editorParams) {
+			var datas = [];
+
+			editorParams = editorParams || {};
+			for (var key in editorParams) {
+				if (editorParams[key].$data) {
+					datas.push(editorParams[key]);
+				}
+			}
+
+			for (var i = 0; i < datas.length; i++) {
+				for (var j = i + 1; j < datas.length; j++) {
+					datas[i].$data.order = datas[i].$data.order || 0;
+					datas[j].$data.order = datas[j].$data.order || 0;
+					if (datas[i].$data.order < datas[j].$data.order) {
+						var tmp = datas[i];
+						datas[i] = datas[j];
+						datas[j] = tmp;
+					}
+				}
+			}
+
+			return datas;
+		}
 
 		// 转换数据格式
 		function get_order_list(obj){
@@ -110,17 +139,6 @@ define([
             //applyAttrChange();
             throttle(applyAttrChange);
 		}
-
-		// 点击列表项
-		$scope.click_list_item = function(item) {
-			$scope.datas_stack.push($scope.editorDatas);
-			// console.log(item);
-			if (item.is_leaf) {
-				$scope.editorDatas = [item];
-			} else {
-				$scope.editorDatas = item;
-			}
-        }
 
         // 点击菜单
         $scope.openMenuEditor = function(data) {
@@ -241,7 +259,7 @@ define([
             throttle(applyAttrChange);
         }
 
-        $scope.userInputLink = function($select, data){
+        $scope.userInputLink = function($select, data, key){
              var search = $select.search,
                 list = angular.copy($select.items),
                 FLAG = -1;
@@ -260,7 +278,7 @@ define([
                 };
                 $select.items = [userInputItem].concat(list);
                 $select.selected = userInputItem.url;
-                data.href = userInputItem.url;
+                data[key || "href"] = userInputItem.url;
                 applyAttrChange();
             }
         }
@@ -307,50 +325,28 @@ define([
             $scope.memoryContext = {}
         }
 
-		$scope.close = function() {
-			var moduleEditorParams = config.shareMap.moduleEditorParams || {};
-			$scope.editorDatas = $scope.datas_stack.pop();
-			if (!$scope.editorDatas) {
-				//$scope.$close();
-				$("#moduleEditorContainer").hide();
-				moduleEditorParams.is_show = false;
-				if (moduleEditorParams.wikiBlock) {
-					var modParams = angular.copy(moduleEditorParams.wikiBlock.modParams);
-					//console.log(modParams);
-					var paramsTemplate = angular.copy(moduleEditorParams.wikiBlock.params_template);
-					//console.log(paramsTemplate, modParams);
-					modParams = moduleEditorParams.wikiBlock.formatModParams("", paramsTemplate, modParams, false);
-					//console.log(modParams);
-					moduleEditorParams.wikiBlock.applyModParams(modParams);
-					//config.shareMap.moduleEditorParams = undefined;
-				}
-			}
-        }
-
         function throttle(method, context) {
             clearTimeout(method.stickTimer);
             method.stickTimer = setTimeout(function () {
                 method.call(context);
 				util.$apply();
-            },500);
+            });
         }
 
+		var applyModParams = function(block, modParams) {
+			block.applyModParams(modParams);
+		}
         var applyAttrChange = function(){
-            var moduleEditorParams = config.shareMap.moduleEditorParams || {};
-            if (moduleEditorParams.wikiBlock) {
-                moduleEditorParams.renderMod = "editorToCode";
-                var modParams = angular.copy(moduleEditorParams.wikiBlock.modParams);
-                //console.log(modParams);
-                var paramsTemplate = angular.copy(moduleEditorParams.wikiBlock.params_template);
-                //console.log(paramsTemplate, modParams);
-                modParams = moduleEditorParams.wikiBlock.formatModParams("", paramsTemplate, modParams, false);
-				//console.log(modParams);
+			if (!moduleEditorParams.block) {
+				return ;
+			}
+			var block = moduleEditorParams.block;
+			var modParams = moduleEditorParams.params;
+			if (block.wikimod && block.wikimod.mod.getModuleParams) {
+				modParams = block.wikimod.mod.getModuleParams(modParams);
+			}
 
-                moduleEditorParams.wikiBlock.applyModParams(modParams);
-                // setFakeIconPosition();
-
-                //config.shareMap.moduleEditorParams = undefined;
-            }
+			block.applyModParams(modParams);
         }
 
         $scope.applyAttrChange = function (text) {
@@ -359,15 +355,21 @@ define([
         }
 
 		$scope.click_apply_design = function(index) {
-			var moduleEditorParams = config.shareMap.moduleEditorParams || {};
-			var modParams = $scope.styles[index];
-            // console.log(modParams);
-            moduleEditorParams.wikiBlock.modParams.design.text = modParams.design.text;
-            $scope.selectedDesign = modParams.design.text;
-			if (moduleEditorParams.wikiBlock) {
-                moduleEditorParams.renderMod = "editorToCode";
-				moduleEditorParams.wikiBlock.applyModParams(modParams);
+			var block = moduleEditorParams.block;
+			var style = moduleEditorParams.styles[index];
+			var modParams = moduleEditorParams.params;
+            $scope.selectedDesign = style.design.text;
+			if (block.wikimod && block.wikimod.mod.getStyleParams) {
+				modParams = block.wikimod.mod.getStyleParams(modParams, style);
+				block.applyModParams(modParams);
+			} else {
+				angular.extend(modParams, style);
+				applyAttrChange();
 			}
+
+			block.modParams = modParams;
+			moduleEditorParams.reload();
+			//util.$apply();
         }
 
         $scope.tabTo = function (tabname) {
@@ -427,15 +429,23 @@ define([
 
         var swiper = {
             "editor":{},
-            "design":{}
+            "design":{},
         };
 
         var initSwiper = function(type){
+			if (type == "knowledge"){
+				return;
+			}
             var swiperContainerId = type + "Swiper";
             var slides = $("#" + swiperContainerId + " .swiper-slide");
             var renderedSlidesLen = slides.length;
             var dataName = type + "Datas";
-            var totalRenderLen = $scope[dataName].length;
+            var totalRenderLen = 0;
+			if (type == "editor") {
+				totalRenderLen = $scope.params.data ? $scope.params.datas.length : 0;
+			} else if (type == "styles") {
+				totalRenderLen = $scope.params.styles ? $scope.params.styles.length : 0;
+			}
             if (renderedSlidesLen != totalRenderLen) { // ng-repeat渲染完成才能初始化swiper
                 setTimeout(function(){
                     initSwiper(type);
@@ -490,65 +500,112 @@ define([
         }
 
 		function init() {
+			$scope.params = moduleEditorParams;
             editor = editor || $rootScope.editor || {};
-			var moduleEditorParams = config.shareMap.moduleEditorParams || {};
-			config.shareMap.moduleEditorParams = moduleEditorParams;
-			//moduleEditorParams.$scope = $scope;
-
-			moduleEditorParams.updateEditorObj = function(obj) {
-                $scope.editorDatas = get_order_list(obj);
-                util.$apply();
-            }
-
+			
             var isFunction = function (functionToCheck) {
                 var getType = {};
                 return functionToCheck && getType.toString.call(functionToCheck) === '[object Function]';
             }
 
-			moduleEditorParams.setEditorObj = function(obj) {
-                if(config.shareMap.moduleEditorParams.wikiBlock.styles.length > 0){
+			moduleEditorParams.reload = function() {
+				if (!this.block) {
+					return;
+				}
+				var block = this.block;
+				//console.log(block);
+				if (block && typeof(block.wikimod) == "object" && typeof(block.wikimod.mod) == "object") {
+					if (typeof(block.wikimod.mod.getEditorParams) == "function") {
+						this.params = block.wikimod.mod.getEditorParams(block.modParams);
+						this.datas = getOrderDatas(this.params);
+					} else {
+						this.params = undefined;
+						this.datas = undefined;
+					}
+
+					if (typeof(block.wikimod.mod.getStyleList) == "function") {
+						this.styles = block.wikimod.mod.getStyleList(block);
+					} else {
+						this.styles = undefined;
+					}
+				} else {
+					this.params = undefined;
+					this.datas = undefined;
+					this.styles = undefined;
+				}
+			}
+
+			moduleEditorParams.setBlock = function(block) {
+				if (!block.token) {
+					return;
+				}
+
+				var self = this;
+				if (self.block && block && self.block.token.start == block.token.start && (self.datas || self.styles)) {
+					angular.merge(self.params, block.modParams);
+					return;
+				}
+				self.block = block;
+				self.reload();
+
+				setFakeIconPosition();
+
+                var blockLineNumFrom = self.block.token.start;
+                var blockLineNumTo = self.block.token.to;
+                setCodePosition(blockLineNumFrom, blockLineNumTo);
+
+                if(self.styles && self.styles.length > 0){
                     $scope.hasStyle = true;
                 }else{
                     $scope.hasStyle = false;
                 }
 
-                moduleScope = config.shareMap.moduleEditorParams.wikiBlock.scope;
+				self.setShowType("editor");
+                moduleScope = self.block.$scope;
+
+                util.$apply();
+			}
+
+			moduleEditorParams.setShowType = function(show_type) {
+				this.show_type = show_type;
+				$scope.show_type = show_type;
+				console.log(show_type);
+				if (show_type == "knowledge") {
+					this.setKnowledge("");
+					this.params = this.datas = this.styles = this.block = undefined;
+				} else {
+					initSwiper(show_type);
+				}
+				util.$apply();
+			}
+
+			moduleEditorParams.setEditorObj = function(obj) {
+				var self = this;
+
+				if (!self.block) {
+					return;
+				}
 
                 moduleScope.applyAttrChange = function(){
                     throttle(applyAttrChange);
                 }
 
-                // setFakeIconPosition();
-                moduleEditorParams = config.shareMap.moduleEditorParams || {};
+				self.setShowType("editor");
 
-                var blockLineNumFrom = moduleEditorParams.wikiBlock.blockCache.block.textPosition.from;
-                var blockLineNumTo = moduleEditorParams.wikiBlock.blockCache.block.textPosition.to;
-                setCodePosition(blockLineNumFrom, blockLineNumTo);
 
-				moduleEditorParams.show_type = "editor";
-				$scope.show_type = "editor";
-
-				if (obj.is_leaf) {
-					obj = [obj];
-				}
-
-                $scope.editorDatas = get_order_list(obj);
-                util.$apply();
-                initSwiper("editor");
-
-                var selectObj = moduleEditorParams.selectObj;
-				if (selectObj) {
-                    if (!isFunction(swiper["editor"].slideTo)) {
-                        return;
-                    }
-                    var slideStartId = $scope.editorDatas[0].id;
-                    var slideToId = selectObj.id;
-                    var indexSlideTo = slideToId - slideStartId;
-                    swiper["editor"].slideTo(indexSlideTo);
-                    $(".swiper-slide.active").removeClass("active");
-                    $("#" + slideToId).addClass("active");
-                    $("#" + slideToId + " .js-focus").focus();
-                }
+                //var selectObj = moduleEditorParams.selectObj;
+				//if (selectObj) {
+                    //if (!isFunction(swiper["editor"].slideTo)) {
+                        //return;
+                    //}
+                    //var slideStartId = $scope.editorDatas[0].id;
+                    //var slideToId = selectObj.id;
+                    //var indexSlideTo = slideToId - slideStartId;
+                    //swiper["editor"].slideTo(indexSlideTo);
+                    //$(".swiper-slide.active").removeClass("active");
+                    //$("#" + slideToId).addClass("active");
+                    //$("#" + slideToId + " .js-focus").focus();
+                //}
             }
             var setDesignViewWidth = function(){
                 win = win || $(window);
@@ -563,24 +620,17 @@ define([
 
             }
 			moduleEditorParams.setDesignList = function(list) {
-                moduleEditorParams = config.shareMap.moduleEditorParams || {};
-                $scope.selectedDesign = moduleEditorParams.wikiBlock.modParams.design.text;
-				var style_list = moduleEditorParams.wikiBlock.styles || [];
-				moduleEditorParams.show_type = "design";
-				$scope.show_type = "design";
-				$scope.styles = [];
+				var self = this;
+				var styles = self.styles || [];
+				var modParams = self.params;
+				self.setShowType("design");
 				$scope.designDatas = [];
-				for (var i = 0; i < style_list.length; i++) {
-					var modParams = angular.copy(moduleEditorParams.wikiBlock.modParams);
-					modParams = angular.extend(modParams, angular.copy(style_list[i]));
-                    $scope.styles[i] = modParams;
-					var md = markdownwiki({mode:"preview", html:true, use_template:false});
-                    var text = '```' + moduleEditorParams.wikiBlock.cmdName + "\n" + config.services.mdconf.jsonToMd(modParams) + "\n```\n";
-                    var view = md.render(text);
+				$scope.selectedDesign = modParams.design.text;
+				for (var i = 0; i < styles.length; i++) {
+					var style = styles[i];
                     var design = {
-                        "text": $scope.styles[i].design.text,
-                        "view": view,
-                        "cover": style_list[i].design.cover || ""
+                        "text": style.design.text,
+                        "cover": style.design.cover || ""
                     }
 
                     $scope.designDatas.push(design);
@@ -604,6 +654,8 @@ define([
 			// $scope.show_type = "editor";
             $scope.datas_stack = [];
             getFileList();
+			moduleEditorParams.setKnowledge("");
+			moduleEditorParams.setShowType("knowledge");
 		}
 
 		$scope.$watch("$viewContentLoaded", init);

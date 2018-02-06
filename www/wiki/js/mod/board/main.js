@@ -90,93 +90,95 @@
         });
     }
 
-    function registerController(wikiBlock) {
-        app.registerController("boardController", ['$scope', '$uibModal', '$sce', function ($scope, $uibModal, $sce) {
-            if (wikiBlock.editorMode) {
-                $scope.mxClientEdit = true;
-                
-                initEditMode();
-            } else {
-                initPreview(wikiBlock, function (svg) {
-                    $scope.preview = $sce.trustAsHtml(svg);
-                    util.$apply();
-                });
-            }
+    function render(wikiBlock) {
+		var $scope = wikiBlock.$scope;
+		var $sce = app.ng_objects.$sce;
+		var $uibModal = app.ng_objects.$uibModal;
 
-            $scope.edit = function () {
-                if (!wikiBlock.editorMode) {
-                    return;
-                }
+		if (wikiBlock.mode == "editor") {
+			$scope.mxClientEdit = true;
+			
+			initEditMode();
+		} else {
+			initPreview(wikiBlock, function (svg) {
+				$scope.preview = $sce.trustAsHtml(svg);
+				util.$apply();
+			});
+		}
 
-                $uibModal.open({
-                    "animation"      : false,
-                    "ariaLabeledBy"  : "title",
-                    "ariaDescribedBy": "body",
-                    "template"       : "<div id='mx-client'><div class='mx-client-close' ng-click='close()'>关闭</div></div>",
-                    "controller"     : "boardEditorController",
-                    "size"           : "lg",
-                    "openedClass"    : "mx-client-modal",
-                    "backdrop"       : "static",
-                    "keyboard"       : false,
-                    "resolve"        : {
-                        "wikiBlock" : function(){
-                            return wikiBlock;
-                        }
-                    }
-                })
-                .result.then(function (ui) {
-                    var compressData = ui.getCurrentCompressData();
+		$scope.edit = function () {
+			if (wikiBlock.mode != "editor") {
+				return;
+			}
 
-                    if(compressData){
-                        wikiBlock.applyModParams(compressData);
-                        wikiBlock.modParams = compressData;
-                    }else{
-                        wikiBlock.applyModParams("blank");
-                        wikiBlock.modParams = "blank";
-                    }
+			$uibModal.open({
+				"animation"      : false,
+				"ariaLabeledBy"  : "title",
+				"ariaDescribedBy": "body",
+				"template"       : "<div id='mx-client'><div class='mx-client-close' ng-click='close()'>关闭</div></div>",
+				"controller"     : "boardEditorController",
+				"size"           : "lg",
+				"openedClass"    : "mx-client-modal",
+				"backdrop"       : "static",
+				"keyboard"       : false,
+				"resolve"        : {
+					"wikiBlock" : function(){
+						return wikiBlock;
+					}
+				}
+			})
+			.result.then(function (ui) {
+				var compressData = ui.getCurrentCompressData();
 
-                    initEditMode();
-                }, function (params) {});
-            };
+				if(compressData){
+					wikiBlock.applyModParams(compressData);
+					wikiBlock.modParams = compressData;
+				}else{
+					wikiBlock.applyModParams("blank");
+					wikiBlock.modParams = "blank";
+				}
 
-            function initEditMode(){
-                var modParams = wikiBlock.modParams.replace(/[\ \r\n]+/g, "");
-                
-                if (typeof(modParams) == "string" && modParams.length == 0 || modParams == "blank") {
-                    $scope.mxClientStart = true;
-                    $scope.startNotice   = "点击此处开始编辑";
-                    $scope.preview = "";
-                    util.$apply();
-                } else {
-                    $scope.mxClientStart = false;
-                    initPreview(wikiBlock, function (svg) {
-                        $scope.preview = $sce.trustAsHtml(svg);
-                        util.$apply();
-                    });
-                }
-            }
-        }])
+				initEditMode();
+			}, function (params) {});
+		};
 
-        app.registerController("boardEditorController", ['$scope', '$uibModalInstance', 'wikiBlock', function ($scope, $uibModalInstance, wikiBlock) {           
-            $scope.close = function () {
-                $uibModalInstance.close($scope.ui);
-            }
+		function initEditMode(){
+			var modParams = (wikiBlock.modParams || "").replace(/[\ \r\n]+/g, "");
+			
+			if (typeof(modParams) == "string" && modParams.length == 0 || modParams == "blank") {
+				$scope.mxClientStart = true;
+				$scope.startNotice   = "点击此处开始编辑";
+				$scope.preview = "";
+				util.$apply();
+			} else {
+				$scope.mxClientStart = false;
+				initPreview(wikiBlock, function (svg) {
+					$scope.preview = $sce.trustAsHtml(svg);
+					util.$apply();
+				});
+			}
+		}
 
-            $scope.$watch('$viewContentLoaded', function(){
-                setTimeout(function () {
-                    initEditor(wikiBlock.modParams, function (ui) {
-                        $scope.ui = ui;
-                        $scope.$apply();
-                    });
-                }, 0)
-            });
-        }]);
-    }
+		return htmlContent;
+	}
+
+	app.registerController("boardEditorController", ['$scope', '$uibModalInstance', 'wikiBlock', function ($scope, $uibModalInstance, wikiBlock) {           
+		$scope.close = function () {
+			$uibModalInstance.close($scope.ui);
+		}
+
+		$scope.$watch('$viewContentLoaded', function(){
+			setTimeout(function () {
+				initEditor(wikiBlock.modParams, function (ui) {
+					$scope.ui = ui;
+					$scope.$apply();
+				});
+			}, 0)
+		});
+	}]);
 
     return {
-        render: function (wikiBlock) {
-            registerController(wikiBlock);
-            return htmlContent;
-        },
-    };
+        render:render,
+		renderAfter: render,
+	}
 });

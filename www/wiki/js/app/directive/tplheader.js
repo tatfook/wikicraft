@@ -17,24 +17,21 @@ define([
                         <span class="pull-right" ng-click="showVersions()">上次保存：{{committer_name}}于{{committed_date}}</span>\
                       </div>',
 			controller: ["$rootScope", "$scope", "$attrs", "modal", function($rootScope, $scope, $attrs, modal){
-				if (!$attrs.mdwikiname || !config.mdwikiMap[$attrs.mdwikiname]) {
-					return;
-				}
 				var clickEventType = undefined;
-				var mdwiki = config.mdwikiMap[$attrs.mdwikiname];
+				var mdwiki = app.objects.editormd;
 				var pageinfo = $rootScope.pageinfo;
 				var template = mdwiki.template;
 				$scope.$rootScope = $rootScope;
-				$scope.isShow = mdwiki.editorMode && $rootScope.pageinfo;
+				$scope.isShow = mdwiki.mode == "editor" && $rootScope.pageinfo;
 				$scope.mdwiki = mdwiki;
 
 				//console.log("---------------", $attrs.mdwikiname, mdwiki);
-				$scope.$watch("mdwiki.template" ,function(){
+				$scope.$watch("mdwiki.template.token" ,function(){
 					//console.log("================================", mdwiki.template, mdwiki);
 					template = mdwiki.template;
 					//console.log(template);
-					if (template) {
-                        $scope.templateSrc = template.isPageTemplate ? "当前页面" : "_theme";
+					if (template && template.token) {
+                        $scope.templateSrc = template.token.start >= 0 ? "当前页面" : "_theme";
 						$scope.isShowEdit = true;
 						if ($scope.templateSrc == "_theme") {
 							$scope.isShowNew = true;
@@ -51,7 +48,7 @@ define([
 
 				$scope.$watch("$rootScope.pageinfo", function() {
 					pageinfo = $rootScope.pageinfo;
-					if (!mdwiki.editorMode || !pageinfo) {
+					if (mdwiki.mode != "editor" || !pageinfo) {
 						$scope.isShow = false;
 						return;
 					}
@@ -88,8 +85,6 @@ define([
 					
 					var defaultTemplate = "```@template/js/layout\n# urlmatch\n- text:\n```\n";
 					mdwiki.editor.replaceRange(defaultTemplate, {line: 0, ch: 0}, {line:0,ch: 0});
-					config.shareMap.moduleEditorParams.wikiBlockStartPost = 0;
-					config.shareMap.moduleEditorParams.wikiBlock = undefined;
 				}
 
 				$scope.click = function(){
@@ -99,19 +94,16 @@ define([
 						// console.log("新建模板");
 						var defaultTemplate = "```@template/js/layout\n# urlmatch\n- text:\n```\n";
 						mdwiki.editor.replaceRange(defaultTemplate, {line: 0, ch: 0}, {line:0,ch: 0});
-						config.shareMap.moduleEditorParams.wikiBlockStartPost = 0;
-						config.shareMap.moduleEditorParams.wikiBlock = undefined;
 						return ;
 					}
-					if (!template.isPageTemplate) {
+					if (template.token && template.token.start < 0) {
 						var urlObj = {username: pageinfo.username, sitename:pageinfo.sitename, pagename:"_theme"};
 						$rootScope.$broadcast('changeEditorPage', urlObj);
 						return;
 					}
-					if (!template.blockCache) {
-						return;
-					}
-					$rootScope.viewEditorClick(template.blockCache.containerId);
+
+					var moduleEditorParams = config.shareMap.moduleEditorParams;
+					moduleEditorParams.setBlock(template);
 					util.$apply();	
 				}
 			}],
