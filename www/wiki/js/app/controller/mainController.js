@@ -5,7 +5,6 @@
 define([
     'app',
     'markdown-it',
-    'helper/mdwiki',
     'helper/markdownwiki',
     'helper/storage',
     'helper/util',
@@ -18,22 +17,19 @@ define([
     'controller/userController',
     'controller/notfoundController',
     'controller/crosController',
-], function (app, markdownit, mdwiki, markdownwiki, storage, util, mdconf, dataSource, loading, homeHtmlContent, headerHtmlContent, footerHtmlContent, userHtmlContent, notfoundHtmlContent, crosHtmlContent) {
-	//var md = markdownwiki({breaks: true, isMainMd:true});
-	var md = mdwiki();
+], function (app, markdownit, markdownwiki, storage, util, mdconf, dataSource, loading, homeHtmlContent, headerHtmlContent, footerHtmlContent, userHtmlContent, notfoundHtmlContent, crosHtmlContent) {
+	var md = markdownwiki({breaks: true, isMainMd:true});
 
     app.controller('mainController', [
         '$scope',
         '$rootScope',
         '$sce',
-		'$timeout',
         '$location',
 		'$anchorScroll',
         '$http',
         '$auth',
         '$compile',
         '$translate',
-		'$uibModal',
         'Account',
         'Message',
         'github',
@@ -48,14 +44,12 @@ define([
             $scope,
             $rootScope,
             $sce,
-			$timeout,
             $location,
             $anchorScroll,
             $http,
             $auth,
             $compile,
             $translate,
-			$uibModal,
             Account,
             Message,
             github,
@@ -76,7 +70,6 @@ define([
                 config.services = {
                     $rootScope: $rootScope,
                     $sce: $sce,
-					$timeout: $timeout,
                     $http: $http,
                     $compile: $compile,
                     $auth: $auth,
@@ -119,23 +112,6 @@ define([
                     confirmDialog:confirmDialog,
                     realnameVerifyModal:realnameVerifyModal
                 });
-
-				app.objects.Account = Account;
-				app.objects.Message = Message;
-				app.objects.modal = modal;
-				app.objects.config = config;
-				app.objects.util = util;
-				app.objects.mdwiki = mdwiki;
-				app.objects.dataSource = dataSource;
-				app.objects.mainMdwiki = app.objects.mainMdwiki || md;
-
-				app.ng_objects.$rootScope = $rootScope;
-				app.ng_objects.$compile = $compile;
-				app.ng_objects.$http = $http;
-				app.ng_objects.$auth = $auth;
-				app.ng_objects.$timeout = $timeout;
-				app.ng_objects.$uibModal = $uibModal;
-				app.ng_objects.$sce = $sce;
 
                 $rootScope.imgsPath = config.imgsPath;
                 $rootScope.cssPath = config.cssPath;
@@ -191,10 +167,10 @@ define([
                     return $sce.trustAsHtml(config.services.markdownit.render(text || ""));
                 }
 
-				//$anchorScroll.yOffset = 100;
-				//md.registerRenderAfterCallback("$anchorScroll", function(){
-					//$anchorScroll();
-				//});
+				$anchorScroll.yOffset = 100;
+				md.registerRenderAfterCallback("$anchorScroll", function(){
+					$anchorScroll();
+				});
             }
 
             // 底部高度自适应

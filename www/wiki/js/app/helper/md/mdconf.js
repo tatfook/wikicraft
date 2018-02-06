@@ -2,51 +2,12 @@
 define([
 ], function () {
 	var mdconf = {};
-	var escapeChar = "@";
-	var escapeCharList = '@`-+#';
-	function md_escape(text) {
-		if (typeof(text) != "string") {
-			return text;
-		}
-
-		text = text || "";
-
-		var lines = text.split("\n");
-		for (var i = 0; i < lines.length; i++) {
-			var line = lines[i];
-			if (escapeCharList.indexOf(line[0]) >=0) {
-				lines[i] = escapeChar + line;
-			} 
-		}
-
-		return lines.join("\n");
-	}
-
-	function md_unescape(text) {
-		text = text || "";
-
-		var lines = text.split("\n");
-		for (var i = 0; i < lines.length; i++) {
-			var line = lines[i];
-			if (line[0] == escapeChar && escapeCharList.indexOf(line[1]) >=0) {
-				lines[i] = line.substring(1);
-			} 
-		}
-
-		return lines.join("\n");
-	}
 
 	// md 转json对象
 	mdconf.mdToJson = function(text) {
-		//console.log(text);
-		if (typeof(text) != "string") {
-			return text;
-		}
-
-		text = md_unescape(text);
-
 		var temp_lines = text.trim().split("\n");
 		var lines = [];
+		var line = "";
 		var conf = {};
 		var curConf = conf;
 
@@ -96,7 +57,7 @@ define([
 		var _mdToJson = function(line) {
 			var temp = line.match(/^([-+#]) (.*)/);
 			var flag = temp[1];
-			var content = line.substring(flag.length + 1).trim();	
+			var content = temp[2].trim();	
 			var key, value;
 
 			if (flag == "#") {
@@ -128,8 +89,7 @@ define([
 			}
 		}
 
-		var is_comment = false, line = "";
-		//console.log(temp_lines);
+		var is_comment = false;
 		for (var i = 0; i < temp_lines.length; i++) {
 			if (temp_lines[i].match(/^<!--.*-->\s*$/)) {
 				continue;
@@ -145,8 +105,7 @@ define([
 				continue;
 			}
 			if (!temp_lines[i].match(/^[-+#] .*/)) {
-				line += "\n" + temp_lines[i];
-				//line += (line ? "\n" : "") + temp_lines[i];
+				line += temp_lines[i] + "\n";
 				continue;
 			}
 			if (line) {
@@ -159,9 +118,7 @@ define([
 			lines.push(line);
 		}
 
-		if (lines.length == 0) {
-			return "";
-		} else if (lines.length == 1 && !lines[0].match(/^[-+#] .*/)) {
+		if (lines.length == 1 && !lines[0].match(/^[-+#] .*/)) {
 			return lines[0];
 		} else {
 			for (var i = 0; i < lines.length; i++) {
@@ -190,15 +147,15 @@ define([
 				for (var key in obj) {
 					// 优先写非对象值
 					value = obj[key];
-					if (value == null || value == undefined || key.indexOf("$") == 0 || typeof(value) == "object") {
+					if (key.indexOf("$$") == 0 || typeof(value) == "object") {
 						continue;
 					}
-					text += "- " + key + " : " + md_escape(value) + "\n";
+					text += "- " + key + " : " + value + "\n";
 				}
 				for (var key in obj) {
 					// 写对象值
 					value = obj[key];
-					if (value == null || key.indexOf("$") == 0 || typeof(value) != "object") {
+					if (key.indexOf("$$") == 0 || typeof(value) != "object") {
 						continue;
 					}
 

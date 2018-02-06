@@ -4,34 +4,30 @@ define([
     'text!wikimod/adi/html/vipread.html',
 ], function (app, util, htmlContent) {
 
-	function getEditorParams(modParams) {
-		modParams = modParams || {};
-
-		modParams.switch_vipread = modParams.switch_vipread || {};
-		modParams.switch_vipread.$data = {
-			is_leaf      : true,
-			type         : "switch",
-			editable     : true,
-			is_card_show : true,
-			is_mod_hide  : false,
-			name         : "阅读权限",
-			text         : "",
-			require      : true,
-			module_kind  : "vip",
-			desc         : "本网页内容，仅限VIP用户浏览全部"
-		};
-
-		return modParams;
-	}
-
-	function getStyleList() {
-		return [];
-	}
-
     function registerController(wikiBlock) {
         app.registerController("vipreadController", ['$rootScope', '$scope','$sce', 'Account', 'modal', function ($rootScope, $scope, $sce, Account, modal) {
             $scope.modParams  = wikiBlock.modParams;
-            $scope.mode = wikiBlock.mode;
+            $scope.editorMode = wikiBlock.editorMode;
+
+            wikiBlock.init({
+                scope  : $scope,
+				styles : [],
+				params_template : {
+                    switch_vipread:{
+                        is_leaf      : true,
+						type         : "switch",
+                        editable     : true,
+						is_card_show : true,
+						is_mod_hide  : false,
+                        name         : "阅读权限",
+                        text         : "",
+                        require      : true,
+                        module_kind  : "vip",
+                        desc         : "本网页内容，仅限VIP用户浏览全部"
+                    },
+				}
+            });
+
             var rearrangement = function(){
                 var mdwiki      = config.shareMap["mdwiki"];
                 var containerId = mdwiki.getMdWikiContentContainerId();
@@ -65,10 +61,9 @@ define([
             }
 
             var init = function () {
-                if(wikiBlock.mode != "editor"){
+                if(!wikiBlock.editorMode){
                     setUserVip();
                     rearrangement();
-
                 }
             };
 
@@ -113,8 +108,6 @@ define([
         render: function (wikiBlock) {
             registerController(wikiBlock);
             return htmlContent;
-        },
-		getEditorParams: getEditorParams,
-		getStyleList: getStyleList,
+        }
     }
 });

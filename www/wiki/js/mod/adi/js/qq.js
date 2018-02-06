@@ -116,13 +116,13 @@ define([
                 return currentImgText;
             }
         }]);
-
     }
 
     return {
-        render: render,
-		getStyleList: getStyleList,
-		getEditorParams: getEditorParams,
+        render: function (wikiblock) {
+            registerController(wikiblock);
+            return htmlContent;
+        }
     }
 });
 

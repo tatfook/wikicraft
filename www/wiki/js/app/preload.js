@@ -16,8 +16,6 @@ define([
     'helper/siteStyle',
     'helper/storage',
     'helper/util',
-	"helper/md/mdconf",
-	"helper/mdwiki",
 	
 	// controller
     //'controller/notfoundController',
@@ -69,9 +67,6 @@ define([
     'directive/wikiUISelect',
     'directive/wikiHtml',
     'directive/ngOn',
-    'directive/wikipage',
-    'directive/wikiBlock',
-    'directive/wikiBlockContainer',
 
     // factory
     'factory/account',

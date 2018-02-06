@@ -2,8 +2,7 @@
 define([
 ], function(){
 	var escape_ch = "@";
-	//var special_str = '`*_{}[]()#+-.!>\\' + '\'"<>&'; // 覆盖html禁止字符
-	var special_str = '`*_{}[]()#+-.!<>\\'  // 覆盖html禁止字符
+	var special_str = '`*_{}[]()#+-.!>\\';
 
 	// markdown 特殊字符转义
 	function md_special_char_escape(text) {
@@ -51,7 +50,7 @@ define([
 	}
 
 	// 是否是空行
-	function is_empty_line(line) {
+	function is_empty_list(line) {
 		if (line.trim() == "") {
 			return true;
 		}
@@ -128,9 +127,6 @@ define([
 		var link_text = regs[1];
 		var link_href = regs[2];
 		var link_str = '<a href="'+ link_href +'">' + link_text + '</a>';
-		if (link_href.indexOf("http://") == 0 || link_href.indexOf("https://") == 0) {
-			link_str = '<a target="_blank" href="'+ link_href +'">' + link_text + '</a>';
-		}
 		var link_render = obj.md.rule_render["a"];
 		if (link_render) {
 			link_str = link_render({md:obj.md, text:match_str, link_text:link_text, link_href:link_href}) || link_str;
@@ -173,7 +169,7 @@ define([
 
 	function em(obj) {
 		var text = obj.text;
-		var reg_str = / @\*(.+?)@\* /;
+		var reg_str = /@\*(.+?)@\*/;
 		var regs = text.match(reg_str);
 		var htmlstr = "", em_render;	
 		if (regs){
@@ -187,7 +183,7 @@ define([
 			return em(obj);
 		}
 
-		reg_str = / @_(.*?)@_ /;
+		reg_str = /@_(.*?)@_/;
 		regs = text.match(reg_str);
 		if (regs){
 			htmlstr = '<em>' + regs[1] + '</em>';
@@ -205,7 +201,7 @@ define([
 
 	function strong(obj) {
 		var text = obj.text;
-		var reg_str = / @\*@\*(.+?)@\*@\* /;
+		var reg_str = /@\*@\*(.+?)@\*@\*/;
 		var regs = text.match(reg_str);
 		var htmlstr = "", strong_render;	
 		if (regs){
@@ -219,7 +215,7 @@ define([
 			return strong(obj);
 		}
 
-		reg_str = / @_@_(.*?)@_@_ /;
+		reg_str = /@_@_(.*?)@_@_/;
 		regs = text.match(reg_str);
 		if (regs){
 			htmlstr = '<strong>' + regs[1] + '</strong>';
@@ -304,7 +300,7 @@ define([
 			return false;
 		};
 
-		if (!is_empty_line(last_line) || !is_blockcode_flag(cur_line)) {
+		if (!is_empty_list(last_line) || !is_blockcode_flag(cur_line)) {
 			return ;
 		}
 
@@ -379,12 +375,12 @@ define([
 	function br(obj) {
 		var cur_line = obj.lines[obj.start];
 		var i = 0, htmlContent = "", text = cur_line , content="";	
-		if (!is_empty_line(cur_line) || obj.lines.length == (obj.start + 1) || !is_empty_line(obj.lines[obj.start+1])) {
+		if (!is_empty_list(cur_line) || obj.lines.length == (obj.start + 1) || !is_empty_list(obj.lines[obj.start+1])) {
 			return;
 		}
 
 		for (i = obj.start + 1; i < obj.lines.length; i++) {
-			if (!is_empty_line(obj.lines[i])) {
+			if (!is_empty_list(obj.lines[i])) {
 				break;
 			}
 			htmlContent += "<br/>";
@@ -402,64 +398,15 @@ define([
 		}
 	}
 
-	// html代码
-	function htmlcode(obj, env) {
-		var cur_line = obj.lines[obj.start];
-
-		//console.log(cur_line);
-		if (!/^@<[-\w\d]+/.test(cur_line)) {
-			return;
-		}
-
-		var text = cur_line, i = 0, single_line = cur_line;
-		for (i = obj.start + 1; i < obj.lines.length; i++) {
-			var line = obj.lines[i];
-			if (is_empty_line(line)) {
-				break;
-			}	
-			single_line += line;
-			text += "\n" + line;
-		}
-		
-		var regs = single_line.match(/^@<([-\w\d]+).*@>.*@<\/([-\w]+)@>$/);
-		//console.log(single_line, regs);
-		if (!regs || !regs[1] || !regs[2] || regs[1] != regs[2]) {
-			return;
-		}
-
-		var token = {
-			tag: "html",
-			content: text,
-			text: text,
-			htmlContent: text,
-			start: obj.start,
-			end: i,
-		};
-
-		return token;
-	}
-
 	// 段落
 	function paragraph(obj, env) {
-		var _escape = function(str) {
-			str = str.replace(/&/g, "&amp;");
-			str = str.replace(/@</g, "&lt;");
-			str = str.replace(/@>/g, "&gt;");
-			str = str.replace(/'/g, "&apos;");
-			str = str.replace(/"/g, "&quot;");
-			// 空格非保留字
-			str = str.replace(/ /g, "&nbsp;");
-
-			return str;
-		} 
-
 		var is_paragraph_line = function(line) {
 			if (is_hr(line)
 					|| is_list(line) 
 					|| is_blockquote(line) 
 					|| is_header(line) 
 					|| line.indexOf("@`@`@`") == 0
-					|| is_empty_line(line)) {
+					|| is_empty_list(line)) {
 				return false;
 			}
 
@@ -471,36 +418,33 @@ define([
 			return;
 		}
 
-		var i = 0, text = cur_line, htmlContent = _escape(cur_line);
+		var content = cur_line, i = 0;
 		for (i = obj.start+1; i < obj.lines.length; i++) {
 			var line = obj.lines[i];
 			if (!is_paragraph_line(line)) {
 				break;
 			}
-			text += "\n" + line;
-			htmlContent += "<br/>" + _escape(line);
+			content += "<br/>" + line;
 		}
 
 		var token = {
 			tag: "p",
-			htmlContent: htmlContent,
-			content: text,
-			text: text,
+			content: content,
+			text: content,
 			start: obj.start,
 			end:i,
 		}
 		
 		if (env && env.is_sub_tag) {
-			token.htmlContent = obj.md.line_parse(token.htmlContent);
+			token.htmlContent = obj.md.line_parse(token.content);
 		} else {
-			token.htmlContent = '<' + token.tag + '>' + obj.md.line_parse(token.htmlContent) + '</' + token.tag + '>';
+			token.htmlContent = '<' + token.tag + '>' + obj.md.line_parse(token.content) + '</' + token.tag + '>';
 		}
 
 		var paragraph_render = obj.md.rule_render["paragraph"];
 		if (paragraph_render) {
-			token.htmlContent = paragraph_render({md:obj.md, content: text, text:text, is_sub_tag:env.is_sub_tag})  || token.htmlContent;
+			token.htmlContent = paragraph_render({md:obj.md, content: content, text:content, is_sub_tag:env.is_sub_tag})  || token.htmlContent;
 		}
-
 		return token;
 	}
 
@@ -514,7 +458,7 @@ define([
 		var content = cur_line.substring(2), i = 0, text = cur_line;
 		for (i = obj.start + 1; i < obj.lines.length; i++) {
 			var line = obj.lines[i];
-			if (is_empty_line(line)) {
+			if (is_empty_list(line)) {
 				break;
 			}
 			text += "\n" + line;
@@ -567,7 +511,7 @@ define([
 		for (i = obj.start + 1; i <= obj.lines.length; i++) {
 			var line = obj.lines[i] || "";
 			var ret = is_list(line);
-			if (is_empty_line(line)) {
+			if (is_empty_list(line)) {
 				token.end = i;
 				token.subtokens = obj.md.block_parse(token.content, {start:i, is_sub_tag:true});
 				subtokens.push(token);
@@ -773,7 +717,6 @@ define([
 		md.register_block_rule(list);
 		md.register_block_rule(table);
 
-		md.register_block_rule(htmlcode);
 		// 段落需放最后
 		md.register_block_rule(paragraph);
 
@@ -817,8 +760,8 @@ define([
 				token.htmlContent = render_token(token)
 				token.content = md.md_special_char_unescape(token.content);
 				token.text = md.md_special_char_unescape(token.text);
-				//token.start++;
-				//token.end++;
+				token.start++;
+				token.end++;
 				token.htmlContent = md.md_special_char_unescape(token.htmlContent);
 			}
 			return tokens;
@@ -827,7 +770,7 @@ define([
 		md.render = function(text) {
 			var tokens = this.parse(text);
 
-			console.log(tokens);
+			// console.log(tokens);
 
 			var htmlContent = "";
 			for (var i = 0; i < tokens.length; i++) {

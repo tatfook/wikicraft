@@ -52,7 +52,7 @@
         }
        
    </style>
-   <div>
+   <div ng-controller="carouselController">
         <div uib-carousel active="active" interval="imgInterval" no-wrap="noWrapSlides">
             <div ng-repeat="img in imgs track by $index"
                  uib-slide

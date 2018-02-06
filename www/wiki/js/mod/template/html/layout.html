@@ -8,47 +8,42 @@
 	border: 2px solid red;
 	margin: 2px;
 }
-
-.full-height {
-	height:100%;
-}
-
-.kp_block {
-	display:inline-block;
-	margin:0px;
-	padding:0px;
-}
-
-.kp_box {
-	display:flex;
-}
 </style>
-
-<div class="full-height">
-	<div ng-if="mode != 'preview'">
-		templateContent
-		<!--<div ng-repeat="row in params.rows track by $index" ng-class="row.class" ng-style='row.style'>-->
-			<!--<div ng-repeat="col in row.cols track by $index" ng-class="col.class" ng-style='col.style'>-->
-				<!--<wikipage ng-if="!col.is_main_content" content="col.content" contentUrl="col.contentUrl"></wikipage>-->
-				<!--<div ng-if="col.is_main_content" class="kp_wiki_template_main_content">-->
-				<!--</div>-->
-			<!--</div>-->
+<div ng-controller="layoutController">
+	<div ng-hide="mode == 'preview'">
+		<!--<div>-->
+			<!--<span>{{isPageTemplate ? "当前页" : "_theme"}}</span>-->
+			<!--<span>{{committer_name + "于" + committed_date + "更新"}}</span>-->
+			<!--[><span><a>{{$rootScope.pageinfo.username}}</a></span><]-->
 		<!--</div>-->
+		<div ng-repeat="row in params.rows.list track by $index" ng-class="row.class" ng-style='row.style' class="clearfix">
+			<div ng-repeat="col in row.cols.list track by $index" ng-class="col.class" ng-style='col.style'>
+				<div id="{{col.$kp_id}}"></div>
+			</div>
+		</div>
 	</div>
-	<div ng-if="mode == 'preview'" class="full-height">
-		<div ng-if="params.design == 'style1'" class="full-height">
-			<div class="full-height" style="background-color:gray;"></div>
+	<div ng-show="mode == 'preview'" style="height:600px">
+		<div ng-if="params.design.text == 'style1'" style="height:100%;">
+			<div style="height:100%; border:2px solid red;"></div>
 		</div>
-		<div ng-if="params.design == 'style2'" class="full-height">
-			<div style="height:100%; margin:0 10%; background-color:gray;"></div>
+		<div ng-if="params.design.text == 'style2'" style="height:100%;">
+			<div style="height:100%; border:2px solid red; width:80%;margin: auto;"></div>
 		</div>
-		<div ng-if="params.design == 'style3'" class="full-height kp_box">
-			<div class="full-height" style="width:20%; background-color:#f2f2f2;"></div>
-			<div class="full-height" style="width:80%; background-color:gray;"></div>
+		<div ng-if="params.design.text == 'style3'" style="height:100%">
+			<div style="border:2px solid red; width:100%; height:20%;">
+			</div>
+			<div style="height:80%">
+				<div class="pull-left" style="width:80%; height:100%; border:2px solid red;"></div>
+				<div class="pull-right" style="width:20%; height:100%; border:2px solid red;"></div>
+			</div>
 		</div>
-		<div ng-if="params.design == 'style4'" class="full-height kp_box">
-			<div class="full-height" style="width:80%; background-color:gray;"></div>
-			<div class="full-height" style="width:20%; background-color:#f2f2f2;"></div>
+		<div ng-if="params.design.text == 'style4'" style="height:100%">
+			<div style="border:2px solid red; width:100%; height:20%;">
+			</div>
+			<div style="height:80%">
+				<div class="pull-left" style="width:20%; height:100%; border:2px solid red;"></div>
+				<div class="pull-right" style="width:80%; height:100%; border:2px solid red;"></div>
+			</div>
 		</div>
 	</div>
 </div>

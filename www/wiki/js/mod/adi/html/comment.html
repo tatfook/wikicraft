@@ -48,7 +48,7 @@
     }
 </style>
 
-<div class="comment">
+<div ng-controller="commentController" class="comment">
     <div ng-hide="params.multiText_desc.is_mod_hide">
         <h3>我要评论</h3>
         <div class="comments-box">
@@ -60,7 +60,7 @@
                     <p>{{comment.content}}</p>
                 </div>
                 <a class="delete-btn" ng-show="user._id == comment.userId" ng-click="deleteComment(comment)">删除</a>
-                <a class="delete-btn" ng-show="{{mode=='editor'}}" ng-click="deleteComment(comment)">删除</a>
+                <a class="delete-btn" ng-show="{{editorMode}}" ng-click="deleteComment(comment)">删除</a>
             </div>
         </div>
         <div class="comment-input">

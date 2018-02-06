@@ -47,8 +47,7 @@ define([
 
             $scope.isFeature = storage.sessionStorageGetItem("isFeature") || false;
             storage.sessionStorageRemoveItem('isFeature');
-            //var md = markdownwiki({breaks: true, isMainMd:true});
-            var md = app.objects.mainMdwiki;
+            var md = markdownwiki({breaks: true, isMainMd:true});
             // var featureListContent = featureListContent;
             var mdContent = md.render(featureListContent);
             util.onViewContentLoadedByContainerId("#__UserSitePageContent__", function (params) {

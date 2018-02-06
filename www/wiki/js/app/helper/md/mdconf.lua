@@ -104,9 +104,7 @@ mdconf.mdToJson = function(text)
 		local flag, content = line:match('^([-+#]) (.*)')
 		local key, value, temp
 
-		-- TODO TEST
-		content = strings.substring(line, #flag + 2)
-		--content = strings.trim(content)
+		content = strings.trim(content)
 		if flag == "#" then
 			curConf = getObj(content)
 		end

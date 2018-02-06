@@ -11,8 +11,6 @@
     removeCombined:true,
     optimizeAllPluginResources: true,  // text 插件配置
 	skipDirOptimize: true,
-	//generateSourceMaps: true,
-	//preserveLicenseComments: false,
     modules:[
         {
             name:'main',
@@ -106,7 +104,6 @@
         // html dir
         'html': '../html',
 		'css': '../assets/css',
-		'wikimod': 'mod',
 
 		'helper/sensitiveWord':"empty:"
     },

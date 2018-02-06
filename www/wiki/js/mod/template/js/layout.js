@@ -1,340 +1,333 @@
 
 define([
-	"text!wikimod/template/html/layout.html",
-], function(htmlContent){
-	var default_params = {
-		design: "style1",
-		urlmatch:{
+	"app",
+	"helper/util",
+	"helper/markdownwiki",
+	"helper/dataSource",
+    'text!wikimod/template/html/layout.html',
+], function(app, util, markdownwiki, dataSource, htmlContent){
+
+	var defaultModParams = {
+		urlmatch: {
 			text:"",
 		},
-		rows:[
-		{
-			class:undefined,
-			style:undefined,
-			cols:[
+		rows: {
+			list: [
 			{
-				class:undefined,
-				style:undefined,
-				is_main_content:true,
+				cols:{
+					list:[
+					{
+						content:"",
+						contentUrl:"",
+						"class":"",
+						"style":"",
+						isMainContent:true,
+					}
+					]
+				}
 			}
 			]
-		},
-		],
-	}
-
-	function string_to_object(value) {
-		if (typeof(value) == "string") {
-			return {text:value};
-		} else if (typeof(value) == "object") {
-			return value;
+			
 		}
+	};
 
-		return {};
-	}
 
-	// 返回样式参数
-	function getStyleParams(modParams, style) {
-		var stylelist = [
-		{ 
-			design: {
-				text: "style1",
-			},
-			rows:[
-			{
-				class:undefined,
-				style:undefined,
-				cols:[
-				{
-					class:undefined,
-					style:undefined,
-					is_main_content:true,
-				}
-				]
-			},
-			],
-		},
-		{ 
-			design: {
-				text: "style2",
-			},
-			rows:[
-			{
-				class:undefined,
-				style:undefined,
-				cols:[
-				{
-					class:"container",
-					style:undefined,
-					is_main_content:true,
-				}
-				]
-			},
-			],
-		},
-		{ 
-			design: {
-				text: "style3",
-			},
-			rows:[
-			{
-				class:undefined,
-				style:undefined,
-				cols:[
-				{
-					class:undefined,
-					style:undefined,
-				}
-				]
-			},
-			{
-				class:undefined,
-				style:undefined,
-				cols:[
-				{
-					class:"col-xs-3",
-					style:undefined,
-				},
-				{
-					class:"col-xs-9",
-					style:undefined,
-					is_main_content:true,
-				},
-				]
-			},
-			],
-		},
-		{ 
-			design: {
-				text: "style4",
-			},
-			rows:[
-			{
-				class:undefined,
-				style:undefined,
-				cols:[
-				{
-					class:undefined,
-					style:undefined,
-				}
-				]
-			},
-			{
-				class:undefined,
-				style:undefined,
-				cols:[
-				{
-					class:"col-xs-9",
-					style:undefined,
-					is_main_content:true,
-				},
-				{
-					class:"col-xs-3",
-					style:undefined,
-				},
-				]
-			},
-			],
-		},
-		];
+	function registerController(wikiBlock) {
+		app.registerController("layoutController", ["$scope", "$rootScope", function($scope, $rootScope){
+			var modParams = wikiBlock.modParams;
+			var pageinfo = $rootScope.pageinfo;
 
-		for (var i = 0; i < stylelist.length; i++){
-			if (stylelist[i].design.text == style.design.text) {
-				var tmp = stylelist[i];
-				tmp.urlmatch = modParams.urlmatch;
-				return tmp;
-			}
-		}
-		return {};
-	}
+			//console.log(pageinfo);
 
-	// 获取模块参数
-	function getModuleParams(editorParams) {
-		//for (var i = 0; i < editorParams.rows.length; i++) {
-			//var row = editorParams.rows[i];
-			//for (var j = 0; j < row.cols.length; j++) {
-				//var col = row.cols[j];
-				//if (col.is_main_content) {
-					//col.content = undefined;
-				//}
-			//}
-		//}
+			wikiBlock.selfLoadContent = true;
+			$scope.editorMode = wikiBlock.editorMode;
+			$scope.isPageTemplate = wikiBlock.isPageTemplate;
+			$scope.mode = wikiBlock.mode;
 
-		var modParams = {rows:editorParams.rows};
-		for (var key in editorParams) {
-			if (key == "rows") {
-				continue;
-			}
-			if (key.indexOf("area_") == 0) {
-				var value = editorParams[key];
-				key = key.substring(5);
-				var keys = key.split("-");
-				var rowNo = parseInt(keys[0]);
-				var colNo = parseInt(keys[1]);
-				var row = modParams.rows[rowNo] || {cols:[]};
-				modParams.rows[rowNo] = row;
-				row.cols[colNo] = angular.copy(value);
-				continue;
-			}
-			modParams[key] = editorParams[key];
-		}
-
-		for (var i = 0; i < modParams.rows.length; i++){
-			var row = modParams.rows[i];
-			for (var j = 0; j < row.cols.length; j++) {
-				var col = row.cols[j];
-				if (col.is_main_content || col.isMainContent) {
-					col.content = col.contentUrl = undefined;
+			for (var i = 0; i < modParams.rows.list.length; i++) {
+				var row = modParams.rows.list[i];
+				for (var j = 0; j < row.cols.list.length; j++) {
+					var col = row.cols.list[j];
+					if (col.isMainContent) {
+						//col.content = wikiBlock.content;
+					}
+					col.$kp_id = wikiBlock.containerId + "_templeate_" + i + "_" + j;
 				}
 			}
-		}
-		return modParams;
-	}
 
-	// 获取编辑参数
-	function getEditorParams(modParams) {
-		var idPrefix = "wikiblock_template_";
-		var id = 0;
-		modParams = angular.copy(modParams || {});
-		modParams.rows = modParams.rows || [{cols:[{is_main_content:true}]}];
-		modParams.design = modParams.design || {text: "style1"};
-		modParams.urlmatch = string_to_object(modParams.urlmatch);
-		modParams.urlmatch.$data = {
-			type:"_text_",
-			name:"urlmatch",
-			order:1,
-			id: idPrefix + id++,
-		}
+			var render = function(id, content, contentUrl) {
+				if (!content && !contentUrl) {
+					return;
+				}
+				var md = markdownwiki({use_template:false});
+				//console.log($("#"+id));
+				if (content) {
+					util.html("#" + id, md.render(content));
+				} else {
+					var pageinfo = $rootScope.pageinfo;
+					var currentDataSource = dataSource.getDataSource(pageinfo.username,pageinfo.sitename);
+					if (contentUrl && currentDataSource){
+						var urlPrefix = "/" + pageinfo.username + "/" + pageinfo.sitename + "/"; 
+						if (contentUrl.indexOf(urlPrefix) != 0){
+							contentUrl = urlPrefix + contentUrl;
+						}
+						currentDataSource.getRawContent({
+							path:contentUrl+config.pageSuffixName, 
+							isShowLoading:false
+						}, function(content){
+							content = content || "";
+							util.html("#" + id, md.render(content));
+						});
+					}	
+				}
+			}
+			
+			function init() {
+				//$scope.params = modParams;
+				//console.log(modParams);
+				setTimeout(function(){
+					for (var i = 0; i < modParams.rows.list.length; i++) {
+						var row = modParams.rows.list[i];
+						for (var j = 0; j < row.cols.list.length; j++) {
+							var col = row.cols.list[j];
+							if (col.isMainContent) {
+								//console.log($("#" + col.$kp_id),wikiBlock.content);
+								if (!$("#" + col.$kp_id).length) {
+									return;
+								}
+								util.html("#" + col.$kp_id, wikiBlock.content);
+							} else {
+								render(col.$kp_id, col.content, col.contentUrl);
+							}
+						}
+					}
+					wikiBlock.loadContent();
+				});
+			}
 
-		for (var i = 0; i < modParams.rows.length; i++) {
-			var row = modParams.rows[i];
-			row.cols = row.cols || [{content:row.content, contentUrl:row.contentUrl, class:row.class, style:row.style, is_main_content:row.isMainContent || row.is_main_content}];
-			for (var j = 0; j < row.cols.length; j++) {
-				var col = row.cols[j];
-				//col.$data = {
-					//type: "page",
-					//name: "区块" + i + "-" + j,
-					//id: idPrefix + id++,
-				//}
+			function params_template_func(modParams) {
+				var params_template = {
+					design:{
+						is_leaf:true,
+						editable:false,
+						require:true,
+						text:"style1",
+					},
+					urlmatch: {
+						//is_leaf:true,
+						//editable:true,
+						//type:"_text_",
+						//name:"urlmatch",
+						//order:-1,
+						text:"",
+					},
+					rows:{
+						is_leaf: true,
+						type: "list",
+						editable: true,
+						require: false,
+						name: "行",
+						list:[],
+					},
+				}
 
-				if (!col.is_main_content && !col.isMainContent) {
-					modParams["area_" + i + "-" + j] = {
-						"$data" : {
-							type: "page",
-							name: "区块" + i + "-" + j,
-						},
-						content: col.content,
-						contentUrl: col.contentUrl,
-						class: col.class,
-						style: col.style,
+				for (var i = 0; i < modParams.rows.list.length; i++) {
+					var row = modParams.rows.list[i];
+					params_template.rows.list.push({
+						cols: {
+							is_leaf: true,
+							type: "simple_list",
+							editable: true,
+							require: false,
+							name:"行" + (i+1),
+							list:[],
+						}
+					});
+
+					var params = params_template.rows.list[i];
+					for (var j = 0; j < row.cols.list.length; j++) {
+						var col = row.cols.list[j];
+						params.cols.list.push({
+							is_leaf: !col.isMainContent,
+							type:"page",
+							editable: !col.isMainContent,
+							require:false,
+							name: "行" + (i+1) + "列" + (j+1),
+							content: col.content,
+							contentUrl: col.contentUrl,
+						});
 					}
 				}
+
+				//console.log(params_template);
+				return params_template;
 			}
-		}
 
-		return modParams;
-	}
-
-	function render(wikiBlock) {
-		var $scope = wikiBlock.$scope;
-		var params = wikiBlock.modParams || {};
-
-		params.rows = params.rows || [{cols:[{is_main_content:true}]}];
-		
-		if (!$scope) {
-			return;
-		}
-
-		$scope.params = params;
-
-		var templateContent = "";
-		for (var i = 0; i < params.rows.length; i++) {
-			var row = params.rows[i];
-			row.cols = row.cols || [{content:row.content, contentUrl:row.contentUrl, class:row.class, style:row.style, is_main_content:row.isMainContent || row.is_main_content}];
-			templateContent += '<div class="clearfix" ng-class="params.rows[' + i + '].class" ng-style="params.rows[' + i +'].style">\n';
-			for (var j = 0; j < row.cols.length; j++) {
-				var col = row.cols[j];
-				var colStr = "params.rows[" + i + "].cols[" + j + "]";
-				templateContent += '<div ng-class="' + colStr+ '.class" ng-style="' + colStr + '.style">\n';
-				if (col.is_main_content || col.isMainContent) {
-					col.content = wikiBlock.templateContent;
-					templateContent += wikiBlock.templateContent || "";
-				} else {
-					//console.log(col.content);
-					templateContent += '<wikipage data-content-type="md" content="' + colStr + '.content" data-content-url="' + colStr + '.contentUrl"></wikipage>\n';
-					//if (col.content) {
-						//templateContent += '<wikipage data-content-type="md" content="' + colStr + '.content" contentUrl="' + colStr + '.contentUrl"></wikipage>\n';
-					//}
+			function toModParams(templateParams) {
+				var params = {rows:[]};
+				for (var i = 0; i < templateParams.rows.length; i++) {
+					var row = templateParams.rows[i];
+					params.rows.push({cols:[]});
+					var params_row = params.rows[i];
+					for (var j = 0; j < row.cols.length; j++) {
+						var col = row.cols[j];
+						params_row.cols.push({});
+						var params_col = params_row.cols[j];
+						params_col.class = col.class;
+						params_col.style = col.style;
+						params_col.isMainContent = col.isMainContent;
+						if (!col.isMainContent) {
+							params_col.content = col.content;
+							params_col.contentUrl = col.contentUrl;
+						}
+					}
 				}
-				templateContent += "</div>\n";
+				return params;
 			}
 
-			templateContent += "</div>\n";
-		}
+			wikiBlock.init({
+				scope: $scope,
+				params_template:params_template_func(modParams), 
+				styles:[
+				{
+					design:{
+						text:"style1",
+						cover:"http://git.keepwork.com/gitlab_rls_official/keepworkimages/raw/master/official_images/img_1515574485684.png",
+					},
+					urlmatch: {
+						text:"",
+					},
+					rows:{
+						list:[
+						{
+							cols: {
+								list:[
+								{
+									"desc": "default 布局",
+									isMainContent: true,
+								}
+								]
+							}
+						}
+						]
+					},
+				},
+				{
+					design:{
+						text:"style2",
+						cover:"http://git.keepwork.com/gitlab_rls_official/keepworkimages/raw/master/official_images/img_1515574515531.png",
+					},
+					urlmatch: {
+						text:"",
+					},
+					rows:{
+						list:[
+						{
+							cols: {
+								list:[
+								{
+									"desc": "居中布局",
+									"class":"container",
+									isMainContent: true,
+								}
+								]
+							}
+						}
+						]
+					},
+				},
+				{
+					design:{
+						text:"style3",
+						cover:"http://git.keepwork.com/gitlab_rls_official/keepworkimages/raw/master/official_images/img_1515574564150.png",
+					},
+					urlmatch: {
+						text:"",
+					},
+					rows:{
+						list: [
+						{
+							cols:{
+								list:[
+									{
+										desc: "wiki 布局",
+										contentUrl:"_header",
+										isMainContent:false,
+									},
+								]
+							}	
+						},
+						{
+							cols:{
+								list: [
+									{
+										class:"col-sm-10",
+										isMainContent: true,
+									},
+									{
+										class:"col-sm-2",
+										contentUrl:"_rightSidebar",
+										isMainContent:false,
+									}
+								]
+							}
+						}
+						]
+					}, 
+				},
+				{
+					design:{
+						text:"style4",
+						cover:"http://git.keepwork.com/gitlab_rls_official/keepworkimages/raw/master/official_images/img_1515574526094.png",
+					},
+					urlmatch: {
+						text:"",
+					},
+					rows:{
+						list: [
+						{
+							cols:{
+								list:[
+									{
+										desc: "wiki 布局",
+										contentUrl:"_header",
+										isMainContent:false,
+									},
+								]
+							}	
+						},
+						{
+							cols:{
+								list: [
+									{
+										class:"col-sm-2",
+										contentUrl:"_leftSidebar",
+										isMainContent:false,
+									},
+									{
+										class:"col-sm-10",
+										isMainContent: true,
+									}
+								]
+							}
+						}
+						]
+					}, 
+				},
+				]
+			});
 
-		//console.log(templateContent);
-		//console.log($scope);
-
-		$scope.mode = wikiBlock.mode;
-		//console.log($scope.mode, wikiBlock);
-		return htmlContent.replace("templateContent", templateContent);
-	}
-
-	function renderAfter(wikiBlock) {
-		var $compile = app.ng_objects.$compile;
-		var $scope = wikiBlock.$scope;
-
-		//$scope.mode = wikiBlock.mode;
-		//$scope.params = wikiBlock.modParams;
-		//console.log($scope.mode, $scope.params);
-		if (wikiBlock.mode == "preview") {
-			return;
-		}
-
-		//var htmlContent = $compile(wikiBlock.templateContent)($scope);
-		//$(".kp_wiki_template_main_content").html(htmlContent);
-		//wikiBlock.$apply && wikiBlock.$apply();
-	}
-
-	function usage() {
-		return "";
-	}
-
-	function getStyleList(wikiBlock) {
-		return [
-		{
-			design: {
-				text: "style1",
-				cover:"http://git.keepwork.com/gitlab_rls_official/keepworkimages/raw/master/official_images/img_1515574485684.png",
-			}
-		},
-		{
-			design: {
-				text: "style2",
-				cover:"http://git.keepwork.com/gitlab_rls_official/keepworkimages/raw/master/official_images/img_1515574515531.png",
-			}
-		},
-		{
-			design: {
-				text: "style3",
-				cover:"http://git.keepwork.com/gitlab_rls_official/keepworkimages/raw/master/official_images/img_1515574526094.png",
-			}
-		},
-		{
-			design: {
-				text: "style4",
-				cover:"http://git.keepwork.com/gitlab_rls_official/keepworkimages/raw/master/official_images/img_1515574564150.png",
-			}
-		},
-		];
+			$scope.$watch("$viewContentLoaded", init);
+		}]);
 	}
 
 	return {
-		getEditorParams: getEditorParams,
-		getModuleParams: getModuleParams,
-		getStyleParams: getStyleParams,
-		getStyleList: getStyleList,
-		render: render,
-		renderAfter: renderAfter, // 二次渲染问题
-		usage: usage,
-	};
-})
+		render: function(wikiBlock) {
+            wikiBlock.modParams = wikiBlock.modParams ? angular.merge({}, defaultModParams, wikiBlock.modParams) : defaultModParams;
+			//console.log(angular.copy(wikiBlock.modParams));
+			registerController(wikiBlock);
+			return htmlContent;
+		}
+	}
+
+});

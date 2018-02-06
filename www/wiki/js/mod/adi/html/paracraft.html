@@ -316,16 +316,16 @@
     }
 </style>
 
-<div class="paracraft-mod">
-    <div ng-class="{true:'world-clear-pointer'}[mode=='editor']" ng-if='params.design.text=="style1"' class="style1">
+<div ng-controller="paracraftWorldController" class="paracraft-mod">
+    <div ng-class="{true:'world-clear-pointer'}[editorMode]" ng-if='params.design.text=="style1"' class="style1">
         <div class="img">
-            <a ng-if="mode=='editor'"
+            <a ng-if="editorMode"
                ng-hide="params.media_logo.is_mod_hide"
                ng-click="viewEditorClick(params.media_logo, $event)"
                href="javascript:void(0)">
                 <img ng-src="{{params.media_logo.text.length == 0 && imgsPath + '3DWorld.jpg' || params.media_logo.text}}">
             </a>
-            <a ng-if="mode!='editor'"
+            <a ng-if="!editorMode"
                ng-hide="params.media_logo.is_mod_hide"
                ng-click="viewEditorClick(params.media_logo, $event)"
                target="{{params.media_logo.target ? params.media_logo.target : '_blank'}}"
@@ -335,32 +335,39 @@
         </div>
         <div class="text">
             <h4>
-                <a ng-if="mode=='editor'"
+                <a ng-if="editorMode"
                    ng-hide="params.link_world_name.is_mod_hide"
                    ng-click="viewEditorClick(params.link_world_name, $event)"
                    href="javascript:void(0)">
                     {{params.link_world_name.text}}
                 </a>
-                <a ng-if="mode!='editor'" ng-hide="params.link_world_name.is_mod_hide" ng-class="{true:'world-clear-pointer'}[params.link_world_name.href.length == 0]"
-                   target="{{params.link_world_name.target ? params.link_world_name.target : '_blank'}}" ng-href="{{params.link_world_name.href}}">{{params.link_world_name.text}}</a>
-
+                <a ng-if="!editorMode" ng-hide="params.link_world_name.is_mod_hide" ng-class="{true:'world-clear-pointer'}[params.link_world_name.href.length == 0]"
+                    target="{{params.link_world_name.target ? params.link_world_name.target : '_blank'}}" ng-href="{{params.link_world_name.href}}">
+                    {{params.link_world_name.text}}</a>
                 <p ng-hide="params.link_version.is_mod_hide" class="info pull-right">
-                    <a ng-if="mode=='editor'" href="javascript:void(0)">{{ "&nbsp;&nbsp;" + " 版本：" + params.link_version.text}}</a>
-                    <a ng-if="mode!='editor'" ng-class="{true:'world-clear-pointer'}[params.link_update_date.href.length == 0]"
-                       target="{{params.link_update_date.target ? params.link_update_date.target : '_blank'}}"
-                       ng-href="{{params.link_update_date.href}}">
-                        {{params.link_version.text}}
+                    <a ng-if="editorMode" href="javascript:void(0)">
+                        {{ "&nbsp;&nbsp;" +  " 版本：" + params.link_version.text}}</a>
+                    <a ng-if="!editorMode" ng-class="{true:'world-clear-pointer'}">
+                        {{"&nbsp;&nbsp;"  +   " 版本：" + params.link_version.text}}
+                    </a>
+                <p></p>
+                <p ng-hide="params.link_update_date.is_mod_hide" class="info pull-right">
+                    <a ng-if="editorMode" ng-click="viewEditorClick(params.link_update_date, $event)" href="javascript:void(0)">
+                        {{params.link_update_date.text}}</a>
+                    <a ng-if="!editorMode" ng-class="{true:'world-clear-pointer'}[params.link_update_date.href.length == 0]" target="{{params.link_update_date.target ? params.link_update_date.target : '_blank'}}"
+                        ng-href="{{params.link_update_date.href}}">
+                        {{params.link_update_date.text}}
                     </a>
                 </p>
                 
             </h4>
             <div class="inner clearfix">
                 <p>
-                    <a ng-if="mode=='editor'"
+                    <a ng-if="editorMode"
                        ng-click="viewEditorClick(params.link_username, $event)"
                        ng-hide="params.link_username.is_mod_hide"
                        href="javascript:void(0)">作者：{{params.link_username.text}}</a>
-                    <a ng-if="mode!='editor'"
+                    <a ng-if="!editorMode"
                        ng-hide="params.link_username.is_mod_hide"
                        ng-class="{true:'world-clear-pointer'}[params.link_username.href.length == 0]"
                        target="{{params.link_username.target ? params.link_username.target : '_blank'}}"
@@ -373,8 +380,8 @@
                         <img ng-src="{{imgsPath + 'icon/world3D_eye.png'}}" class="icon" alt="">浏览量 {{viewTimes}}
                     </div>
                     <div ng-hide="params.link_files_totals.is_mod_hide" class="col-xs-6 info">
-                        <a ng-if="mode=='editor'" ng-click="viewEditorClick(params.link_files_totals, $event)" href="javascript:void(0)" ng-bind="'大小' + getSize(params.link_files_totals.text)"></a>
-                        <a ng-if="mode!='editor'"
+                        <a ng-if="editorMode" ng-click="viewEditorClick(params.link_files_totals, $event)" href="javascript:void(0)" ng-bind="'大小' + getSize(params.link_files_totals.text)"></a>
+                        <a ng-if="!editorMode"
                            ng-class="{true:'world-clear-pointer'}[params.link_files_totals.href.length == 0]"
                            target="{{params.link_files_totals.target ? params.link_files_totals.target : '_blank'}}"
                            ng-href="{{params.link_files_totals.href}}"
@@ -383,12 +390,12 @@
                 </div>
                 <div class="col-xs-12 button">
                     <div class="col-xs-6">
-                        <a ng-if="mode=='editor'"
+                        <a ng-if="editorMode"
                            ng-hide="params.link_world_url.is_mod_hide"
                            ng-click="viewEditorClick(params.link_world_url, $event)"
                            href="javascript:void(0)"
                            class="btn btn-block btn-default">下载</a>
-                        <a ng-if="mode!='editor'"
+                        <a ng-if="!editorMode"
                            ng-hide="params.link_world_url.is_mod_hide"
                            class="btn btn-block btn-default"
                            ng-class="{true:'world-clear-pointer'}[params.link_world_url.text.length == 0]"
@@ -398,8 +405,8 @@
                         </a>
                     </div>
                     <div class="col-xs-6">
-                        <a ng-if="mode=='editor'" ng-hide="params.link_world_url.is_mod_hide" class="btn btn-block btn-primary">进入</a>
-                        <a ng-if="mode!='editor'"  ng-hide="params.link_world_url.is_mod_hide" class="btn btn-block btn-primary" ng-click="checkEngine()">进入</a>
+                        <a ng-if="editorMode" ng-hide="params.link_world_url.is_mod_hide" class="btn btn-block btn-primary">进入</a>
+                        <a ng-if="!editorMode"  ng-hide="params.link_world_url.is_mod_hide" class="btn btn-block btn-primary" ng-click="checkEngine()">进入</a>
                     </div>
                 </div>
             </div>
@@ -412,17 +419,17 @@
         </div>
     </div>
 
-    <div ng-class="{true:'world-clear-pointer'}[mode=='editor']" ng-if='params.design.text=="style2"' class="style2">
+    <div ng-class="{true:'world-clear-pointer'}[editorMode]" ng-if='params.design.text=="style2"' class="style2">
         <div class="world-head clearfix">
             <div>
                 <h2 class="world-name">
-                    <a ng-if="mode=='editor'"
+                    <a ng-if="editorMode"
                        ng-hide="params.link_world_name.is_mod_hide"
                        ng-click="viewEditorClick(params.link_world_name, $event)"
                        href="javascript:void(0)">
                         {{params.link_world_name.text}}
                     </a>
-                    <a ng-if="mode!='editor'"
+                    <a ng-if="!editorMode"
                        ng-hide="params.link_world_name.is_mod_hide"
                        ng-class="{true:'world-clear-pointer'}[params.link_world_name.href.length == 0]"
                        target="{{params.link_world_name.target ? params.link_world_name.target : '_blank'}}"
@@ -431,13 +438,13 @@
                     </a>
                 </h2>
                 <h3 class="username">
-                    <a ng-if="mode=='editor'"
+                    <a ng-if="editorMode"
                        ng-hide="params.link_username.is_mod_hide"
                        ng-click="viewEditorClick(params.link_username, $event)"
                        href="javascript:void(0)">
                        作者：{{params.link_username.text}}
                     </a>
-                    <a ng-if="mode!='editor'"
+                    <a ng-if="!editorMode"
                        ng-hide="params.link_username.is_mod_hide"
                        ng-class="{true:'world-clear-pointer'}[params.link_username.href.length == 0]"
                        target="{{params.link_username.target ? params.link_username.target : '_blank'}}"
@@ -447,15 +454,15 @@
                 </h3>
             </div>
             <div ng-hide="params.link_world_url.is_mod_hide">
-                <a class="btn btn-block btn-primary world-btn" ng-if="mode=='editor'">进入</a>
-                <a class="btn btn-block btn-primary world-btn" ng-if="mode!='editor'" ng-click="checkEngine()">进入</a>
+                <a class="btn btn-block btn-primary world-btn" ng-if="editorMode">进入</a>
+                <a class="btn btn-block btn-primary world-btn" ng-if="!editorMode" ng-click="checkEngine()">进入</a>
                 
-                <a class="btn btn-block btn-default world-btn" ng-if="mode=='editor'"  ng-click="viewEditorClick(params.link_world_url, $event)" href="javascript:void(0)">
+                <a class="btn btn-block btn-default world-btn" ng-if="editorMode"  ng-click="viewEditorClick(params.link_world_url, $event)" href="javascript:void(0)">
                     <img ng-src="{{downloadImg}}" alt="">
                     下载
                 </a>
                 <a class="btn btn-block btn-default world-btn"
-                    ng-if="mode!='editor'"
+                    ng-if="!editorMode"
                     ng-class="{true:'world-clear-pointer'}[params.link_world_url.text.length == 0]"
                     target="{{params.link_world_url.target ? params.link_world_url.target : '_blank'}}"
                     ng-href="{{params.link_world_url.text}}">
@@ -466,13 +473,13 @@
         </div>
         <div class="world-body clearfix">
             <div class="world-img">
-                <a ng-if="mode=='editor'"
+                <a ng-if="editorMode"
                    ng-hide="params.media_logo.is_mod_hide"
                    ng-click="viewEditorClick(params.media_logo, $event)"
                    href="javascript:void(0)">
                     <img ng-src="{{params.media_logo.text.length == 0 && imgsPath + '3DWorld.jpg' || params.media_logo.text}}">
                 </a>
-                <a ng-if="mode!='editor'"
+                <a ng-if="!editorMode"
                    ng-hide="params.media_logo.is_mod_hide"
                    ng-click="viewEditorClick(params.media_logo, $event)"
                    target="{{params.media_logo.target ? params.media_logo.target : '_blank'}}"
@@ -485,12 +492,12 @@
                       class="world-span">
                     作品简介：
                 </span>
-                <a ng-if="mode=='editor'"
+                <a ng-if="editorMode"
                    ng-hide="params.multiText_desc.is_mod_hide" 
                    ng-click="viewEditorClick(params.multiText_desc, $event)"
                    href="javascript:void(0)"
                    ng-bind-html="subMarkdownRender(params.multiText_desc.text)"></a>
-                <a ng-if="mode!='editor'"
+                <a ng-if="!editorMode"
                    ng-hide="params.multiText_desc.is_mod_hide" 
                    ng-class="{true:'world-clear-pointer'}[params.multiText_desc.href.length == 0]"
                    ng-href="{{params.multiText_desc.href}}"
@@ -500,16 +507,16 @@
         </div>
     </div>
 
-    <div ng-class="{true:'world-clear-pointer'}[mode=='editor']" ng-if='params.design.text=="style3"'>
+    <div ng-class="{true:'world-clear-pointer'}[editorMode]" ng-if='params.design.text=="style3"'>
         <div class="style3 clearfix">
             <div class="world-img">
-                <a ng-if="mode=='editor'"
+                <a ng-if="editorMode"
                    ng-hide="params.media_logo.is_mod_hide"
                    ng-click="viewEditorClick(params.media_logo, $event)"
                    href="javascript:void(0)">
                     <img ng-src="{{params.media_logo.text.length == 0 && imgsPath + '3DWorld.jpg' || params.media_logo.text}}">
                 </a>
-                <a ng-if="mode!='editor'"
+                <a ng-if="!editorMode"
                    ng-hide="params.media_logo.is_mod_hide"
                    ng-click="viewEditorClick(params.media_logo, $event)"
                    target="{{params.media_logo.target ? params.media_logo.target : '_blank'}}"
@@ -520,13 +527,13 @@
             <div class="world-text">
                 <div class="clearfix">
                     <h2 class="world-name">
-                        <a ng-if="mode=='editor'"
+                        <a ng-if="editorMode"
                            ng-hide="params.link_world_name.is_mod_hide"
                            ng-click="viewEditorClick(params.link_world_name, $event)"
                            href="javascript:void(0)">
                             {{params.link_world_name.text}}
                         </a>
-                        <a ng-if="mode!='editor'"
+                        <a ng-if="!editorMode"
                            ng-hide="params.link_world_name.is_mod_hide"
                            ng-class="{true:'world-clear-pointer'}[params.link_world_name.href.length == 0]"
                            target="{{params.link_world_name.target ? params.link_world_name.target : '_blank'}}"
@@ -535,13 +542,13 @@
                         </a>
                     </h2>
                     <h3 class="username">
-                        <a ng-if="mode=='editor'"
+                        <a ng-if="editorMode"
                            ng-hide="params.link_username.is_mod_hide"
                            ng-click="viewEditorClick(params.link_username, $event)"
                            href="javascript:void(0)">
                             作者：{{params.link_username.text}}
                         </a>
-                        <a ng-if="mode!='editor'"
+                        <a ng-if="!editorMode"
                            ng-hide="params.link_username.is_mod_hide"
                            ng-class="{true:'world-clear-pointer'}[params.link_username.href.length == 0]"
                            target="{{params.link_username.target ? params.link_username.target : '_blank'}}"
@@ -552,12 +559,12 @@
                 </div>
                 <div class="world-work">
                     <span ng-hide="params.multiText_desc.is_mod_hide" class="world-work-span">作品简介：</span>
-                    <a ng-if="mode=='editor'"
+                    <a ng-if="editorMode"
                        ng-hide="params.multiText_desc.is_mod_hide"
                        ng-click="viewEditorClick(params.multiText_desc, $event)"
                        href="javascript:void(0)"
                        ng-bind-html="subMarkdownRender(params.multiText_desc.text)"></a>
-                    <a ng-if="mode!='editor'"
+                    <a ng-if="!editorMode"
                        ng-hide="params.multiText_desc.is_mod_hide"
                        ng-class="{true:'world-clear-pointer'}[params.multiText_desc.href.length == 0]"
                        ng-href="{{params.multiText_desc.href}}"
@@ -565,20 +572,20 @@
                        ng-bind-html="subMarkdownRender(params.multiText_desc.text)"></a>
                 </div>
                 <div ng-hide="params.link_world_url.is_mod_hide">
-                    <a class="btn btn-block btn-default world-btn" ng-if="mode=='editor'"  ng-click="viewEditorClick(params.link_world_url, $event)" href="javascript:void(0)">
+                    <a class="btn btn-block btn-default world-btn" ng-if="editorMode"  ng-click="viewEditorClick(params.link_world_url, $event)" href="javascript:void(0)">
                         <img ng-src="{{downloadImg}}" alt="">
                         下载
                     </a>
                     <a class="btn btn-block btn-default world-btn"
-                       ng-if="mode!='editor'"
+                       ng-if="!editorMode"
                        ng-class="{true:'world-clear-pointer'}[params.link_world_url.text.length == 0]"
                        target="{{params.link_world_url.target ? params.link_world_url.target : '_blank'}}"
                        ng-href="{{params.link_world_url.text}}">
                         <img ng-src="{{downloadImg}}" alt="">
                         下载
                     </a>
-                    <a class="btn btn-block btn-primary world-btn" ng-if="mode!='editor'" ng-click="checkEngine()">进入</a>
-                    <a class="btn btn-block btn-primary world-btn" ng-if="mode=='editor'">进入</a>
+                    <a class="btn btn-block btn-primary world-btn" ng-if="!editorMode" ng-click="checkEngine()">进入</a>
+                    <a class="btn btn-block btn-primary world-btn" ng-if="editorMode">进入</a>
                 </div>
             </div>
         </div>

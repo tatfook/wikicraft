@@ -131,7 +131,7 @@
     }
 </style>
 
-<div ng-class="{'mx-client-edit' : mxClientEdit}" ng-click="edit()">
+<div ng-controller="boardController" ng-class="{'mx-client-edit' : mxClientEdit}" ng-click="edit()">
     <div ng-bind-html="preview"></div>
     <div ng-if="mxClientStart" ng-class="{'mx-client-start' : mxClientStart}">{{startNotice}}</div>
 </div>

@@ -6,46 +6,6 @@
     'helper/mdconf',
     '/wiki/js/mod/adi/assets/board.min.js?bust=3',
 ], function (app, util, htmlContent, pako, mdconf) {
-	var initObj = {
-		styles : [],
-		params_template : {
-			diagram_board:{
-				is_leaf      : true,
-				type         : "modal",
-				editable     : true,
-				is_card_show : true,
-				is_mod_hide  : false,
-				name         : "绘图板",
-				button_name  : "打开绘图板",
-				svg          : "",
-				compress     : "",
-				require      : true,
-			},
-		}
-	};
-
-	function getEditorParams(modParams) {
-		modParams = modParams || {};
-
-		var params_template = initObj.params_template;
-		for (var key in params_template) {
-			if (key == "design") {
-				modParams.design = modParams.design || {};
-				modParams.design.text = params_template[key].text;
-			} else {
-				modParams[key] = modParams[key] || {};
-				modParams[key]["$data"] = params_template[key];
-				modParams[key]["text"] = modParams[key]["text"] || params_template[key]["text"];
-			}
-		}
-
-		return modParams;
-	}
-
-	function getStyleList() {
-		return initObj.styles;
-	}
-
     jscolor.dir = "/wiki/js/mod/adi/assets/images/";
 
     var initEditor = function (wikiBlock, callback) {
@@ -175,95 +135,109 @@
         });
     }
 
-    function render(wikiBlock) {
-		var $scope = wikiBlock.$scope;
-		var $rootScope = app.ng_objects.$rootScope;
-		var $uibModal = app.ng_objects.$uibModal;
-		var $sce = app.ng_objects.$sce;
+    function registerController(wikiBlock) {
+        app.registerController("boardController", ['$scope', '$uibModal', '$sce', function ($scope, $uibModal, $sce) {
+            $scope.editorMode = wikiBlock.editorMode;
 
-		$scope.mode = wikiBlock.mode;
-		$scope.params = wikiBlock.modParams = getEditorParams(wikiBlock.modParams);
+            if (wikiBlock.editorMode) {
+                var boardData = (wikiBlock.modParams.diagram_board && wikiBlock.modParams.diagram_board.data) ? wikiBlock.modParams.diagram_board.data : "";
 
-		if (wikiBlock.mode) {
-			var boardData = (wikiBlock.modParams && wikiBlock.modParams.diagram_board && wikiBlock.modParams.diagram_board.data) ? wikiBlock.modParams.diagram_board.data : "";
+                if (typeof(boardData) == "string" && boardData.length == 0 || boardData == "blank") {
+                    $scope.preview = $sce.trustAsHtml("<div class=\"mx-client-start\">点击此处开始编辑</div>");
+                    $scope.$apply();
+                } else {
+                    initPreview(wikiBlock, function (svg) {
+                        $scope.preview = $sce.trustAsHtml(svg);
+                        $scope.$apply();
+                    });
+                }
+            } else {
+                initPreview(wikiBlock, function (svg) {
+                    $scope.preview = $sce.trustAsHtml(svg);
+                    $scope.$apply();
+                });
+            }
 
-			if (typeof(boardData) == "string" && boardData.length == 0 || boardData == "blank") {
-				$scope.preview = $sce.trustAsHtml("<div class=\"mx-client-start\">点击此处开始编辑</div>");
-				$scope.$apply();
-			} else {
-				initPreview(wikiBlock, function (svg) {
-					$scope.preview = $sce.trustAsHtml(svg);
-					$scope.$apply();
-				});
-			}
-		} else {
-			initPreview(wikiBlock, function (svg) {
-				$scope.preview = $sce.trustAsHtml(svg);
-				$scope.$apply();
-			});
-		}
+            wikiBlock.init({
+                scope  : $scope,
+				styles : [],
+				params_template : {
+                    diagram_board:{
+                        is_leaf      : true,
+						type         : "modal",
+                        editable     : true,
+						is_card_show : true,
+						is_mod_hide  : false,
+                        name         : "绘图板",
+                        button_name  : "打开绘图板",
+                        svg          : "",
+                        compress     : "",
+                    	require      : true,
+                    },
+                }
+            });
 
+            $scope.options = {
+                "animation"      : true,
+                "ariaLabeledBy"  : "title",
+                "ariaDescribedBy": "body",
+                "template"       : "<div id='mx-client'><div class='mx-client-close' ng-click='close()'>关闭</div></div>",
+                "controller"     : "boardEditorController",
+                "size"           : "lg",
+                "openedClass"    : "mx-client-modal",
+                "backdrop"       : "static",
+                "keyboard"       : false,
+                "resolve"        : {
+                    "wikiBlock" : function(){
+                        return wikiBlock;
+                    }
+                }
+            }
 
-		$scope.options = {
-			"animation"      : true,
-			"ariaLabeledBy"  : "title",
-			"ariaDescribedBy": "body",
-			"template"       : "<div id='mx-client'><div class='mx-client-close' ng-click='close()'>关闭</div></div>",
-			"controller"     : "boardEditorController",
-			"size"           : "lg",
-			"openedClass"    : "mx-client-modal",
-			"backdrop"       : "static",
-			"keyboard"       : false,
-			"resolve"        : {
-				"wikiBlock" : function(){
-					return wikiBlock;
-				}
-			}
-		}
+            $scope.error   = function(){},
 
-		$scope.error   = function(){},
+            $scope.success = function(boardEditor){
+                var compressData = boardEditor.getCurrentCompressData();
+                var mxData       = boardEditor.editor.getGraphXml();
 
-		$scope.success = function(boardEditor){
-			var compressData = boardEditor.getCurrentCompressData();
-			var mxData       = boardEditor.editor.getGraphXml();
+                convertMxToSvg(boardEditor, mxData, function(svg){
+                    if(svg){
+                        // console.log(svg);
+                        // console.log(wikiBlock.modParams);
 
-			convertMxToSvg(boardEditor, mxData, function(svg){
-				if(svg){
-					// console.log(svg);
-					// console.log(wikiBlock.modParams);
+                        
 
-					
+                        // $scope.params.diagram_board.compress = "http://www.baidu.com";
+                        // $scope.params.diagram_board.svg      = "http://www.qq.com";
 
-					// $scope.params.diagram_board.compress = "http://www.baidu.com";
-					// $scope.params.diagram_board.svg      = "http://www.qq.com";
+                        // $scope.applyAttrChange();
+                    }
+                });
 
-					// $scope.applyAttrChange();
-				}
-			});
+                // var diagram_board = mdconf.jsonToMd({"diagram_board":{"data":compressData}});
+            }
 
-			// var diagram_board = mdconf.jsonToMd({"diagram_board":{"data":compressData}});
-		}
+            // console.log($scope.params);
+        }])
 
+        app.registerController("boardEditorController", ['$scope', '$uibModalInstance', 'wikiBlock', function ($scope, $uibModalInstance, wikiBlock) {
+            $scope.close = function () {
+                $uibModalInstance.close($scope.boardEditor);
+            }
 
-		return htmlContent;
-	}
-
-	app.registerController("boardEditorController", ['$scope', '$uibModalInstance', 'wikiBlock', function ($scope, $uibModalInstance, wikiBlock) {
-		$scope.close = function () {
-			$uibModalInstance.close($scope.boardEditor);
-		}
-
-		$scope.$watch('$viewContentLoaded', function(){
-			initEditor(wikiBlock, function (beSuccess, boardEditor) {
-				$scope.boardEditor = boardEditor;
-				$scope.$apply();
-			});
-		});
-	}]);
+            $scope.$watch('$viewContentLoaded', function(){
+                initEditor(wikiBlock, function (beSuccess, boardEditor) {
+                    $scope.boardEditor = boardEditor;
+                    $scope.$apply();
+                });
+            });
+        }]);
+    }
 
     return {
-        render: render,
-		getEditorParams: getEditorParams,
-		getStyleList: getStyleList,
+        render: function (wikiBlock) {
+            registerController(wikiBlock);
+            return htmlContent;
+        },
     };
 });

@@ -4,103 +4,112 @@ define([
     'helper/util',
 	'text!wikimod/adi/html/mix_position.html',
 ], function (app, markdown_it, util, htmlContent) {
-	var initObj = {
-		styles : [
-			{
-				"design": {
-					"text":"style1",
-					"cover": "/wiki/js/mod/adi/assets/images/projectOne.png"
-				},
-			},
-			{
-				"design": {
-					"text":"style3",
-					"cover": "/wiki/js/mod/adi/assets/images/projectThree.png"
-				},
-			},
-			{
-				"design": {
-					"text":"style2",
-					"cover": "/wiki/js/mod/adi/assets/images/projectTwo.png"
-				},
-			},
-			{
-				"design": {
-					"text":"style4",
-					"cover": "/wiki/js/mod/adi/assets/images/上文下图.png"
-				},
-			},
-			{
-				"design": {
-					"text":"style5",
-					"cover": "/wiki/js/mod/adi/assets/images/上图下文.png"
-				},
-			},
-		],
-		params_template: {
-			design:{
-				is_leaf      : true,
-				type         : "text",
-				editable     : false,
-				is_card_show : true,
-				is_mod_hide  : false,
-				name         : "样式",
-				text         : "style1",
-				require      : true,
-			},
-			image_picture:{
-				is_leaf      : true,
-				type         : "media",
-				mediaType    : "image",
-				editable     : true,
-				is_card_show : true,
-				is_mod_hide  : false,
-				name         : "picture",
-				text         : "",
-				href         : "",
-				require      : true,
-			},
-			link_headline:{
-				is_leaf      : true,
-				type         : "link",
-				editable     : true,
-				is_card_show : true,
-				is_mod_hide  : false,
-				name         : "标题",
-				text         : "一个人，一条路，人在途中",
-				href         : "", 
-				require      : true,
-			},
-			link_sublink:{
-				is_leaf      : true,
-				type         : "link",
-				editable     : true,
-				is_card_show : true,
-				is_mod_hide  : false,
-				name         : "子标题",
-				text         : "我们一直在旅行",
-				href         : "",
-				require      : true,
-			},
-			link_more:{
-				is_leaf      : true,
-				type         : "link",
-				editable     : true,
-				is_card_show : true,
-				is_mod_hide  : false,
-				name         : "按钮",
-				text         : "查看更多",
-				href         : "",
-				require      : true,
-			},
-			multiText_desc:{
-				is_leaf      : true,
-				type         : "multiText",
-				editable     : true,
-				is_card_show : true,
-				is_mod_hide  : false,
-				name         : "文字说明",
-				text         : "一个人去旅行，而且是去故乡的山水间徜徉。\
+
+    function registerController(wikiblock) {
+        app.registerController("mixPositionController", ['$scope','$sce', function ($scope, $sce) {
+
+			$scope.editorMode   = wikiblock.editorMode;
+			$scope.stitching    = config.wikiModPath + 'adi/assets/imgs/stitching.png';
+			$scope.projectImage = config.wikiModPath + 'adi/assets/imgs/pictureMod.png';
+
+            initObj = {
+				scope  : $scope,
+				styles : [
+					{
+						"design": {
+                            "text":"style1",
+                            "cover": "/wiki/js/mod/adi/assets/images/projectOne.png"
+						},
+					},
+					{
+						"design": {
+                            "text":"style3",
+                            "cover": "/wiki/js/mod/adi/assets/images/projectThree.png"
+						},
+					},
+					{
+						"design": {
+                            "text":"style2",
+                            "cover": "/wiki/js/mod/adi/assets/images/projectTwo.png"
+						},
+					},
+					{
+						"design": {
+                            "text":"style4",
+                            "cover": "/wiki/js/mod/adi/assets/images/上文下图.png"
+						},
+					},
+					{
+						"design": {
+                            "text":"style5",
+                            "cover": "/wiki/js/mod/adi/assets/images/上图下文.png"
+						},
+					},
+				],
+				params_template: {
+					design:{
+						is_leaf      : true,
+						type         : "text",
+						editable     : false,
+						is_card_show : true,
+						is_mod_hide  : false,
+						name         : "样式",
+						text         : "style1",
+						require      : true,
+                    },
+					image_picture:{
+                        is_leaf      : true,
+						type         : "media",
+						mediaType    : "image",
+						editable     : true,
+						is_card_show : true,
+                        is_mod_hide  : false,
+                        name         : "picture",
+                        text         : "",
+                        href         : "",
+                    	require      : true,
+					},
+					link_headline:{
+						is_leaf      : true,
+						type         : "link",
+						editable     : true,
+						is_card_show : true,
+						is_mod_hide  : false,
+						name         : "标题",
+						text         : "一个人，一条路，人在途中",
+						href         : "", 
+						require      : true,
+					},
+					link_sublink:{
+						is_leaf      : true,
+						type         : "link",
+						editable     : true,
+						is_card_show : true,
+						is_mod_hide  : false,
+						name         : "子标题",
+						text         : "我们一直在旅行",
+						href         : "",
+						require      : true,
+					},
+					link_more:{
+                        is_leaf      : true,
+                        type         : "link",
+                        editable     : true,
+                        is_card_show : true,
+                        is_mod_hide  : false,
+                        name         : "按钮",
+                        text         : "查看更多",
+                        href         : "",
+                    	require      : true,
+					},
+					multiText_desc:{
+						is_leaf      : true,
+						type         : "multiText",
+						editable     : true,
+						is_card_show : true,
+						is_mod_hide  : false,
+						name         : "文字说明",
+						text         : "一个人去旅行，而且是去故乡的山水间徜徉。\
 临行之前，面对太多的疑问和不解：为何是一个人？\
 也有善意的提醒：何不去远方！\
 昆明呀——赶一个花海；三亚呀——赴一个蓝天碧海。\
@@ -119,77 +128,48 @@ define([
 或许是某个未开发的荒凉小岛，或许是某座闻名遐迩的文化古城。我们可以沿途用镜头记录彼此的笑脸，和属于我们的风景。\
 一起吃早餐，午餐，晚餐。或许吃得不好，可是却依旧为对方擦去嘴角的油渍。风景如何，其实并不重要。\
 重要的是，你在我的身边。",
-				href         : "",
-				require      : true,
-			},
-		}
-	};
-
-	function getEditorParams(modParams) {
-		modParams = modParams || {};
-
-		var params_template = initObj.params_template;
-		for (var key in params_template) {
-			if (key == "design") {
-				modParams.design = modParams.design || {};
-				modParams.design.text = modParams.design.text || params_template[key].text;
-			} else {
-				modParams[key] = modParams[key] || {};
-				modParams[key]["$data"] = params_template[key];
-				modParams[key]["text"] = modParams[key]["text"] || params_template[key]["text"];
-			}
-		}
-
-		return modParams;
-	}
-
-	function getStyleList() {
-		return initObj.styles;
-	}
-
-    function render(wikiblock) {
-		var $scope = wikiblock.$scope;
-		$scope.params = getEditorParams(wikiblock.modParams);
-
-		$scope.mode   = wikiblock.mode;
-		$scope.stitching    = config.wikiModPath + 'adi/assets/imgs/stitching.png';
-		$scope.projectImage = config.wikiModPath + 'adi/assets/imgs/pictureMod.png';
-
-
-		$scope.setImgBackground  = util.setImgBackground;
-		$scope.subMarkdownRender = util.subMarkdownRender;
-		
-		var imgOne = config.wikiModPath + 'adi/assets/imgs/pictureMod.png';
-		var imgTwo = config.wikiModPath + 'adi/assets/imgs/stitching.png'
-
-		var defaultImgs = [imgOne, imgTwo];
-		
-		$scope.getImagePictureText = function(currentImgText) {
-			var image_picture_text = '';
-			var usingDefault = !currentImgText || defaultImgs.indexOf(currentImgText) >= 0;
-
-			if(/^style[1-3]$/.test($scope.params.design.text)){
-				currentImgText = usingDefault ? imgOne : $scope.params.image_picture.text;
+						href         : "",
+						require      : true,
+					},
+				}
 			}
 
-			if(/^style[4-5]$/.test($scope.params.design.text)){
-				currentImgText = usingDefault ? imgTwo : $scope.params.image_picture.text;
-			}
+			wikiblock.init(initObj);
 
-			if ($scope.params.image_picture.text != currentImgText) {
-				$scope.params.image_picture.text = currentImgText;
-			}
+			$scope.setImgBackground  = util.setImgBackground;
+            $scope.subMarkdownRender = util.subMarkdownRender;
+			
+			var imgOne = config.wikiModPath + 'adi/assets/imgs/pictureMod.png';
+			var imgTwo = config.wikiModPath + 'adi/assets/imgs/stitching.png'
 
-			return currentImgText;
-		}
+            var defaultImgs = [imgOne, imgTwo];
+            
+            $scope.getImagePictureText = function(currentImgText) {
+                var image_picture_text = '';
+                var usingDefault = !currentImgText || defaultImgs.indexOf(currentImgText) >= 0;
 
-		return htmlContent;
+                if(/^style[1-3]$/.test($scope.params.design.text)){
+                    currentImgText = usingDefault ? imgOne : $scope.params.image_picture.text;
+                }
+
+				if(/^style[4-5]$/.test($scope.params.design.text)){
+                    currentImgText = usingDefault ? imgTwo : $scope.params.image_picture.text;
+                }
+
+                if ($scope.params.image_picture.text != currentImgText) {
+                    $scope.params.image_picture.text = currentImgText;
+                }
+
+                return currentImgText;
+            }
+        }]);
     }
 
     return {
-        render: render,
-		getEditorParams: getEditorParams,
-		getStyleList: getStyleList,
+        render: function (wikiblock) {
+            registerController(wikiblock);
+            return htmlContent;
+		}
     }
     
 });
