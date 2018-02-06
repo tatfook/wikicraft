@@ -238,25 +238,6 @@ define([
         this.stack.push(obj);
     }
 
-    util.arrayFrom = function(obj) {
-        if(Array.isArray(obj)) return obj;
-        var result = [];
-        for(var i in obj) result[i] = obj[i];
-        return result;
-    }
-
-    //get the first available number from number list
-    util.getFirstAvailableNumber = function(numbers) {
-        var list = Array.isArray(numbers) ? numbers : arguments;
-        for(var i in list) {
-            //if list[i] looks like a number, '1', 1, 0, '.3'
-            if (+list[i] == list[i] && list[i]!=='' && typeof list[i] !== 'boolean') {
-                return +list[i]
-            }
-        }
-        return 0;
-    }
-
     util.pop = function () {
         return this.stack.pop();
     }

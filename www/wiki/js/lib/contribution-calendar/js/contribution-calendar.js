@@ -140,7 +140,6 @@
     }
 
     window.contributionCalendar=function(id,options){
-        options = options || {};
         var elem=document.getElementById(id);
         if(!elem){
             console.log("传入的ID不存在");

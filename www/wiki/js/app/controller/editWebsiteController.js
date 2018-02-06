@@ -29,7 +29,7 @@ define([
         var domainReg = new RegExp("^[\\d\\w][\\d\\w\\.]+$");
         //console.log(siteinfo);
         $scope.website = siteinfo;
-        // $scope.tags=$scope.website.tags ? $scope.website.tags.split('|') : [];
+        $scope.tags=$scope.website.tags ? $scope.website.tags.split('|') : [];
 
         function sendModifyWebsiteRequest() {
 			$scope.website.sitename = $scope.website.name;

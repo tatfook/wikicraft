@@ -1,70 +1,9 @@
 <style>
     .module-editor .nav-tabs {
         background-color: #F2F2F2;
-        padding-right: 30px;
+        padding-right: 60px;
         z-index: 2;
         position: relative;
-    }
-
-    .module-editor .tab-content {
-        height: 250px;
-        box-sizing: border-box;
-        border: 2px solid #3977AD;
-    }
-
-    .module-editor .nav-tabs .nav-item-left {
-        position: relative;
-        margin-left: 14px;
-    }
-
-    .module-editor .nav-tabs .nav-item-right {
-        margin-left: 20px;
-    }
-
-    .module-editor .nav-tabs .nav-item-left.active {
-        z-index: 2;
-    }
-
-    .module-editor .nav-tabs .nav-item-left a,
-    .module-editor .nav-tabs .nav-item-left a:hover,
-    .module-editor .nav-tabs .nav-item-left a:active {
-        border: 0 !important;
-    }
-
-    .module-editor .nav-tabs .nav-item-left:before, 
-    .module-editor .nav-tabs .nav-item-left:after {
-        content: '';
-        display: block;
-        position: absolute;
-        bottom: 0;
-        width: 0;
-        border-top-width: 14px;
-        border-bottom-width: 14px;
-        border-left-width: 7px;
-        border-right-width: 7px;
-        border-style: solid;
-        border-top-color: transparent;
-        border-bottom-color: #fff;
-    }
-    .module-editor .nav-tabs .nav-item-left:before {
-        left: -14px;
-        border-right-color: #fff;
-        border-left-color: transparent;
-    }
-    .module-editor .nav-tabs .nav-item-left:after {
-        right: -14px;
-        border-left-color: #fff;
-        border-right-color: transparent;
-    }
-    .module-editor .nav-tabs .nav-item-left.active:before,
-    .module-editor .nav-tabs .nav-item-left.active:after {
-        border-bottom-color: #3977AD;
-    }
-    .module-editor .nav-tabs .nav-item-left.active:before {
-        border-right-color: #3977AD;
-    }
-    .module-editor .nav-tabs .nav-item-left.active:after {
-        border-left-color: #3977AD;
     }
 
     .module-editor .nav-tabs>li>a {
@@ -74,7 +13,7 @@
         margin-right: 0;
         color: #333;
         background-color: #FFFF;
-        border: 0;
+        border: 1px solid #DDD;
         border-radius: 0;
     }
 
@@ -277,14 +216,14 @@
     .module-editor .swiper-button-next,
     .module-editor .swiper-button-prev {
         width: 60px;
-        height: 246px;
+        height: 250px;
         background-color: #FFF;
         top: 0;
         background-image: none;
         margin-top: 0;
         right: 0;
         text-align: center;
-        line-height: 246px;
+        line-height: 250px;
         opacity: 1;
     }
 
@@ -538,75 +477,31 @@
         width: 100%;
         height: 200px;
     }
-
-    .iconfont.icon-shouqi1 {
-        display: inline-block;
-    }
-
-    .iconfont.icon-shouqi1.down {
-        transform: rotateZ(180deg);
-    }
-
-    .att-edit-box {
-        z-index: 4;
-        background-color: #FFF;
-        border-left: 1px solid #EEE;
-        padding: 0;
-        z-index: 1;
-    }
-
-    .att-edit-box.view-is-open {
-        height: 280px;
-    }
-
-    .att-edit-box.view-is-close {
-        height: 30px;
-        border-bottom: 2px solid #3977AD;
-    }
 </style>
-<div ng-controller="moduleEditorController" class="module-editor att-edit-box" ng-class="{'view-is-open': viewIsOpen, 'view-is-close': !viewIsOpen}">
+<div ng-controller="moduleEditorController" class="module-editor">
     <!-- Nav tabs -->
     <ul class="nav nav-tabs" role="tablist">
-        <li role="presentation" 
-            ng-show="show_type == 'knowledge' || !show_type"
-            class="nav-item-left"
-            ng-class="{true: 'active'}[show_type == 'knowledge' || !show_type]"
-            ng-click="tabTo('knowledge')"
-        >
+        <li role="presentation" ng-show="show_type == 'knowledge' || !show_type" ng-class="{true: 'active'}[show_type == 'knowledge' || !show_type]"
+            ng-click="tabTo('knowledge')">
             <a href="#Knowledge" aria-controls="Knowledge" role="tab" data-toggle="tab" translate="知识库"></a>
         </li>
-        <li role="presentation" 
-            ng-hide="show_type == 'knowledge' || !show_type"
-            class="nav-item-left"
-            ng-class="{true: 'active'}[show_type == 'editor']"
-            ng-click="tabTo('editor')"
-        >
+        <li role="presentation" ng-hide="show_type == 'knowledge' || !show_type" ng-class="{true: 'active'}[show_type == 'editor']"
+            ng-click="tabTo('editor')">
             <a href="#Attr" aria-controls="Attr" role="tab" data-toggle="tab" translate="属性"></a>
         </li>
-        <li role="presentation" 
-            ng-hide="show_type == 'knowledge' || !show_type || !hasStyle"
-            class="nav-item-left"
-            ng-class="{true: 'active'}[show_type == 'design']"
-            ng-click="tabTo('design')"
-        >
+        <li role="presentation" ng-hide="show_type == 'knowledge' || !show_type || !hasStyle" ng-class="{true: 'active'}[show_type == 'design']"
+            ng-click="tabTo('design')">
             <a href="#StyleSetting" aria-controls="StyleSetting" role="tab" data-toggle="tab" translate="样式"></a>
         </li>
-
-        <li ng-click="viewIsOpen = !viewIsOpen" class="pull-right nav-item-right">
-            <a class="btn">
-                <i class="iconfont icon-shouqi1" ng-class="{up: !viewIsOpen, down: viewIsOpen}"></i>
-                {{viewIsOpen ? "隐藏" : "展开" | translate}}
-            </a>
-        </li>
         <!-- 删除模块按钮 -->
-        <li ng-hide="show_type == 'knowledge' || !show_type" ng-click="deleteMod()" class="pull-right nav-item-right">
+        <li ng-hide="show_type == 'knowledge' || !show_type" ng-click="deleteMod()" class="pull-right">
             <a class="btn">
                 <i class="iconfont icon-bianjiqi-shanchu"></i>{{"删除" | translate}}</a>
         </li>
     </ul>
 
     <!-- Tab panes -->
-    <div class="tab-content" ng-hide="!viewIsOpen">
+    <div class="tab-content">
         <div role="tabpanel" class="tab-pane knowledge-tabpane" id="Knowledge" ng-class="{true: 'active'}[show_type == 'knowledge' || !show_type]">
             <div id="knowlege-agent" class="botui-app-container">
                 <bot-ui></bot-ui>

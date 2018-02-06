@@ -62,7 +62,6 @@ define(['app', 'text!wikimod/adi/html/menu.html'], function (app, htmlContent) {
 			}
 		}
 
-
 		return modParams;
 	}
 
@@ -76,7 +75,6 @@ define(['app', 'text!wikimod/adi/html/menu.html'], function (app, htmlContent) {
 		$scope.mode = wikiblock.mode;
 
 		return htmlContent;
-
     }
 
     return {

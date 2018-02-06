@@ -6,6 +6,10 @@ define([
 	'text!wikimod/adi/html/richText.html',
 ], function (app, wangEditor, util, mdconf, htmlContent) {
 
+	function getStyleList() {
+		return [];
+	}
+
 	function getEditorParams(modParams) {
 		modParams = modParams || {};
 
@@ -89,13 +93,10 @@ define([
 		return htmlContent;
 	}
         
-		app.registerController("richEditorController", ['$scope', '$uibModalInstance', 'wikiBlock', function ($scope, $uibModalInstance, wikiBlock) {
-            $scope.init = function() {
-                $scope.editor = new wangEditor('richEditor');
-
-                $scope.editor.config.printLog = false;
-                $scope.editor.create();
-
+	app.registerController("richEditorController", ['$scope', '$uibModalInstance', 'wikiBlock', function ($scope, $uibModalInstance, wikiBlock) {
+		$scope.init = function() {
+			$scope.editor = new wangEditor('richEditor');
+			$scope.editor.create();
 
 			if(typeof(wikiBlock.modParams.modal_rich.data) == "string"){
 				$scope.editor.$txt.html(wikiBlock.modParams.modal_rich.data);

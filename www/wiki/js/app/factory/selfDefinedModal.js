@@ -21,7 +21,7 @@ define([
                         errorCallback(error);
                     }
 
-                    // reject(error);
+                    reject(error);
                 });
             });
         }

@@ -3209,7 +3209,7 @@ _e(function (E, $) {
     E.config.zindex = 10000;
 
     // 是否打印log
-    E.config.printLog = false;
+    E.config.printLog = true;
 
     // 菜单吸顶：false - 不吸顶；number - 吸顶，值为top值
     E.config.menuFixed = 0;

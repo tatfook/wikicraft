@@ -78,53 +78,6 @@ define([
                 }
             }
         };
-
-        // 新注册用户及老用户（个人信息md文件不存在处理）
-        var createProfilePages = function(userinfo, cb, errcb){
-            var userDataSource = dataSource.getUserDataSource(userinfo.username);
-            userDataSource.registerInitFinishCallback(function() {
-                var dataSourceInst = userDataSource.getDataSourceBySitename(userinfo.username);
-                var pagePrefix = '/'+ dataSourceInst.keepwrokUsername +'_datas/';
-                var profilePagesList = [
-                    {
-                        pagepath: pagePrefix + "profile.md",
-                        contentUrl: "text!html/profiles/profile.md"
-                    },
-                    {
-                        pagepath: pagePrefix + "site.md",
-                        contentUrl: "text!html/profiles/site.md"
-                    },
-                    {
-                        pagepath: pagePrefix + "contact.md",
-                        contentUrl: "text!html/profiles/contact.md"
-                    }
-                ];
-                var fnList = [];
-                profilePagesList.forEach(function(page){
-                    fnList.push(function(dataSourceInst, page){
-                        return function(cb, errcb){
-                            require([page.contentUrl], function(content){
-                                dataSourceInst.writeFile({
-                                    path: page.pagepath, 
-                                    content: content
-                                }, function(){
-                                    cb && cb();
-                                }, function(){
-                                });
-                            }, function(){
-                                errcb && errcb();
-                            })
-                        }
-                    }(dataSourceInst, page));
-                });
-                util.sequenceRun(fnList, undefined, function(){
-                    cb && cb();
-                }, function(){
-                    cb && cb();
-                });
-            });
-            
-        }
         
         // 注册
         $scope.register = function (type) {
@@ -205,13 +158,12 @@ define([
                         $scope.step++;
                     }
                 };
-                // _go();
-                if (data.isNewUser) {
-                    // createTutorialSite(data.userinfo, _go, _go);
-                    createProfilePages(data.userinfo, _go, _go);
-                } else {
-                
-                }
+                _go();
+                // if (data.isNewUser) {
+                //     createTutorialSite(data.userinfo, _go, _go);
+                // } else {
+                //
+                // }
             }, function (error) {
                 $scope.errMsg = error.message;
                 // console.log($scope.errMsg );
