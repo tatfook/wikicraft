@@ -28,11 +28,8 @@
     </div>
 
     <div ng-if="params.modal_rich.data.length > 0" >
-        <div class="notice"
-             ng-hide="mode!='editor'"
-             ng-dblclick="richClick()">编辑-富文本</div>
-
-        <div class="content container"
-             id="{{currentRichText}}" ng-bind-html="applyContent(params.modal_rich.data)"></div>
+        <div class="notice" ng-hide="mode!='editor'" ng-dblclick="dbClick()">编辑-富文本</div>
+        <div class="content container" id="{{currentRichText}}" ng-bind-html="applyContent(params.modal_rich.data)">
+		</div>
     </div>
 </div>

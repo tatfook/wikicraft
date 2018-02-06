@@ -55,12 +55,13 @@ define([
 				$element.addClass("mod-container");
 				block.$element = $element; // 双向滚动时会用到
 				$scope.insertMod = $rootScope.insertMod;
-				$scope.isShowAddIcon = md && md.mode == "editor" && block.isWikiBlock;
 				$scope.clickContainer = function($event) {
 					if ($event) {
 						$event.stopPropagation();
 					}
 					//console.log(block);
+					$scope.isShowAddIcon = md && md.mode == "editor" && block.isWikiBlock;
+
 					var moduleEditorParams = config.shareMap.moduleEditorParams;
 					if (!moduleEditorParams) {
 						return;
