@@ -141,74 +141,98 @@ define([
 		return initObj.styles;
 	}
 
-            $scope.onParamsChange = function(){
-                setTimeout(function(){
-                    var miximg = document.querySelector('#' + $scope.imgHeight);
-                    var mixdiv = document.querySelector('#' + $scope.divHeight);
-        
-                    if(mixdiv.offsetHeight > 649 && mixdiv.offsetHeight < 1739){
-                        miximg.style.height = mixdiv.offsetHeight + 'px';
-                        $scope.mixFontColor = {
-                            'color' : 'rgb(255, 255, 255)' 
-                        }
-                    }
-                    if(mixdiv.offsetHeight < 649){
-                        if($scope.params.design.text == "style7" ||
-                        $scope.params.design.text == "style8" ||
-                        $scope.params.design.text == "style9"){
-                            mixdiv.style.marginTop = 0;
-                        }
-                        if($scope.params.design.text == "style4" ||
-                        $scope.params.design.text == "style5" ||
-                        $scope.params.design.text == "style6"){
-                            mixdiv.style.marginTop = 0;
-                        }
-    
-                        if($scope.params.design.text == "style1" ||
-                        $scope.params.design.text == "style2" ||
-                        $scope.params.design.text == "style3"){
-                            mixdiv.style.marginTop = 0;
-                            miximg.style.height    = 694 + 'px';
-                        }
-                        $scope.mixFontColor = {
-                            'color' : 'rgb(255, 255, 255)' 
-                        }
-                    }
-        
-                    if(mixdiv.offsetHeight > 1739){
-                        if($scope.params.design.text == "style7" ||
-                            $scope.params.design.text == "style8" ||
-                            $scope.params.design.text == "style9"){
-                                mixdiv.style.marginTop = 430 + 'px';
-                        }
-        
-                        if($scope.params.design.text == "style4" ||
-                            $scope.params.design.text == "style5" ||
-                            $scope.params.design.text == "style6"){
-                                mixdiv.style.marginTop = 510 + 'px';
-                            }
-        
-                        if($scope.params.design.text == "style1" ||
-                            $scope.params.design.text == "style2" ||
-                            $scope.params.design.text == "style3"){
-                                mixdiv.style.marginTop = 694 + 'px';
-                                miximg.style.height    = 694 + 'px';
-                        }
-                                
-                        $scope.mixFontColor = {
-                            'color' : 'black' 
-                            }
-                        }
-                }, 0);
+	function render(wikiblock) {
+		var $scope = wikiblock.$scope;
 
-            }
-                      
-        }]);
+		$scope.mode = wikiblock.mode;
+		$scope.params = getEditorParams(wikiblock.modParams);
+		$scope.setImgBackground  = util.setImgBackground;
+		$scope.subMarkdownRender = util.subMarkdownRender;
+					            
+		var md = new markdown_it({
+			html: true,
+			langPrefix: 'code-',
+		});
 
+		$scope.imgHeight = "__MIXIMG__" + Date.now();
+		$scope.divHeight = "__MIXDIV__" + Date.now();
+
+		$scope.$watch("$viewContentLoaded", function(){
+			setTimeout(function(){
+				var miximg = document.querySelector('#' + $scope.imgHeight);
+				var mixdiv = document.querySelector('#' + $scope.divHeight);
+
+				//console.log(miximg, $scope.imgHeight);
+				if (!miximg || !mixdiv) {
+					return htmlContent;
+				}
+
+				if(mixdiv.offsetHeight > 649 && mixdiv.offsetHeight < 1739){
+					miximg.style.height = mixdiv.offsetHeight + 'px';
+					$scope.mixFontColor = {
+						'color' : 'rgb(255, 255, 255)' 
+					}
+				}
+				if(mixdiv.offsetHeight < 649){
+					if($scope.params.design.text == "style7" ||
+					$scope.params.design.text == "style8" ||
+					$scope.params.design.text == "style9"){
+						mixdiv.style.marginTop = 0;
+					}
+					if($scope.params.design.text == "style4" ||
+					$scope.params.design.text == "style5" ||
+					$scope.params.design.text == "style6"){
+						mixdiv.style.marginTop = 0;
+					}
+
+					if($scope.params.design.text == "style1" ||
+					$scope.params.design.text == "style2" ||
+					$scope.params.design.text == "style3"){
+						mixdiv.style.marginTop = 0;
+						miximg.style.height    = 694 + 'px';
+					}
+					$scope.mixFontColor = {
+						'color' : 'rgb(255, 255, 255)' 
+					}
+				}
+
+				if(mixdiv.offsetHeight > 1739){
+					if($scope.params.design.text == "style7" ||
+						$scope.params.design.text == "style8" ||
+						$scope.params.design.text == "style9"){
+							mixdiv.style.marginTop = 430 + 'px';
+					}
+
+					if($scope.params.design.text == "style4" ||
+						$scope.params.design.text == "style5" ||
+						$scope.params.design.text == "style6"){
+							mixdiv.style.marginTop = 510 + 'px';
+						}
+
+					if($scope.params.design.text == "style1" ||
+						$scope.params.design.text == "style2" ||
+						$scope.params.design.text == "style3"){
+							mixdiv.style.marginTop = 694 + 'px';
+							miximg.style.height    = 694 + 'px';
+					}
+							
+					$scope.mixFontColor = {
+						'color' : 'black' 
+					}
+				}
+			});			
+		});
+
+		return htmlContent;
     }
+
+	function renderAfter(wikiblock) {
+		var $scope = wikiblock.$scope;
+	}
 
     return {
         render: render,
+		renderAfter: renderAfter,
 		getEditorParams: getEditorParams,
 		getStyleList: getStyleList,
     }
