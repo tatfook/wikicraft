@@ -1497,7 +1497,7 @@ define([], function () {
         {
             "_key": "创建的网站",
             "zh-cn": "创建的网站",
-            "en": "Created web site"
+            "en": "Created websites"
         },
         {
             "_key": "暂未创建网站",
@@ -2273,6 +2273,11 @@ define([], function () {
             "_key": "粉丝",
             "zh-cn": "粉丝",
             "en": "vermicelli made from bean starch, etc."
+        },
+        {
+            "_key": "profile_fans",
+            "zh-cn": "粉丝",
+            "en": "Fans"
         },
         {
             "_key": "恭喜您！",
@@ -3078,6 +3083,51 @@ define([], function () {
             "_key": "打开绘图板",
             "zh-cn": "打开绘图板",
             "en": "Open Diagram"
+        },
+        {
+            "_key": "未知地点",
+            "zh-cn": "未知地点",
+            "en": "Unknown"
+        },
+        {
+            "_key": "已关注",
+            "zh-cn": "已关注",
+            "en": "Concern"
+        },
+        {
+            "_key": "继续关注",
+            "zh-cn": "继续关注",
+            "en": "ReConcern"
+        },
+        {
+            "_key": "empty_content",
+            "zh-cn": "尚未发表相关内容，请添加",
+            "en": "No relevant content has been published. Please add."
+        },
+        {
+            "_key": "技能",
+            "zh-cn": "技能",
+            "en": "Skills"
+        },
+        {
+            "_key": "经历",
+            "zh-cn": "经历",
+            "en": "Experiences"
+        },
+        {
+            "_key": "认证",
+            "zh-cn": "认证",
+            "en": "Certifications"
+        },
+        {
+            "_key": "活跃度",
+            "zh-cn": "活跃度",
+            "en": "Activeness"
+        },
+        {
+            "_key": "置顶内容",
+            "zh-cn": "置顶内容",
+            "en": "Stick websites"
         }
     ];
 

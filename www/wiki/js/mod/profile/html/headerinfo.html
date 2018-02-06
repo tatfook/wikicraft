@@ -147,13 +147,13 @@
         </div>
         <p class="main-msg">
             <span>
-                {{userinfo.worksCount || 0}} 作品
+                {{userinfo.worksCount || 0}} {{"作品" | translate}}
             </span>
             <span>
-                {{followUserTotal || 0}} 关注
+                {{followUserTotal || 0}} {{"关注" | translate}}
             </span>
             <span>
-                {{fansCount || 0}} 粉丝
+                {{fansCount || 0}} {{"profile_fans" | translate}}
             </span>
         </p>
         <p ng-show="isOthers">

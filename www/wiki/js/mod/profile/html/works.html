@@ -221,7 +221,7 @@
 </style>
 <div class="user-works" ng-controller="worksCtrl" ng-hide="works.length <=0 && !isSelf">
     <h4 class="title">
-        作品
+        {{"作品" | translate}}
         <span class="pull-right" ng-show="isSelf">
             <i class="iconfont icon-tianjia" ng-hide="editing && works.length > 0" ng-click="showModal()"></i>
             <i class="iconfont" ng-show="works.length > 0" ng-class="{true:'icon-fanhui', false:'icon-bianji'}[editing]" ng-click="editWork()"></i>
@@ -230,7 +230,7 @@
     <div class="works-list">
         <div class="empty-to-edit" ng-hide="works.length>0">
             <p>
-                <span>尚未发表相关内容，请添加</span>
+                <span>{{"empty_content" | translate}}</span>
                 <i class="iconfont icon-tianjia" ng-click="showModal()"></i>
             </p>
         </div>
