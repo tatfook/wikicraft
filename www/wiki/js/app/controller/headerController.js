@@ -174,11 +174,8 @@ define([
 
                     var pageUrlArr = page.url.split("/");
                     var pageUrlLen = pageUrlArr.length;
-                    if (pageUrlLen != (index + 1) && pageUrlLen != (index + 2)) { // 过滤子级文件（不包括文件夹）
-                        return false;
-                    }
 
-                    if (pageUrlLen == (index + 2)) { //文件夹
+                    if (pageUrlLen >= (index + 2)) { //文件夹
                         page.foldname = pageUrlArr[index] + " " + FoldPostfix; // 从url获取文件夹名
                         page.foldpath = pageUrlArr.splice(0, pageUrlLen-1).join("/");
                         page.isFold = true;
