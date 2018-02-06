@@ -96,11 +96,11 @@ define([
 
 		md_rule_override(md.md);
 
-		var templateContent = '<div ng-repeat="$kp_block in $kp_block.blockList track by $index" ng-if="!$kp_block.isTemplate"><wiki-block-container data-params="' + encodeMdName +'"></wiki-block-container></div>';
+		var templateContent = '<div class="wikiEditor" ng-repeat="$kp_block in $kp_block.blockList track by $index" ng-if="!$kp_block.isTemplate"><wiki-block-container data-params="' + encodeMdName +'"></wiki-block-container></div>';
 		var blankTemplateContent = '<div class="container">' + templateContent + '</div>';
 
 		if (md.mode == "preview") {
-			templateContent = '<div ng-repeat="$kp_block in $kp_block.blockList track by $index"><wiki-block-container data-params="' + encodeMdName +'"></wiki-block-container></div>';
+			templateContent = '<div class="wikiEditor" ng-repeat="$kp_block in $kp_block.blockList track by $index"><wiki-block-container data-params="' + encodeMdName +'"></wiki-block-container></div>';
 			blankTemplateContent = '<div>' + templateContent + '</div>';
 		}
 
@@ -123,7 +123,7 @@ define([
 			var $compile = app.ng_objects.$compile;
 
 			if (!md.isBindContainer && md.containerId && $('#' + md.containerId)) {
-				$("#" + md.containerId).html($compile('<wiki-block-container data-template="true" data-params="' + encodeMdName + '"></wiki-block-container>')($scope));
+				$("#" + md.containerId).html($compile('<wiki-block-container class="wikiEditor" data-template="true" data-params="' + encodeMdName + '"></wiki-block-container>')($scope));
 				md.isBindContainer = true;
 			}
 		}
