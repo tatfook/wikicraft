@@ -59,7 +59,7 @@
 </style>
 <div class="user-experience" ng-controller="experienceCtrl" ng-hide="experiences.length <=0 && !isSelf">
     <h4 class="title">
-        经历
+        {{"经历" | translate}}
         <span class="pull-right" ng-show="isSelf">
             <i class="iconfont icon-tianjia" ng-click="showExperienceModal()" ng-hide="editing && experiences.length > 0"></i>
             <i class="iconfont" ng-show="experiences.length > 0" ng-class="{true:'icon-fanhui', false:'icon-bianji'}[editing]" ng-click="editExperience()"></i>
@@ -68,7 +68,7 @@
     <div class="experiences-list">
         <div class="empty-to-edit" ng-hide="experiences.length>0">
             <p>
-                <span>尚未发表相关内容，请添加</span>
+                <span>{{"empty_content" | translate}}</span>
                 <i class="iconfont icon-tianjia" ng-click="showExperienceModal()"></i>
             </p>
         </div>

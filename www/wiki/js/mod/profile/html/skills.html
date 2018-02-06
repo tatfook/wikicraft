@@ -145,7 +145,7 @@
 </style>
 <div class="user-skills" ng-controller="skillCtrl" ng-hide="skills.length <=0 && !isSelf">
     <h4 class="title">
-        技能
+        {{"技能" | translate}}
         <span class="pull-right" ng-show="isSelf">
             <i class="iconfont icon-tianjia" ng-click="showSkillModal()" ng-hide="editing && skills.length > 0"></i>
             <i class="iconfont" ng-show="skills.length > 0" ng-class="{true:'icon-fanhui', false:'icon-bianji'}[editing]" ng-click="editSkill()"></i>
@@ -153,7 +153,7 @@
     </h4>
     <div class="empty-to-edit" ng-hide="skills.length>0">
         <p>
-            <span>尚未发表相关内容，请添加</span>
+            <span>{{"empty_content" | translate}}</span>
             <i class="iconfont icon-tianjia" ng-click="showSkillModal()"></i>
         </p>
     </div>

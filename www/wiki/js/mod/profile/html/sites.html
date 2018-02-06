@@ -129,7 +129,7 @@
 </style>
 <div class="user-sites" ng-controller="sitesCtrl" ng-hide="sites[params.type].length <=0 && !isSelf">
     <h4 class="title">
-        {{getModTitle(params.type)}}
+        {{getModTitle(params.type) | translate}}
     </h4>
     <div class="sites-list">
         <div class="empty-box" ng-hide="params.type == 'created' || sites[params.type].length > 0">

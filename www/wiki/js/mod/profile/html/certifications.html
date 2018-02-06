@@ -60,7 +60,7 @@
 </style>
 <div class="user-certification" ng-controller="certificationCtrl" ng-hide="certifications.length <=0 && !isSelf">
     <h4 class="title">
-        认证
+        {{"认证" | translate}}
         <span class="pull-right" ng-show="isSelf">
             <i class="iconfont icon-tianjia" ng-click="showCertificationModal()" ng-hide="editing && certifications.length > 0"></i>
             <i class="iconfont" ng-show="certifications.length > 0" ng-class="{true:'icon-fanhui', false:'icon-bianji'}[editing]" ng-click="editCertification()"></i>
@@ -69,7 +69,7 @@
     <div class="certifications-list">
         <div class="empty-to-edit" ng-hide="certifications.length>0">
             <p>
-                <span>尚未发表相关内容，请添加</span>
+                <span>{{"empty_content" | translate}}</span>
                 <i class="iconfont icon-tianjia" ng-click="showCertificationModal()"></i>
             </p>
         </div>

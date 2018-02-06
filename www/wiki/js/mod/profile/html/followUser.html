@@ -75,7 +75,7 @@
 </style>
 <div class="follow-users" ng-controller="followsUserCtrl" ng-hide="followUserList.length <=0 && !isSelf">
     <h4 class="title">
-        关注的作者
+        {{"关注的作者" | translate}}
     </h4>
     <div class="follow-users-list clearfix">
         <div class="empty-box" ng-hide="followUserList.length > 0">
@@ -91,9 +91,9 @@
                     </h4>
                     <p class="location" title="{{followUser.userinfo.location || '未知地点'}}">
                         <i class="iconfont icon-shiliangzhinengduixiang"></i>
-                        {{followUser.userinfo.location || "未知地点"}}
+                        {{followUser.userinfo.location || ("未知地点" | translate)}}
                     </p>
-                    <div class="btn btn-followed" ng-show="isSelf" ng-class="{true:'active'}[followUser.concerned == false]" ng-click="toggleFollowUser(followUser)">{{(followUser.concerned == false) ? '继续关注' : '已关注'}}</div>
+                    <div class="btn btn-followed" ng-show="isSelf" ng-class="{true:'active'}[followUser.concerned == false]" ng-click="toggleFollowUser(followUser)">{{((followUser.concerned == false) ? '继续关注' : '已关注') | translate}}</div>
                 </div>
             </div>
         </div>
