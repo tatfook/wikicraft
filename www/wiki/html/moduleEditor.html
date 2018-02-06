@@ -588,7 +588,7 @@
                             <!-- 多行文本 -->
                             <div ng-if="data.$data.type == 'multiText'">
                                 <div class="card-input-box">
-                                    <input type="text" class="card-input js-focus" ng-change="applyAttrChange()" ng-model="data.data.text" placeholder="内容">
+                                    <input type="text" class="card-input js-focus" ng-change="applyAttrChange()" ng-model="data.text" placeholder="内容">
                                     <i class="pull-right iconfont icon-enlarge" ng-click="openMultiText(data, 'text')"></i>
                                 </div>
                                 <div class="card-input-box">
@@ -599,9 +599,9 @@
                                         ng-blur="setShowResult(false)"
                                     > -->
                                     <!-- <i class="pull-right glyphicon glyphicon-play" ng-click="showAllLink()"></i> -->
-                                    <ui-select class="link-select card-input" ng-model="data.data.href" reset-search-input="false" on-select="urlSelected($item, $model, data.data, 'href')">
-                                        <ui-select-match allow-clear="false" placeholder="{{data.data.href}}">{{data.data.href}}</ui-select-match>
-                                        <ui-select-choices repeat="file in (filelist | filter: $select.search) track by $index" refresh-delay="0" refresh="userInputLink($select, data.data)"
+                                    <ui-select class="link-select card-input" ng-model="data.href" reset-search-input="false" on-select="urlSelected($item, $model, data, 'href')">
+                                        <ui-select-match allow-clear="false" placeholder="{{data.data.href}}">{{data.href}}</ui-select-match>
+                                        <ui-select-choices repeat="file in (filelist | filter: $select.search) track by $index" refresh-delay="0" refresh="userInputLink($select, data)"
                                             position="up">
                                             <span ng-bind="file.url"></span>
                                         </ui-select-choices>
@@ -614,13 +614,13 @@
                                 </div>
                                 <div class="dropdown link-dropdown">
                                     <button id="dLabel-multi-text" class="btn btn-primary" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
-                                        ng-disabled="!data.data.href || data.data.href == ''">
+                                        ng-disabled="!data.href || data.href == ''">
                                         {{getLinkTarget(data) | translate}}
                                         <span class="glyphicon glyphicon-chevron-down"></span>
                                     </button>
                                     <ul class="dropdown-menu" aria-labelledby="dLabel-multi-text">
-                                        <li ng-hide="data.data.target == '_self'" ng-click="setLinkTarget(data.data,'_self')" translate="本窗口打开"></li>
-                                        <li ng-hide="data.data.target == '_blank'" ng-click="setLinkTarget(data.data,'_blank')" translate="新窗口打开"></li>
+                                        <li ng-hide="data.target == '_self'" ng-click="setLinkTarget(data,'_self')" translate="本窗口打开"></li>
+                                        <li ng-hide="data.target == '_blank'" ng-click="setLinkTarget(data,'_blank')" translate="新窗口打开"></li>
                                     </ul>
                                 </div>
                             </div>

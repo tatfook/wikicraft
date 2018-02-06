@@ -61,16 +61,19 @@ define([
 		}
 
 		//console.log(blockList);
+		//console.log(tree);
+		//console.log(md);
 		return tree;
 	}
 
+	function active(item) {
+		$(".toc_container .active").removeClass("active");
+		var targetObj = $('[data-targetid="'+ item.id+'"]');
+		targetObj.addClass("active");
+		//targetObj.get(0).scrollIntoView();
+	}
+
 	var scrollProccess = function (wikiBlock, scrollElement, tocContent, dataOffsetTop) {
-		function active(item) {
-			$(".toc_container .active").removeClass("active");
-			var targetObj = $('[data-targetid="'+ item.id+'"]');
-			targetObj.addClass("active");
-			//targetObj.get(0).scrollIntoView();
-		}
 
 		scrollTimer && clearTimeout(scrollTimer);
 		scrollTimer = setTimeout(function () {
@@ -132,6 +135,8 @@ define([
 			if (!x.block || !x.block.$element) {
 				return;
 			}	
+
+			active(x);
 
 			var element = x.block.$element;
 			element[0].scrollIntoView();

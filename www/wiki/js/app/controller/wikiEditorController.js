@@ -56,8 +56,9 @@ define([
     var pagelistMap = {};            // 页列表映射
     var urlParamsMap = {};           // url 参数映射
 
-	app.objects.editormd = mdwiki;
+	app.objects.mainMdwiki = app.objects.editormd = mdwiki;
 	app.objects.editor = editor;
+	//console.log(mdwiki, app.objects.mainMdwiki);
 
 	// 判断对象是否为空
 	function isEmptyObject(obj) {

@@ -127,7 +127,7 @@ define([
 				app.objects.util = util;
 				app.objects.mdwiki = mdwiki;
 				app.objects.dataSource = dataSource;
-				app.objects.mainMdwiki = md;
+				app.objects.mainMdwiki = app.objects.mainMdwiki || md;
 
 				app.ng_objects.$rootScope = $rootScope;
 				app.ng_objects.$compile = $compile;

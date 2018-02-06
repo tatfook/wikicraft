@@ -13,7 +13,6 @@
 }
 .toc_h_container {
 	cursor:pointer;
-	display: inline-block;
 	width: 100%;
 	overflow: hidden;
 	text-overflow: ellipsis;
@@ -76,11 +75,11 @@
 
 <div ng-if="mode != 'preview'" class="toc_container">
 	<h2 class="toc-title" ng-show="params.title">{{params.title}}</h2>
-	<div class="toc_h1_container toc_h_container" ng-repeat="x1 in tree.nodes">
+	<div class="toc_h1_container toc_h_container" ng-repeat="x1 in tree.nodes track by $index">
 		<div class="toc_text1_container toc_text_container" ng-click="clickTocItem(x1)" data-targetid="{{x1.id}}">
 			{{x1.token ? x1.text : ""}}
 		</div>
-		<div class="toc_h2_container toc_h_container" ng-repeat="x2 in x1.nodes">
+		<div class="toc_h2_container toc_h_container" ng-repeat="x2 in x1.nodes track by $index">
 			<div class="toc_text2_container toc_text_container" ng-click="clickTocItem(x2)" data-targetid="{{x2.id}}">
 				{{x2.token ? x2.text : ""}}
 			</div>

@@ -2,7 +2,8 @@
 define([
 ], function(){
 	var escape_ch = "@";
-	var special_str = '`*_{}[]()#+-.!>\\' + '\'"<>&'; // 覆盖html禁止字符
+	//var special_str = '`*_{}[]()#+-.!>\\' + '\'"<>&'; // 覆盖html禁止字符
+	var special_str = '`*_{}[]()#+-.!<>\\'  // 覆盖html禁止字符
 
 	// markdown 特殊字符转义
 	function md_special_char_escape(text) {
@@ -441,11 +442,11 @@ define([
 	// 段落
 	function paragraph(obj, env) {
 		var _escape = function(str) {
-			str = str.replace(/@&/g, "&amp;");
+			str = str.replace(/&/g, "&amp;");
 			str = str.replace(/@</g, "&lt;");
 			str = str.replace(/@>/g, "&gt;");
-			str = str.replace(/@'/g, "&apos;");
-			str = str.replace(/@"/g, "&quot;");
+			str = str.replace(/'/g, "&apos;");
+			str = str.replace(/"/g, "&quot;");
 			// 空格非保留字
 			str = str.replace(/ /g, "&nbsp;");
 

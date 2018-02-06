@@ -182,7 +182,7 @@ define([
 			var row = modParams.rows[i];
 			for (var j = 0; j < row.cols.length; j++) {
 				var col = row.cols[j];
-				if (col.is_main_content) {
+				if (col.is_main_content || col.isMainContent) {
 					col.content = col.contentUrl = undefined;
 				}
 			}
@@ -207,6 +207,7 @@ define([
 
 		for (var i = 0; i < modParams.rows.length; i++) {
 			var row = modParams.rows[i];
+			row.cols = row.cols || [{content:row.content, contentUrl:row.contentUrl, class:row.class, style:row.style, is_main_content:row.isMainContent || row.is_main_content}];
 			for (var j = 0; j < row.cols.length; j++) {
 				var col = row.cols[j];
 				//col.$data = {
@@ -215,7 +216,7 @@ define([
 					//id: idPrefix + id++,
 				//}
 
-				if (!col.is_main_content) {
+				if (!col.is_main_content && !col.isMainContent) {
 					modParams["area_" + i + "-" + j] = {
 						"$data" : {
 							type: "page",
@@ -248,12 +249,13 @@ define([
 		var templateContent = "";
 		for (var i = 0; i < params.rows.length; i++) {
 			var row = params.rows[i];
+			row.cols = row.cols || [{content:row.content, contentUrl:row.contentUrl, class:row.class, style:row.style, is_main_content:row.isMainContent || row.is_main_content}];
 			templateContent += '<div class="clearfix" ng-class="params.rows[' + i + '].class" ng-style="params.rows[' + i +'].style">\n';
 			for (var j = 0; j < row.cols.length; j++) {
 				var col = row.cols[j];
 				var colStr = "params.rows[" + i + "].cols[" + j + "]";
 				templateContent += '<div ng-class="' + colStr+ '.class" ng-style="' + colStr + '.style">\n';
-				if (col.is_main_content) {
+				if (col.is_main_content || col.isMainContent) {
 					col.content = wikiBlock.templateContent;
 					templateContent += wikiBlock.templateContent || "";
 				} else {
