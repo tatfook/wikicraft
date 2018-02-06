@@ -407,7 +407,7 @@ define([
 		var cur_line = obj.lines[obj.start];
 
 		//console.log(cur_line);
-		if (!/^@<[-\w\d]+/.test(cur_line)) {
+		if (cur_line.indexOf("@<") != 0){
 			return;
 		}
 
@@ -421,12 +421,6 @@ define([
 			text += "\n" + line;
 		}
 		
-		var regs = single_line.match(/^@<([-\w\d]+).*@>.*@<\/([-\w]+)@>$/);
-		//console.log(single_line, regs);
-		if (!regs || !regs[1] || !regs[2] || regs[1] != regs[2]) {
-			return;
-		}
-
 		var token = {
 			tag: "html",
 			content: text,
