@@ -1,7 +1,8 @@
 <style>
-    .header-container{
+    .header-container {
         background-color: #FFF;
     }
+
     header {
         /* box-shadow: 0 2px 5px rgba(44, 62, 80, .35); */
         border-bottom: 1px solid #DDD;
@@ -434,6 +435,7 @@
         padding: 15px 0;
         margin-bottom: 0;
         display: inline-block;
+        font-size: 14px;
     }
 
     .url-header .prev-ellipsis {
@@ -465,7 +467,7 @@
         line-height: 1;
     }
 
-    .url-header i.icon-icondianzan.active{
+    .url-header i.icon-icondianzan.active {
         color: #FE7532;
         font-size: 30px;
         line-height: 1;
@@ -473,6 +475,45 @@
 
     .url-header li>i.iconfont+span {
         vertical-align: super;
+    }
+
+    .url-header .pages-dropdrown {
+        min-width: unset;
+        max-height: 300px;
+        overflow-y: auto;
+        background-color: #F5F5F5;
+        min-width: 100px;;
+    }
+
+    .url-header .pages-dropdrown>li>a {
+        padding: 2px 12px;
+        font-size: 14px;
+        color: #333;
+        text-align: left;
+    }
+
+    .url-header .pages-dropdrown>li>a:hover{
+        color: #0088FF;
+        background-color: transparent;
+    }
+
+    .url-header .icon-shouqi{
+        line-height: 1;
+        vertical-align: middle;
+        padding-right: 5px;
+        margin-left: -5px;
+    }
+    .url-header .breadcrumb>li+li:before{
+        display: none;
+    }
+
+    .url-header .breadcrumb > li > a{
+        background-color: transparent;
+        color: #333;
+    }
+    .url-header .breadcrumb > li > a:hover, .url-header .breadcrumb > li > a:focus{
+        background-color: transparent;
+        color: #0088FF;
     }
 </style>
 
@@ -746,24 +787,30 @@
                 </ol>
                 <ol id="js-prev-content" class="breadcrumb">
                     <li>
-                        <a href="http://keepwork.com" target="_blank">http://keepwork.com</a>
+                        <a href="http://keepwork.com" target="_blank">http://keepwork.com /</a>
                     </li>
                     <li>
-                        <a ng-click="goUserPage()">{{urlObj.username || ''}}</a>
+                        <a ng-click="goUserPage()">{{urlObj.username || ''}} /</a>
                     </li>
                     <li class="dropdown" ng-show="urlObj.sitename">
-                        <a href="#" ng-click="clickSiteList()" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">{{urlObj.sitename || ''}}</a>
-                        <ul class="dropdown-menu nodot-dropdown" aria-labelledby="dropdownMenu1">
+                        <a href="javascript:void(0)" ng-click="clickSiteList()" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                            {{urlObj.sitename || ''}}
+                            <i class="iconfont icon-shouqi"></i>
+                        </a>
+                        <ul class="dropdown-menu nodot-dropdown pages-dropdrown" aria-labelledby="dropdownMenu1">
                             <li ng-repeat="site in userSiteList">
                                 <a ng-click="selectSite(site)">{{site.name}}</a>
                             </li>
                         </ul>
                     </li>
-                    <li class="dropdown" ng-show="urlObj.pagename">
-                        <a href="#" ng-click="clickPageList()" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">{{urlObj.pagename || ''}}</a>
-                        <ul class="dropdown-menu nodot-dropdown" aria-labelledby="dropdownMenu1">
-                            <li ng-repeat="page in userSitePageList">
-                                <a ng-click="selectPage(page)">{{page.pagename}}</a>
+                    <li class="dropdown" ng-repeat="pathItem in urlItemList track by $index" ng-hide="$index<3">
+                        <a href="javascript:void(0)" ng-click="clickPageList($index)" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                            {{pathItem}}
+                            <i class="iconfont icon-shouqi"></i>
+                        </a>
+                        <ul class="dropdown-menu nodot-dropdown pages-dropdrown" aria-labelledby="dropdownMenu1">
+                            <li ng-repeat="page in userSitePageList | orderBy: ['foldname', 'pagename']">
+                                <a ng-click="selectPage(page)">{{page.isFold ? page.foldname : page.pagename}}</a>
                             </li>
                         </ul>
                     </li>
@@ -782,7 +829,8 @@
                 </div>
             </li>
             <li class="icon collect-icon">
-                <i class="iconfont " ng-class="{true: 'active icon-icondianzan', false: 'icon-dianzan'}[isCollect]" ng-click="doWorksFavorite($event,isCollect)" alt=""></i>
+                <i class="iconfont " ng-class="{true: 'active icon-icondianzan', false: 'icon-dianzan'}[isCollect]" ng-click="doWorksFavorite($event,isCollect)"
+                    alt=""></i>
                 <span class="text-muted" ng-click="goFans()">{{pageFansCount || 0}}</span>
             </li>
         </ul>
