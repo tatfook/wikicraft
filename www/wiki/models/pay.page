@@ -78,8 +78,8 @@ function pay:getPingxxToken()
 		KEEPWORK.config.default.threeService.pingxx and KEEPWORK.config.default.threeService.pingxx.appToken and
 		KEEPWORK.config.default.threeService.pingxx.appId) then
 	
-		pay.appToken = KEEPWORK["config"][ENV_NAME]["threeService"]["pingxx"]["appToken"];
-		pay.appId    = KEEPWORK["config"][ENV_NAME]["threeService"]["pingxx"]["appId"];
+		pay.appToken = KEEPWORK["config"][CURRENT_ENV]["threeService"]["pingxx"]["appToken"];
+		pay.appId    = KEEPWORK["config"][CURRENT_ENV]["threeService"]["pingxx"]["appId"];
 		
 		return true;
 	else

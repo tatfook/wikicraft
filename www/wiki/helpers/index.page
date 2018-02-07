@@ -27,7 +27,7 @@ end
 
 -- 确定当前环境
 function init_env()
-	ENV_NAME = "www"
+	CURRENT_ENV = "www"
 	local pos = string.find(WIKI_ROOT,"/")
 	local name = WIKI_ROOT
 	if pos then
@@ -35,11 +35,11 @@ function init_env()
 	end
 
 	if name == "rls" then
-		ENV_NAME = "default"
+		CURRENT_ENV = "default"
 	elseif name == "test" then
-		ENV_NAME = "test"
+		CURRENT_ENV = "test"
 	else
-		ENV_NAME = "www"
+		CURRENT_ENV = "www"
 	end
 end
 init_env()
@@ -55,12 +55,12 @@ WIKI_DB_PATH="database/www/"
 
 -- json web token  encode/decode
 function encodeJWT(payload, expire)
-	local secret = KEEPWORK["config"][ENV_NAME]["wiki"]["secret"]
+	local secret = KEEPWORK["config"][CURRENT_ENV]["wiki"]["secret"]
 	return jwt.encode(payload, secret["token_secret"], nil, expire or secret["token_expire"] or 3600)
 end
 
 function decodeJWT(token)
-	local secret = KEEPWORK["config"][ENV_NAME]["wiki"]["secret"]
+	local secret = KEEPWORK["config"][CURRENT_ENV]["wiki"]["secret"]
 	return jwt.decode(token, secret["token_secret"], true)
 end
 
