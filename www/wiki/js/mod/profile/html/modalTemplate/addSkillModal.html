@@ -92,28 +92,28 @@
         <button type="button" class="close" ng-click="cancel()">
             <span aria-hidden="true">&times;</span>
         </button>
-        <h3 class="modal-title">{{editing ? "修改技能" : "添加技能"}}</h3>
+        <h3 class="modal-title">{{(editing ? "修改技能" : "添加技能") | translate}}</h3>
     </div>
     <div class="modal-body">
         <form class="form-horizontal">
             <div class="form-group form-group-md">
-                <label for="inputName" class="col-sm-3 control-label">技能名称：</label>
+                <label for="inputName" class="col-sm-3 control-label">{{'技能名称' | translate}}：</label>
                 <div class="col-sm-9">
                     <input ng-disabled="editing" type="text" class="form-control" ng-model="addingSkill.title" id="inputName">
                 </div>
             </div>
             <div class="form-group form-group-md">
-                <label for="inputDesc" class="col-sm-3 control-label sr-only">技能介绍：</label>
+                <label for="inputDesc" class="col-sm-3 control-label sr-only">{{'技能介绍' | translate}}：</label>
                 <div class="col-sm-9 col-sm-offset-3">
                     <textarea class="form-control" id="inputDesc" ng-model="addingSkill.desc"></textarea>
                 </div>
             </div>
             <div class="form-group form-group-md">
-                <label for="inputLevel" class="col-sm-3 control-label">熟练度：</label>
+                <label for="inputLevel" class="col-sm-3 control-label">{{'熟练度' | translate}}：</label>
                 <div class="col-sm-9">
                     <div class="fake-select">
                         <button id="skillSelectLabel" class="btn btn-block btn-default" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            {{addingSkill.level || "选择熟练度"}}
+                            {{(addingSkill.level || "选择熟练度") | translate}}
                             <span class="glyphicon glyphicon-chevron-down"></span>
                         </button>
                         <ul class="dropdown-menu" aria-labelledby="skillSelectLabel">
@@ -130,7 +130,7 @@
     </div>
     <div class="modal-footer">
         <span class="text-danger">{{errMsg}}</span>
-        <button type="button" class="btn btn-primary" ng-click="submitAddingSkill()">{{editing ? "保存" : "添加"}}</button>
-        <button type="button" class="btn btn-default" ng-click="cancel()">取消</button>
+        <button type="button" class="btn btn-primary" ng-click="submitAddingSkill()">{{(editing ? "保存" : "添加") | translate}}</button>
+        <button type="button" class="btn btn-default" ng-click="cancel()">{{'取消' | translate}}</button>
     </div>
 </div>

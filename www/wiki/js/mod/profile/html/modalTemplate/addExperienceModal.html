@@ -44,30 +44,30 @@
         <button type="button" class="close" ng-click="cancel()">
             <span aria-hidden="true">&times;</span>
         </button>
-        <h3 class="modal-title">{{editing ? "修改经历" : "新增经历"}}</h3>
+        <h3 class="modal-title">{{(editing ? "修改经历" : "新增经历") | translate}}</h3>
     </div>
     <div class="modal-body">
         <form class="form-horizontal">
             <div class="form-group form-group-md">
-                <label for="inputTitle" class="col-sm-3 control-label">简介：</label>
+                <label for="inputTitle" class="col-sm-3 control-label">{{'简介' | translate}}：</label>
                 <div class="col-sm-9">
                     <input type="text" class="form-control" ng-model="addingExperience.title" id="inputTitle">
                 </div>
             </div>
             <div class="form-group form-group-md">
-                <label for="inputLink" class="col-sm-3 control-label">展示网址：</label>
+                <label for="inputLink" class="col-sm-3 control-label">{{'展示网址' | translate}}：</label>
                 <div class="col-sm-9">
-                    <input type="text" class="form-control" ng-model="addingExperience.link" id="inputLink" placeholder="请输入网址">
+                    <input type="text" class="form-control" ng-model="addingExperience.link" id="inputLink" placeholder="{{'请输入网址' | translate}}">
                 </div>
             </div>
             <div class="form-group form-group-md">
-                <label for="inputStartDate" class="col-sm-3 control-label">开始时间：</label>
+                <label for="inputStartDate" class="col-sm-3 control-label">{{'开始时间' | translate}}：</label>
                 <div class="col-sm-9">
                     <input type="text" class="form-control" ng-model="addingExperience.startDate" id="inputStartDate">
                 </div>
             </div>
             <div class="form-group form-group-md">
-                <label for="inputEndtDate" class="col-sm-3 control-label">结束时间：</label>
+                <label for="inputEndtDate" class="col-sm-3 control-label">{{'结束时间' | translate}}：</label>
                 <div class="col-sm-9">
                     <input type="text" class="form-control" ng-model="addingExperience.endDate" id="inputEndtDate">
                 </div>
@@ -76,7 +76,7 @@
     </div>
     <div class="modal-footer">
         <span class="text-danger">{{errMsg}}</span>
-        <button type="button" class="btn btn-primary" ng-click="submitaddingExperience()">{{editing ? "保存" : "添加"}}</button>
-        <button type="button" class="btn btn-default" ng-click="cancel()">取消</button>
+        <button type="button" class="btn btn-primary" ng-click="submitaddingExperience()">{{(editing ? "保存" : "添加") | translate}}</button>
+        <button type="button" class="btn btn-default" ng-click="cancel()">{{'取消' | translate}}</button>
     </div>
 </div>
