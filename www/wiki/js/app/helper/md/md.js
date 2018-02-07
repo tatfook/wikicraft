@@ -3,7 +3,7 @@ define([
 ], function(){
 	var escape_ch = "@";
 	//var special_str = '`*_{}[]()#+-.!>\\' + '\'"<>&'; // 覆盖html禁止字符
-	var special_str = '`*_{}[]()#+-.!<>\\'  // 覆盖html禁止字符
+	var special_str = '~`*_{}[]()#+-.!<>\\'  // 覆盖html禁止字符
 
 	// markdown 特殊字符转义
 	function md_special_char_escape(text) {
@@ -203,6 +203,27 @@ define([
 		return text;
 	}
 
+	// 删除线
+	function del(obj) {
+		var text = obj.text;
+		var reg_str = / @~@~(.+?)@~@~ /;
+		var regs = text.match(reg_str);
+		var htmlstr = "", del_render;	
+		if (regs){
+			htmlstr = '<del>' + regs[1] + '</del>';
+			del_render = obj.md.rule_render["del"];
+			if (del_render) {
+				htmlstr = del_render({md:obj.md, content:regs[1], text:regs[0]}) || htmlstr;
+			}
+			text = text.replace(reg_str, htmlstr);
+			obj.text = text;
+			return del(obj);
+		}
+
+		return text;
+	}
+
+	// 强调
 	function strong(obj) {
 		var text = obj.text;
 		var reg_str = / @\*@\*(.+?)@\*@\* /;
@@ -465,14 +486,14 @@ define([
 			return;
 		}
 
-		var i = 0, text = cur_line, htmlContent = _escape(cur_line);
+		var i = 0, text = cur_line, htmlContent = cur_line;
 		for (i = obj.start+1; i < obj.lines.length; i++) {
 			var line = obj.lines[i];
 			if (!is_paragraph_line(line)) {
 				break;
 			}
 			text += "\n" + line;
-			htmlContent += "<br/>" + _escape(line);
+			htmlContent += "<br/>" + line;
 		}
 
 		var token = {
@@ -495,6 +516,7 @@ define([
 			token.htmlContent = paragraph_render({md:obj.md, content: text, text:text, is_sub_tag:env.is_sub_tag})  || token.htmlContent;
 		}
 
+		token.htmlContent = _escape(token.htmlContent);
 		return token;
 	}
 
@@ -754,6 +776,7 @@ define([
 			this.rule_render[tag] = render
 		}
 
+		md.register_inline_rule(del);
 		md.register_inline_rule(image_link);
 		md.register_inline_rule(strong_em);
 		md.register_inline_rule(inline_code);
