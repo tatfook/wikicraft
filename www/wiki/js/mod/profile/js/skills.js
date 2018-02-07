@@ -2,7 +2,7 @@
  * @Author: ZhangKaitlyn 
  * @Date: 2018-01-19
  * @Last Modified by: none
- * @Last Modified time: 2018-02-01 19:39:39
+ * @Last Modified time: 2018-02-07 11:33:17
  */
 define([
     'app', 
@@ -255,6 +255,7 @@ define([
         }]);
 
         app.registerController("addSkillModalCtrl", ['$scope', '$uibModalInstance',function ($scope, $uibModalInstance) {
+            const SkillNameMaxLen = 10;
             $scope.addingSkill = $scope.addingSkill || {};
             $scope.cancel = function(){
                 $uibModalInstance.dismiss("cancel");
@@ -287,6 +288,12 @@ define([
                 var requiredResult = isRequiredEmptyAttr(requiredAttrs); 
                 if (requiredResult.boolResult) {
                     $scope.errMsg = requiredResult.attr + "不可为空";
+                    return;
+                }
+
+                var skillName = $scope.addingSkill.title;
+                if (skillName.length > SkillNameMaxLen) {
+                    $scope.errMsg = "技能名称需小于10位";
                     return;
                 }
 
