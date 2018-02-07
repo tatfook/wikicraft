@@ -14,6 +14,7 @@ define([
         //console.log("headerController");
         //$scope.isLogin = Account.isAuthenticated();
         const SearchRangeText = ["全部内容", "当前站点", "我的网站"];
+        const FoldPostfix = "/";
         $scope.urlObj = {};
         $scope.isIconShow = !util.isOfficialPage();
         var pageDetail = util.parseUrl();
@@ -74,6 +75,11 @@ define([
             })
         }
 
+        var initPagePath = function(){
+            var pathUrl = pageDetail.pagepath;
+            $scope.urlItemList = pathUrl.split("/");
+        }
+
         function init() {
             $scope.isJoin = (window.location.pathname == "/wiki/join") ? true : false;
             $scope.isSearch = (window.location.pathname == "/wiki/search") ? true : false;
@@ -112,6 +118,8 @@ define([
             initSearchRange();
 
             initPageInfo();
+
+            initPagePath();
             // var container=document.getElementById("js-prev-container");
             // container.style.overflow="visible";
         }
@@ -135,10 +143,10 @@ define([
                 return;
             util.post(config.apiUrlPrefix + 'website/getAllByUsername', {username: $scope.urlObj.username}, function (data) {
                 $scope.userSiteList = data || [];
-            });
+            }, undefined, false);
         }
 
-        $scope.clickPageList = function () {
+        $scope.clickPageList = function (index) {
             if ($scope.urlObj.username == "wiki")
                 return;
             
@@ -148,15 +156,56 @@ define([
                 // console.log(userDataSource,$rootScope.siteinfo._id );
                 return;
             }
-            
-            currentDataSource.getTree({path:'/' + $scope.urlObj.username + '/' + $scope.urlObj.sitename}, function (data) {
-                $scope.userSitePageList = data || [];
+            $scope.userSitePageList = [];
+            var selectPath = $scope.urlItemList.slice(0, index);
+            var path = selectPath.join("/");
+            var pagesObj = {};
+            currentDataSource.getTree({
+                path:path, 
+                recursive: true,
+                isShowLoading: true
+            }, function (data) {
+                var pageIndex = 0;
+                var conflictPages = [];
+                $scope.userSitePageList = data.filter(function(page){
+                    if (new RegExp("^(.gitignore|_header|_footer|_sidebar|_theme)$").test(page.pagename)) {
+                        return false;
+                    }
+
+                    var pageUrlArr = page.url.split("/");
+                    var pageUrlLen = pageUrlArr.length;
+
+                    if (pageUrlLen >= (index + 2)) { //文件夹
+                        page.foldname = pageUrlArr[index] + " " + FoldPostfix; // 从url获取文件夹名
+                        page.foldpath = pageUrlArr.splice(0, pageUrlLen-1).join("/");
+                        page.isFold = true;
+                    }
+
+                    if (pagesObj[page.foldname] && pagesObj[page.foldname].isFold) { // 文件夹已记录过
+                        switch (page.pagename) {
+                            case "index":
+                                conflictPages.push({
+                                    index: pagesObj[page.foldname].index,
+                                    pageDetail: page
+                                });
+                                break;
+                        }
+                        return false;
+                    }
+                    
+                    page.index = pageIndex ++;
+                    pagesObj[page.foldname || page.pagename] = page;
+                    return true;
+                });
+                
+                conflictPages.forEach(function(conflictPage){
+                    $scope.userSitePageList[conflictPage.index] = conflictPage.pageDetail;
+                });
             });
         }
 
         $scope.selectPage = function (page) {
-            $scope.urlObj.pagename = page.pagename;
-            $scope.goUrlSite();
+            util.go(page.url);
         }
 
         $scope.goUrlSite = function () {
