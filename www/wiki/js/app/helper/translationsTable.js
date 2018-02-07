@@ -3128,6 +3128,136 @@ define([], function () {
             "_key": "置顶内容",
             "zh-cn": "置顶内容",
             "en": "Stick websites"
+        },
+        {
+            "_key": "点赞",
+            "zh-cn": "点赞",
+            "en": "Like"
+        },
+        {
+            "_key": "取消点赞",
+            "zh-cn": "取消点赞",
+            "en": "Undo Like"
+        },
+        {
+            "_key": "上移",
+            "zh-cn": "上移",
+            "en": "Shift Up"
+        },
+        {
+            "_key": "下移",
+            "zh-cn": "下移",
+            "en": "Shift Down"
+        },
+        {
+            "_key": "新增作品",
+            "zh-cn": "新增作品",
+            "en": "Add Work"
+        },
+        {
+            "_key": "修改作品",
+            "zh-cn": "修改作品",
+            "en": "Modify Work"
+        },
+        {
+            "_key": "作品封面",
+            "zh-cn": "作品封面",
+            "en": "Cover"
+        },
+        {
+            "_key": "上传封面",
+            "zh-cn": "上传封面",
+            "en": "Upload Cover"
+        },
+        {
+            "_key": "作品名",
+            "zh-cn": "作品名",
+            "en": "Work Name"
+        },
+        {
+            "_key": "作品链接",
+            "zh-cn": "作品链接",
+            "en": "Work Link"
+        },
+        {
+            "_key": "作品简介",
+            "zh-cn": "作品简介",
+            "en": "Introduction"
+        },
+        {
+            "_key": "添加技能",
+            "zh-cn": "添加技能",
+            "en": "Add Skill"
+        },
+        {
+            "_key": "修改技能",
+            "zh-cn": "修改技能",
+            "en": "Modify Skill"
+        },
+        {
+            "_key": "技能名称",
+            "zh-cn": "技能名称",
+            "en": "Skil Name"
+        },
+        {
+            "_key": "熟练度",
+            "zh-cn": "熟练度",
+            "en": "Degree"
+        },
+        {
+            "_key": "选择熟练度",
+            "zh-cn": "选择熟练度",
+            "en": "Select Degree"
+        },
+        {
+            "_key": "新增经历",
+            "zh-cn": "新增经历",
+            "en": "Add Experience"
+        },
+        {
+            "_key": "修改经历",
+            "zh-cn": "修改经历",
+            "en": "Modify Experience"
+        },
+        {
+            "_key": "简介",
+            "zh-cn": "简介",
+            "en": "Introduction"
+        },
+        {
+            "_key": "展示网址",
+            "zh-cn": "展示网址",
+            "en": "Showing Link"
+        },
+        {
+            "_key": "开始时间",
+            "zh-cn": "开始时间",
+            "en": "Start Date"
+        },
+        {
+            "_key": "结束时间",
+            "zh-cn": "结束时间",
+            "en": "End Date"
+        },
+        {
+            "_key": "请输入网址",
+            "zh-cn": "请输入网址",
+            "en": "Please Enter Url"
+        },
+        {
+            "_key": "新增认证",
+            "zh-cn": "新增认证",
+            "en": "Add Certification"
+        },
+        {
+            "_key": "修改认证",
+            "zh-cn": "修改认证",
+            "en": "Modify Certification"
+        },
+        {
+            "_key": "获得时间",
+            "zh-cn": "获得时间",
+            "en": "Gain Date"
         }
     ];
 

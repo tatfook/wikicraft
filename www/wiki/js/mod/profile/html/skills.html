@@ -162,7 +162,7 @@
             <li class="clearfix v-li" ng-repeat="skill in skills | limitTo: 5 track by $index">
                 <span class="title">{{skill.title}}</span>
                 <span class="level">{{skill.level}}</span>
-                <span class="pull-right iconfont icon-icondianzan" title="{{!skillsDetail[skill.title].liked ? '点赞':'取消点赞'}}" ng-class="{false:'active'}[!skillsDetail[skill.title].liked]"
+                <span class="pull-right iconfont icon-icondianzan" title="{{(!skillsDetail[skill.title].liked ? '点赞':'取消点赞') | translate}}" ng-class="{false:'active'}[!skillsDetail[skill.title].liked]"
                     ng-click="likeSkill(skill)"></span>
             </li>
         </ul>
@@ -173,7 +173,7 @@
         <ul class="h-skill-ul clearfix">
             <li class="clearfix h-li" ng-repeat="skill in skills | limitTo: (5 - skills.length) track by $index">
                 <span class="title">{{skill.title}}</span>
-                <span class="pull-right iconfont icon-icondianzan" title="{{!skillsDetail[skill.title].liked ? '点赞':'取消点赞'}}" ng-class="{false:'active'}[!skillsDetail[skill.title].liked]"
+                <span class="pull-right iconfont icon-icondianzan" title="{{(!skillsDetail[skill.title].liked ? '点赞':'取消点赞') | translate}}" ng-class="{false:'active'}[!skillsDetail[skill.title].liked]"
                     ng-click="likeSkill(skill)"></span>
             </li>
         </ul>
@@ -189,10 +189,10 @@
             <li class="clearfix v-li" ng-class="{true:'sub-skill'}[$index >4]" ng-repeat="skill in skills track by $index">
                 <span class="title">{{skill.title}}</span>
                 <span class="pull-right editing-toolbar">
-                    <span class="iconfont icon-shezhi" title="设置" ng-click="setSkill($index)"></span>
-                    <span class="iconfont icon-shangyi" ng-disabled="$index == 0" title="上移" ng-click="shiftUp($index)"></span>
-                    <span class="iconfont icon-xiayi" ng-disabled="$index + 1 == skills.length" title="下移" ng-click="shiftDown($index)"></span>
-                    <span class="iconfont icon-shanchu1" title="删除" ng-click="deleteSkill($index)"></span>
+                    <span class="iconfont icon-shezhi" title="{{'设置' | translate}}" ng-click="setSkill($index)"></span>
+                    <span class="iconfont icon-shangyi" ng-disabled="$index == 0" title="{{'上移' | translate}}" ng-click="shiftUp($index)"></span>
+                    <span class="iconfont icon-xiayi" ng-disabled="$index + 1 == skills.length" title="{{'下移' | translate}}" ng-click="shiftDown($index)"></span>
+                    <span class="iconfont icon-shanchu1" title="{{'删除' | translate}}" ng-click="deleteSkill($index)"></span>
                 </span>
             </li>
         </ul>
