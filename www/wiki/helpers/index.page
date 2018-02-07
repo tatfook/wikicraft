@@ -25,6 +25,25 @@ function getpeername()
 	return request:header("Cdn-Src-Ip") or request:header("X-Real-IP")
 end
 
+-- 确定当前环境
+function init_env()
+	ENV_NAME = "www"
+	local pos = string.find(WIKI_ROOT,"/")
+	local name = WIKI_ROOT
+	if pos then
+		name = string.sub(WIKI_ROOT, 1, pos-1)
+	end
+
+	if name == "rls" then
+		ENV_NAME = "default"
+	elseif name == "test" then
+		ENV_NAME = "test"
+	else
+		ENV_NAME = "www"
+	end
+end
+init_env()
+
 include_once(WIKI_ROOT .. "helpers/aho_corasick.page")
 include_once(WIKI_ROOT .. "helpers/config.page")
 include_once(WIKI_ROOT .. "helpers/sms.page")
@@ -36,12 +55,12 @@ WIKI_DB_PATH="database/www/"
 
 -- json web token  encode/decode
 function encodeJWT(payload, expire)
-	local secret = KEEPWORK["config"]["default"]["wiki"]["secret"]
+	local secret = KEEPWORK["config"][ENV_NAME]["wiki"]["secret"]
 	return jwt.encode(payload, secret["token_secret"], nil, expire or secret["token_expire"] or 3600)
 end
 
 function decodeJWT(token)
-	local secret = KEEPWORK["config"]["default"]["wiki"]["secret"]
+	local secret = KEEPWORK["config"][ENV_NAME]["wiki"]["secret"]
 	return jwt.decode(token, secret["token_secret"], true)
 end
 
@@ -225,36 +244,36 @@ function getServerUpdateTime()
 end
 
 function load_sensitive_word()
-    function map(func, array)
-        local new_array = {}
-        for i,v in ipairs(array) do
-            new_array[i] = func(v)
-        end
-        return new_array
-    end
+	function map(func, array)
+		local new_array = {}
+		for i,v in ipairs(array) do
+			new_array[i] = func(v)
+		end
+		return new_array
+	end
 
-    db.sensitive_words:find({}, resume)
-    local _, words = yield()
-    local results = map(function(word) return word.name end, words)
+	db.sensitive_words:find({}, resume)
+	local _, words = yield()
+	local results = map(function(word) return word.name end, words)
 
-    return results
+	return results
 end
 
 function get_aho_corasick()
-    local result = mem_cache:get("aho_corasick")
+	local result = mem_cache:get("aho_corasick")
 
-    if not t then
-        local ac = KEEPWORK["aho_corasick"]
-        local words = load_sensitive_word()
-        result = ac.build(words)
-        mem_cache:set("aho_corasick", result)
-    end
+	if not t then
+		local ac = KEEPWORK["aho_corasick"]
+		local words = load_sensitive_word()
+		result = ac.build(words)
+		mem_cache:set("aho_corasick", result)
+	end
 
-    return result
+	return result
 end
 
 function reset_aho_corasick()
-    mem_cache:set("aho_corasick", nil)
+	mem_cache:set("aho_corasick", nil)
 end
 
 function sensitive_word_match(s)
@@ -273,7 +292,7 @@ function execute_once()
 
 	mem_cache:set("isWebServerStart", true)
 
-    get_aho_corasick()
+	get_aho_corasick()
 end
 
 function init()

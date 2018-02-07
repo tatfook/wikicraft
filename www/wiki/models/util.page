@@ -82,7 +82,7 @@ end
 
 -- 发送邮件
 function util:sendEmail(params, callback)
-	local emailCfg = KEEPWORK["config"]["default"]["threeService"]["email"]
+	local emailCfg = KEEPWORK["config"][ENV_NAME]["threeService"]["email"]
 	par = {}
 	par.url = emailCfg.url
 	par.username = emailCfg.username
