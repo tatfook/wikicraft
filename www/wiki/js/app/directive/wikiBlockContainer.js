@@ -48,31 +48,31 @@ define([
 				var md = getMd(mdName);
 				
 				//console.log(block.isTemplate, mdName, index);
-				if (!block) {
+				if (!block || !md || md.mode != "editor") {
 					return;
 				}
 
 				$element.addClass("mod-container");
 				block.$element = $element; // 双向滚动时会用到
 				$scope.insertMod = $rootScope.insertMod;
+
 				$scope.clickContainer = function($event) {
 					if ($event) {
 						$event.stopPropagation();
 					}
-					//console.log(block);
-					$scope.isShowAddIcon = md && md.mode == "editor" && block.isWikiBlock;
+					if (!block.isWikiBlock) {
+						return;
+					}
 
 					var moduleEditorParams = config.shareMap.moduleEditorParams;
 					if (!moduleEditorParams) {
 						return;
 					}
-
-					if (!block.isWikiBlock) {
-						return;
-					}
 					
-					$(".mod-container.active").removeClass("active");
-					$element.addClass("active");
+					if (block.isWikiBlock && !block.isTemplate) {
+						$(".mod-container.active").removeClass("active");
+						$element.addClass("active");
+					}
 					moduleEditorParams.setBlock(block);
 					//$rootScope.$broadcast("moduleEditor", block);
 				}
