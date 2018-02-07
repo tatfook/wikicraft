@@ -94,11 +94,12 @@ define([
 		md.mode = options.mode || "normal";
         md.$scope = options.$scope;
 		md.isBindContainer = false;
+		md.use_template = options.use_template;
 
 		md_rule_override(md.md);
 
 		var templateContent = '<div class="wikiEditor" ng-repeat="$kp_block in $kp_block.blockList track by $index" ng-if="!$kp_block.isTemplate"><wiki-block-container data-params="' + encodeMdName +'"></wiki-block-container></div>';
-		var blankTemplateContent = '<div class="container">' + templateContent + '</div>';
+		var blankTemplateContent = '<div>' + templateContent + '</div>';
 
 		if (md.mode == "preview") {
 			templateContent = '<div class="wikiEditor" ng-repeat="$kp_block in $kp_block.blockList track by $index"><wiki-block-container data-params="' + encodeMdName +'"></wiki-block-container></div>';
@@ -314,6 +315,31 @@ define([
 				}
             }
         }
+		// 模板匹配
+		md.templateMatch = function(wikiBlock) {
+			var modParams = wikiBlock.modParams;
+			var pageinfo = app.ng_objects.$rootScope.pageinfo;
+
+			// 临时页做全匹配
+			if (!pageinfo) {
+				return true;
+			}
+
+            var urlPrefix = "/" + pageinfo.username + "/" + pageinfo.sitename + "/";
+            var tempUrl = pageinfo.url || pageinfo.pagepath || pageinfo.pagename;
+			var pagePath = tempUrl.substring(urlPrefix.length);
+
+			if (typeof(modParams) != "object" || !modParams.urlmatch || !modParams.urlmatch.text) {
+				return true;
+			}
+			// 存在urlmatch 字段 做一个子串匹配
+			if (pagePath && pagePath.indexOf(modParams.urlmatch.text) >= 0) {
+				return true;
+			}
+			//console.log(pageinfo, pagePath, modParams);
+
+			return false;
+        }
 
         md.parse = function (text, theme) {
 			theme = theme || "";
@@ -341,7 +367,7 @@ define([
 				block.token.end = block.token.end - themeLineCount;
 				blockList[i] = block;
 				//console.log(blcok);
-				if (block.isTemplate) {
+				if (md.use_template && block.isTemplate && md.templateMatch(block)) {
 					template = block;
 				}
             }

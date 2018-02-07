@@ -20,7 +20,7 @@ define([
     'controller/crosController',
 ], function (app, markdownit, mdwiki, markdownwiki, storage, util, mdconf, dataSource, loading, homeHtmlContent, headerHtmlContent, footerHtmlContent, userHtmlContent, notfoundHtmlContent, crosHtmlContent) {
 	//var md = markdownwiki({breaks: true, isMainMd:true});
-	var md = mdwiki();
+	var md = mdwiki({use_template:true});
 
     app.controller('mainController', [
         '$scope',

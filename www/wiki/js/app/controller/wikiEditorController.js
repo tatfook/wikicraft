@@ -40,7 +40,7 @@ define([
     var otherUserinfo = undefined;
     var pageSuffixName = config.pageSuffixName;
     //var mdwiki = markdownwiki({editorMode: true, breaks: true, isMainMd:true});
-    var mdwiki = mdwikifunc({mode: "editor", editorMode: true, breaks: true, isMainMd:true, containerId:"result-html"});
+    var mdwiki = mdwikifunc({mode: "editor", use_template: true, containerId:"result-html"});
     var editor;
     var allWebsites = [];
     var allWebstePageContent = {};
