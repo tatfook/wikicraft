@@ -78,6 +78,7 @@ define([
 				modParams[key] = modParams[key] || {};
 				modParams[key]["$data"] = params_template[key];
 				modParams[key]["text"] = modParams[key]["text"] || params_template[key]["text"];
+				modParams[key]["href"] = modParams[key]["href"] || params_template[key]["href"];
 			}
 		}
 
@@ -134,6 +135,7 @@ define([
 
 			if ($scope.params.media_img.text != currentImgText) {
 				$scope.params.media_img.text = currentImgText;
+				wikiblock.applyModParams && wikiblock.applyModParams($scope.params);
 			}
 
 			return currentImgText;
