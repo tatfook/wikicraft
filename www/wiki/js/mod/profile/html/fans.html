@@ -35,7 +35,7 @@
             <p translate="暂无相关内容..."></p>
         </div>
         <div class="fans-item" ng-repeat="fans in fansList" ng-show="fansList.length > 0">
-            <img ng-src="{{fans.userinfo.logoUrl || getImageUrl('default_portrait.png',imgsPath)}}" alt="">
+            <img ng-src="{{fans.userinfo.portrait || getImageUrl('default_portrait.png',imgsPath)}}" alt="">
             <h4><a ng-href="{{'/' + fans.userinfo.username}}">{{fans.userinfo.displayName || fans.userinfo.username}}</a></h4>
         </div>
     </div>
