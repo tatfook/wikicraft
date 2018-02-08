@@ -2,7 +2,7 @@
  * @Author: ZhangKaitlyn 
  * @Date: 2018-01-19
  * @Last Modified by: none
- * @Last Modified time: 2018-01-31 16:22:20
+ * @Last Modified time: 2018-02-08 15:39:12
  */
 define([
     'app', 
@@ -13,7 +13,7 @@ define([
     'cropper'
 ], function (app, util, mdconf, htmlContent, addWorkModalHtmlContent) {
     function registerController(wikiBlock) {
-        app.registerController("worksCtrl", ['$rootScope', '$scope','$uibModal', function ($rootScope, $scope, $uibModal) {
+        app.registerController("worksCtrl", ['$rootScope', '$scope','$uibModal', '$translate', function ($rootScope, $scope, $uibModal, $translate) {
             const modCmd = "```@profile/js/works";
             const kepeworkLink = "keepwork.com";
             const keepworkReg = new RegExp(kepeworkLink);
@@ -150,9 +150,9 @@ define([
 
             $scope.deleteWork = function(index){
                 config.services.confirmDialog({
-                    "title": "删除提示",
+                    "title": $translate.instant("删除提醒"),
                     "theme": "danger",
-                    "content": "确定删除 " + $scope.works[index].title + "?"
+                    "content": $translate.instant("Remove_Confirm_Msg", {deleteItemName: $scope.works[index].title})
                 }, function(result){
                     $scope.works.splice(index, 1);
                     modifyWorksMd();
@@ -162,7 +162,7 @@ define([
             };
         }]);
 
-        app.registerController("addWorkModalCtrl", ['$scope','$uibModal', '$uibModalInstance',function ($scope, $uibModal, $uibModalInstance) {
+        app.registerController("addWorkModalCtrl", ['$scope','$uibModal', '$uibModalInstance', '$translate', function ($scope, $uibModal, $uibModalInstance, $translate) {
             $scope.addingWork = $scope.addingWork || {};
             $scope.cancel = function(){
                 $scope.addingWork = {};
@@ -206,15 +206,15 @@ define([
                 $scope.errMsg = "";
                 var requiredAttrs = [{
                     'key': 'title',
-                    'value': '作品名'
+                    'value': $translate.instant('作品名')
                 },
                 {
                     'key': 'workLink',
-                    'value': '作品链接'
+                    'value': $translate.instant('作品链接')
                 }];
                 var requiredResult = isRequiredEmptyAttr(requiredAttrs); 
                 if (requiredResult.boolResult) {
-                    $scope.errMsg = requiredResult.attr + "不可为空";
+                    $scope.errMsg = requiredResult.attr + $translate.instant("不可为空");
                     return;
                 }
                 $uibModalInstance.close($scope.addingWork);

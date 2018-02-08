@@ -2240,6 +2240,11 @@ define([], function () {
             "en": "Are you sure to remove {{ groupname }} group?",
         },
         {
+            "_key": "Remove_Confirm_Msg",
+            "zh-cn": "确定删除 {{ deleteItemName }} ？",
+            "en": "Are you sure to remove {{ deleteItemName }} ?"
+        },
+        {
             "_key": "右对齐",
             "zh-cn": "右对齐",
             "en": "align right"
@@ -3197,7 +3202,7 @@ define([], function () {
         {
             "_key": "技能名称",
             "zh-cn": "技能名称",
-            "en": "Skil Name"
+            "en": "Skill Name"
         },
         {
             "_key": "熟练度",
@@ -3258,6 +3263,21 @@ define([], function () {
             "_key": "获得时间",
             "zh-cn": "获得时间",
             "en": "Gain Date"
+        },
+        {
+            "_key": "技能名称需小于10位",
+            "zh-cn": "技能名称需小于10位",
+            "en": "Skill Name Length Should Less Than 10"
+        },
+        {
+            "_key": "该技能已存在",
+            "zh-cn": "该技能已存在",
+            "en": "This skill already exists"
+        },
+        {
+            "_key": "不可为空",
+            "zh-cn": "不可为空",
+            "en": " Is Required"
         }
     ];
 

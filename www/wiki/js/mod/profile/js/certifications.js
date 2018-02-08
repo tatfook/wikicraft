@@ -2,7 +2,7 @@
  * @Author: ZhangKaitlyn 
  * @Date: 2018-01-19
  * @Last Modified by: none
- * @Last Modified time: 2018-01-31 16:25:59
+ * @Last Modified time: 2018-02-08 15:44:43
  */
 define([
     'app',
@@ -12,7 +12,7 @@ define([
     'helper/util',
 ], function (app, mdconf, htmlContent, addCertificationModalHtmlContent, util) {
     function registerController(wikiBlock) {
-        app.registerController("certificationCtrl", ['$rootScope', '$scope', '$uibModal', function ($rootScope, $scope, $uibModal) {
+        app.registerController("certificationCtrl", ['$rootScope', '$scope', '$uibModal', '$translate', function ($rootScope, $scope, $uibModal, $translate) {
             const modCmd = "```@profile/js/certifications";
             var thisInBlockIndex;
             var thisContainerId;
@@ -111,9 +111,9 @@ define([
 
             $scope.deleteCertification = function(index){
                 config.services.confirmDialog({
-                    "title": "删除提示",
+                    "title": $translate.instant("删除提醒"),
                     "theme": "danger",
-                    "content": "确定删除 " + $scope.certifications[index].title + "?"
+                    "content": $translate.instant("Remove_Confirm_Msg", {deleteItemName: $scope.certifications[index].title})
                 }, function(result){
                     $scope.certifications.splice(index, 1);
                     modifyCertificationsMd();
@@ -123,7 +123,7 @@ define([
             };
         }]);
 
-        app.registerController("addCertificationModalCtrl", ['$scope', '$uibModalInstance',function ($scope, $uibModalInstance) {
+        app.registerController("addCertificationModalCtrl", ['$scope', '$uibModalInstance', '$translate', function ($scope, $uibModalInstance, $translate) {
             $scope.addingCertification = $scope.addingCertification || {};
             $scope.cancel = function(){
                 $uibModalInstance.dismiss("cancel");
@@ -147,15 +147,15 @@ define([
                 $scope.errMsg = "";
                 var requiredAttrs = [{
                     'key': 'title',
-                    'value': '简介'
+                    'value': $translate.instant('简介')
                 },
                 {
                     'key': 'getDate',
-                    'value': '获得时间'
+                    'value': $translate.instant('获得时间')
                 }];
                 var requiredResult = isRequiredEmptyAttr(requiredAttrs); 
                 if (requiredResult.boolResult) {
-                    $scope.errMsg = requiredResult.attr + "不可为空";
+                    $scope.errMsg = requiredResult.attr + $translate.instant("不可为空");
                     return;
                 }
                 $uibModalInstance.close($scope.addingCertification);
