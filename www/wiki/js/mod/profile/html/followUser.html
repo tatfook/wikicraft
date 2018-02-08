@@ -84,7 +84,7 @@
         </div>
         <div class="follow-users-item col-sm-4" ng-repeat="followUser in followUserList track by $index" ng-show="followUserList.length > 0 && followUser.userinfo">
             <div class="inner-box">
-                <img ng-src="{{followUser.userinfo.logoUrl || getImageUrl('default_portrait.png',imgsPath)}}">
+                <img ng-src="{{followUser.userinfo.portrait || getImageUrl('default_portrait.png',imgsPath)}}">
                 <div class="follow-user-detail">
                     <h4>
                         <a ng-href="{{'/' + followUser.userinfo.username}}">{{followUser.userinfo.displayName || followUser.userinfo.username}}</a>
