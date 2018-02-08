@@ -90,7 +90,7 @@ function tabledb:api_query(params)
 	if key == "" then
 		table:count({}, resume)
 		local _, total = yield()
-		table:find({["-_id"]={gt=0, skip=skip, limit=limit}}, resume)
+		table:find({_id={gt=0, skip=skip, limit=limit}}, resume)
 		local _, data = yield()
 		return errors:wrap(nil,{total=total,data=data})
 	end
