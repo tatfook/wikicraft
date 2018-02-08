@@ -2,7 +2,7 @@
  * @Author: ZhangKaitlyn 
  * @Date: 2018-01-19
  * @Last Modified by: none
- * @Last Modified time: 2018-02-08 15:37:14
+ * @Last Modified time: 2018-02-08 19:14:25
  */
 define([
     'app', 
@@ -80,7 +80,6 @@ define([
                         "skills": $scope.skills
                     }) + "\n```\n"
                 }
-                console.log(newItemObj.content);
                 $rootScope.$broadcast("changeProfileMd", newItemObj);
             }
 
@@ -102,7 +101,6 @@ define([
                     scope: $scope,
                     backdrop:'static'
                 }).result.then(function(result){
-                    console.log(index);
                     if (index >= 0) {
                         $scope.skills[index] = result;
                         updateSkill(result, "update");
@@ -111,6 +109,7 @@ define([
                         updateSkill(result, "insert");
                     }
                     modifySkillsMd();
+                    initRadar();
                 }, function(){
                 });
             }
