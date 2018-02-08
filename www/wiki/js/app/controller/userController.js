@@ -108,10 +108,10 @@ define([
         var getProfileData = function(username){
             util.post(config.apiUrlPrefix + 'site_data_source/getDefaultSiteDataSource', {username: username}, function (data) {
                 var DataSource = dataSource.getUserDataSource(username);
-                DataSource.init(data);
+                DataSource.init([data]); 
                 // var userSystemDataSource = DataSource.getDefaultDataSource();
                 var userSystemDataSource = DataSource.getDataSourceBySitename(username);
-                console.log(userSystemDataSource);
+
                 $rootScope.userDataSource = userSystemDataSource;
                 userDataSource = userSystemDataSource;
                 getUserProfileData();
