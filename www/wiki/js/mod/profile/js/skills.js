@@ -2,7 +2,7 @@
  * @Author: ZhangKaitlyn 
  * @Date: 2018-01-19
  * @Last Modified by: none
- * @Last Modified time: 2018-02-07 11:33:17
+ * @Last Modified time: 2018-02-08 15:37:14
  */
 define([
     'app', 
@@ -13,7 +13,7 @@ define([
     'echarts-radar',
 ], function (app, htmlContent, addSkillModalHtmlContent, mdconf, util, echartsRadar) {
     function registerController(wikiBlock) {
-        app.registerController("skillCtrl", ['$rootScope', '$scope', '$uibModal', 'Message', function ($rootScope, $scope, $uibModal, Message) {
+        app.registerController("skillCtrl", ['$rootScope', '$scope', '$uibModal', '$translate', 'Message', function ($rootScope, $scope, $uibModal, $translate, Message) {
             const modCmd = "```@profile/js/skills";
             var thisInBlockIndex;
             var thisContainerId;
@@ -164,9 +164,9 @@ define([
 
             $scope.deleteSkill = function(index){
                 config.services.confirmDialog({
-                    "title": "删除提示",
+                    "title": $translate.instant("删除提醒"),
                     "theme": "danger",
-                    "content": "确定删除 " + $scope.skills[index].title + "?"
+                    "content": $translate.instant("Remove_Confirm_Msg", {deleteItemName: $scope.skills[index].title})
                 }, function(result){
                     util.http("DELETE", config.apiUrlPrefix + "skills/delete", {
                         title: $scope.skills[index].title,
@@ -254,7 +254,7 @@ define([
             $scope.$watch('$viewContentLoaded', initRadar);
         }]);
 
-        app.registerController("addSkillModalCtrl", ['$scope', '$uibModalInstance',function ($scope, $uibModalInstance) {
+        app.registerController("addSkillModalCtrl", ['$scope', '$uibModalInstance', '$translate', function ($scope, $uibModalInstance, $translate) {
             const SkillNameMaxLen = 10;
             $scope.addingSkill = $scope.addingSkill || {};
             $scope.cancel = function(){
@@ -279,21 +279,21 @@ define([
                 $scope.errMsg = "";
                 var requiredAttrs = [{
                     'key': 'title',
-                    'value': '技能名称'
+                    'value': $translate.instant('技能名称')
                 },
                 {
                     'key': 'level',
-                    'value': '熟练度'
+                    'value': $translate.instant('熟练度')
                 }];
                 var requiredResult = isRequiredEmptyAttr(requiredAttrs); 
                 if (requiredResult.boolResult) {
-                    $scope.errMsg = requiredResult.attr + "不可为空";
+                    $scope.errMsg = requiredResult.attr + $translate.instant("不可为空");
                     return;
                 }
 
                 var skillName = $scope.addingSkill.title;
                 if (skillName.length > SkillNameMaxLen) {
-                    $scope.errMsg = "技能名称需小于10位";
+                    $scope.errMsg = $translate.instant("技能名称需小于10位");
                     return;
                 }
 
@@ -309,7 +309,7 @@ define([
                     console.log(data);
                 }, function(err){
                     if (err.status == '404') {
-                        $scope.errMsg = "该技能已存在";
+                        $scope.errMsg = $translate.instant("该技能已存在");
                         return;
                     }
                     

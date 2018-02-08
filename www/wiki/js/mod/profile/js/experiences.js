@@ -2,7 +2,7 @@
  * @Author: ZhangKaitlyn 
  * @Date: 2018-01-19
  * @Last Modified by: none
- * @Last Modified time: 2018-01-31 16:25:53
+ * @Last Modified time: 2018-02-08 15:41:51
  */
 define([
     'app', 
@@ -12,7 +12,7 @@ define([
     'helper/util',
 ], function (app, htmlContent, addExperienceModalHtmlContent, mdconf, util) {
     function registerController(wikiBlock) {
-        app.registerController("experienceCtrl", ['$rootScope', '$scope', '$uibModal', function ($rootScope, $scope, $uibModal) {
+        app.registerController("experienceCtrl", ['$rootScope', '$scope', '$uibModal', '$translate', function ($rootScope, $scope, $uibModal, $translate) {
             const modCmd = "```@profile/js/experiences";
             var thisInBlockIndex;
             var thisContainerId;
@@ -113,9 +113,9 @@ define([
 
             $scope.deleteExperience = function(index){
                 config.services.confirmDialog({
-                    "title": "删除提示",
+                    "title": $translate.instant("删除提醒"),
                     "theme": "danger",
-                    "content": "确定删除 " + $scope.experiences[index].title + "?"
+                    "content": $translate.instant("Remove_Confirm_Msg", {deleteItemName: $scope.experiences[index].title})
                 }, function(result){
                     $scope.experiences.splice(index, 1);
                     modifyExperiencesMd();
@@ -125,7 +125,7 @@ define([
             };
         }]);
 
-        app.registerController("addExperiencelModalCtrl", ['$scope', '$uibModalInstance',function ($scope, $uibModalInstance) {
+        app.registerController("addExperiencelModalCtrl", ['$scope', '$uibModalInstance', '$translate', function ($scope, $uibModalInstance, $translate) {
             $scope.addingExperience = $scope.addingExperience || {};
             $scope.cancel = function(){
                 $uibModalInstance.dismiss("cancel");
@@ -149,15 +149,15 @@ define([
                 $scope.errMsg = "";
                 var requiredAttrs = [{
                     'key': 'title',
-                    'value': '简介'
+                    'value': $translate.instant('简介')
                 },
                 {
                     'key': 'startDate',
-                    'value': '开始时间'
+                    'value': $translate.instant('开始时间')
                 }];
                 var requiredResult = isRequiredEmptyAttr(requiredAttrs); 
                 if (requiredResult.boolResult) {
-                    $scope.errMsg = requiredResult.attr + "不可为空";
+                    $scope.errMsg = requiredResult.attr + $translate.instant("不可为空");
                     return;
                 }
                 $uibModalInstance.close($scope.addingExperience);
