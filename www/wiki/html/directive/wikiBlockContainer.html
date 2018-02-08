@@ -10,8 +10,8 @@
 </style>
 
 <div ng-click="clickContainer($event)" class="kp_wiki_block_container">
-	<span class="fake-icon add-before" ng-click="insertMod('before')">+</span>
-	<span class="fake-icon add-after" ng-click="insertMod('after')">+</span>
+	<span ng-if="isShowAddIcon" class="fake-icon add-before" ng-click="insertMod('before')">+</span>
+	<span ng-if="isShowAddIcon" class="fake-icon add-after" ng-click="insertMod('after')">+</span>
 	<wiki-block data-params="$kp_block"></wiki-block>
 	<!--<div class="wikiblcok"></div>-->
 </div>

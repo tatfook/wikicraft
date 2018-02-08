@@ -107,7 +107,7 @@ define([
 	};
 
 	function render(wikiBlock) {
-		if (!app.objects.mainMdwiki) {
+		if (!app.objects.mainMdwiki || !wikiBlock.$element) {
 			return;
 		}
 

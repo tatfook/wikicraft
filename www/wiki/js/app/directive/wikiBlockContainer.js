@@ -47,14 +47,17 @@ define([
 				var block = extendBlock($scope, mdName, index);
 				var md = getMd(mdName);
 				
+				if (block) {
+					block.$element = $element; // 双向滚动时会用到
+				}
 				//console.log(block.isTemplate, mdName, index);
 				if (!block || !md || md.mode != "editor") {
 					return;
 				}
 
 				$element.addClass("mod-container");
-				block.$element = $element; // 双向滚动时会用到
 				$scope.insertMod = $rootScope.insertMod;
+				$scope.isShowAddIcon = true;
 
 				$scope.clickContainer = function($event) {
 					if ($event) {
