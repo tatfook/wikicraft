@@ -106,13 +106,9 @@ define([
             });
         }
         var getProfileData = function(username){
-            util.post(config.apiUrlPrefix + 'site_data_source/getByUsername', {username: username}, function (data) {
-                var sources = data || [];
-                var systemSource = sources.filter(function(source){
-                    return source.projectName === UserSystemProjectName;
-                });
+            util.post(config.apiUrlPrefix + 'site_data_source/getDefaultSiteDataSource', {username: username}, function (data) {
                 var DataSource = dataSource.getUserDataSource(username);
-                DataSource.init(systemSource);
+                DataSource.init(data);
                 // var userSystemDataSource = DataSource.getDefaultDataSource();
                 var userSystemDataSource = DataSource.getDataSourceBySitename(username);
                 console.log(userSystemDataSource);
