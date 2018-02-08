@@ -205,7 +205,7 @@ define([
         }
 
         $scope.selectPage = function (page) {
-            util.go(page.url);
+            window.location.href = page.url;
         }
 
         $scope.goUrlSite = function () {
