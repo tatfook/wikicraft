@@ -2,9 +2,10 @@
  * Created by big on 2017/12/19.
  */
 
-define(['app', 'text!wikimod/adi/html/menu.html', "wikimod/adi/component/menu/menu"], function (app, htmlContent) {
+define(['app', 'text!wikimod/adi/html/menu.html', "wikimod/adi/component/menu/menu"], function (app, htmlContent, menuComponent) {
     function registerController(wikiblock) {
-        console.log("menu wikimod registered \n");
+        menuComponent.register(wikiblock);
+
         app.registerController("menuController", ['$scope',function ($scope) {
 
 			$scope.editorMode = wikiblock.editorMode;

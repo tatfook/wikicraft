@@ -8,16 +8,27 @@ define([
     'app', 
     'text!wikimod/adi/component/menu/menu.template.html'
 ], function (app, template_text) {
+    function registerComponent(wikiBlock){
+        console.log(wikiBlock);
 
-    app.registerComponent("adiMenu", {
-        require :  { editorMode: '^editorMode' },
-        template: template_text,
-        bindings: {
-            viewEditorClick: "&",
-            menu: "<",
-        },
-        controller: function(){
-        }
-    });
+        app.registerComponent("adiMenu", {
+            template: template_text,
+            bindings: {
+                viewEditorClick: "&",
+                menu: "<",
+                bgcolor: "@",
+            },
+            controller: function(){
+                this.editorMode = wikiBlock.editorMode;
+                console.log(this);
+                console.log(this.menu);
+            }
+        });
+    }
     
+    return {
+        register: function(wikiBlock){
+            registerComponent(wikiBlock)
+        }
+    }
 });
