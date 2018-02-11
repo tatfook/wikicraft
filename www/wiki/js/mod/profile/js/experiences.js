@@ -139,6 +139,7 @@ define([
             $scope.cancel = function(){
                 $uibModalInstance.dismiss("cancel");
             }
+            
             var isRequiredEmptyAttr = function(attrNames){
                 attrNames = attrNames || [];
                 for(var i = 0;i < attrNames.length;i++){
@@ -165,6 +166,11 @@ define([
                     return;
                 }
                 $scope.errMsg = "";
+                var result = $scope.addingExperience,
+                    startTemp = result.startDate,
+                    endTemp = result.endDate;
+                result.startDate = startTemp ? util.formatDate(startTemp) : "";
+                result.endDate = endTemp ? util.formatDate(endTemp) : "";
                 var requiredAttrs = [{
                     'key': 'title',
                     'value': $translate.instant('简介')
@@ -176,9 +182,19 @@ define([
                 var requiredResult = isRequiredEmptyAttr(requiredAttrs); 
                 if (requiredResult.boolResult) {
                     $scope.errMsg = requiredResult.attr + $translate.instant("不可为空");
+                    result.startDate = startTemp;
+                    result.endDate = endTemp;
                     return;
                 }
                 $uibModalInstance.close($scope.addingExperience);
+            }
+
+            $scope.setDatePickVissibility = function(key) {
+                $scope.dateOptions = {
+                    "minDate": $scope.addingExperience.startDate,
+                    "maxDate": $scope.addingExperience.endDate
+                }
+                $scope[key] = true;
             }
         }]);
     }
