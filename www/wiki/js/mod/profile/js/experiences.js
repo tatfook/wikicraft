@@ -2,7 +2,7 @@
  * @Author: ZhangKaitlyn 
  * @Date: 2018-01-19
  * @Last Modified by: none
- * @Last Modified time: 2018-02-08 15:41:51
+ * @Last Modified time: 2018-02-11 11:36:02
  */
 define([
     'app', 
@@ -130,6 +130,7 @@ define([
             $scope.cancel = function(){
                 $uibModalInstance.dismiss("cancel");
             }
+            
             var isRequiredEmptyAttr = function(attrNames){
                 attrNames = attrNames || [];
                 for(var i = 0;i < attrNames.length;i++){
@@ -147,6 +148,11 @@ define([
 
             $scope.submitaddingExperience = function(){
                 $scope.errMsg = "";
+                var result = $scope.addingExperience,
+                    startTemp = result.startDate,
+                    endTemp = result.endDate;
+                result.startDate = startTemp ? util.formatDate(startTemp) : "";
+                result.endDate = endTemp ? util.formatDate(endTemp) : "";
                 var requiredAttrs = [{
                     'key': 'title',
                     'value': $translate.instant('简介')
@@ -158,9 +164,19 @@ define([
                 var requiredResult = isRequiredEmptyAttr(requiredAttrs); 
                 if (requiredResult.boolResult) {
                     $scope.errMsg = requiredResult.attr + $translate.instant("不可为空");
+                    result.startDate = startTemp;
+                    result.endDate = endTemp;
                     return;
                 }
                 $uibModalInstance.close($scope.addingExperience);
+            }
+
+            $scope.setDatePickVissibility = function(key) {
+                $scope.dateOptions = {
+                    "minDate": $scope.addingExperience.startDate,
+                    "maxDate": $scope.addingExperience.endDate
+                }
+                $scope[key] = true;
             }
         }]);
     }

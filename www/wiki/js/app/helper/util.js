@@ -626,6 +626,22 @@ define([
         }
     }
 
+    /** 
+     * @param {Object} date 当前时间，Sun Feb 11 2018 10:38:15 GMT+0800 (中国标准时间)
+     * @param {String} joinStr 可选，year、month、day之间的连字符，默认为"-"
+     * @return {String} year + "joinStr" + month + "joinStr" + day
+    */
+    util.formatDate = function(date, joinStr){
+        date = date || new Date();
+        joinStr = joinStr || "-";
+        var month = "" + (date.getMonth() + 1),
+            day = "" + date.getDate(),
+            year = date.getFullYear();
+        month = (month.length < 2) ? ("0" + month) : month;
+        day = (day.length < 2) ? ("0" + day) : day;
+        return [year, month, day].join(joinStr);
+    }
+
     config.util = util;
     return util;
 });
