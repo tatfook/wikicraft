@@ -14,7 +14,7 @@ local params = {
 	grant_type="authorization_code",
 	code = request:get("code"),
 	client_id = request:get("clientId"),
-	client_secret = KEEPWORK["config"]["default"]["threeService"]["qq"]["client_secret"],
+	client_secret = KEEPWORK["config"][CURRENT_ENV]["threeService"]["qq"]["client_secret"],
 	redirect_uri = request:get("redirectUri"),
 }
 
