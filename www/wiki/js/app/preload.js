@@ -18,6 +18,7 @@ define([
     'helper/util',
 	"helper/md/mdconf",
 	"helper/mdwiki",
+	"helper/toolbase",
 	
 	// controller
     //'controller/notfoundController',
