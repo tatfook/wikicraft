@@ -13,7 +13,7 @@ local serviceName = "github"
 local params = {
 	code = request:get("code"),
 	client_id = request:get("clientId"),
-	client_secret = KEEPWORK["config"]["default"]["threeService"]["github"]["client_secret"],
+	client_secret = KEEPWORK["config"][CURRENT_ENV]["threeService"]["github"]["client_secret"],
 	redirect_uri = request:get("redirectUri"),
 };
 

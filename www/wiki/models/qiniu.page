@@ -12,8 +12,8 @@ include_once("./qiniu_files.page")
 local qiniu = inherit(models.abstract.base, gettable("models.qiniu"))
 qiniu.db_name = "qiniu"
 
-local accessKey = KEEPWORK["config"]["default"]["threeService"]["qiniu"]["accessKey"]
-local secretKey = KEEPWORK["config"]["default"]["threeService"]["qiniu"]["secretKey"]
+local accessKey = KEEPWORK["config"][CURRENT_ENV]["threeService"]["qiniu"]["accessKey"]
+local secretKey = KEEPWORK["config"][CURRENT_ENV]["threeService"]["qiniu"]["secretKey"]
 
 function qiniu:ctor() 
 	self:addfield("username", "string") -- 用户名
