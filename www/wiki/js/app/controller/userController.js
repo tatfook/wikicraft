@@ -216,6 +216,10 @@ define([
         $scope.$on("onLogout", function(e) {
             $rootScope.isSelf = false;
             $rootScope.isOthers = false;
+        });
+
+        $scope.$on("onUserProfile", function(e) {
+            initState();
         })
 
         $scope.$watch('$viewContentLoaded', function () {
