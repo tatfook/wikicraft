@@ -1,28 +1,30 @@
-```@template/js/grid
-{
-	"isMainContent": false,
-  "rows": [
-    {
-    	"class":"clearfix",
-      "cols": [
-        {
-        "class":"hidden-xs hidden-sm col-md-3",
-          "style": {
-   	    		"padding-right":"0"
-          },
-          "content": "```@toc\n{\"title\":\"功能介绍\"\n}\n```"
-        },
-        {
-        	"class":"col-md-9 bg-title content-padding",
-          "style": {
-            "border-left":"1px solid #CDCDCD"
-        	},
-          "isMainContent": true
-        }
-      ]
-    }
-  ]
-}
+```@template/js/layout
+# design
+- text : style3
+
+# rows
+
+# rows.0
+
+# rows.0.cols
+
+# rows.0.cols.0
+- class : col-md-3 hidden-xs hidden-sm
+- content : ```@adi/js/toc 
+\\- title : 功能介绍
+\\- isHome : true
+\```
+
+# rows.0.cols.0.style
+- padding-right : 0
+
+# rows.0.cols.1
+- class : col-xs-9 bg-title content-padding
+- is_main_content : true
+
+# rows.0.cols.1.style
+- border-left : 1px solid #CDCDCD
+
 ```
 # 制作个人网站 ![](http://git.keepwork.com/gitlab_rls_kaitlyn/keepworkdatasource/raw/master/kaitlyn_images/img_1502422356594.jpeg)
 
@@ -281,4 +283,3 @@ Neural Parallel Language(NPL)语言是一个开源的高性能的通用脚本语
 
 
 
-</br>
