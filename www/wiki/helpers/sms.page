@@ -14,7 +14,7 @@ local Encoding = commonlib.gettable("System.Encoding")
 -- 主帐号,对应开官网发者主账号下的 ACCOUNT SID
 local accountSid = '8a216da85cce7c54015ce86f168408f1'
 -- 主帐号令牌,对应官网开发者主账号下的 AUTH TOKEN
-local accountToken = KEEPWORK["config"]["default"]["threeService"]["sms"]["accountToken"]
+local accountToken = KEEPWORK["config"][CURRENT_ENV]["threeService"]["sms"]["accountToken"]
 -- local accountToken = 'a9591b87bd934ce6810d80708ec413e6'
 
 -- 应用Id，在官网应用列表中点击应用，对应应用详情中的APP ID

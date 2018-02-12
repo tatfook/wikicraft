@@ -205,8 +205,8 @@ function data_source:api_createInnerGitlab(params)
 		--params.confirm = false
 		params.skip_confirmation = true;
 
-		local adminToken = KEEPWORK["config"]["default"]["threeService"]["gitlab"]["token"]
-		local gitlabHost = KEEPWORK["config"]["default"]["threeService"]["gitlab"]["host"]
+		local adminToken = KEEPWORK["config"][CURRENT_ENV]["threeService"]["gitlab"]["token"]
+		local gitlabHost = KEEPWORK["config"][CURRENT_ENV]["threeService"]["gitlab"]["host"]
 		local urlPrefix = "http://" .. gitlabHost .. "/api/v4"
 		local rawPrefix = "http://" .. gitlabHost
 
@@ -398,7 +398,7 @@ function data_source:api_githubLinkGitlab(params)
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
 
-	local adminToken = KEEPWORK["config"]["default"]["threeService"]["gitlab"]["token"]
+	local adminToken = KEEPWORK["config"][CURRENT_ENV]["threeService"]["gitlab"]["token"]
 	local provider = "github"
 	local extern_uid = params.githubUserId
 

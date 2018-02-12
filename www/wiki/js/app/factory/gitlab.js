@@ -23,6 +23,22 @@ define([
 	}
 
     app.factory('gitlab', ['$http', function ($http) {
+        var getRawBaseUrl = function(){
+            var env = config.env;
+            var result = "";
+            switch (env) {
+                case "prod":
+                    result = "http://git.keepwork.com";
+                    break;
+                case "release":
+                    result = "http://git.release.keepwork.com";
+                    break;
+                default:
+                    result = "http://git.stage.keepwork.com";
+                    break;
+            }
+            return result;
+        }
         var gitlab = {
             inited: false,                                          // is already init
             username: '',   // gitlab 用户名                        // gitlab username
@@ -30,8 +46,8 @@ define([
             projectId: undefined,                                  // project id
             projectName: 'keepworkdatasource',                   // repository name
 			projectMap:{},                                      // 项目列表
-            apiBaseUrl: 'http://git.keepwork.com/api/v4',     // api base url
-            rawBaseUrl: 'http://git.keepwork.com',              // raw base url
+            rawBaseUrl: getRawBaseUrl(),              // raw base url
+            apiBaseUrl: getRawBaseUrl() + "/api/v4",     // api base url
             rootPath: '',                                           // 根路径
             httpHeader: {},
         };
@@ -47,6 +63,7 @@ define([
                 skipAuthorization: true,  // 跳过插件satellizer认证
 				isShowLoading:data.isShowLoading == undefined ? true : data.isShowLoading,
             };
+            
 
             data = data || {};
             data.per_page = 100;
@@ -369,7 +386,7 @@ define([
 			var apiurl = self.getRawContentUrlPrefix(params);
 			//console.log(apiurl);
             var _getRawContent = function () {
-				if (self.apiBaseUrl.indexOf("git.keepwork.com") > 0) {
+				if (self.apiBaseUrl.indexOf("git.keepwork.com") > 0 || self.apiBaseUrl.indexOf("git.stage.keepwork.com") > 0 || self.apiBaseUrl.indexOf("git.release.keepwork.com") > 0) {
 					$http({
 						method: 'GET',
 						url: apiurl,
@@ -556,7 +573,7 @@ define([
             self.httpHeader["PRIVATE-TOKEN"] = dataSource.dataSourceToken;
 			self.dataSourceToken = dataSource.dataSourceToken;
             self.apiBaseUrl = dataSource.apiBaseUrl;
-            self.rawBaseUrl = dataSource.rawBaseUrl || "http://git.keepwork.com";
+            self.rawBaseUrl = dataSource.rawBaseUrl || getRawBaseUrl();
             // 移到站点中
 			self.rootPath = dataSource.rootPath || '';
             self.lastCommitId = dataSource.lastCommitId || "master";
