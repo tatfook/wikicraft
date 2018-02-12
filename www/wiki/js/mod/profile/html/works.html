@@ -272,7 +272,7 @@
                 <p class="p-link ellipsis">
                     <a ng-href="{{work.workLink}}" target="_blank" title="work.workLink">{{work.workLink}}</a>
                 </p>
-                <p class="p-desc ellipsis">{{work.desc}}</p>
+                <p class="p-desc ellipsis">{{(work.desc || "暂无描述") | translate}}</p>
                 <p class="p-tags ellipsis" ng-hide="work.isThirdLink">
                     <span ng-repeat="tag in work.data.tags track by $index">{{tag}}</span>
                 </p>
