@@ -57,11 +57,21 @@
         text-align: right;
     }
 
-    @media(max-width: 768px){
-        .user-experience .experiences-list{
+    @media(max-width: 768px) {
+        .user-experience table {
+            table-layout: fixed;
+        }
+
+        .user-experience .experiences-list {
             margin: 10px 0 20px;
             border: none;
             padding: 0 15px;
+        }
+
+        .user-experience td.time {
+            text-align: right;
+            width: 23%;
+            font-size: 12px;
         }
     }
 </style>
@@ -83,7 +93,7 @@
         <table ng-show="experiences.length>0" ng-class="{true:'editing-experiences'}[editing]">
             <tr class="experience-item" ng-repeat="experience in experiences track by $index" ng-show="experience">
                 <td class="title ellipsis-1">{{experience.title}}</td>
-                <td class="link ellipsis-1">{{experience.link}}</td>
+                <td class="link ellipsis-1 hidden-xs">{{experience.link}}</td>
                 <td class="time ellipsis-1">{{experience.startDate+"至"+experience.endDate}}</td>
                 <td class="editing-toolbar" ng-show="editing">
                     <span class="iconfont icon-shezhi" title="{{'设置' | translate}}" ng-click="setExperience($index)"></span>

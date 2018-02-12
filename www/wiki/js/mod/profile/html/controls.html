@@ -28,6 +28,23 @@
     .control-bar .item:last-child {
         margin-right: 0;
     }
+
+    @media(max-width: 768px) {
+        .control-bar {
+            font-size: 14px;
+            padding: 11px 0;
+        }
+
+        .control-bar .item {
+            margin-right: 30px;
+        }
+
+        .control-bar img {
+            width: 16px;
+            margin-right: 0;
+            vertical-align: bottom;
+        }
+    }
 </style>
 <style>
     .user-main-content {
@@ -102,17 +119,25 @@
         opacity: 0.6;
     }
 
-    @media(max-width:768px){
-        .user-main-content{
+    @media(max-width:768px) {
+        .user-main-content {
             border: none;
         }
-        
-        .user-main-content .content{
+
+        .user-main-content .content {
             padding: 15px 0 0;
         }
 
-        .user-main-content h4.title{
+        .user-main-content h4.title {
             margin: 0 15px;
+        }
+
+        .user-main-content .editing-toolbar {
+            white-space: nowrap;
+        }
+        
+        .user-main-content .editing-toolbar .iconfont {
+            margin-left: -5px;
         }
     }
 </style>
