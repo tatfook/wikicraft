@@ -2,7 +2,7 @@
  * @Author: ZhangKaitlyn 
  * @Date: 2018-01-19
  * @Last Modified by: none
- * @Last Modified time: 2018-02-08 19:14:25
+ * @Last Modified time: 2018-02-12 11:18:57
  */
 define([
     'app', 
@@ -248,7 +248,13 @@ define([
                 radarEchartsObj = echartsRadar.init(radarContainer);
                 radarEchartsObj.setOption(option);
     
-            }
+            }            
+
+            $rootScope.$on("onLogout", function(e) {
+                if ($scope.editing) {
+                    initRadar();
+                }
+            })
     
             $scope.$watch('$viewContentLoaded', initRadar);
         }]);
