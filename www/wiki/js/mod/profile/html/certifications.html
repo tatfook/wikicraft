@@ -78,7 +78,7 @@
                 <td class="title ellipsis-1">{{certification.title}}</td>
                 <td class="link ellipsis-1">{{certification.link}}</td>
                 <td class="time ellipsis-1">{{certification.getDate}}</td>
-                <td class="editing-toolbar" ng-show="editing">
+                <td class="editing-toolbar" ng-show="editing && isSelf">
                     <span class="iconfont icon-shezhi" title="{{'设置' | translate}}" ng-click="setCertification($index)"></span>
                     <span class="iconfont icon-shangyi" ng-disabled="$index == 0" title="{{'上移' | translate}}" ng-click="shiftUp($index)"></span>
                     <span class="iconfont icon-xiayi" ng-disabled="$index + 1 == certifications.length" title="{{'下移' | translate}}" ng-click="shiftDown($index)"></span>
