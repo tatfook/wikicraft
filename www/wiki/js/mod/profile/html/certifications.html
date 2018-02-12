@@ -57,6 +57,14 @@
         width: 18%;
         text-align: right;
     }
+
+    @media(max-width: 768px) {
+        .user-certification .certifications-list {
+            margin: 10px 0 20px;
+            border: none;
+            padding: 0 15px;
+        }
+    }
 </style>
 <div class="user-certification" ng-controller="certificationCtrl" ng-hide="certifications.length <=0 && !isSelf">
     <h4 class="title">
