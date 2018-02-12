@@ -38,6 +38,20 @@
     .add-certification-modal .modal-footer .btn-default {
         color: #666;
     }
+
+    .add-certification-modal .datapicker-starter {
+        display: block;
+        position: absolute;
+        height: 100%;
+        left: 15px;
+        right: 15px;
+        cursor: pointer;
+    }
+
+    .add-certification-modal .uib-datepicker-popup.dropdown-menu{
+        left: 15px;
+        right: 15px;
+    }
 </style>
 <div id="addCertificationModal">
     <div class="modal-header">
@@ -63,7 +77,14 @@
             <div class="form-group form-group-md">
                 <label for="inputGetDate" class="col-sm-3 control-label">{{'获得时间' | translate}}：</label>
                 <div class="col-sm-9">
-                    <input type="text" class="form-control" ng-model="addingCertification.getDate" id="inputGetDate">
+                    <span class="datapicker-starter" ng-click="setDatePickVissibility()"></span>
+                    <input type="text" class="form-control" 
+                        uib-datepicker-popup 
+                        is-open="isGetDatePickerShow" 
+                        popup-placement="bottom-left" 
+                        show-button-bar="false" 
+                        ng-model="addingCertification.getDate"
+                    >
                 </div>
             </div>
         </form>
