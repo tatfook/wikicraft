@@ -101,6 +101,20 @@
         cursor: not-allowed;
         opacity: 0.6;
     }
+
+    @media(max-width:768px){
+        .user-main-content{
+            border: none;
+        }
+        
+        .user-main-content .content{
+            padding: 15px 0 0;
+        }
+
+        .user-main-content h4.title{
+            margin: 0 15px;
+        }
+    }
 </style>
 <div ng-controller="profileControlCtrl">
     <div class="control-bar container clearfix" ng-show="isSelf">

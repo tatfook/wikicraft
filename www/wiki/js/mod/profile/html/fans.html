@@ -19,12 +19,19 @@
         margin-top: 20px;
     }
 
-    .user-fans h4 > a{
+    .user-fans h4>a {
         color: #333;
     }
 
-    .user-fans h4 > a:hover{
+    .user-fans h4>a:hover {
         color: #3977AD;
+    }
+
+    @media(max-width: 768px) {
+        .user-fans .fans-list {
+            border: none;
+            min-height: 0;
+        }
     }
 </style>
 <div class="user-fans" ng-controller="fansCtrl" ng-hide="fansList.length <=0 && !isSelf">
@@ -36,7 +43,9 @@
         </div>
         <div class="fans-item" ng-repeat="fans in fansList" ng-show="fansList.length > 0">
             <img ng-src="{{fans.userinfo.portrait || getImageUrl('default_portrait.png',imgsPath)}}" alt="">
-            <h4><a ng-href="{{'/' + fans.userinfo.username}}">{{fans.userinfo.displayName || fans.userinfo.username}}</a></h4>
+            <h4>
+                <a ng-href="{{'/' + fans.userinfo.username}}">{{fans.userinfo.displayName || fans.userinfo.username}}</a>
+            </h4>
         </div>
     </div>
 </div>
