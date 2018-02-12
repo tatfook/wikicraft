@@ -5,7 +5,6 @@
  * Desc: 
  */
 define([
-<<<<<<< Updated upstream
     'app', 
     'text!wikimod/adi/component/menu/menu.template.html',
     'jss',
@@ -23,30 +22,6 @@ define([
         const style = {
             myButton: {
                 color: 'green'
-=======
-    'app',
-    'text!wikimod/adi/component/menu/menu.template.html',
-    'components/editorMode',
-], function (app, template_text) {
-    function registerComponent(wikiBlock){
-        console.log(wikiBlock);
-
-        app.registerComponent("adiMenu", {
-            require: {
-                editorMode : "^editorMode",
-            },
-            template: template_text,
-            bindings: {
-                viewEditorClick: "&",
-                menu: "<",
-                bgcolor: "@",
-            },
-            controller: function(){
-                // this.editorMode = wikiBlock.editorMode;
-                console.log(this.editorMode);
-                console.log(this);
-                console.log(this.menu);
->>>>>>> Stashed changes
             }
         }
 
