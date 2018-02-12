@@ -72,6 +72,7 @@
 		jsAppPath: pathPrefix + 'js/app/',
 		jsAppControllerPath: pathPrefix + 'js/app/controller',
 		jsAppDirectivePath: pathPrefix + 'js/app/directive',
+		jsAppComponentsPath: pathPrefix + 'js/app/components',
 		jsAppFactoryPath: pathPrefix + 'js/app/factory',
 		jsAppHelperPath: pathPrefix + 'js/app/helper',
 		//jsLibPath: pathPrefix + 'js/lib',

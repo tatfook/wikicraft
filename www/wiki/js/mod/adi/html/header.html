@@ -77,10 +77,17 @@
     } */
 </style>
 
-<div ng-controller="menuController" 
+<div ng-controller="headerController"
      ng-class="{true : 'clear-pointer', false : 'clear'}[editorMode]">
     <div ng-if="params.design.text == 'left' && !params.menu_menu.is_mod_hide">
+<<<<<<< Updated upstream:www/wiki/js/mod/adi/html/header.html
+        <adi-logo></adi-logo>
         <adi-menu menu="params.menu_menu" bgcolor="color-11"></adi-menu>
+=======
+        <editor-mode>
+            <adi-menu menu="params.menu_menu" bgcolor="color-11"></adi-menu>
+        </editor-mode>
+>>>>>>> Stashed changes:www/wiki/js/mod/adi/html/menu.html
     </div>
 
     <div ng-if="params.design.text == 'right'  && !params.menu_menu.is_mod_hide">

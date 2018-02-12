@@ -2,14 +2,15 @@
  * Created by big on 2017/12/19.
  */
 
-define(['app', 'text!wikimod/adi/html/menu.html', "wikimod/adi/component/menu/menu"], function (app, htmlContent, menuComponent) {
+define([
+'app',
+'text!wikimod/adi/html/header.html',
+'wikimod/adi/component/menu/menu',
+'wikimod/adi/component/logo/logo',
+], function (app, htmlContent) {
     function registerController(wikiblock) {
-        menuComponent.register(wikiblock);
-
-        app.registerController("menuController", ['$scope',function ($scope) {
-
-			$scope.editorMode = wikiblock.editorMode;
-
+        app.registerController("headerController", ['$scope',function ($scope) {
+			// $scope.editorMode = wikiblock.editorMode;
             wikiblock.init({
                 scope:$scope,
                 styles:[
@@ -56,7 +57,6 @@ define(['app', 'text!wikimod/adi/html/menu.html', "wikimod/adi/component/menu/me
             });
 
             // console.log($scope.params);
-
         }]);
     }
 

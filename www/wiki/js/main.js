@@ -69,6 +69,8 @@
 			// 'echarts-radar': libPathPrefix + "echarts/echarts-radar",
 			'echarts-radar': libPathPrefix + "echarts/echarts-radar.min",
 			//'html2canvas': libPathPrefix + 'html2canvas/html2canvas.min',
+			'jss': libPathPrefix + "jss",
+			'jss-preset-default': libPathPrefix + "jss-preset-default",
 
 			'vue': libPathPrefix + 'vue/vue.min',
 			'botui': libPathPrefix + 'botui/botui',
@@ -81,6 +83,7 @@
 			// dir map
 			'controller': config.jsAppControllerPath,
 			'directive': config.jsAppDirectivePath,
+			'components': config.jsAppComponentsPath,
 			'factory': config.jsAppFactoryPath,
 			'helper': config.jsAppHelperPath,
 			// html dir
@@ -147,6 +150,9 @@
 			},
 			'botui': {
 				deps: ['vue'],
+			},
+			'jss-preset-default': {
+				deps: ['jss'],
 			}
 		},
 		packages: [{
