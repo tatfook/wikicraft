@@ -1,8 +1,9 @@
 <style>
-    .user-activities .empty-box{
+    .user-activities .empty-box {
         border: 1px solid #F2F2F2;
         margin: 20px 0 24px;
     }
+
     .user-activities .active-row {
         height: 80px;
         line-height: 80px;
@@ -42,6 +43,24 @@
 
     .user-activities .glyphicon-menu-down {
         -webkit-text-stroke: 1px #7FC4FF;
+    }
+
+    @media(max-width: 768px) {
+        .user-activities .active-row-box {
+            margin: 10px 0 20px;
+            border: none;
+            padding: 0;
+        }
+        
+        .user-activities .active-row {
+            height: 50px;
+            line-height: 50px;
+        }
+
+        .user-activities .active-row>img {
+            width: 36px;
+            height: 36px;
+        }
     }
 </style>
 <div class="user-activities clearfix" ng-controller="activitiesCtrl" ng-hide="trendsList.length <=0 && !isSelf">

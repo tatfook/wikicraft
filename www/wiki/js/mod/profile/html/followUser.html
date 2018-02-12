@@ -72,6 +72,13 @@
         overflow: hidden;
         text-overflow: ellipsis;
     }
+
+    @media(max-width: 768px){
+        .follow-users .follow-users-item .inner-box{
+            padding: 0 15px;
+            border: none;
+        }
+    }
 </style>
 <div class="follow-users" ng-controller="followsUserCtrl" ng-hide="followUserList.length <=0 && !isSelf">
     <h4 class="title">
