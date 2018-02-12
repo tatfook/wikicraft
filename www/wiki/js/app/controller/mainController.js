@@ -5,6 +5,7 @@
 define([
     'app',
     'markdown-it',
+    'helper/toolbase',
     'helper/mdwiki',
     'helper/markdownwiki',
     'helper/storage',
@@ -18,7 +19,7 @@ define([
     'controller/userController',
     'controller/notfoundController',
     'controller/crosController',
-], function (app, markdownit, mdwiki, markdownwiki, storage, util, mdconf, dataSource, loading, homeHtmlContent, headerHtmlContent, footerHtmlContent, userHtmlContent, notfoundHtmlContent, crosHtmlContent) {
+], function (app, markdownit, toolbase, mdwiki, markdownwiki, storage, util, mdconf, dataSource, loading, homeHtmlContent, headerHtmlContent, footerHtmlContent, userHtmlContent, notfoundHtmlContent, crosHtmlContent) {
 	//var md = markdownwiki({breaks: true, isMainMd:true});
 	var md = mdwiki({use_template:true});
 
@@ -128,6 +129,7 @@ define([
 				app.objects.mdwiki = mdwiki;
 				app.objects.dataSource = dataSource;
 				app.objects.mainMdwiki = app.objects.mainMdwiki || md;
+				app.objects.toolbase = toolbase;
 
 				app.ng_objects.$rootScope = $rootScope;
 				app.ng_objects.$compile = $compile;

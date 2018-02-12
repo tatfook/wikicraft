@@ -1,0 +1,6 @@
+
+define([
+	"app",
+], function(){
+	return {};
+})
