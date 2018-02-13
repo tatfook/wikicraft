@@ -143,40 +143,49 @@
         background-color: #E4E4E4;
     }
 
-    @media(max-width: 768px){
-        .user-skills{
+    @media(max-width: 768px) {
+        .user-skills {
             padding-bottom: 20px;
+            border-top: 6px solid #f2f2f2;
+            padding-top: 20px;
         }
-        .user-skills .main-skill{
+        .user-skills .main-skill {
             border: none;
             padding: 0 15px;
             margin-top: 10px;
         }
 
-        .user-skills .other-skill{
+        .user-skills .other-skill {
             margin-bottom: 0;
             border: none;
             border-top: 1px solid #F2F2F2;
             padding: 0 15px;
         }
 
-        .user-skills .v-skill-ul{
+        .user-skills .v-skill-ul {
             border: none;
             padding-right: 0;
         }
 
-        .user-skills .h-li{
+        .user-skills .h-li {
             float: unset;
             margin-right: 0;
             margin: 10px 0;
         }
 
-        .user-skills .btn-primary{
+        .user-skills .btn-primary {
             margin-top: 0;
         }
 
-        .user-skills .editing-v-skill-ul{
+        .user-skills .editing-v-skill-ul {
             padding: 0 15px;
+        }
+
+        .user-skills .h-li span.icon-icondianzan {
+            width: 36px;
+            height: 36px;
+            background-color: #E4E4E4;
+            border-radius: 50%;
         }
     }
 </style>
@@ -199,8 +208,8 @@
             <li class="clearfix v-li" ng-repeat="skill in skills | limitTo: 5 track by $index">
                 <span class="title">{{skill.title}}</span>
                 <span class="level">{{skill.level}}</span>
-                <span class="pull-right iconfont icon-icondianzan" title="{{(!skillsDetail[skill.title].liked ? '点赞':'取消点赞') | translate}}" ng-class="{false:'active'}[!skillsDetail[skill.title].liked]"
-                    ng-click="likeSkill(skill)"></span>
+                <span class="pull-right iconfont icon-icondianzan" title="{{(!skillsDetail[skill.title].liked ? '点赞':'取消点赞') | translate}}"
+                    ng-class="{false:'active'}[!skillsDetail[skill.title].liked]" ng-click="likeSkill(skill)"></span>
             </li>
         </ul>
         <div class="col-sm-6 skill-radar hidden-xs" id="skillRadar">
@@ -210,8 +219,8 @@
         <ul class="h-skill-ul clearfix">
             <li class="clearfix h-li" ng-repeat="skill in skills | limitTo: (5 - skills.length) track by $index">
                 <span class="title">{{skill.title}}</span>
-                <span class="pull-right iconfont icon-icondianzan" title="{{(!skillsDetail[skill.title].liked ? '点赞':'取消点赞') | translate}}" ng-class="{false:'active'}[!skillsDetail[skill.title].liked]"
-                    ng-click="likeSkill(skill)"></span>
+                <span class="pull-right iconfont icon-icondianzan" title="{{(!skillsDetail[skill.title].liked ? '点赞':'取消点赞') | translate}}"
+                    ng-class="{false:'active'}[!skillsDetail[skill.title].liked]" ng-click="likeSkill(skill)"></span>
             </li>
         </ul>
         <div class="other-skill-footer">
