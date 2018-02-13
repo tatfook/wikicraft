@@ -612,20 +612,6 @@ define([
 		return base32.decode(str);
 	}
 
-    //合并参数
-    util.mergeParams = function(otherObj, thisObj){
-        var Oparams_template = otherObj.params_template;
-        var Tparams_template = thisObj.params_template;
-
-        for(itemA in Tparams_template){
-            for(itemB in Oparams_template){
-                if(itemA != itemB){
-                    Tparams_template[itemB] = Oparams_template[itemB];
-                }
-            }
-        }
-    }
-
     /** 
      * @param {Object} date 当前时间，Sun Feb 11 2018 10:38:15 GMT+0800 (中国标准时间)
      * @param {String} joinStr 可选，year、month、day之间的连字符，默认为"-"
@@ -641,6 +627,23 @@ define([
         day = (day.length < 2) ? ("0" + day) : day;
         return [year, month, day].join(joinStr);
     }
+
+    /**
+     * Mixins for ES5
+     */
+    util.mixin = (function(){
+        function mixin(source, target) {  
+            for (var prop in source) {
+                if (source.hasOwnProperty(prop)) {
+                    target[prop] = source[prop];
+                }
+            }
+        }
+
+        return function(source, target){
+            mixin(source, target);
+        }
+    })();
 
     config.util = util;
     return util;

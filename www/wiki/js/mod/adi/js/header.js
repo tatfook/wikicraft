@@ -3,10 +3,11 @@
  */
 define([
 	'app',
+	'helper/util',
 	'text!wikimod/adi/html/header.html',
 	'wikimod/adi/component/menu/menu',
 	'wikimod/adi/component/logo/logo',
-], function (app, htmlContent) {
+], function (app, util, htmlContent) {
 	var initObj = {
 		styles:[
 		{
@@ -81,8 +82,8 @@ define([
 
 		return htmlContent;
 
-    }
-
+	}
+	
     return {
         render: render,
 		getEditorParams: getEditorParams,
