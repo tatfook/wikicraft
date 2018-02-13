@@ -34,7 +34,12 @@
             <div class="form-group form-group-md">
                 <label for="inputLink" class="col-sm-3 control-label">{{'作品链接' | translate}}：</label>
                 <div class="col-sm-9">
-                    <input type="text" class="form-control" id="inputLink" ng-model="addingWork.workLink">
+                    <ui-select ng-model="addingWork.workLink" reset-search-input="false" on-select="urlSelected($item, $model)">
+                        <ui-select-match allow-clear="false" placeholder="{{addingWork.workLink}}">{{addingWork.workLink}}</ui-select-match>
+                        <ui-select-choices repeat="link in (linkList | filter: $select.search) track by $index" refresh-delay="0" refresh="userInputLink($select)">
+                            <span ng-bind="link.url"></span>
+                        </ui-select-choices>
+                    </ui-select>
                 </div>
             </div>
             <div class="form-group form-group-md">

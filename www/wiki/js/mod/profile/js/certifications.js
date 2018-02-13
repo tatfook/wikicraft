@@ -2,7 +2,7 @@
  * @Author: ZhangKaitlyn 
  * @Date: 2018-01-19
  * @Last Modified by: none
- * @Last Modified time: 2018-02-08 15:44:43
+ * @Last Modified time: 2018-02-11 11:38:26
  */
 define([
     'app',
@@ -125,6 +125,7 @@ define([
 
         app.registerController("addCertificationModalCtrl", ['$scope', '$uibModalInstance', '$translate', function ($scope, $uibModalInstance, $translate) {
             $scope.addingCertification = $scope.addingCertification || {};
+            $scope.isGetDatePickerShow = false;
             $scope.cancel = function(){
                 $uibModalInstance.dismiss("cancel");
             }
@@ -145,6 +146,9 @@ define([
 
             $scope.submitaddingCertification = function(){
                 $scope.errMsg = "";
+                var result = $scope.addingCertification,
+                    getDateTemp = result.getDate;
+                result.getDate = getDateTemp ? util.formatDate(getDateTemp) : "";
                 var requiredAttrs = [{
                     'key': 'title',
                     'value': $translate.instant('简介')
@@ -156,9 +160,14 @@ define([
                 var requiredResult = isRequiredEmptyAttr(requiredAttrs); 
                 if (requiredResult.boolResult) {
                     $scope.errMsg = requiredResult.attr + $translate.instant("不可为空");
+                    result.getDate = getDateTemp;
                     return;
                 }
                 $uibModalInstance.close($scope.addingCertification);
+            }
+
+            $scope.setDatePickVissibility = function(key) {
+                $scope.isGetDatePickerShow = true;
             }
         }]);
     }

@@ -1,0 +1,152 @@
+
+<style>
+.toc_container {
+	font-size: 18px;
+	padding: 60px 0 4px 22px;
+}
+.toc_container .toc-title{
+	margin-left: -20px;
+	color: #333;
+}
+.toc_container.affix{
+	top:0;
+}
+.toc_h_container {
+	cursor:pointer;
+	width: 100%;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	color: #3977AD;
+}
+.toc_h1_container {
+	margin-left: 0px;
+	margin-top: 10px;
+}
+.toc_h2_container {
+	margin-left: 0px;
+	margin-top: 10px;
+}
+.toc_h3_container {
+	margin-left: 0px;
+	margin-top: 10px;
+}
+.toc_h4_container {
+	margin-left: 0px;
+	margin-top: 10px;
+}
+.toc_h5_container {
+	margin-left: 0px;
+	margin-top: 10px;
+}
+.toc_h6_container {
+	margin-left: 0px;
+	margin-top: 10px;
+}
+
+.toc_container .active {
+	color: #999;
+	font-weight: bold;
+	border-right: 5px solid #3977AD;
+}
+
+.toc_text_container:hover{
+	color: #64ADEC;
+}
+.toc_text1_container {
+	margin-left: 10px;
+}
+.toc_text2_container {
+	margin-left: 30px;
+}
+.toc_text3_container {
+	margin-left: 50px;
+}
+.toc_text4_container {
+	margin-left: 70px;
+}
+.toc_text5_container {
+	margin-left: 90px;
+}
+.toc_text6_container {
+	margin-left: 110px;
+}
+</style>
+
+<div ng-if="mode != 'preview'" class="toc_container">
+	<h2 class="toc-title" ng-show="params.title">{{params.title}}</h2>
+	<div class="toc_h1_container toc_h_container" ng-repeat="x1 in tree.nodes track by $index">
+		<div class="toc_text1_container toc_text_container" ng-click="clickTocItem(x1)" data-targetid="{{x1.id}}">
+			{{x1.token ? x1.text : ""}}
+		</div>
+		<div class="toc_h2_container toc_h_container" ng-repeat="x2 in x1.nodes track by $index">
+			<div class="toc_text2_container toc_text_container" ng-click="clickTocItem(x2)" data-targetid="{{x2.id}}">
+				{{x2.token ? x2.text : ""}}
+			</div>
+			<div class="toc_h3_container toc_h_container" ng-repeat="x3 in x2.nodes">
+				<div class="toc_text3_container toc_text_container" ng-click="clickTocItem(x3)" data-targetid="{{x3.id}}">
+					{{x3.token ? x3.text : ""}}
+				</div>
+				<div class="toc_h4_container toc_h_container" ng-repeat="x4 in x3.nodes">
+					<div class="toc_text4_container toc_text_container" ng-click="clickTocItem(x4)" data-targetid="{{x4.id}}">
+						{{x4.token ? x4.text : ""}}
+					</div>
+					<div class="toc_h5_container toc_h_container" ng-repeat="x5 in x4.nodes">
+						<div class="toc_text5_container toc_text_container" ng-click="clickTocItem(x5)" data-targetid="{{x5.id}}">
+							{{x5.token ? x5.text : ""}}
+						</div>
+						<div class="toc_h6_container toc_h_container" ng-repeat="x6 in x5.nodes">
+							<div class="toc_text6_container toc_text_container" ng-click="clickTocItem(x6)" data-targetid="{{x6.id}}">
+								{{x6.token ? x6.text : ""}}
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div ng-if="mode == 'preview'">
+	<div ng-if="params.design == 'style1'">
+		<div class="toc_h1_container toc_h_container">
+			<div class="toc_text1_container toc_text_container">
+				Title1
+			</div>
+			<div class="toc_h2_container toc_h_container">
+				<div class="toc_text2_container toc_text_container">
+					Title11
+				</div>
+			</div>
+			<div class="toc_h2_container toc_h_container">
+				<div class="toc_text2_container toc_text_container">
+					Title12
+				</div>
+			</div>
+			<div class="toc_h2_container toc_h_container">
+				<div class="toc_text2_container toc_text_container">
+					Title13
+				</div>
+			</div>
+		</div>
+		<div class="toc_h1_container toc_h_container">
+			<div class="toc_text1_container toc_text_container">
+				Title2
+			</div>
+			<div class="toc_h2_container toc_h_container">
+				<div class="toc_text2_container toc_text_container">
+					Title21
+				</div>
+			</div>
+			<div class="toc_h2_container toc_h_container">
+				<div class="toc_text2_container toc_text_container">
+					Title22
+				</div>
+			</div>
+			<div class="toc_h2_container toc_h_container">
+				<div class="toc_text2_container toc_text_container">
+					Title23
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

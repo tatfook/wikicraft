@@ -54,15 +54,15 @@
 }
 
 </style>
-<div ng-controller="photoController" class="img">
-    <a href="{{editorMode ? '' : params.media_img.href}}">
+<div class="img">
+    <a href="{{mode=='editor' ? '' : params.media_img.href}}">
         <div ng-class="{true:'photo-clear-pointer'}[params.media_img.href.length == 0]"
              ng-hide="params.media_img.is_mod_hide"
              class="photo-container1"
              ng-if="params.design.text === 'style1'"
              ng-style="setImgBackground(params.media_img.text)"></div>
     </a>
-    <a href="{{editorMode ? '' : params.media_img.href}}">
+    <a href="{{mode=='editor' ? '' : params.media_img.href}}">
         <div ng-class="{true:'photo-clear-pointer'}[params.media_img.href.length == 0]"
              class="photo-container2"
              ng-if="params.design.text === 'style2'"

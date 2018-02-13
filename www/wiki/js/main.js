@@ -10,6 +10,7 @@
 	var libPathPrefix = pathPrefix + 'js/lib/';
 	var appPathPrefix = pathPrefix + 'js/app/';
 	var helperPathPrefix = pathPrefix + 'js/app/helper/';
+	var renderPathPrefix = pathPrefix + 'js/app/renderer';
 
 	define('THREE', [libPathPrefix + 'threejs/three.min.js'], function (THREE) {
 		window.THREE = THREE;
@@ -90,6 +91,7 @@
 			'html': config.htmlPath,
 			'css': config.cssPath,
 			'wikimod': config.wikiModPath,
+			"renderer": renderPathPrefix,
 
 			// mod dir
 			'mod': config.modPath
