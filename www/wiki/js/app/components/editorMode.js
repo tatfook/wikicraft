@@ -12,7 +12,7 @@
     
     console.log('from component');
 
-    app.component("editorMode", {
+    app.registerComponent("editorMode", {
         template: "",
         controller : function(){
             console.log(this);
