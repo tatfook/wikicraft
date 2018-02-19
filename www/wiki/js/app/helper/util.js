@@ -105,11 +105,12 @@ define([
 
     // 将字符串url解析成{sitename, pagename}对象
     util.parseUrl = function () {
-        var hostname = config.hostname || window.location.hostname;
-        var pathname = window.location.pathname;
+        let hostname = config.hostname;
+        let pathname = config.pathname;
 
         if(config.islocalWinEnv()) {
-            pathname = window.location.hash ? window.location.hash.substring(1) : '/';
+            pathname = config.hash ? config.hash.substring(1) : '/';
+
             if (pathname.indexOf('?') >= 0) {
                 pathname = pathname.substring(0, pathname.indexOf('?'));
             }
@@ -122,24 +123,27 @@ define([
             }
             */
         }
+
         pathname = decodeURI(pathname);
 
-        var username = config.isOfficialDomain(hostname) ? undefined : hostname.match(/([\w-]+)\.[\w]+\.[\w]+/);
-        var sitename = '';
-        var pagename = '';
-        var pagepath = '';
-        var domain = '';
+        let username = config.isOfficialDomain(hostname) ? undefined : hostname.match(/([\w-]+)\.[\w]+\.[\w]+/);
+        let sitename = '';
+        let pagename = '';
+        let pagepath = '';
+        let domain   = '';
 
         // 排除IP访问
         if (hostname.split(':')[0].match(/^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$/)) {
             username = undefined;
         }
 
-        var paths = pathname.split('/');
-		username = username && username[1];
+        let paths = pathname.split('/');
+        username  = username && username[1];
+        
         if (username && username.indexOf("-") > 0) {
 			// 用户页
-            var splitIndex = username.indexOf('-');
+            let splitIndex = username.indexOf('-');
+
             if (splitIndex > 0) {
                 sitename = username.substring(splitIndex + 1);
                 username = username.substring(0, splitIndex);
@@ -159,9 +163,11 @@ define([
         } else {
             username = paths.length > 1 ? paths[1] : undefined;
             sitename = paths.length > 2 ? paths[2] : undefined;
-            pagename = paths.length > 3 ? paths[paths.length-1] : undefined;
+            pagename = paths.length > 3 ? paths[paths.length - 1] : undefined;
+
 			if (username != "wiki") {
-				username = username.toLowerCase();
+                username = username.toLowerCase();
+                
 				if (sitename) {
 					sitename = sitename.toLowerCase();
 					pagepath = '/' + username + '/' + sitename + '/' + pathname.substring((username+sitename).length+3);
@@ -171,17 +177,18 @@ define([
 
         if (username != "wiki" && !pagename) {
             pagename = "index";
-            pagepath += (pagepath[pagepath.length-1] == "/" ? "" : "/") + pagename;
+            pagepath += (pagepath[pagepath.length - 1] == "/" ? "" : "/") + pagename;
         }
+
         domain = hostname;
 
         return {
-			domain:domain, 
-			username:username, 
-			sitename:sitename, 
-			pagename:pagename, 
-			pathname:pathname, 
-			pagepath:pagepath
+			domain   : domain, 
+			username : username, 
+			sitename : sitename, 
+			pagename : pagename, 
+			pathname : pathname, 
+			pagepath : pagepath
 		};
     }
 
@@ -514,31 +521,36 @@ define([
         _sequenceRun();
     };
 
-    // 书写格式转换
-    // 下划线转驼峰
+    // 书写格式转换，下划线转驼峰
     util.snakeToHump = function (str) {
         if (!str) {
             return str;
         }
+
         var wordsList = str.split('_');
         var resultStr = wordsList[0];
+
         for (var i = 1; i < wordsList.length; i++) {
             var word = wordsList[i];
+
             if (word[0] >= 'a' && word[0] <= 'z') {
                 resultStr += word[0].toUpperCase() + word.substring(1);
             } else {
                 resultStr += word;
             }
         }
+
         return resultStr;
     }
-    // 驼峰转下划线
+
+    // 书写格式转换，驼峰转下划线
     util.humpToSnake = function (str) {
-		// console.log(str);
         if (!str) {
             return str;
         }
+
         var resultStr = "";
+
         for (var i = 0; i < str.length; i++) {
             if (str[i] >= "A" && str[i] <= "Z") {
                 resultStr += '_' + str[i].toLowerCase();
@@ -546,8 +558,10 @@ define([
                 resultStr += str[i];
             }
         }
+
         return resultStr;
     }
+    
 	// 获取当前路径
 	util.getPathname = function() {
 		return util.humpToSnake(util.parseUrl().pathname);
@@ -646,5 +660,6 @@ define([
     })();
 
     config.util = util;
+
     return util;
 });

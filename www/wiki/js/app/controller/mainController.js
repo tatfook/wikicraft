@@ -18,10 +18,26 @@ define([
     'controller/footerController',
     'controller/userController',
     'controller/notfoundController',
-    'controller/crosController',
-], function (app, markdownit, toolbase, mdwiki, markdownwiki, storage, util, mdconf, dataSource, loading, homeHtmlContent, headerHtmlContent, footerHtmlContent, userHtmlContent, notfoundHtmlContent, crosHtmlContent) {
-	//var md = markdownwiki({breaks: true, isMainMd:true});
-	var md = mdwiki({use_template:true});
+    'controller/crosController'
+], function (
+    app,
+    markdownit,
+    toolbase,
+    mdwiki,
+    markdownwiki,
+    storage,
+    util,
+    mdconf,
+    dataSource,
+    loading,
+    homeHtmlContent,
+    headerHtmlContent,
+    footerHtmlContent,
+    userHtmlContent,
+    notfoundHtmlContent,
+    crosHtmlContent
+) {
+	let md = mdwiki({use_template : true}); //var md = markdownwiki({breaks: true, isMainMd:true});
 
     app.controller('mainController', [
         '$scope',
@@ -43,7 +59,6 @@ define([
         'confirmDialog',
         'realnameVerifyModal',
         'datatreeEditorModal',
-        'selfDefinedModal',
         'assetsManagerModal',
         function (
             $scope,
@@ -65,39 +80,36 @@ define([
             confirmDialog,
             realnameVerifyModal,
             datatreeEditorModal,
-            selfDefinedModal,
             assetsManagerModal
         ) {
-            //console.log("mainController");
-            
             // 初始化基本信息
             function initBaseInfo() {
-				config.isBoostrap = true;
+                config.isBoostrap = true;
+                
                 //配置一些全局服务
                 config.services = {
-                    $rootScope: $rootScope,
-                    $sce: $sce,
-					$timeout: $timeout,
-                    $http: $http,
-                    $compile: $compile,
-                    $auth: $auth,
-                    $location:$location,
-					$anchorScroll:$anchorScroll,
-                    markdownit:markdownit({}),
-					mdconf:mdconf,
-                    storage: storage,
-                    Account: Account,
-                    Message: Message,
-                    github: github,
-					modal: modal,
-                    gitlab:gitlab,
-                    dataSource:dataSource,
-                    loading:loading,
-                    confirmDialog:confirmDialog,
-                    realnameVerifyModal:realnameVerifyModal,
-                    datatreeEditorModal:datatreeEditorModal,
-                    selfDefinedModal:selfDefinedModal,
-                    assetsManagerModal:assetsManagerModal
+                    $rootScope          : $rootScope,
+                    $sce                : $sce,
+					$timeout            : $timeout,
+                    $http               : $http,
+                    $compile            : $compile,
+                    $auth               : $auth,
+                    $location           : $location,
+					$anchorScroll       : $anchorScroll,
+                    markdownit          : markdownit({}),
+					mdconf              : mdconf,
+                    storage             : storage,
+                    Account             : Account,
+                    Message             : Message,
+                    github              : github,
+					modal               : modal,
+                    gitlab              : gitlab,
+                    dataSource          : dataSource,
+                    loading             : loading,
+                    confirmDialog       : confirmDialog,
+                    realnameVerifyModal : realnameVerifyModal,
+                    datatreeEditorModal : datatreeEditorModal,
+                    assetsManagerModal  : assetsManagerModal
                 };
 
                 util.setAngularServices({
@@ -121,31 +133,32 @@ define([
                     realnameVerifyModal:realnameVerifyModal
                 });
 
-				app.objects.Account = Account;
-				app.objects.Message = Message;
-				app.objects.modal = modal;
-				app.objects.config = config;
-				app.objects.util = util;
-				app.objects.mdwiki = mdwiki;
+				app.objects.Account    = Account;
+				app.objects.Message    = Message;
+				app.objects.modal      = modal;
+				app.objects.config     = config;
+				app.objects.util       = util;
+				app.objects.mdwiki     = mdwiki;
 				app.objects.dataSource = dataSource;
 				app.objects.mainMdwiki = app.objects.mainMdwiki || md;
-				app.objects.toolbase = toolbase;
+				app.objects.toolbase   = toolbase;
 
 				app.ng_objects.$rootScope = $rootScope;
-				app.ng_objects.$compile = $compile;
-				app.ng_objects.$http = $http;
-				app.ng_objects.$auth = $auth;
-				app.ng_objects.$timeout = $timeout;
-				app.ng_objects.$uibModal = $uibModal;
-				app.ng_objects.$sce = $sce;
+				app.ng_objects.$compile   = $compile;
+				app.ng_objects.$http      = $http;
+				app.ng_objects.$auth      = $auth;
+				app.ng_objects.$timeout   = $timeout;
+				app.ng_objects.$uibModal  = $uibModal;
+				app.ng_objects.$sce       = $sce;
 
-                $rootScope.imgsPath = config.imgsPath;
-                $rootScope.cssPath = config.cssPath;
-                $rootScope.user = Account.getUser();
-                $rootScope.userinfo = $rootScope.user;
+                $rootScope.imgsPath         = config.imgsPath;
+                $rootScope.cssPath          = config.cssPath;
+                $rootScope.user             = Account.getUser();
+                $rootScope.userinfo         = $rootScope.user;
 				$rootScope.frameHeaderExist = true;
                 $rootScope.frameFooterExist = true;
-                $rootScope.translate = $translate.instant.bind($translate);
+                $rootScope.translate        = $translate.instant.bind($translate);
+                
                 if (config.isLocal()) {
                     $rootScope.frameHeaderExist = true;
                     $rootScope.frameFooterExist = true;
