@@ -23,13 +23,13 @@
 	}
 	
 	config = {
-        // --------------------------------------前端配置 START----------------------------------------------
+        /*---------------------------------------前端配置 START--------------------------------------------*/
         env                   : getEnv(),
-		localEnv              : localEnv,                                                                             // 是否本地调试环境
-		localVMEnv            : localVMEnv,                                                                           // 本地虚拟机环境
-		hostname              : wiki_config.hostname ? wiki_config.hostname.split(":")[0] : window.location.hostname, // url中的hostname, 优先取服务端给过来的(cname转发，客户端获取不到真实的hostname)
-		officialDomainList    : ["keepwork.com", "qiankunew.com"],                                                    // 官方域名 因存在用户官方子域名和其它域名 故需记录
-		officialSubDomainList : [                                                                                     // 官方占用的子域名列表
+		localEnv              : localEnv,                                                             // 是否本地调试环境
+		localVMEnv            : localVMEnv,                                                           // 本地虚拟机环境
+		hostname              : wiki_config.hostname ? wiki_config.hostname.split(":")[0] : hostname, // url中的hostname, 优先取服务端给过来的(cname转发，客户端获取不到真实的hostname)
+		officialDomainList    : ["keepwork.com", "qiankunew.com"],                                    // 官方域名 因存在用户官方子域名和其它域名 故需记录
+		officialSubDomainList : [                                                                     // 官方占用的子域名列表
 			"release.keepwork.com",
 			"dev.keepwork.com",
 			"stage.keepwork.com",
@@ -44,9 +44,9 @@
 		wikiModuleRenderMap   : {},    // wiki mod 解析函数
 		pageSuffixName        : ".md",
 		pageStoreName         : "sitepage",
-		// ----------------------------------------前端配置 END------------------------------------------
+		/*-------------------------------------------前端配置 END------------------------------------------*/
 
-		//------------------------------------------路径配置 START-----------------------------------------
+		/*------------------------------------------路径配置 START-----------------------------------------*/
 		frontEndRouteUrl    : (localEnv && !localVMEnv) ? (pathPrefix + 'index.html') : '/',  // 当使用前端路由时使用的url
 		pathPrefix          : pathPrefix, 		             // 路径配置 BEGIN
 		imgsPath            : pathPrefix + 'assets/imgs/',   // 图片路径
@@ -67,13 +67,14 @@
 		pageUrlPrefix       :'/wiki/html/',
 		// modulePageUrlPrefix : '/wiki/module',                       // api接口路径
 		// moduleApiUrlPrefix  : 'http://localhost:8099/api/module/',  // + moduleName + "/models/" + modelName + '[apiName]'
-		// --------------------------------------路径配置 END----------------------------------------
+		/*------------------------------------------路径配置 END------------------------------------------*/
 
-		// --------------------------------------后端配置 START------------------------------------
+		/*-----------------------------------------后端配置 START-----------------------------------------*/
 		wikiConfig  : wiki_config,
 		bustVersion : wiki_config.bustVersion, //bust version
-		// --------------------------------------后端配置 END-------------------------------------
+		/*------------------------------------------后端配置 END------------------------------------------*/
 
+		/*-------------------------------------------MAP START-------------------------------------------*/
 		routeMap  : { // wiki page
 			"/wiki/test"       : "controller/testController",
 			"/wiki/wikieditor" : "controller/wikiEditorController"
@@ -82,8 +83,9 @@
 			"/wiki/iframeagent" : [],
 		},
 		shareMap  : {}, // 数据共享
+		/*--------------------------------------------MAP END--------------------------------------------*/
 		
-		//-----------------------------helper function-----------------------------------
+		/*-------------------------------------HELPER FUNCTION START-------------------------------------*/
 		isOfficialDomain : function (currentHostname) {
 			currentHostname = currentHostname || hostname;
 			currentHostname = currentHostname.split(':')[0];
@@ -220,6 +222,7 @@
 				cb && cb();
 			});
 		}
+		/*-------------------------------------HELPER FUNCTION END---------------------------------------*/
 	};
 
 	function getEnv(){
@@ -270,6 +273,8 @@
 					initHostname = config.officialDomainList[i];
 				}
 			}
+		}else{
+			initHostname = hostname;
 		}
 
 		if (config.islocalWinEnv()) {

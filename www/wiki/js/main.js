@@ -4,7 +4,7 @@
 
 'use strict';
 
-(function (win) {
+(function () {
 	var pathPrefix       = config.pathPrefix;
 	var jsPathPrefix     = pathPrefix + 'js/';
 	var libPathPrefix    = pathPrefix + 'js/lib/';
@@ -202,4 +202,4 @@
 			});
 		});
 	});
-})(window);
+})();
