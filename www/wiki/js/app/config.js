@@ -140,7 +140,7 @@
 			this.preloadModuleList.push(path);
 		},
 		registerFilter : function(path, func) { // 注册过滤函数
-			var filterList = this.filterMap[path] || [];
+			let filterList = this.filterMap[path] || [];
 
 			filterList.push(func);
 
