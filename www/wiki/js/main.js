@@ -5,10 +5,10 @@
 'use strict';
 
 (function (win) {
-	var pathPrefix = config.pathPrefix;
-	var jsPathPrefix = pathPrefix + 'js/';
-	var libPathPrefix = pathPrefix + 'js/lib/';
-	var appPathPrefix = pathPrefix + 'js/app/';
+	var pathPrefix       = config.pathPrefix;
+	var jsPathPrefix     = pathPrefix + 'js/';
+	var libPathPrefix    = pathPrefix + 'js/lib/';
+	var appPathPrefix    = pathPrefix + 'js/app/';
 	var helperPathPrefix = pathPrefix + 'js/app/helper/';
 	var renderPathPrefix = pathPrefix + 'js/app/renderer';
 

@@ -84,7 +84,7 @@
 		shareMap  : {}, // 数据共享
 		
 		//-----------------------------helper function-----------------------------------
-		isOfficialDomain = function (currentHostname) {
+		isOfficialDomain : function (currentHostname) {
 			currentHostname = currentHostname || hostname;
 			currentHostname = currentHostname.split(':')[0];
 	
@@ -110,7 +110,7 @@
 	
 			return false;
 		},
-		isDebugEnv = function() {
+		isDebugEnv : function() {
 			if (config.isLocal()) {
 				return true;
 			}
@@ -125,33 +125,33 @@
 	
 			return false;
 		},
-		isLocal = function () { // local env
+		isLocal : function () { // local env
 			return localEnv;
 		},
-		islocalWinEnv = function () { // local window env
+		islocalWinEnv : function () { // local window env
 			return localEnv && !localVMEnv
 		},
-		islocalVMEnv = function () { // local VM env
+		islocalVMEnv : function () { // local VM env
 			return localEnv && localVMEnv;
 		},
-		registerPreloadModule = function (path) { // 预加载模块注册
+		registerPreloadModule : function (path) { // 预加载模块注册
 			this.preloadModuleList.push(path);
 		},
-		registerFilter = function(path, func) { // 注册过滤函数
+		registerFilter : function(path, func) { // 注册过滤函数
 			var filterList = this.filterMap[path] || [];
 
 			filterList.push(func);
 
 			this.filterMap[path] = filterList;
 		},
-		setWikiModuleRender = function(moduleName, render) { // wiki mod 渲染函数注册
+		setWikiModuleRender : function(moduleName, render) { // wiki mod 渲染函数注册
 			this.wikiModuleRenderMap[moduleName] = render;
 		},
-		getWikiModuleRender = function (moduleName) { // 获得模块渲染函数
+		getWikiModuleRender : function (moduleName) { // 获得模块渲染函数
 			return this.wikiModuleRenderMap[moduleName];
 		},
-		getPage = function() {},
-		loadMainContent = function(cb, errcb) {
+		getPage : function() {},
+		loadMainContent : function(cb, errcb) {
 			let currentPathname = this.util.parseUrl().pagepath || pathname;
 
 			if(this.islocalWinEnv()) {
@@ -199,7 +199,6 @@
 				pageurl = this.routeMap[rawPathname];  // 优先配置路由
 			}
 			
-			console.log(pageurl);
 			if (pageurl) {
 				require([pageurl], function (mainContent) {
 					if (typeof(mainContent) == "object") {
@@ -216,7 +215,7 @@
 				cb && cb();
 			}
 		},
-		init = function (cb) { // 全局初始化
+		init : function (cb) { // 全局初始化
 			require(this.preloadModuleList, function () {
 				cb && cb();
 			});
