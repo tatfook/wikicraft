@@ -5,21 +5,24 @@ define([
 	'directive/wikiBlock',
 	'directive/wikiBlockContainer',
 ], function(app, mdconf, markdown){
-    app.objects.mds = {};
+	app.objects.mds = {};
+	
     var instCount = 0;
-	var mds = app.objects.mds;
+	var mds       = app.objects.mds;
+
     // 获取md
     function getMd(mdName) {
-		//return app.get('app.md.' + mdName);
 		mds[mdName] = mds[mdName] || {};
+
 		return mds[mdName];
+		//return app.get('app.md.' + mdName);
     }
 
     // 加载mod
     function loadMod(block, cb, errcb) {
         var defaultModPath = "wikimod/";
-        var requireUrl = block.cmdName;
-		var cmdName = block.cmdName;
+        var requireUrl     = block.cmdName;
+		var cmdName        = block.cmdName;
 
         if (block.cmdName == block.modName) {
             requireUrl = defaultModPath + block.modName + "/index";
@@ -27,13 +30,11 @@ define([
 			requireUrl = defaultModPath + block.cmdName;
 		}
 
-		//console.log("加载mod:", requireUrl);
-
 		//block.blockUrl = requireUrl;  // 暂时以cmdName标识唯一模块
         require([requireUrl], function (mod) {
             cb && cb(mod, cmdName);
         }, function (e) {
-			console.log(e);
+			console.error(e);
             errcb && errcb(cmdName);
         });
     }
@@ -45,11 +46,10 @@ define([
 			return; 
 		}
 
-		var href = obj.md.md_special_char_unescape(obj.link_href);
-		var text = obj.md.md_special_char_unescape(obj.link_text);
-		//console.log(obj);
-		//console.log(href);
+		var href              = obj.md.md_special_char_unescape(obj.link_href);
+		var text              = obj.md.md_special_char_unescape(obj.link_text);
 		var currentDataSource = dataSource.getDataSource(pageinfo.username,pageinfo.sitename);
+
 		if (currentDataSource && href.indexOf("private_token=visitortoken") >=0 ) {
 			href = href.replace('private_token=visitortoken','private_token=' + currentDataSource.getToken());
 		}
@@ -205,7 +205,8 @@ define([
                 var wikiModNameRE = /^([\w_]+)/;
                 var cmdName = line.match(wikiCmdRE)[1];
                 var modName = cmdName.match(wikiModNameRE)[1];
-                var modParams = undefined;
+				var modParams = undefined;
+
                 try {
                     modParams = angular.fromJson(content.trim())
                 }

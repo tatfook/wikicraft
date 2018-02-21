@@ -63,7 +63,7 @@
 		// jsLibPath           : pathPrefix + 'js/lib',
 		jsLibPath           : '/wiki/' + 'js/lib',    // 库路径写死 避免前后多次重复缓存库
 		modPath             : pathPrefix + 'mod',
-		wikiModPath         : pathPrefix + 'js/mod/',
+		wikiModPath         : pathPrefix + 'js/mod',
 		htmlPath            : pathPrefix + 'html/',   // html 路径
 		cssPath             : pathPrefix + 'assets/css/',
 		pageUrlPrefix       :'/wiki/html/',
