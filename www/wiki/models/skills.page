@@ -17,7 +17,8 @@ local skills = inherit(models.abstract.base, gettable("models.skills"))
 skills.db_name = "skills"
 local validators = models.validators:new()
 local es = models.elasticsearch:new()
-es:connect({index="kw_skills"})
+local index = CURRENT_ENV .. "_kw_skills"
+es:connect({index=index})
 
 
 function skills:ctor()
@@ -33,13 +34,13 @@ function skills:api_insert(params)
     ensureAuthenticated()
     local skill, is_params_error, message = self:insert_validator(params)
     if (is_params_error) then
-        return response:status(404):send({error={message=message,status=404}})
+        return response:status(400):send({error={message=message,status=400}})
     end
     self:db():insertOne({["+username+title"] = {skill.username, skill.title}}, skill, resume)
     local err, result = yield()
     if (result) then
-        -- params.id = result._id
-        -- self:insert_to_es(params)
+        params.id = result._id
+        self:insert_to_es(params)
         result.likedCount = result.likedCount or 0
         result.usersLiked = nil
         result._id = nil
@@ -103,13 +104,13 @@ function skills:api_update(params)
     ensureAuthenticated()
     local skill, is_params_error, message = self:update_validator(params)
     if (is_params_error) then
-        return response:status(404):send({error={message=message,status=404}})
+        return response:status(400):send({error={message=message,status=400}})
     end
     self:db():updateOne({["+username+title"]={skill.username, skill.title}}, {level=skill.level}, resume)
     local err, result = yield()
     if (result) then
-        -- params.id = result._id
-        -- self:update_to_es(params)
+        params.id = result._id
+        self:update_to_es(params)
         result = {level = result.level}
     end
     return errors:wrap(err, result)
@@ -187,10 +188,10 @@ function skills:update_liked_data(params)
     if (likedCount <= 10000) then
         self:db():updateOne({["+username+title"]={params.username, params.title}}, data_to_update, resume)
         err, result = yield()
-        -- if (result) then
-        --     data_to_update.id = result._id
-        --     self:update_liked_in_es(data_to_update)
-        -- end
+        if (result) then
+            data_to_update.id = result._id
+            self:update_liked_in_es(data_to_update)
+        end
         result.liked = liked
     else
         message = "likedCount over limit(10000)"
@@ -294,12 +295,12 @@ function skills:api_getDetail(params)
 end
 
 
--- return 404 if skill exists
+-- return 400 if skill exists
 function skills:api_checkExistence(params)
     ensureAuthenticated()
     local skill, is_params_error, message = self:check_existence_validator(params)
     if (is_params_error) then
-        return response:status(404):send({error={message=message,status=404}})
+        return response:status(400):send({error={message=message,status=400}})
     end
     return response:status(200):send({error={status=200}})
 end
@@ -343,8 +344,8 @@ function skills:api_delete(params)
     if (skill) then
         self:db():deleteOne({_id=skill._id}, resume)
         local err, result = yield()
-        -- params.id = skill._id
-        -- self:delete_in_es(params)
+        params.id = skill._id
+        self:delete_in_es(params)
     end
 
     return errors:wrap(err, result)
@@ -372,8 +373,7 @@ function skills:insert_to_es(params)
         usersLiked = {},
         likedCount = 0
     }
-
-    return es:insertOne(skill)
+    es:insertOne(skill, function(err,data) end)
 end
 
 
@@ -384,8 +384,7 @@ function skills:update_to_es(params)
         level = params.level,
         works = params.works
     }
-
-    return es:updateOne(skill)
+    es:updateOne(skill, function(err,data) end)
 end
 
 
@@ -396,7 +395,7 @@ function skills:update_liked_in_es(params)
         likedCount = params.likedCount,
         usersLiked = params.usersLiked
     }
-    return es:updateOne(skill)
+    es:updateOne(skill, function(err,data) end)
 end
 
 
@@ -406,14 +405,14 @@ function skills:delete_in_es(params)
         id = params.id
     }
 
-    return es:deleteOne(skill)
+    return es:deleteOne(skill, function(err,data) end)
 end
 
 
 function skills:api_search(params)
     local clean_params, is_params_error, message = self:search_validator(params)
     if (is_params_error) then
-        return response:status(404):send({error={message=message,status=404}})
+        return response:status(400):send({error={message=message,status=400}})
     end
     local search_result = es:search(clean_params)
     local rcode = search_result.data.rcode
@@ -421,7 +420,7 @@ function skills:api_search(params)
     if (rcode == 200) then
         wrapped_result = self:wrap_search_result(search_result)
     else
-        wrapped_result = result.data.data
+        wrapped_result = search_result.data.data
     end
     return wrapped_result
 end
@@ -440,7 +439,6 @@ function skills:search_validator(params)
     local is_params_error, message = validators:get_validate_result()
     if (not is_params_error) then
         clean_data = {
-            type = "skills",
             q = params.q,
             fields = {"title"},
             size = tonumber(params.size) or 500,
@@ -462,7 +460,6 @@ function skills:wrap_search_result(result)
     wrapped_result = {
         timed_out = result.data.data.timed_out,
         took = result.data.data.took,
-        total = result.data.data.hits.total,
         status = rcode
     }
 
@@ -480,6 +477,7 @@ function skills:wrap_search_result(result)
         end
     end
     wrapped_result.hits = hits
+    wrapped_result.total = #hits
     return wrapped_result
 end
 
