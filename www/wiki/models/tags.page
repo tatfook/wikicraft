@@ -15,7 +15,8 @@ local tags = inherit(models.abstract.base, gettable("models.tags"))
 tags.db_name = "tags"
 
 local es = models.elasticsearch:new()
-es:connect({index="kw_tags"})
+local index = CURRENT_ENV .. "_kw_tags"
+es:connect({index=index})
 
 
 function tags:ctor()
@@ -27,6 +28,7 @@ end
 
 -- to insert an tags array
 function tags:insert(params)
+    ensureAuthenticated()
     if (not params.tags) or (not params.url) then
         return errors:wrap(REQUEST_PARAMS_ERROR)
     end
@@ -38,6 +40,8 @@ function tags:insert(params)
     local tag, is_params_error, _
     local clean_tags = {}
     local unique_tags = {}
+    local count_to_insert = 0
+    local count_inserted = 0
 
     -- validate tags
     for i, tag_title in ipairs(params.tags) do
@@ -54,11 +58,23 @@ function tags:insert(params)
     for i, tag in ipairs(clean_tags) do
         self:db():findOne({["+title"] = {tag.title}},
             function(err, data)
-                if (not data) then
-                    self:db():insertOne({["+title"] = {tag.title}}, tag, function(err, data) end)
-                end
                 finished_count = finished_count + 1
-                if (finished_count == #clean_tags) then resume() end
+                if (not data) then
+                    count_to_insert = count_to_insert + 1
+                    self:db():insertOne({["+title"] = {tag.title}}, tag,
+                        function(err, data)
+                            tag.id = data._id
+                            count_inserted = count_inserted + 1
+                            if (finished_count == #clean_tags) and (count_inserted == count_to_insert) then 
+                                resume()
+                            end
+                        end
+                    )
+                end
+                if (finished_count == #clean_tags) then
+                    if (count_to_insert > 0) then yield() end
+                    resume()
+                end
             end
         )
         if (i == #clean_tags) then
@@ -66,16 +82,16 @@ function tags:insert(params)
             finished_count = 0
         end
     end
-
+    self:insert_many_to_es(clean_tags)
     return errors:wrap(nil)
 end
 
 
 function tags:insertOne(params)
-    -- self:ensureAuthenticated()
+    ensureAuthenticated()
     local tag, is_params_error, message = self:insert_validator(params)
     if (is_params_error) then
-        return response:status(404):send({error={message=message,status=404}})
+        return response:status(400):send({error={message=message,status=400}})
     end
     self:db():findOne({["+title"] = {tag.title}}, resume)
     local err, result = yield()
@@ -137,7 +153,7 @@ end
 
 
 function tags:delete(params)
-    -- self:ensureAuthenticated()
+    ensureAuthenticated()
     if (not params.title) then
         return errors:wrap(errors.REQUEST_PARAMS_ERROR)
     end
@@ -155,13 +171,28 @@ end
 
 
 -- insert tags into elasticsearch
+function tags:insert_many_to_es(tags)
+    local data = ""
+    for i, tag in ipairs(tags) do
+        if (tag.id) then
+            data = data .. format('{"index":{"_id":%s}}', tag.id) .. "\n"
+            tag.id = nil
+            data = data .. commonlib.Json.Encode(tag, true) .. "\n"
+        end
+    end
+
+    log(es:bulk({data = data, type = "tags"}))
+end
+
+
+-- insert a tag into elasticsearch
 function tags:insert_to_es(params)
     local tag = {
         type = "tags",
         id = params._id,
         title = params.title,
         creator = params.creator,
-        createDate = params.createDate
+        create_time = params.createDate
     }
     return es:insertOne(tag)
 end
