@@ -2,8 +2,8 @@
 --[[
 Title: elasticsearch
 Author: Zheng Jiabiao
-Date: 2018/1
-Desc:Functions used to operate elasticsearch in port 9200
+Date: 2018/2
+Desc:Functions used to operate elasticsearch with port 9200
 ]]
 
 
@@ -49,9 +49,10 @@ function elasticsearch:locator(params)
 end
 
 
-function elasticsearch:insertOne(params)
+function elasticsearch:insertOne(params, callback)
     if (not params.type) then
-        return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+        local message = "request params error"
+        return response:status(400):send({error={message=message,status=400}})
     end
 
     local location = self:locator(params)
@@ -59,13 +60,14 @@ function elasticsearch:insertOne(params)
     params.type = nil
 
     -- 发送请求
-    return self:sendToES({send_to=insert_to, method="POST", form=params})
+    return self:sendToES({send_to=insert_to, method="POST", form=params}, callback)
 end
 
 
-function elasticsearch:updateOne(params)
+function elasticsearch:updateOne(params, callback)
     if (not params.type) or (not params.id) then
-        return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+        local message = "request params error"
+        return response:status(400):send({error={message=message,status=400}})
     end
 
     local location = self:locator(params)
@@ -74,12 +76,12 @@ function elasticsearch:updateOne(params)
     params.id = nil
 
     local body = {doc = params}
-    return self:sendToES({send_to=update_to, method="POST", form=body})
+    return self:sendToES({send_to=update_to, method="POST", form=body}, callback)
 end
 
 
--- can only find by single field(like id or any other keyword field)
-function elasticsearch:findOne(params)
+-- can only be found by single field(like id or any other keyword field)
+function elasticsearch:findOne(params, callback)
     local term = {_id = params.id}
     params.id = nil
 
@@ -101,23 +103,24 @@ function elasticsearch:findOne(params)
         }
     }
 
-    return self:sendToES({send_to=search_in, method="GET", form=body})
+    return self:sendToES({send_to=search_in, method="GET", form=body}, callback)
 end
 
 
--- can only find by id
-function elasticsearch:deleteOne(params)
+-- can only be deleted by id
+function elasticsearch:deleteOne(params, callback)
     if (not params.type) or (not params.id) then
-        return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+        local message = "request params error"
+        return response:status(400):send({error={message=message,status=400}})
     end
 
     local location = self:locator(params)
 
-    return self:sendToES({send_to=location, method="DELETE"})
+    return self:sendToES({send_to=location, method="DELETE"}, callback)
 end
 
 
-function elasticsearch:search(params)
+function elasticsearch:search(params, callback)
     local location = self:locator(params)
     local search_in = location .. "_search"
     local body = {}
@@ -137,7 +140,7 @@ function elasticsearch:search(params)
     body.size = params.size
     body.from = params.from
 
-    return self:sendToES({send_to=search_in, method="GET", form=body})
+    return self:sendToES({send_to=search_in, method="GET", form=body}, callback)
 end
 
 
@@ -166,39 +169,40 @@ end
 
 function elasticsearch:highlight_fields_generator(params)
     local highlight_fields = {}
-
     for i, field in ipairs(params.fields) do
         highlight_fields[field] = {}
     end
-
     return highlight_fields
 end
 
 
-function elasticsearch:bulk(params)
+function elasticsearch:bulk(params, callback)
     if (not params.data) then
-        params.flag = "elasticsearch:bulk"
-        log(params, true)
-        return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+        -- params.flag = "elasticsearch:bulk"
+        -- log(params, true)
+        local message = "serialized data required"
+        return response:status(400):send({error={message=message,status=400}})
     end
 
     local location = self:locator(params)
     local send_to = format("%s_bulk", location)
-    return self:sendToES({send_to=send_to, postfields=params.data})
+    return self:sendToES({send_to=send_to, postfields=params.data}, callback)
 end
 
 
-function elasticsearch:sendToES(params)
+function elasticsearch:sendToES(params, callback)
     if (self.enabled == 0) then
         local message = "elasticsearch not enabled"
-        return response:status(404):send({error={message=message,status=404}})
+        return response:status(400):send({error={message=message,status=400}})
     end
     if (not params.send_to) then
-        return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+        local message = "request params error"
+        return response:status(400):send({error={message=message,status=400}})
     end
 
     if (params.form) and (params.postfields) then
-        return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+        local message = "request params error"
+        return response:status(400):send({error={message=message,status=400}})
     end
 
     local info = {}
@@ -212,17 +216,19 @@ function elasticsearch:sendToES(params)
         info.method = nil
     else
         if (info.method == "POST") then
-
             -- send empty table as an array
             info.postfields = commonlib.Json.Encode(info.form, true)
         end
     end
-
-    System.os.GetUrl(info, resume)
-    local err, result = yield()
-
-    self:errors_logger(err, result, info)
-    return errors:wrap(err, result)
+    
+    if (not callback) then
+        System.os.GetUrl(info, resume)
+        local err, result = yield()
+        -- self:errors_logger(err, result, info)
+        return errors:wrap(err, result)
+    else
+        System.os.GetUrl(info, callback)
+    end
 end
 
 
