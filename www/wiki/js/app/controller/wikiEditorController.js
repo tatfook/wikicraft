@@ -4,12 +4,10 @@
 
 define([
     'app',
-	//'html2canvas',
     'markdown-it',
     'to-markdown',
     'codemirror',
     'helper/mdwiki',
-    'helper/markdownwiki',
     'helper/util',
     'helper/storage',
     'helper/dataSource',
@@ -18,14 +16,19 @@ define([
     'text!html/wikiEditor.html',
     'controller/editWebsiteController',
     'controller/bigfileController',
-	'controller/moduleEditorController',
+    'controller/moduleEditorController',
+    // 'helper/markdownwiki',
+	// 'html2canvas',
+
+    /*----------CODE MIRROR LANGUAGE START---------*/
     'codemirror/mode/markdown/markdown',
-    // 代码折叠
+    /*----------CODE MIRROR LANGUAGE END-----------*/
+
+    /*----------CODE MIRROR PLUGIN START-----------*/
     'codemirror/addon/fold/foldgutter',
     'codemirror/addon/fold/foldcode',
     'codemirror/addon/fold/markdown-fold',
     'codemirror/addon/fold/xml-fold',
-    // 错误提示
     'codemirror/addon/lint/json-lint',
     'codemirror/addon/search/search',
     'codemirror/addon/dialog/dialog',
@@ -35,29 +38,50 @@ define([
     'codemirror/addon/search/jump-to-line',
     'codemirror/addon/scroll/annotatescrollbar',
     'codemirror/addon/display/fullscreen',
+    /*----------CODE MIRROR PLUGIN END-------------*/
+
+    /*----------BOOTSTRAP PLUGIN START-------------*/
     'bootstrap-treeview'
-], function (app, /*html2canvas,*/ markdownit, toMarkdown, CodeMirror, mdwikifunc, markdownwiki, util, storage, dataSource, mdconf, qiniu, htmlContent, editWebsiteHtmlContent, bigfileContent, moduleEditorContent) {
-    var otherUserinfo = undefined;
-    var pageSuffixName = config.pageSuffixName;
-    //var mdwiki = markdownwiki({editorMode: true, breaks: true, isMainMd:true});
-    var mdwiki = mdwikifunc({mode: "editor", use_template: true, containerId:"result-html"});
+    /*----------BOOTSTRAP PLUGIN END---------------*/
+], function (
+    app,
+    markdownit,
+    toMarkdown,
+    CodeMirror,
+    mdwiki,
+    util,
+    storage,
+    dataSource,
+    mdconf,
+    qiniu,
+    htmlContent,
+    editWebsiteHtmlContent,
+    bigfileContent,
+    moduleEditorContent
+    // markdownwiki,
+    // html2canvas
+) {
     var editor;
-    var allWebsites = [];
+    var otherUserinfo        = undefined;
+    var pageSuffixName       = config.pageSuffixName;
+    var mdwiki               = mdwiki({mode: "editor", use_template: true, containerId:"result-html"});
+    var allWebsites          = [];
     var allWebstePageContent = {};
-    var allPageMap = {};                  // 页面映射
-	var allSiteMap = {};               // 所有站点映射
-    var currentSite = undefined;          // 当前站点
-    var currentPage = undefined;          // 当前页面
-    var editorDocMap = {};                // 每个文件对应一个文档
-    var isHTMLViewEditor = false;         // 是否h5视图编辑
-    var currentRichTextObj = undefined;   // 当前编辑的富文本
-    var treeNodeMap = {};            // 树节点映射
-    var treeNodeExpandedMap = {};    // 展开节点
-    var pagelistMap = {};            // 页列表映射
-    var urlParamsMap = {};           // url 参数映射
+    var allPageMap           = {};        // 页面映射
+	var allSiteMap           = {};        // 所有站点映射
+    var currentSite          = undefined; // 当前站点
+    var currentPage          = undefined; // 当前页面
+    var editorDocMap         = {};        // 每个文件对应一个文档
+    var isHTMLViewEditor     = false;     // 是否h5视图编辑
+    var currentRichTextObj   = undefined; // 当前编辑的富文本
+    var treeNodeMap          = {};        // 树节点映射
+    var treeNodeExpandedMap  = {};        // 展开节点
+    var pagelistMap          = {};        // 页列表映射
+    var urlParamsMap         = {};        // url 参数映射
+    //var mdwiki = markdownwiki({editorMode: true, breaks: true, isMainMd:true});
 
 	app.objects.mainMdwiki = app.objects.editormd = mdwiki;
-	app.objects.editor = editor;
+	app.objects.editor     = editor;
 	//console.log(mdwiki, app.objects.mainMdwiki);
 
 	// 判断对象是否为空

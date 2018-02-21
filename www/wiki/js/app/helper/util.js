@@ -9,10 +9,10 @@ define([
     "helper/errTranslate"
 ], function ($, markdown_it, jsbase32, errTranslate) {
     var util = {
-        stack:[],   // 堆栈操作模拟
-        id:0,       // ID产生器 局部唯一性
-        lastUrlObj:{}, // 记录最近一次URL信息
-        urlRegex: /(https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9]\.[^\s]{2,})/,
+        stack      : [], // 堆栈操作模拟
+        id         : 0,  // ID产生器 局部唯一性
+        lastUrlObj : {}, // 记录最近一次URL信息
+        urlRegex   : /(https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9]\.[^\s]{2,})/,
     };
 
     util.subMarkdownRender = (function() {
@@ -69,7 +69,6 @@ define([
 
 	}
 
-    // $html
     util.html = function(selector, htmlStr, $scope, isCompile) {
         isCompile = isCompile == undefined ? true : isCompile;
         htmlStr   = htmlStr ||'<div></div>';
@@ -82,7 +81,7 @@ define([
 
         $(selector).html(htmlStr);
 
-		util.broadcastViewContentLoaded({containerId:selector}, $scope);
+		util.broadcastViewContentLoaded({containerId : selector}, $scope);
 
         setTimeout(function () {
             $scope.$apply();
@@ -240,7 +239,6 @@ define([
         return this.func;
     }
 
-// stack
     util.push = function (obj) {
         this.stack.push(obj);
     }
@@ -660,6 +658,14 @@ define([
             mixin(source, target);
         }
     })();
+
+    util.throttle = function (method, context) {
+        clearTimeout(method.stickTimer);
+
+        method.stickTimer = setTimeout(function () {
+            method.call(context);
+        }, 100);
+    }
 
     config.util = util;
 

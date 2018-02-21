@@ -229,18 +229,6 @@ define([
                 w.css("min-height", minH);
             }
 
-            function throttle(method, context) {
-                clearTimeout(method.stickTimer);
-
-                method.stickTimer = setTimeout(function () {
-                    method.call(context);
-                }, 100);
-            }
-
-            window.onresize = function () {
-                throttle(stickFooter);
-            };
-
             function initView() {
                 // 信息提示框
                 $("#messageTipCloseId").click(function () {
@@ -322,8 +310,68 @@ define([
                 }
             }
 
+            // 加载内容信息
+            function initContentInfo() {
+                util.html('#__UserSitePageContent__', '<div></div>', $scope);
+
+                $rootScope.urlObj = util.parseUrl();
+
+                var urlObj = $rootScope.urlObj;
+                
+                setWindowTitle(urlObj);
+				
+				if (!util.isEditorPage()) {
+					storage.sessionStorageRemoveItem("otherUsername");
+				}
+
+				if (urlObj.domain && !config.isOfficialDomain(urlObj.domain)) {
+					util.post(config.apiUrlPrefix + 'website_domain/getByDomain',{domain:urlObj.domain}, function (data) {
+						if (data) {
+							urlObj.username = data.username;
+							urlObj.sitename = data.sitename;
+							var urlPrefix = '/' + data.username + '/' + data.sitename;
+							var pathname = urlObj.pathname.length > 1 ? urlObj.pathname : "/index";
+							urlObj.pagepath = pathname.indexOf(urlPrefix) == 0 ? pathname : urlPrefix + pathname;
+						}
+						getUserPage();
+					}, function () {
+						getUserPage();
+					});
+					return;
+				}
+                
+                if (config.mainContent) {
+                    if (config.mainContentType == "wiki_page") {
+						//if (urlObj.pathname == "/wiki/test") {
+							//config.mainContent = md.render(config.mainContent);
+						//}
+                        util.html('#__UserSitePageContent__', config.mainContent, $scope);
+                        //config.mainContent = undefined;
+                    } else {
+                        util.html('#__UserSitePageContent__', config.mainContent, $scope);
+                        config.mainContent = undefined;
+                    }
+                } else if (!urlObj.username){
+                    if (Account.isAuthenticated()) {
+                        Account.getUser(function (userinfo) {
+                            util.go("/" + userinfo.username);
+						}, function() {
+							Account.logout();
+						    window.location.reload();
+							//util.html('#__UserSitePageContent__', homeHtmlContent, $scope);
+						});
+                    } else {
+                        util.html('#__UserSitePageContent__', homeHtmlContent, $scope);
+                    }
+                } else {
+					getUserPage();
+                }
+
+            }
+
             function getUserPage() {
                 var urlObj = $rootScope.urlObj;
+
                 // 访问用户页
                 $rootScope.userinfo = undefined;
                 $rootScope.siteinfo = undefined;
@@ -332,11 +380,12 @@ define([
 
                 if (urlObj.username && urlObj.sitename) {
                     $rootScope.isHeaderScroll = true;
+
                     util.http("POST", config.apiUrlPrefix + "website/getDetailInfo", {
-                        username: urlObj.username,
-                        sitename: urlObj.sitename,
-                        pagename: urlObj.pagename || 'index',
-						url:urlObj.pagepath,
+                        username : urlObj.username,
+                        sitename : urlObj.sitename,
+                        pagename : urlObj.pagename || 'index',
+						url      : urlObj.pagepath,
                     }, function (data) {
                         data = data || {};
                         
@@ -421,69 +470,14 @@ define([
                 }
             }
 
-            // 加载内容信息
-            function initContentInfo() {
-                util.html('#__UserSitePageContent__', '<div></div>', $scope);
-                $rootScope.urlObj = util.parseUrl();
-
-                var urlObj = $rootScope.urlObj;
-                // 置空用户页面内容
-                // console.log(urlObj);
-                setWindowTitle(urlObj);
-				
-				if (!util.isEditorPage()) {
-					storage.sessionStorageRemoveItem("otherUsername");
-				}
-
-				if (urlObj.domain && !config.isOfficialDomain(urlObj.domain)) {
-					util.post(config.apiUrlPrefix + 'website_domain/getByDomain',{domain:urlObj.domain}, function (data) {
-						if (data) {
-							urlObj.username = data.username;
-							urlObj.sitename = data.sitename;
-							var urlPrefix = '/' + data.username + '/' + data.sitename;
-							var pathname = urlObj.pathname.length > 1 ? urlObj.pathname : "/index";
-							urlObj.pagepath = pathname.indexOf(urlPrefix) == 0 ? pathname : urlPrefix + pathname;
-						}
-						getUserPage();
-					}, function () {
-						getUserPage();
-					});
-					return;
-				}
-
-                if (config.mainContent) {
-                    if (config.mainContentType == "wiki_page") {
-						//if (urlObj.pathname == "/wiki/test") {
-							//config.mainContent = md.render(config.mainContent);
-						//}
-                        util.html('#__UserSitePageContent__', config.mainContent, $scope);
-                        //config.mainContent = undefined;
-                    } else {
-                        util.html('#__UserSitePageContent__', config.mainContent, $scope);
-                        config.mainContent = undefined;
-                    }
-                } else if (!urlObj.username){
-                    if (Account.isAuthenticated()) {
-                        Account.getUser(function (userinfo) {
-                            util.go("/" + userinfo.username);
-						}, function() {
-							Account.logout();
-						    window.location.reload();
-							//util.html('#__UserSitePageContent__', homeHtmlContent, $scope);
-						});
-                    } else {
-                        util.html('#__UserSitePageContent__', homeHtmlContent, $scope);
-                    }
-                } else {
-					getUserPage();
-                }
-
-            }
-
             function init() {
                 initBaseInfo();
                 initView();
             }
+
+            window.onresize = function () {
+                util.throttle(stickFooter);
+            };
 
             init();
 
