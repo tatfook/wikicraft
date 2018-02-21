@@ -83,7 +83,7 @@
 			// HTML DIR
 			'html'     : config.htmlPath,
 			'css'      : config.cssPath,
-			'wikimod'  : config.wikiModPath,
+			'wikimod'  : config.wikiModPath.substring(0, config.wikiModPath.length - 1),
 			"renderer" : renderPathPrefix,
 
 			// MOD DIR

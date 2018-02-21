@@ -1311,14 +1311,12 @@ define([
                             data:[],
                             //data: getTreeData($scope.user.username, allPageMap, false),
                             onNodeSelected: function (event, data) {
-                                //console.log(data.pageNode);
-                                //console.log("---------onNodeSelected----------");
                                 var treeid = getTreeId(data.pageNode.username, data.pageNode.sitename);
+
                                 if (data.pageNode.isLeaf) {
                                     if (currentPage && data.pageNode.url != currentPage.url) {
                                         $(getTreeId(currentPage.username, currentPage.sitename)).treeview('unselectNode', [treeNodeMap[currentPage.url].nodeId, {silent: true}]);
                                     }
-
                                 } else {
                                     $(treeid).treeview('unselectNode', [data.nodeId, {silent: true}]);
                                     $(treeid).treeview('toggleNodeExpanded', [ data.nodeId, { silent: true } ]);
@@ -1328,16 +1326,16 @@ define([
                                         treeNodeExpandedMap[data.pageNode.url] = true;
                                     }
                                     getSitePageList({path:data.pageNode.url, username:data.pageNode.username, sitename:data.pageNode.sitename});
-                                    //console.log("--------------");
                                 }
+
                                 renderAutoSave(function () {
                                     if (data.pageNode.isLeaf) {
-                                        //console.log("--------------------auto save--------------------");
                                         if (!currentPage || currentPage.url != data.pageNode.url) {
                                             currentPage = getPageByUrl(data.pageNode.url);
                                             currentSite = getCurrentSite();
                                             openPage();
                                         }
+                                        
                                         editor.focus();
                                     }
                                 }, function () {
@@ -1400,16 +1398,17 @@ define([
                         $('#readableTree').treeview(readableTree);
                         $('#readableTree').treeview('collapseAll', {silent: false});
                         
-                        //console.log(treeNodeMap);
                         isFirstCollapsedAll = false;
+
                         for (var key in treeNodeExpandedMap) {
                             var node = treeNodeMap[key];
-                            //console.log(key, treeNodeMap[key]);
+
                             if (!node) {
                                 continue;
                             }
+
                             var treeid = getTreeId(node.pageNode.username, node.pageNode.sitename);
-                            //console.log(treeid, node.pageNode.username, node.pageNode.sitename);
+
                             treeNodeMap[key] && $(treeid).treeview('expandNode', [treeNodeMap[key].nodeId, {levels: 10, silent: true}]);
                         }
                     });
@@ -2334,7 +2333,8 @@ define([
 
                     editor.on("change", function (cm, changeObj) {
                         var moduleEditorParams = config.shareMap.moduleEditorParams || {};
-                        var isStopRender = moduleEditorParams.renderMod == "editorToCode";
+                        var isStopRender       = moduleEditorParams.renderMod == "editorToCode";
+
                         changeCallback(cm, changeObj);
 
                         if (currentPage && currentPage.url) {
@@ -3002,7 +3002,6 @@ define([
                         storage.indexedDBSetItem(config.pageStoreName, page);      // 每次改动本地保存
                         initTree();
                         if (!util.isEmptyObject(currentPage) && url == currentPage.url) {
-                            //console.log("---------");
                             openPage();
                         }
                     });

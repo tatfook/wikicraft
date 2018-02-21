@@ -1,10 +1,11 @@
 define([
-    'app',
-	"helper/md/mdconf",
-	"helper/md/md",
+	'app',
+	'helper/util',
+	'helper/md/mdconf',
+	'helper/md/md',
 	'directive/wikiBlock',
 	'directive/wikiBlockContainer',
-], function(app, mdconf, markdown){
+], function(app, util, mdconf, markdown){
 	app.objects.mds = {};
 	
     var instCount = 0;
@@ -65,8 +66,7 @@ define([
 
 		var href = obj.md.md_special_char_unescape(obj.image_href);
 		var text = obj.md.md_special_char_unescape(obj.image_text);
-		//console.log(obj);
-		//console.log(href);
+
 		var currentDataSource = dataSource.getDataSource(pageinfo.username,pageinfo.sitename);
 		if (currentDataSource && href.indexOf("private_token=visitortoken") >=0 ) {
 			href = href.replace('private_token=visitortoken','private_token=' + currentDataSource.getToken());
@@ -79,41 +79,42 @@ define([
 		md.register_rule_render("a", md_link_render);
 		md.register_rule_render("img", md_image_render);
 	}
+
     // md 构造函数
     function mdwiki(options) {
 		options = options || {};
 
-        var mdName = "md" + instCount++;
+        var mdName       = "md" + instCount++;
 		var encodeMdName = encodeURI(mdName);
-        var md = getMd(mdName);
+        var md           = getMd(mdName);
 
-        md.mdName = mdName;
-        md.md = markdown(options);
-        md.containerId = options.containerId;
-        md.editor = options.editor;
-		md.mode = options.mode || "normal";
-        md.$scope = options.$scope;
+        md.mdName          = mdName;
+        md.md              = markdown(options);
+        md.containerId     = options.containerId;
+        md.editor          = options.editor;
+		md.mode            = options.mode || "normal";
+        md.$scope          = options.$scope;
 		md.isBindContainer = false;
-		md.use_template = options.use_template;
+		md.use_template    = options.use_template;
 
 		md_rule_override(md.md);
 
-		var templateContent = '<div class="wikiEditor" ng-repeat="$kp_block in $kp_block.blockList track by $index" ng-if="!$kp_block.isTemplate"><wiki-block-container data-params="' + encodeMdName +'"></wiki-block-container></div>';
+		var templateContent      = '<div class="wikiEditor" ng-repeat="$kp_block in $kp_block.blockList track by $index" ng-if="!$kp_block.isTemplate"><wiki-block-container data-params="' + encodeMdName + '"></wiki-block-container></div>';
 		var blankTemplateContent = '<div>' + templateContent + '</div>';
 
 		if (md.mode == "preview") {
-			templateContent = '<div class="wikiEditor" ng-repeat="$kp_block in $kp_block.blockList track by $index"><wiki-block-container data-params="' + encodeMdName +'"></wiki-block-container></div>';
+			templateContent      = '<div class="wikiEditor" ng-repeat="$kp_block in $kp_block.blockList track by $index"><wiki-block-container data-params="' + encodeMdName +'"></wiki-block-container></div>';
 			blankTemplateContent = '<div>' + templateContent + '</div>';
 		}
 
 		md.template = {
-			mdName: mdName,
-			isTemplate: true,
-			isWikiBlock: true,
-			templateContent:templateContent,
-			htmlContent: blankTemplateContent,
-			text:undefined,
-			blockList:[],
+			mdName          : mdName,
+			isTemplate      : true,
+			isWikiBlock     : true,
+			templateContent : templateContent,
+			htmlContent     : blankTemplateContent,
+			text            : undefined,
+			blockList       : [],
 		}
 
         md.setEditor = function(editor) {
@@ -122,59 +123,19 @@ define([
 
 		md.bindContainer = function() {
 			var $scope = options.$scope || app.ng_objects.$rootScope;
-			var $compile = app.ng_objects.$compile;
+			var html   = '<wiki-block-container class="wikiEditor" data-template="true" data-params="' + encodeMdName + '"></wiki-block-container>';
 
 			if (!md.isBindContainer && md.containerId && $('#' + md.containerId)) {
-				$("#" + md.containerId).html($compile('<wiki-block-container class="wikiEditor" data-template="true" data-params="' + encodeMdName + '"></wiki-block-container>')($scope));
+				util.html("#" + md.containerId, html, $scope);
+
 				md.isBindContainer = true;
 			}
 		}
 
-        // 渲染
-        md.render = function (text, theme, isLoadTheme) {
-			function _render(text, theme) {
-				md.parse(text, theme);
-
-				//console.log("-------render----------");
-				md.template.render(function(){
-					for(var i = 0; i < md.template.blockList.length; i++) {
-						var block = md.template.blockList[i];
-						block.render();
-					}
-				});
-
-				md.template.$apply && md.template.$apply();
-				//console.log(md.template);
-
-				md.bindContainer();
-				return '<wiki-block-container data-template="true" data-params="' + encodeURI(md.mdName) + '"></wiki-block-container>';
-			}
-
-			if (!isLoadTheme) {
-				return _render(text, theme);
-			}
-
-			var pageinfo = app.ng_objects.$rootScope.pageinfo;
-			if (pageinfo && pageinfo.pagename && pageinfo.pagename[0] != "_" ) {
-				var currentDataSource = app.objects.dataSource.getDataSource(pageinfo.username,pageinfo.sitename);
-				if (currentDataSource) {
-					// get theme content
-					currentDataSource.getRawContent({path:'/' + pageinfo.username + '/' + pageinfo.sitename + '/_theme' + config.pageSuffixName, isShowLoading:false}, function (content) {
-						_render(text, content);
-					}, function () {
-						_render(text, theme);
-					})
-				} else {
-					_render(text, theme);
-				}
-			} else {
-				_render(text,theme);
-			}
-        }
-
 		md.getBlockList = function() {
 			return md.template.blockList;
 		}
+
         // md.bind
         md.parseBlock = function (block) {
 			// 进来表明该模块发生变化 应重置所有状态
@@ -315,7 +276,8 @@ define([
 					}
 				}
             }
-        }
+		}
+		
 		// 模板匹配
 		md.templateMatch = function(wikiBlock) {
 			var modParams = wikiBlock.modParams;
@@ -343,76 +305,84 @@ define([
         }
 
         md.parse = function (text, theme) {
-			theme = theme || "";
-			text = theme + '\n' + text;
+			theme          = theme || "";
+			text           = theme + '\n' + text;
 			themeLineCount = theme.split("\n").length;
 
-            var tokenList = md.md.parse(text);
-            var blockList = md.template.blockList;
-			var template = undefined;
+			var tokenList = md.md.parse(text);
+			var blockList = md.template.blockList;
+			var template  = undefined;
+
             for (var i = 0; i < tokenList.length; i++) {
                 var token = tokenList[i];
 				var block = blockList[i] || {};
 
-				block.token = token;
+				block.token  = token;
 				block.mdName = md.mdName;
-				block.mode = md.mode;
+				block.mode   = md.mode;
+
 				if (block.text != token.text) {
-					block.text = token.text;
+					block.text     = token.text;
 					block.isChange = true;
+
 					md.parseBlock(block);
 				} else {
 					block.isChange = false;
 				}
+
 				block.token.start = block.token.start - themeLineCount;
-				block.token.end = block.token.end - themeLineCount;
-				blockList[i] = block;
-				//console.log(blcok);
+				block.token.end   = block.token.end - themeLineCount;
+				blockList[i]      = block;
+
 				if (md.use_template && block.isTemplate && md.templateMatch(block)) {
 					template = block;
 				}
             }
 
 			var size = blockList.length;
+
 			for (var i = tokenList.length; i < size; i++) {
 				blockList.pop();
 			}
 
 			var templateText = md.template.text;
+
 			//  预览模式不支持template
 			if (md.mode != "preview" && template) {
-				md.template.text = template.text;
-				md.template.token = template.token;
-				md.template.modName = template.modName;
-				md.template.cmdName = template.cmdName;
-				md.template.modParams = template.modParams;
-				md.template.wikimod = template.wikimod;
-				md.template.render = template.render;
+				md.template.text           = template.text;
+				md.template.token          = template.token;
+				md.template.modName        = template.modName;
+				md.template.cmdName        = template.cmdName;
+				md.template.modParams      = template.modParams;
+				md.template.wikimod        = template.wikimod;
+				md.template.render         = template.render;
 				md.template.applyModParams = template.applyModParams;
-				md.template.init = template.init;
+				md.template.init           = template.init;
 			} else {
-				md.template.text = undefined;
-				md.template.token = undefined;
-				md.template.modName = undefined;
-				md.template.cmdName = undefined;
-				md.template.modParams = undefined;
-				md.template.wikimod = undefined;
+				md.template.text           = undefined;
+				md.template.token          = undefined;
+				md.template.modName        = undefined;
+				md.template.cmdName        = undefined;
+				md.template.modParams      = undefined;
+				md.template.wikimod        = undefined;
 				md.template.applyModParams = undefined;
-				md.template.init = undefined;
-				md.template.render = function(success){
+				md.template.init           = undefined;
+				md.template.render         = function(success){
 					if (md.template.htmlContent != blankTemplateContent && md.template.$render) {
 						md.template.htmlContent = blankTemplateContent;
 						md.template.$render(blankTemplateContent);
 					}
+					
 					success && success();
 				};
 			}
+
 			if (templateText != md.template.text) {
 				md.template.isChange = true;
 			} else {
 				md.template.isChange = false;
 			}
-			//console.log(blockList);
+
             return blockList;
         }
 
@@ -440,6 +410,53 @@ define([
 
 			moduleEditorParams.setBlock(block);
 		}
+
+		// 渲染
+        md.render = function (text, theme, isLoadTheme) {
+			function _render(text, theme) {
+				md.parse(text, theme);
+
+				md.template.render(function(){
+					for(var i = 0; i < md.template.blockList.length; i++) {
+						var block = md.template.blockList[i];
+						block.render();
+					}
+				});
+
+				md.template.$apply && md.template.$apply();
+
+				md.bindContainer();
+				return '<wiki-block-container data-template="true" data-params="' + encodeURI(md.mdName) + '"></wiki-block-container>';
+			}
+
+			if (!isLoadTheme) {
+				return _render(text, theme);
+			}
+
+			var pageinfo = app.ng_objects.$rootScope.pageinfo;
+
+			if (pageinfo && pageinfo.pagename && pageinfo.pagename[0] != "_" ) {
+				var currentDataSource = app.objects.dataSource.getDataSource(pageinfo.username, pageinfo.sitename);
+
+				if (currentDataSource) {
+					// get theme content
+					var themePath = '/' + pageinfo.username + '/' + pageinfo.sitename + '/_theme' + config.pageSuffixName;
+
+					currentDataSource.getRawContent({
+						path          : themePath,
+						isShowLoading : false
+					}, function (content) {
+						_render(text, content);
+					}, function () {
+						_render(text, theme);
+					})
+				} else {
+					_render(text, theme);
+				}
+			} else {
+				_render(text,theme);
+			}
+        }
 
         return md;
     }

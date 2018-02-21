@@ -90,8 +90,10 @@ define([
 
     util.compile = function (htmlStr, $scope) {
         var $compile = util.angularServices.$compile;
-        $scope = $scope || util.angularServices.$rootScope;
+
+        $scope  = $scope || util.angularServices.$rootScope;
         htmlStr = $compile(htmlStr||'<div></div>')($scope);
+        
         return htmlStr;
     }
 
