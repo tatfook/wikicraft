@@ -72,11 +72,11 @@ define([
     // $html
     util.html = function(selector, htmlStr, $scope, isCompile) {
         isCompile = isCompile == undefined ? true : isCompile;
-        htmlStr = htmlStr||'<div></div>';
-        $scope = $scope || util.angularServices.$rootScope;
+        htmlStr   = htmlStr ||'<div></div>';
+        $scope    = $scope || util.angularServices.$rootScope;
 
         if (isCompile) {
-            var $compile = util.angularServices.$compile;
+            let $compile = util.angularServices.$compile;
             htmlStr = $compile(htmlStr)($scope);
         }
 
@@ -440,13 +440,15 @@ define([
         }
         return false;
     }
+
     // 是否是编辑器页
     util.isEditorPage = function () {
-        var pathname = util.parseUrl().pathname;
-        pathname = util.snakeToHump(pathname);
+        let pathname = util.parseUrl().pathname;
+
         if (pathname == "/wiki/wikieditor") {
             return true;
         }
+        
         return false;
     }
 
@@ -561,7 +563,7 @@ define([
 
         return resultStr;
     }
-    
+
 	// 获取当前路径
 	util.getPathname = function() {
 		return util.humpToSnake(util.parseUrl().pathname);

@@ -50,9 +50,9 @@ define([
                 },100);
             }
 
-            window.onresize = function () {
-                throttle(init);
-            };
+            // window.onresize = function () {
+            //     throttle(init);
+            // };
         }]);
     }
     return {

@@ -113,24 +113,24 @@ define([
                 };
 
                 util.setAngularServices({
-                    $rootScope: $rootScope,
-                    $http: $http,
-                    $compile: $compile,
-                    $auth: $auth,
-                    $location:$location,
+                    $rootScope : $rootScope,
+                    $http      : $http,
+                    $compile   : $compile,
+                    $auth      : $auth,
+                    $location  : $location,
                 });
 
                 util.setSelfServices({
-                    config: config,
-                    storage: storage,
-                    Account: Account,
-                    Message: Message,
-                    github: github,
-                    gitlab:gitlab,
-                    dataSource:dataSource,
-                    loading:loading,
-                    confirmDialog:confirmDialog,
-                    realnameVerifyModal:realnameVerifyModal
+                    config              : config,
+                    storage             : storage,
+                    Account             : Account,
+                    Message             : Message,
+                    github              : github,
+                    gitlab              : gitlab,
+                    dataSource          : dataSource,
+                    loading             : loading,
+                    confirmDialog       : confirmDialog,
+                    realnameVerifyModal : realnameVerifyModal
                 });
 
 				app.objects.Account    = Account;
@@ -158,28 +158,31 @@ define([
 				$rootScope.frameHeaderExist = true;
                 $rootScope.frameFooterExist = true;
                 $rootScope.translate        = $translate.instant.bind($translate);
-                
-                if (config.isLocal()) {
+
+                /*if (config.isLocal()) {
                     $rootScope.frameHeaderExist = true;
                     $rootScope.frameFooterExist = true;
                 } else {
                     //$rootScope.frameHeaderExist = config.isOfficialDomain(window.location.hostname);
                     //$rootScope.frameFooterExist = config.isOfficialDomain(window.location.hostname);
-                }
+                }*/
 
-                $rootScope.isLogin = Account.isAuthenticated();
+                $rootScope.isLogin    = Account.isAuthenticated();
                 $rootScope.isSelfSite = function () {
                     return $rootScope.user._id == $rootScope.userinfo._id;
                 }
 
-                $rootScope.getImageUrl = function(imgUrl,imgsPath) {
-					var bustVersion = config.bustVersion;
+                $rootScope.getImageUrl = function(imgUrl, imgsPath) {
+                    let bustVersion = config.bustVersion;
+                    
 					if (imgUrl.indexOf("?bust=") > 0 || imgUrl.indexOf("?ver=") > 0) {
 						bustVersion = "";
-					}
+                    }
+                    
                     if (imgUrl.indexOf("://") >= 0) {
                         return imgUrl;
                     }
+
                     if (imgUrl.indexOf("/wiki/") >= 0) {
                         return imgUrl + "?bust=" + bustVersion;
                     }
@@ -188,13 +191,16 @@ define([
                 }
 
                 $rootScope.getCssUrl = function(cssUrl, cssPath) {
-					var bustVersion = config.bustVersion;
+                    let bustVersion = config.bustVersion;
+                    
 					if (cssUrl.indexOf("?bust=") > 0 || cssUrl.indexOf("?ver=") > 0) {
 						bustVersion = "";
-					}
+                    }
+                    
                     if (cssUrl.indexOf("://") >= 0) {
                         return cssUrl;
                     }
+
                     if (cssUrl.indexOf("/wiki/") >= 0) {
                         return cssUrl + "?bust=" + bustVersion;
                     }
@@ -214,19 +220,21 @@ define([
 
             // 底部高度自适应
             function stickFooter() {
-                var winH=$(window).height();
-                var headerH=52;
-                var footerH=$("#_footer_").height();
-                var minH=winH-headerH-footerH;
-                var w = $("#__mainContent__");
+                let winH    = $(window).height();
+                let headerH = 52;
+                let footerH = $("#_footer_").height();
+                let minH    = winH - headerH - footerH;
+                let w       = $("#__mainContent__");
+
                 w.css("min-height", minH);
             }
 
             function throttle(method, context) {
                 clearTimeout(method.stickTimer);
+
                 method.stickTimer = setTimeout(function () {
                     method.call(context);
-                },100);
+                }, 100);
             }
 
             window.onresize = function () {
@@ -234,7 +242,6 @@ define([
             };
 
             function initView() {
-
                 // 信息提示框
                 $("#messageTipCloseId").click(function () {
                     Message.hide();
@@ -243,6 +250,7 @@ define([
                 if ($rootScope.frameHeaderExist) {
                     util.html('#__wikiHeader__', headerHtmlContent, $scope);
                 }
+
                 if ($rootScope.frameFooterExist) {
                     util.html('#__wikiFooter__', footerHtmlContent, $scope);
                 }
@@ -260,48 +268,55 @@ define([
 
                 stickFooter();
 
-                var isFirstLocationChange = true;
+                let isFirstLocationChange = true;
+
                 // 注册路由改变事件, 改变路由时清空相关内容
                 $rootScope.$on('$locationChangeSuccess', function () {
-                    //console.log("$locationChangeSuccess change");
 					if (util.isEditorPage()) {
-						var url = window.location.hash.substring(1);
+                        let url = config.hash.substring(1);
+
 						if (url[0] != '/') {
 							url = "/" + url;
-						}
-						url = decodeURIComponent(url);
-						var paths = url.split("/");
+                        }
+                        
+                        url = decodeURIComponent(url);
+                        
+                        let paths = url.split("/");
+                        
 						// url作严格控制，避免错误url导致异常逻辑
 						if (paths.length > 3 && paths.length < 6 && url.length < 256) {
-							var urlObj = {
-								url:url,
-								username:paths[1],
-								sitename:paths[2],
-								pagename:paths[paths.length-1],
-								pagepath:url,
-							};
-							//console.log(urlObj);
+							let urlObj = {
+								url      : url,
+								username : paths[1],
+								sitename : paths[2],
+								pagename : paths[paths.length-1],
+								pagepath : url,
+                            };
+                            
 							if (isFirstLocationChange) {
 								storage.sessionStorageSetItem("urlObj", urlObj);
 							} else {
 								$rootScope.$broadcast('changeEditorPage', urlObj);
 							}
 						}
-					}
+                    }
+                    
                     if (!isFirstLocationChange && (util.isEditorPage() || !config.islocalWinEnv())) {
                         return ;
                     }
+
                     isFirstLocationChange = false;
+
                     config.loadMainContent(initContentInfo);
                 });
             }
 
             function setWindowTitle(urlObj) {
-                var pathname = urlObj.pathname;
-                //console.log(pathname);
-                var paths = pathname.split('/');
+                let pathname = urlObj.pathname;
+                let paths    = pathname.split('/');
+
                 if (paths.length > 1 && paths[1]) {
-                    $rootScope.title = paths[paths.length-1] + (paths.length > 2 ? (' - ' +paths.slice(1,paths.length-1).join('/')) : "");
+                    $rootScope.title = paths[paths.length - 1] + (paths.length > 2 ? (' - ' +paths.slice(1, paths.length-1).join('/')) : "");
                 } else {
                     $rootScope.title = config.hostname.substring(0,config.hostname.indexOf('.'));
                 }
@@ -313,7 +328,8 @@ define([
                 $rootScope.userinfo = undefined;
                 $rootScope.siteinfo = undefined;
                 $rootScope.pageinfo = undefined;
-                $rootScope.tplinfo = undefined;
+                $rootScope.tplinfo  = undefined;
+
                 if (urlObj.username && urlObj.sitename) {
                     $rootScope.isHeaderScroll = true;
                     util.http("POST", config.apiUrlPrefix + "website/getDetailInfo", {
@@ -323,11 +339,12 @@ define([
 						url:urlObj.pagepath,
                     }, function (data) {
                         data = data || {};
+                        
                         // 这三种基本信息根化，便于用户页内模块公用
                         $rootScope.userinfo = data.userinfo;
                         $rootScope.siteinfo = data.siteinfo || {};
                         $rootScope.pageinfo = {username:urlObj.username,sitename:urlObj.sitename, pagename:urlObj.pagename, pagepath:urlObj.pagepath};
-                        $rootScope.tplinfo = {username:urlObj.username,sitename:urlObj.sitename, pagename:"_theme"};
+                        $rootScope.tplinfo  = {username:urlObj.username,sitename:urlObj.sitename, pagename:"_theme"};
 
                         var userDataSource = dataSource.getUserDataSource(data.userinfo.username);
                         //var filterSensitive = function (inputText) {
