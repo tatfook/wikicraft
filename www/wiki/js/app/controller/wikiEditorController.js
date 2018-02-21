@@ -668,27 +668,27 @@ define([
                 $rootScope.userinfo         = $rootScope.user;
 
                 $scope.enableTransform = true;
-                $scope.isEmptyObject = util.isEmptyObject;
-                $scaleValue = "";
+                $scope.isEmptyObject   = util.isEmptyObject;
+                $scope.showFile        = true;
+                $scope.showCode        = true;
+                $scope.showView        = true;
+                $scope.full            = false;
+                $scope.opens           = {};
                 $scope.scales = [
-                    {"id":0,"showValue": "45%", "scaleValue": "0.25"},
-                    {"id":1,"showValue": "50%", "scaleValue": "0.5"},
-                    {"id":2,"showValue": "75%", "scaleValue": "0.75"},
-                    {"id":3,"showValue": "100%", "scaleValue": "1"},
-                    {"id":4,"showValue": "实际大小", "scaleValue": "1", "special":true}
+                    {"id" : 0, "showValue" : "45%", "scaleValue" : "0.25"},
+                    {"id" : 1, "showValue" : "50%", "scaleValue" : "0.5"},
+                    {"id" : 2, "showValue" : "75%", "scaleValue" : "0.75"},
+                    {"id" : 3, "showValue" : "100%", "scaleValue" : "1"},
+                    {"id" : 4, "showValue" : "实际大小", "scaleValue" : "1", "special":true}
                 ];
-                $scope.showFile=true;
-                $scope.showCode=true;
-                $scope.showView=true;
-                $scope.full=false;
-                $scope.opens={};
-
-                var fakeIconDom = [];
-                var dropFiles = {};
-                var isBigfileModalShow = false;
+                
+                var bigfileModal;
+                var $scaleValue         = "";
+                var fakeIconDom         = [];
+                var dropFiles           = {};
+                var isBigfileModalShow  = false;
                 var isConfirmDialogShow = false;
-                var confirmFilesQue = [];
-
+                var confirmFilesQue     = [];
 
                 // 格式化html文本
                 function formatHtmlView(cmd, value) {
@@ -701,7 +701,9 @@ define([
                 function indexDBDeletePage(url, isDelay) {
                     var urlParams = urlParamsMap[url] || {};
                     urlParamsMap[url] = urlParams;
+
                     urlParams.deleteTimer && clearTimeout(urlParams.deleteTimer);
+
                     if (isDelay) {
                         urlParams.deleteTimer = setTimeout(function () {
                             storage.indexedDBDeleteItem(config.pageStoreName, url);
@@ -716,6 +718,7 @@ define([
                 // 加载未提交到服务的页面
                 function loadUnSavePage() {
                     var currentTime = (new Date()).getTime();
+                    
                     storage.indexedDBGet(config.pageStoreName, function (page) {
                         if (!page.username || !page.sitename || !page.pagename || !page.url) {
                             return;
@@ -903,23 +906,6 @@ define([
                     return true;
                 }
 
-                //初始化，读取用户站点列表及页面列表
-                function init() {
-                    //console.log('---------------init---------------');
-                    initEditor();
-
-                    // 加载站点列表
-                    loadSitePageInfo();
-                }
-
-                $scope.$watch('$viewContentLoaded', function(){
-                    Account.getUser(function(userinfo){
-                        $scope.user = userinfo;
-                        init();
-                    }, init);
-                });
-                //init();
-
                 // 更新提交id
                 function updateLastCommitId(siteDataSource, page) {
                     siteDataSource.getLastCommitId(function(lastCommitId){
@@ -1096,7 +1082,7 @@ define([
                     }
                 }
 
-                var openTempFile = function () {
+                function openTempFile() {
                     var tempContent = storage.localStorageGetItem("wikiEditorTempContent") || "edit temp file";
                     editor.setValue(tempContent);
                     storage.localStorageRemoveItem("wikiEditorTempContent");
@@ -1194,20 +1180,6 @@ define([
                         }, 10);
                     });
                 }
-
-                //已打开列表树中打开网页编辑
-                $scope.clickOpenPage = function (page) {
-                    if (!util.isEmptyObject(currentPage) && currentPage.url == page.url) {
-                        return;
-                    }
-
-                    renderAutoSave(function () {
-                        currentPage = getPageByUrl(page.url);
-                        currentSite = getCurrentSite();
-                        openPage();
-                        editor.focus();
-                    });
-                };
 
                 // 打开页
                 function openPage() {
@@ -1481,92 +1453,6 @@ define([
                     return;
                 }
 
-
-                $scope.openWikiBlock = function (insertLine, type) {
-                    $scope.insertMod = {
-                        "insertLine": insertLine,
-                        "type": type
-                    };
-                    function formatWikiCmd(text) {
-                        var lines = text.split('\n');
-                        var startPos = undefined, endPos = undefined;
-                        for (var i = 0; i < lines.length; i++) {
-                            lines[i] = lines[i].replace(/^[\s]*/, '');
-                            if (lines[i].indexOf('```') == 0) {
-                                if (startPos == undefined) {
-                                    startPos = i;
-                                } else {
-                                    endPos = i;
-                                }
-                            }
-                        }
-                        if (startPos == undefined || endPos == undefined)
-                            return text;
-
-                        var paramLines = lines.slice(startPos + 1, endPos);
-                        try {
-                            //console.log(paramLines);
-                            var paramsText = paramLines.join('\n');
-                            var newText = lines.slice(0, startPos + 1).join('\n') + '\n' + lines.slice(endPos).join('\n');
-                            if (paramsText) {
-                                var paramObj = angular.fromJson(paramsText);
-                                paramsText = angular.toJson(paramObj, 4);
-                                newText = lines.slice(0, startPos + 1).join('\n') + '\n' + paramsText + '\n' + lines.slice(endPos).join('\n');
-                            }
-                            return newText;
-                        } catch (e) {
-                            // console.log(e);
-                            return lines.slice(0, startPos + 1).join('\n') + '\n' + paramsText + '\n' + lines.slice(endPos).join('\n');
-                        }
-                    }
-
-                    modal('controller/wikiBlockController', {
-                        controller: 'wikiBlockController',
-                        size: 'lg',
-                        backdrop:true
-                    }, function (wikiBlock) {
-                        var wikiBlockContent = formatWikiCmd(wikiBlock.content);
-                        var cursor = editor.getCursor();
-                        var toInsertLine = ($scope.insertMod.insertLine >= 0) ? $scope.insertMod.insertLine : cursor.line;
-                        var content = editor.getLine(toInsertLine);
-                        wikiBlockContent = '\n' + wikiBlockContent + '\n';
-                        editor.replaceRange(wikiBlockContent, {
-                            "line": toInsertLine,
-                            "ch": 0
-                        });
-                    }, function (result) {
-                        // console.log(result);
-                    });
-                }
-
-                $rootScope.insertMod = function(type){
-                    var moduleEditorParams = config.shareMap.moduleEditorParams || {};
-                    var token = moduleEditorParams.block.token;
-                    if (type == "before") {
-                        $scope.openWikiBlock(token.start, type);
-                    }else {
-                        $scope.openWikiBlock(token.end, type);
-                    }
-                }
-
-                $scope.openGitFile = function () {//{{{
-                    if (!currentPage || !currentPage.url) {
-                        return;
-                    }
-
-                    var currentDataSource = getCurrentDataSource();
-                    if (currentDataSource) {
-                        if (currentDataSource.getDataSourceType() == "github") {
-                            currentDataSource.getFile({path: currentPage.url + pageSuffixName}, function (data) {
-                                //console.log(data);
-                                window.open(data.html_url);
-                            });
-                        } else {
-                            window.open(currentDataSource.getContentUrlPrefix({path: currentPage.url + pageSuffixName, sha:"master"}));
-                        }
-                    }
-                }
-
                 function getPageTemplateContent(pageUrl, contentUrl) {
                     var url = "http://git.keepwork.com/api/v4/projects/6803/repository/files/" + encodeURI(contentUrl) + "?ref=master";
                     $http({
@@ -1588,342 +1474,6 @@ define([
                     });
                 }
 
-                $scope.cmd_newpage = function (hidePageTree, url, event) {//{{{
-                    if (hidePageTree && !treeNodeMap[url]) {
-                        return;
-                    }
-                    $scope.hidePageTree=hidePageTree ? true : false;
-                    if (hidePageTree){
-                        $scope.nowHoverPage=treeNodeMap[url];
-                    }
-                    function openNewPage() {
-                        $uibModal.open({
-                            //templateUrl: WIKI_WEBROOT+ "html/editorNewPage.html",   // WIKI_WEBROOT 为后端变量前端不能用
-                            templateUrl: config.htmlPath + "editorNewPage.html",
-                            controller: "pageCtrl",
-                            size: (hidePageTree? "lg":"sm"),
-                            scope: $scope
-                        }).result.then(function (provider) {
-                            if (provider == "page") {
-                                getPageTemplateContent(currentPage.url, currentPage.template.contentUrl);
-                                allPageMap[currentPage.url] = currentPage;
-                                currentSite = getCurrentSite();
-                                initTree();
-                                util.post(config.apiUrlPrefix + "pages/insert", {
-                                    url: currentPage.url 
-                                }, function(data){
-                                    console.log(data);
-                                }, function(err){
-                                    console.log(err);
-                                });
-                            }
-                        }, function (text, error) {
-                            return;
-                        });
-                    }
-
-                    savePageContent(function () {
-                        //Message.warning("自动保存成功");
-                        openNewPage();
-                    }, function () {
-                        Message.warning("自动保存失败");
-                        openNewPage();
-                    });
-                    event && event.stopPropagation();
-                };
-
-                //保存页面
-                $scope.cmd_savepage = function (cb, errcb) {
-                    if (!util.isEmptyObject(currentPage)) {//修改
-                        var _currentPage = currentPage;    // 防止保存过程中 currentPage变量被修改导致保存错误
-                        savePageContent(function () {
-                            _currentPage.isModify = false;
-                            _currentPage.isConflict = false;
-                            _currentPage.blobId = undefined;
-                            initTree();
-                            cb && cb();
-                            Message.info("文件保存成功");
-                        }, function () {
-                            errcb && errcb();
-                            Message.danger("文件保存失败");
-                        });
-                    } else {
-                        storage.localStorageSetItem("wikiEditorTempContent", editor.getValue());
-                        errcb && errcb();
-                        // $uibModal.open({
-                        //     //templateUrl: WIKI_WEBROOT+ "html/editorNewPage.html",   // WIKI_WEBROOT 为后端变量前端不能用
-                        //     templateUrl: config.htmlPath + "editorNewPage.html",
-                        //     controller: "pageCtrl",
-                        // }).result.then(function (provider) {
-                        //     //console.log(provider);
-                        //     if (provider == "page") 
-                        //         //console.log(currentPage);
-                        //         allPageMap[currentPage.url] = currentPage;
-                        //         allWebstePageContent[currentPage.url] = editor.getValue();
-                        //         $scope.cmd_savepage(function () {
-                        //             openPage();
-                        //             storage.localStorageRemoveItem("wikiEditorTempContent");
-                        //         });
-                        //     }
-                        // }, function (text, error) {
-                        //     return;
-                        // });
-                    }
-                }
-
-                //删除
-                $scope.cmd_remove = function (url) {
-                    var page = getPageByUrl(url);
-                    if (!page) {
-                        return;
-                    }
-                    var titleInfo = "> " + page.url.split("/").splice(2).join(" > ");
-
-                    config.services.confirmDialog({
-                        "title": "删除提醒",
-                        "titleInfo": titleInfo,
-                        "theme": "danger",
-                        "confirmBtnClass": "btn-danger",
-                        "content": "确定删除 " + page.pagename + " 页面？"
-                    },function () {
-                        if (!util.isEmptyObject(page)) {
-                            var currentDataSource = dataSource.getDataSource(page.username, page.sitename);
-
-                            currentDataSource && currentDataSource.deleteFile({path: page.url + pageSuffixName}, function () {
-                                // console.log("删除文件成功:");
-                                util.http("DELETE", config.apiUrlPrefix + "pages/delete", {
-                                    url: page.url
-                                }, function(){}, function(err){
-                                    console.log(err);
-                                })
-                            }, function (response) {
-                                // console.log("删除文件失败:");
-                            });
-
-                            storage.indexedDBDeleteItem(config.pageStoreName, page.url);
-
-                            delete allPageMap[page.url];
-                            delete $scope.opens[page.url];
-                            storage.sessionStorageRemoveItem('urlObj');
-                            if (currentPage.url == page.url) {
-                                currentPage = undefined;
-                                initTree();
-                                openPage();
-                            }
-                        }
-                    });
-                };
-
-                //关闭
-                $scope.cmd_close = function (url) {
-                    var page = $scope.opens[url];
-                    if (!page) {
-                        return;
-                    }
-                    var result = false;
-                    if (page.isModify){
-                        result=window.confirm("当前有修改未保存，确定关闭？");
-                    }
-
-                    if(!page.isModify || result){
-                        delete $scope.opens[url];
-                        if (!util.isEmptyObject(currentPage) && currentPage.url != url) {
-                            return;
-                        }
-                        storage.sessionStorageRemoveItem('urlObj');
-                        currentPage = undefined;
-                        for (var url in $scope.opens){
-                            currentPage = $scope.opens[url];
-                        }
-                        openPage();
-                    }
-                };
-
-                //关闭全部已打开
-                $scope.cmd_closeAll = function (url) {
-                    // console.log(url);
-                    url = url || "";
-                    for (key in $scope.opens){
-                        if (key.indexOf(url) >= 0) {
-                            $scope.cmd_close(key);
-                        }
-                    }
-                };
-
-                $scope.cmd_goSetting = function (urlKey, event) {
-                    var website = allSiteMap[urlKey];
-                    // console.log(website);
-                    event && event.stopPropagation();
-                    storage.sessionStorageSetItem('userCenterContentType', 'editWebsite');
-                    storage.sessionStorageSetItem("editWebsiteParams", website);
-                    util.go("userCenter", true);
-                    util.html('#userCenterSubPage', editWebsiteHtmlContent);
-                };
-
-                $scope.goSetting = function (sitename) {
-                    storage.sessionStorageSetItem("urlObj",{username:$scope.user.username, sitename:sitename});
-                    util.go('wikieditor');
-                };
-
-                $scope.cmd_saveAll = function () {
-                    var tempCurrentPage=currentPage; 
-                    var fnList = [];
-                    var callback = undefined;
-                    for (url in $scope.opens){
-                        callback = (function(url){
-                            return function(cb, errcb) {
-                                currentPage=$scope.opens[url];
-                                $scope.cmd_savepage(function () {
-                                    allPageMap[url].isModify=false;
-                                    allPageMap[url].isConflict=false;
-                                    allPageMap[url].blobId=undefined;
-                                    cb && cb();
-                                }, errcb);
-                            }
-                        })(url);
-                        fnList.push(callback);
-                    }
-
-                    callback = function(){
-                        initTree();
-                        currentPage=tempCurrentPage;
-                    }
-                    
-                    util.batchRun(fnList, function(){
-                        callback();
-                        // console.log("全部保存结束");
-                    });
-                };
-
-                //刷新
-                $scope.cmd_refresh = function (url) {
-                    var page = getPageByUrl(url);
-                    //console.log(page);
-                    if (!page) {
-                        return ;
-                    }
-                    var siteDataSource = dataSource.getDataSource(page.username, page.sitename);
-                    if (!siteDataSource){
-                        return ;
-                    }
-                    siteDataSource.getRawContent({path:url + pageSuffixName, sha:"master", ref:"master"}, function (data) {
-                        var content = data || "";
-                        allWebstePageContent[url] = content;
-                        page.isConflict = false;
-                        page.isModify = false;
-                        page.blobId = undefined;
-                        page.content = content;                                    // 更新内容
-                        page.timestamp = (new Date()).getTime();                   // 更新时间戳
-                        storage.indexedDBSetItem(config.pageStoreName, page);      // 每次改动本地保存
-                        initTree();
-                        if (!util.isEmptyObject(currentPage) && url == currentPage.url) {
-                            //console.log("---------");
-                            openPage();
-                        }
-                    });
-                };
-
-                //新建文件夹
-                $scope.cmd_newFile = function (hidePageTree, url, event) {
-                    if (!treeNodeMap[url]) {
-                        return;
-                    }
-                    $scope.hidePageTree=hidePageTree ? true : false;
-                    if (hidePageTree){
-                        $scope.nowHoverFile=treeNodeMap[url];
-                    }
-                    $uibModal.open({
-                        //templateUrl: WIKI_WEBROOT+ "html/editorNewPage.html",   // WIKI_WEBROOT 为后端变量前端不能用
-                        templateUrl: config.htmlPath + "editorNewFile.html",
-                        controller: "fileCtrl",
-                        scope: $scope
-                    }).result.then(function (websiteFile) {
-                        var path = websiteFile.url + config.pageSuffixName;
-                        var currentDataSource = dataSource.getDataSource(websiteFile.username, websiteFile.sitename);
-                        if (!currentDataSource) {
-                            // console.log(websiteFile);
-                        } else {
-                            currentDataSource.writeFile({path:path, content:"占位文件"}, function(){
-                                // console.log("创建成功");
-                                initTree();
-                                allPageMap[websiteFile.url] = angular.copy(websiteFile);
-                                //console.log(allPageMap);
-                            }, function() {
-                                // console.log("创建失败");
-                            });
-                        }
-                    }, function (text, error) {
-                        return;
-                    });
-                    event && event.stopPropagation();
-                };
-
-                //撤销
-                $scope.cmd_undo = function () {
-                    if (isHTMLViewEditor) {
-                        formatHtmlView('undo');
-                        return;
-                    }
-                    editor.undo();
-                    editor.focus();
-                }
-
-                //重做
-                $scope.cmd_redo = function () {
-                    if (isHTMLViewEditor) {
-                        formatHtmlView('redo');
-                        return;
-                    }
-                    editor.redo();
-                    editor.focus();
-                }
-
-                //查找
-                $scope.cmd_find = function () {
-                    editor.execCommand("find");
-                    CodeMirror.commands.find(editor);
-                }
-
-                //替换
-                $scope.cmd_replace = function () {
-                    editor.execCommand("replace");
-                    CodeMirror.commands.replace(editor);
-                }
-
-                //标题    H1：Hn
-                $scope.cmd_headline = function (level) {
-                    if (isHTMLViewEditor) {
-                        formatHtmlView("formatblock", 'H' + level);
-                        return;
-                    }
-                    var preChar = '';
-                    while (level > 0) {
-                        preChar += '#';
-                        level--;
-                    }
-                    preChar += ' ';
-
-                    var cursor = editor.getCursor();
-                    var content = editor.getLine(cursor.line);
-
-                    var iSpace = 0;
-                    var chrCmp = '';
-                    for (var i = 0; i < content.length; i++) {
-                        chrCmp = content.substr(i, 1);
-                        if (chrCmp == '#') {
-                            continue;
-                        } else {
-                            if (chrCmp == ' ') {
-                                iSpace = i + 1;
-                            }
-                            break;
-                        }
-                    }
-                    editor.replaceRange(preChar, CodeMirror.Pos(cursor.line, 0), CodeMirror.Pos(cursor.line, iSpace));
-                    editor.focus();
-                    return;
-                }
-
                 function font_style(char) {
                     if (editor.somethingSelected()) {
                         var sel = editor.getSelection();
@@ -1940,86 +1490,6 @@ define([
                     }
                     editor.focus();
                 }
-
-                //加粗
-                $scope.cmd_bold = function () {
-                    if (isHTMLViewEditor) {
-                        formatHtmlView('bold');
-                        return;
-                    }
-
-                    font_style('**');
-                }
-
-                //斜体
-                $scope.cmd_italic = function () {
-                    if (isHTMLViewEditor) {
-                        formatHtmlView('italic');
-                        return;
-                    }
-                    font_style('*');
-                }
-
-                //下划线
-                $scope.cmd_underline = function () {
-                    if (isHTMLViewEditor) {
-                        formatHtmlView('underline');
-                        return;
-                    }
-                }
-
-                //下划线
-                $scope.cmd_strikethrough = function () {
-                    if (isHTMLViewEditor) {
-                        formatHtmlView('strikethrough');
-                        return;
-                    }
-                    font_style('~~');
-                }
-
-                //上标
-                $scope.cmd_superscript = function () {
-                    if (isHTMLViewEditor) {
-                        formatHtmlView('superscript');
-                        return;
-                    }
-                    font_style('^');
-                }
-
-                //下标
-                $scope.cmd_subscript = function () {
-                    if (isHTMLViewEditor) {
-                        formatHtmlView('subscript');
-                        return;
-                    }
-                    font_style('~');
-                }
-
-                //有序列表
-                $scope.cmd_listol = function () {
-                    if (isHTMLViewEditor) {
-                        formatHtmlView('insertorderedlist');
-                        return;
-                    }
-
-                    if (editor.somethingSelected()) {
-                        var sel = editor.getSelection();
-                        var srcStr = '~ol~' + sel.replace(/\n/g, "\n~ol~");
-
-                        var id = 1;
-                        var desStr = srcStr.replace("~ol~", id + '. ');
-                        while (desStr.indexOf("~ol~") >= 0) {
-                            id++;
-                            desStr = desStr.replace("~ol~", id + '. ');
-                        }
-
-                        editor.replaceSelection(desStr);
-                    } else {
-                        var cursor = editor.getCursor();
-                        editor.replaceRange('1. ', CodeMirror.Pos(cursor.line, 0), CodeMirror.Pos(cursor.line, 0));
-                    }
-                    editor.focus();
-                };
 
                 //行首关键字
                 function hol_keyword(char) {
@@ -2045,223 +1515,6 @@ define([
                     editor.focus();
                 }
 
-                //无序列表
-                $scope.cmd_listul = function () {
-                    if (isHTMLViewEditor) {
-                        formatHtmlView('insertunorderedlist');
-                        return;
-                    }
-                    hol_keyword('- ');
-                }
-
-                //引用内容
-                $scope.cmd_blockqote = function () {
-                    if (isHTMLViewEditor) {
-                        formatHtmlView('formatblock', 'blockquote');
-                        return;
-                    }
-
-                    hol_keyword('> ');
-                }
-
-                //表格
-                $scope.cmd_tabel = function () {
-                    $uibModal.open({
-                        templateUrl: config.htmlPath + "editorInsertTable.html",
-                        controller: "tableCtrl",
-                    }).result.then(function (provider) {
-                        //console.log(provider);
-                        if (provider == "table") {
-                            var table = $rootScope.table;
-                            //console.log(table);
-                            //| 0:0 | 1:0 |
-                            //| -- | -- |
-                            //| 0:2 | 1:2 |
-                            var wiki = '';
-                            for (var i = 0; i < table.rows; i++) {
-                                wiki += '\n';
-                                if (i == 1) {
-                                    for (var j = 0; j < table.cols; j++) {
-                                        switch (table.alignment) {
-                                            case 1:
-                                                wiki += '|:-- ';
-                                                break;
-                                            case 2:
-                                                wiki += '|:--:';
-                                                break;
-                                            case 3:
-                                                wiki += '| --:';
-                                                break;
-                                            default:
-                                                wiki += '| -- ';
-                                                break;
-                                        }
-                                    }
-                                    wiki += '|\n';
-                                }
-
-                                for (var j = 0; j < table.cols; j++) {
-                                    wiki += '| ' + j + ':' + i + ' ';
-                                }
-                                wiki += '|';
-                            }
-                            wiki += '\n';
-
-                            var cursor = editor.getCursor();
-                            var content = editor.getLine(cursor.line);
-                            if (content.length > 0) {
-                                wiki += '\n';
-                            }
-
-                            editor.replaceRange(wiki, CodeMirror.Pos(cursor.line + 1, 0), CodeMirror.Pos(cursor.line + 1, 0));
-                            editor.setCursor(CodeMirror.Pos(cursor.line + 1, 0));
-                            editor.focus();
-                        }
-                    }, function (text, error) {
-                        // console.log('text:' + text);
-                        // console.log('error:' + error);
-                        return;
-                    });
-                }
-
-                //水平分割线
-                $scope.cmd_horizontal = function () {
-                    var cursor = editor.getCursor();
-                    editor.replaceRange('---\n', CodeMirror.Pos(cursor.line + 1, 0), CodeMirror.Pos(cursor.line + 1, 0));
-                    editor.setCursor(CodeMirror.Pos(cursor.line + 2, 0));
-                    editor.focus();
-                }
-
-                //链接
-                $scope.cmd_link = function () {
-                    $uibModal.open({
-                        templateUrl: config.htmlPath + "editorInsertLink.html",
-                        controller: "linkCtrl",
-                    }).result.then(function (provider) {
-                        if (provider == "link") {
-                            var link = $rootScope.link;
-                            var wiki = '';
-                            /*
-                            if (isHTMLViewEditor) {
-                            formatHtmlView('createlink', link);
-                            return;
-                            }
-                            */
-                            if (editor.somethingSelected()) {
-                                wiki += '[' + editor.getSelection() + ']';
-                            } else {
-                                wiki += '[]';
-                            }
-
-                            // wiki += '(' + link.url + ')';
-                            editor.replaceSelection(wiki + '(' + link.url + ')');
-                            if (wiki == '[]') {
-                                editor.setCursor(CodeMirror.Pos(editor.getCursor().line, 1));
-                            }
-                            editor.focus();
-                        }
-                    }, function (text, error) {
-                        // console.log('text:' + text);
-                        // console.log('error:' + error);
-                        return;
-                    });
-                }
-
-                //图片
-                $scope.cmd_image = function () {
-                    $uibModal.open({
-                        templateUrl: config.htmlPath + "editorInsertImg.html",
-                        controller: "imgCtrl",
-                    }).result.then(function (provider) {
-                        // console.log(provider);
-                        if (provider == "img") {
-                            var url = $rootScope.img.url;
-                            var txt = $rootScope.img.txt;
-                            var dat = $rootScope.img.dat;
-                            var nam = $rootScope.img.nam;
-
-                            var wiki = '';
-                            if (txt) {
-                                wiki += '![' + txt + ']';
-                            } else if (editor.somethingSelected()) {
-                                wiki += '![' + editor.getSelection() + ']';
-                            } else {
-                                wiki += '![]';
-                            }
-
-                            if (url) {
-                                wiki += '(' + url + ')';
-                            } else {
-                                wiki += '(' + dat + ')';
-
-                            }
-
-                            editor.replaceSelection(wiki);
-                            editor.focus();
-                        }
-                    }, function (text, error) {
-                        // console.log('text:' + text);
-                        // console.log('error:' + error);
-                        return;
-                    });
-                }
-
-                //视频
-                $scope.cmd_video=function () {
-                    $uibModal.open({
-                        templateUrl: config.htmlPath + "editorInsertVideo.html",
-                        controller: "videoCtrl",
-                    }).result.then(function (result) {
-                        // console.log(result);
-                        if (result) {
-                            var videoContent = "";
-                            if (result.isNetUrl) {
-                                videoContent = '```@wiki/js/video\n{\n\t"videoUrl":"' + result.url + '"\n}\n```';
-
-                            } else {
-                                videoContent = '['+ result.filename +'](' + result.url + ')';
-                            }
-                            editor.replaceSelection(videoContent);
-                            editor.focus();
-                        }
-                    });
-                };
-
-                var bigfileModal;
-                // 大文件
-                $scope.cmd_bigfile = function () {
-                    bigfileModal = $uibModal.open({
-                        "template": bigfileContent,
-                        "size": "lg",
-                        "controller": "bigfileController",
-                        "backdrop": "static"
-                    });
-                    bigfileModal.result.then(function (wikiBlock) {
-                        isBigfileModalShow = false;
-                        // console.log(wikiBlock);
-                    }, function (files) {
-                        isBigfileModalShow = false;
-                        if (!files){
-                            return;
-                        }
-
-                        var insertContent = "";
-                        // console.log(files);
-                        if (files.pasteUrl){
-                            insertContent = files.pasteUrl;
-                        } else if (files.url){
-                            insertContent += '```@wiki/js/bigfile\n{\n\t"fileType":"' + files.type + '",\n"fileUrl":"'+files.url+'"\n}\n```\n';
-                        }else{
-                            files.map(function (file) {
-                                insertContent += '```@wiki/js/bigfile\n{\n\t"fileId":"' + file._id + '","fileType":"'+file.file.type+'",\n"extraMsg":"'+file.filename+'","channel":"qiniu"\n}\n```\n';
-                            });
-                        }
-
-                        editor.replaceSelection(insertContent);
-                        editor.focus();
-                    });
-                };
-
                 /**
                  * dataURL to blob, ref to https://gist.github.com/fupslot/5015897
                  * @param dataURI
@@ -2276,16 +1529,16 @@ define([
                         ia[i] = byteString.charCodeAt(i);
                     }
                     return new Blob([ab], {type: mimeString});
-                } //}}}
+                }
 
                 // 整行替换，不自动获取焦点
-                var line_keyword_nofocus = function (lineNo, content) {
+                function line_keyword_nofocus(lineNo, content) {
                     var originContent = editor.getLine(lineNo);
                     var offsetX = originContent && originContent.length;
                     editor.replaceRange(content, CodeMirror.Pos(lineNo, 0), CodeMirror.Pos(lineNo, offsetX));
                 };
 
-                var setBigfileValue = function () {
+                function setBigfileValue() {
                     for (var url in dropFiles){
                         var file = dropFiles[url];
                         var editorContent = editor.getLine(file.insertLinum);
@@ -2301,358 +1554,6 @@ define([
                         }
                     }
                 };
-
-                // 文件上传
-                $scope.cmd_file_upload = function(fileObj, cb) {//{{{
-                    const UpperLimit = 10 * 1024 * 1024; // 大于10M上传到七牛
-                    const BrowerUpperLimit = 1 * 1024 * 1024 * 1024; // 大于1GB提示
-                    var currentDataSource = getCurrentDataSource();
-                    if (!currentDataSource) {
-                        Message.info("无法获取数据源信息，稍后重试....");
-                        return;
-                    }
-                    var qiniuBack;
-
-                    var path = fileObj.name;
-                    
-                    var initQiniu = function () {
-                        if (qiniuBack){
-                            return;
-                        }
-                        var qiniu = new QiniuJsSDK();
-                        var option = {
-                            "browse_button":"qiniuUploadBtn",
-                            "unique_names": true,
-                            "auto_start": false,
-                            "uptoken_url": '/api/wiki/models/qiniu/uploadToken',
-                            "domain": 'ov62qege8.bkt.clouddn.com',
-                            "chunk_size": "4mb",
-                            "init": {
-                                "FilesAdded": function (up,files) {
-                                    files.map(function (file) {
-                                        var uploadInfo = "***网盘： 正在上传文件 " + 0 + "/" + file.size + "(0%),上传完成后可以在网盘中进行管理，上传过程中请不要刷新窗口***";
-                                        line_keyword_nofocus(dropFiles[file.name].insertLinum, uploadInfo, 2);
-                                    });
-                                    this.start();
-                                },
-                                "BeforeUpload": function (up, file) {
-                                    // console.log("BeforeUpload");
-                                },
-                                "UploadProgress": function (up, file) {
-                                    var uploadInfo = "***网盘： 正在上传文件 " + file.loaded + "/" + file.size + "(" + file.percent + "%),上传完成后可以在网盘中进行管理，上传过程中请不要刷新窗口***";
-                                    line_keyword_nofocus(dropFiles[file.name].insertLinum, uploadInfo, 0);
-                                },
-                                "FileUploaded": function (up, file, info) {
-                                    // console.log("FileUploaded");
-                                    var lineNo = dropFiles[file.name].insertLinum;
-                                    line_keyword_nofocus(lineNo, file.name);
-                                    var params = {
-                                        filename:file.name,
-                                        domain:up.getOption('domain'),
-                                        key:info.key || file.target_name,
-                                        size:file.size,
-                                        type:file.type,
-                                        hash:info.hash,
-                                        channel:"qiniu"
-                                    };
-                                    util.post(config.apiUrlPrefix + 'bigfile/upload', params, function(data){
-                                        dropFiles[file.name]._id = data._id;
-                                        var insertContent = '```@wiki/js/bigfile\n{\n\t"fileId":"' + data._id + '","fileType":"'+file.type+'",\n"extraMsg":"'+file.name+'","channel":"qiniu"\n}\n```\n';
-                                        line_keyword_nofocus(dropFiles[file.name].insertLinum, insertContent);
-                                    }, function(){
-                                        line_keyword_nofocus(dropFiles[file.name].insertLinum, "***上传出错了，请重试，或者在网盘上传重试***", 0);
-                                        util.post(config.apiUrlPrefix + "qiniu/deleteFile", {
-                                            key:params.key
-                                        }, function (result) {
-                                        }, function (err) {
-                                        }, false);
-                                    }, false);
-                                },
-                                "UploadComplete": function (up, files, info) {
-                                    // console.log("UploadComplete");
-                                    // setBigfileValue();
-                                },
-                                "Error": function (up, file, errTip) {
-                                    // console.log(file.file);
-                                    // console.log(dropFiles[file.name]);
-                                    line_keyword_nofocus(dropFiles[file.file.name].insertLinum, "***上传出错了，请重试，或者在网盘上传重试***", 0);
-                                }
-                            }
-                        };
-
-                        util.get(config.apiUrlPrefix + 'qiniu/getUid',{}, function(data){
-                            if(data && data.uid) {
-                                var uid = data.uid;
-                                option.x_vars = {
-                                    "uid": uid
-                                };
-                                qiniuBack = qiniu.uploader(option);
-                            }else{
-                                // console.log("uid获取失败");
-                            }
-                        }, function () {
-                            // console.log("uid获取失败");
-                        });
-                    };
-                    initQiniu();
-
-                    var timer;
-
-                    var qiniuUpload = function (fileObj) {
-                        var insertLineNum = dropFiles[fileObj.name].insertLinum;
-                        if (!qiniuBack){
-                            timer = setTimeout(function () {
-                                qiniuUpload(fileObj);
-                            }, 500);
-                            return;
-                        }
-
-                        timer && clearTimeout(timer);
-
-                        util.post(config.apiUrlPrefix + "bigfile/getByFilenameList", {filelist:[fileObj.name]}, function(data){
-                        if (data.length > 0){
-                            var contentHtml = '<p class="dialog-info-title">网盘中已存在以下文件，是否覆盖？</p>';
-                            contentHtml+='<p class="dialog-info"><span class="text-success glyphicon glyphicon-ok"></span> '+ fileObj.name +'</p>';
-                            config.services.confirmDialog({
-                                "title": "上传提醒",
-                                "contentHtml": contentHtml
-                            }, function () {
-                                qiniuBack.addFile(fileObj);
-                                qiniuBack.start();
-                            }, function () {
-                                line_keyword_nofocus(insertLineNum, "", 0);
-                            });
-                        }else{
-                            qiniuBack.addFile(fileObj);
-                            qiniuBack.start();
-                        }
-                        });
-                    };
-
-                    var getEmptyLine = function (lineNo) {
-                        if(!angular.isNumber(lineNo)){
-                            return 0;
-                        }
-                        var content = editor.getLine(lineNo);
-                        while (content){
-                            content = editor.getLine(++lineNo);
-                        }
-                        if (!angular.isDefined(content)){
-                            editor.replaceRange("\n",{line: lineNo, ch: 0});
-                        }
-                        return lineNo;
-                    };
-
-                    if (window.FileReader) {
-                        var fileReader = new FileReader();
-                        var cursor = editor.getCursor();
-                        fileReader.onloadstart = function () {
-                            // console.log("fileLoadStart");
-                            var insertLineNum = getEmptyLine(cursor.line);
-                            dropFiles[fileObj.name].insertLinum = insertLineNum;
-                            var onloadInfo = "***正在获取文件 0/"+ fileObj.size +"***";
-                            line_keyword_nofocus(dropFiles[fileObj.name].insertLinum, onloadInfo, 0);
-                            // editor.setCursor(CodeMirror.Pos(++dropFiles[fileObj.name].insertLinum, 0));
-                            // cursor = editor.getCursor();
-                        };
-                        fileReader.onprogress = function (file) {
-                            var onprogressInfo = "***正在获取文件 "+ file.loaded +"/" + fileObj.size  + "***";
-                            line_keyword_nofocus(dropFiles[fileObj.name].insertLinum, onprogressInfo, 0);
-                        };
-                        fileReader.onload = function () {
-                            if (fileObj.size > UpperLimit || /video\/\w+/.test(fileObj.type)){ // 上传到七牛
-                                var cmd_bigfile = function(fileObj) {
-                                    // console.log(fileObj.name);
-                                    var msg = "editorUploadFile";
-                                    var data = dropFiles[fileObj.name];
-                                    line_keyword_nofocus(dropFiles[fileObj.name].insertLinum, "**已选择使用上传工具上传 "+fileObj.name+"。**", 0);
-                                    if (isBigfileModalShow) {
-                                        $rootScope.$broadcast(msg, data); 
-                                        return;
-                                    }
-                                    $scope.cmd_bigfile();
-                                    
-                                    bigfileModal.opened.then(function() {
-                                        isBigfileModalShow = true;
-                                        $rootScope.$broadcast(msg, data); 
-
-                                        confirmFilesQue.filter(function(file) {
-                                            line_keyword_nofocus(dropFiles[file.name].insertLinum, "**已选择使用上传工具上传 "+file.name+"。**", 0);
-                                            $rootScope.$broadcast(msg, file);
-                                            return false;
-                                        });
-                                    });
-                                }
-
-                                var stop = function(fileObj) {
-                                    line_keyword_nofocus(dropFiles[fileObj.name].insertLinum, "**因为 "+fileObj.name+" 容量较大，已取消上传。**", 0);
-                                    if (confirmFilesQue.length > 0) {
-                                        confirmFun(confirmFilesQue[0]);
-                                        confirmFilesQue.shift();
-                                        // console.log(confirmFilesQue);
-                                    }
-                                }
-
-                                var editorToQiniu = function(fileObj) {
-                                    // console.log("正在上传到七牛");
-                                    $scope.storeInfoByte.used += fileObj.size || 0;
-                                
-                                    if ($scope.storeInfoByte.used > $scope.storeInfoByte.total){
-                                        $scope.storeInfoByte.used -= fileObj.size || 0;
-                                        line_keyword_nofocus(dropFiles[fileObj.name].insertLinum, "**网盘容量不足,"+fileObj.name+" 文件上传失败**", 0);
-                                        return;
-                                    }
-        
-                                    qiniuUpload(fileObj);
-                                    if (confirmFilesQue.length > 0) {
-                                        confirmFun(confirmFilesQue[0]);
-                                        confirmFilesQue.shift();
-                                        // console.log(confirmFilesQue);
-                                    }
-                                }
-
-                                var confirmFun = function(fileObj){
-                                    var contentHtml = "<p class='file-large-info'>识别到您上传的文件:<span class='filename'>"+ fileObj.name +"</span>容量较大。我们推荐你使用网站的大文件工具上传。否则可能导致浏览器性能降低。</p>";
-                                    var uploadId = fileObj.name;
-                                    var confirmDialog = config.services.confirmDialog({
-                                        "title": "提醒",
-                                        "confirmBtn": false,
-                                        "cancelBtn": false,
-                                        "backdrop": "static",
-                                        "contentHtml": contentHtml,
-                                        "operationBtns": [
-                                            {
-                                                "id": uploadId,
-                                                "text": "打开上传工具",
-                                                "clickHandler": function ($dialogScope) {
-                                                    $dialogScope.$dismiss();
-                                                    isConfirmDialogShow = false;
-                                                    cmd_bigfile(fileObj);
-                                                }
-                                            },
-                                            {
-                                                "text": "继续上传",
-                                                "clickHandler": function ($dialogScope) {
-                                                    $dialogScope.$dismiss();
-                                                    isConfirmDialogShow = false;
-                                                    editorToQiniu(fileObj);
-                                                }
-                                            },
-                                            {
-                                                "text": "取消上传",
-                                                "class": "btn-fill btn-default",
-                                                "clickHandler": function ($dialogScope) {
-                                                    $dialogScope.$dismiss();
-                                                    isConfirmDialogShow = false;
-                                                    stop(fileObj);
-                                                }
-                                            },
-                                        ],
-                                        "openedCb": function() {
-                                        }
-                                    }, function(){
-                                        isBigfileModalShow = false;
-                                        isConfirmDialogShow = false;
-                                    }, function(){
-                                        isBigfileModalShow = false;
-                                        isConfirmDialogShow = false;
-                                        stop(fileObj);
-                                    }); 
-                                }
-
-                                if (fileObj.size > BrowerUpperLimit) {
-                                    if (isBigfileModalShow) {
-                                        // console.log(isBigfileModalShow);
-                                        cmd_bigfile();
-                                        return;
-                                    }
-                                    if (isConfirmDialogShow) {
-                                        confirmFilesQue = confirmFilesQue || [];
-                                        confirmFilesQue.push(fileObj);
-                                        return;
-                                    }
-                                    
-                                    isConfirmDialogShow = true;
-                                    confirmFun(fileObj);
-                                }else {
-                                    editorToQiniu(fileObj);
-                                }
-                            }else{ // 上传到数据源
-                                // console.log("正在上传到数据源");
-                                if (/image\/\w+/.test(fileObj.type)) {
-                                    currentDataSource.uploadImage({content: fileReader.result}, function (img_url) {
-                                        //console.log(img_url);
-                                        line_keyword_nofocus(dropFiles[fileObj.name].insertLinum, '![](' + img_url + ')', 2);
-                                        cb && cb(img_url);
-                                    });
-                                } else {
-                                    currentDataSource.uploadFile({path:path, content:fileReader.result}, function(linkUrl){
-                                        var callback = function() {
-                                            line_keyword_nofocus(dropFiles[fileObj.name].insertLinum, '['+ fileObj.name +'](' + linkUrl + ')', 2);
-                                            cb && cb(linkCtrl);
-                                        };
-
-                                        currentDataSource.getLastCommitId(callback, callback, false);
-                                    }, function(response){
-                                        Message.danger(response.data.message);
-                                        // console.log(data);
-                                    });
-                                }
-                            }
-                        };
-                        fileReader.readAsDataURL(fileObj);
-                    } else {
-                        alert('浏览器不支持');
-                    }
-                }
-
-                //图片上传
-                $scope.cmd_image_upload = function (fileObj, cb) {
-                    if (!/image\/\w+/.test(fileObj.type)) {
-                        alert("这不是图片！");
-                        return false;
-                    }
-                    $scope.cmd_file_upload(fileObj, cb);
-                }
-
-                //代码
-                $scope.cmd_code = function () {
-                    if (isHTMLViewEditor) {
-                        formatHtmlView('formatblock', 'pre');
-                        return;
-                    }
-
-                    var sel = editor.getSelection();
-                    var desStr = '```\n' + sel + '\n```';
-                    editor.replaceSelection(desStr);
-
-                    var cursor = editor.getCursor();
-                    editor.setCursor(CodeMirror.Pos(cursor.line - 1, cursor.ch));
-
-                    editor.focus();
-                }
-
-                //版本
-                $scope.cmd_version = function () {
-                    // util.go("gitVersion");
-                    $scope.currentPage = currentPage;
-                    modal('controller/gitVersionController', {
-                        controller: 'gitVersionController',
-                        size: 'lg',
-                        backdrop: true,
-                        scope: $scope
-                    }, function (wikiBlock) {
-                        // console.log(wikiBlock);
-                    }, function (result) {
-                        // console.log(result);
-                    });
-                }
-
-                $scope.cmd_transform = function () {
-                    $scope.enableTransform = !$scope.enableTransform;
-                    //console.log($scope.enableTransform);
-                    CodeMirror.signal(editor, 'change', editor);
-                }
 
                 // 渲染自动保存
                 function renderAutoSave(cb, errcb) {
@@ -2682,16 +1583,15 @@ define([
                 }
 
                 function initEditor() {
-                    //console.log("initEditor");
-                    //{{{
                     if (editor || (!document.getElementById("source"))) {
-                        // console.log("init editor failed");
+                        console.error("init editor failed");
                         return;
                     }
 
                     initModuleEditor();
 
                     var winWidth = $(window).width();
+                    
                     if (winWidth<992){
                         $scope.showFile=false;
                         $scope.showCode=true;
@@ -2834,36 +1734,36 @@ define([
                         }
                     });
                     $rootScope.editor = editor;
-                    //}}}
-                    //var viewEditorTimer = undefined;//{{{
-                    //$('body').on('focus', '[contenteditable]', function () {
-                        ////console.log("start html view edit...");
-                        //isHTMLViewEditor = true;
-                        //currentRichTextObj = $(this);
-                        //if (viewEditorTimer) {
-                            //clearTimeout(viewEditorTimer);
-                            //viewEditorTimer = undefined;
-                        //}
-                        ////return $this;
-                    //}).on('blur keyup paste input', '[contenteditable]', function () {
-                        ////return $this;
-                    //}).on('blur', '[contenteditable]', function () {
-                        ////console.log("end html view edit...");
-                        //var $this = $(this);
-                        //viewEditorTimer = setTimeout(function () {
-                            //isHTMLViewEditor = false;
-                            //currentRichTextObj = undefined;
-                            ////console.log(mdwiki.blockList);
-                            //var blockList = mdwiki.blockList;
-                            //var block = undefined;
-                            //for (var i = 0; i < blockList.length; i++) {
-                                //if (blockList[i].blockCache.containerId == $this[0].id) {
-                                    //block = blockList[i]
-                                //}
-                            //}
-                            //htmlToMd(block);
-                        //}, 1000);
-                    //});
+                    
+                    // var viewEditorTimer = undefined;
+                    // $('body').on('focus', '[contenteditable]', function () {
+                    //     //console.log("start html view edit...");
+                    //     isHTMLViewEditor = true;
+                    //     currentRichTextObj = $(this);
+                    //     if (viewEditorTimer) {
+                    //         clearTimeout(viewEditorTimer);
+                    //         viewEditorTimer = undefined;
+                    //     }
+                    //     //return $this;
+                    // }).on('blur keyup paste input', '[contenteditable]', function () {
+                    //     //return $this;
+                    // }).on('blur', '[contenteditable]', function () {
+                    //     //console.log("end html view edit...");
+                    //     var $this = $(this);
+                    //     viewEditorTimer = setTimeout(function () {
+                    //         isHTMLViewEditor = false;
+                    //         currentRichTextObj = undefined;
+                    //         //console.log(mdwiki.blockList);
+                    //         var blockList = mdwiki.blockList;
+                    //         var block = undefined;
+                    //         for (var i = 0; i < blockList.length; i++) {
+                    //             if (blockList[i].blockCache.containerId == $this[0].id) {
+                    //                 block = blockList[i]
+                    //             }
+                    //         }
+                    //         htmlToMd(block);
+                    //     }, 1000);
+                    // });
 
                     mdwiki.setEditor(editor);
                     config.shareMap.mdwiki = mdwiki;
@@ -2903,16 +1803,18 @@ define([
                         //console.log("----------------unfold--------------------");
                         cm.getDoc().removeLineClass(from.line, 'wrap', 'CodeMirrorFold');
                     });
+
                     // 渲染后自动保存
                     var renderTimer = undefined;
-                    //var filterSensitive = function (inputText) {
-                        //var result = "";
-                        //config.services.sensitiveTest.checkSensitiveWord(inputText, function (foundWords, outputText) {
-                            //result = outputText;
-                            //return inputText;
-                        //});
-                        //return result;
-                    //};
+
+                    // var filterSensitive = function (inputText) {
+                    //     var result = "";
+                    //     config.services.sensitiveTest.checkSensitiveWord(inputText, function (foundWords, outputText) {
+                    //         result = outputText;
+                    //         return inputText;
+                    //     });
+                    //     return result;
+                    // };
 
                     editor.on("cursorActivity", function(cm){
                         mdwiki.cursorActivity && mdwiki.cursorActivity();
@@ -3581,21 +2483,22 @@ define([
 
                         $.event.add(window, "scroll", function () {
                             var p = $(window).scrollTop();
-    //                         if (p > wellStartPos) {
-    //                             $('.well').css('position', 'fixed');
-    //                             $('.well').css('top', '0px');
-    //                             $('.well').css('left', '0px');
-    //                             $('.well').css('right', '0px');
-    //
-    // //                $('.treeview').css('position', 'fixed');
-    // //                $('.treeview').css('top',p + $('#toolbarview').height());
-    //                         } else {
-    //                             $('.well').css('position', 'static');
-    //                             $('.well').css('top', '');
-    //
-    // //                $('.treeview').css('position','static');
-    // //                $('.treeview').css('top','');
-    //                         }
+
+                            // if (p > wellStartPos) {
+                            //     $('.well').css('position', 'fixed');
+                            //     $('.well').css('top', '0px');
+                            //     $('.well').css('left', '0px');
+                            //     $('.well').css('right', '0px');
+    
+                            //     // $('.treeview').css('position', 'fixed');
+                            //     // $('.treeview').css('top',p + $('#toolbarview').height());
+                            // } else {
+                            //     $('.well').css('position', 'static');
+                            //     $('.well').css('top', '');
+    
+                            //     // $('.treeview').css('position','static');
+                            //     // $('.treeview').css('top','');
+                            // }
                         });
                     });
 
@@ -3740,8 +2643,1107 @@ define([
                         $("#preview").off("mouseup",mouseupEvent);
                     };
 
+
                     return editor;
-            }
+                }
+
+                //初始化，读取用户站点列表及页面列表
+                function init() {
+                    initEditor();
+                    loadSitePageInfo(); // 加载站点列表
+                }
+
+                //已打开列表树中打开网页编辑
+                $scope.clickOpenPage = function (page) {
+                    if (!util.isEmptyObject(currentPage) && currentPage.url == page.url) {
+                        return;
+                    }
+
+                    renderAutoSave(function () {
+                        currentPage = getPageByUrl(page.url);
+                        currentSite = getCurrentSite();
+                        openPage();
+                        editor.focus();
+                    });
+                };
+
+                $scope.openWikiBlock = function (insertLine, type) {
+                    $scope.insertMod = {
+                        "insertLine": insertLine,
+                        "type": type
+                    };
+                    function formatWikiCmd(text) {
+                        var lines = text.split('\n');
+                        var startPos = undefined, endPos = undefined;
+                        for (var i = 0; i < lines.length; i++) {
+                            lines[i] = lines[i].replace(/^[\s]*/, '');
+                            if (lines[i].indexOf('```') == 0) {
+                                if (startPos == undefined) {
+                                    startPos = i;
+                                } else {
+                                    endPos = i;
+                                }
+                            }
+                        }
+                        if (startPos == undefined || endPos == undefined)
+                            return text;
+
+                        var paramLines = lines.slice(startPos + 1, endPos);
+                        try {
+                            //console.log(paramLines);
+                            var paramsText = paramLines.join('\n');
+                            var newText = lines.slice(0, startPos + 1).join('\n') + '\n' + lines.slice(endPos).join('\n');
+                            if (paramsText) {
+                                var paramObj = angular.fromJson(paramsText);
+                                paramsText = angular.toJson(paramObj, 4);
+                                newText = lines.slice(0, startPos + 1).join('\n') + '\n' + paramsText + '\n' + lines.slice(endPos).join('\n');
+                            }
+                            return newText;
+                        } catch (e) {
+                            // console.log(e);
+                            return lines.slice(0, startPos + 1).join('\n') + '\n' + paramsText + '\n' + lines.slice(endPos).join('\n');
+                        }
+                    }
+
+                    modal('controller/wikiBlockController', {
+                        controller: 'wikiBlockController',
+                        size: 'lg',
+                        backdrop:true
+                    }, function (wikiBlock) {
+                        var wikiBlockContent = formatWikiCmd(wikiBlock.content);
+                        var cursor = editor.getCursor();
+                        var toInsertLine = ($scope.insertMod.insertLine >= 0) ? $scope.insertMod.insertLine : cursor.line;
+                        var content = editor.getLine(toInsertLine);
+                        wikiBlockContent = '\n' + wikiBlockContent + '\n';
+                        editor.replaceRange(wikiBlockContent, {
+                            "line": toInsertLine,
+                            "ch": 0
+                        });
+                    }, function (result) {
+                        // console.log(result);
+                    });
+                }
+
+                $rootScope.insertMod = function(type){
+                    var moduleEditorParams = config.shareMap.moduleEditorParams || {};
+                    var token = moduleEditorParams.block.token;
+                    if (type == "before") {
+                        $scope.openWikiBlock(token.start, type);
+                    }else {
+                        $scope.openWikiBlock(token.end, type);
+                    }
+                }
+
+                $scope.openGitFile = function () {//{{{
+                    if (!currentPage || !currentPage.url) {
+                        return;
+                    }
+
+                    var currentDataSource = getCurrentDataSource();
+                    if (currentDataSource) {
+                        if (currentDataSource.getDataSourceType() == "github") {
+                            currentDataSource.getFile({path: currentPage.url + pageSuffixName}, function (data) {
+                                //console.log(data);
+                                window.open(data.html_url);
+                            });
+                        } else {
+                            window.open(currentDataSource.getContentUrlPrefix({path: currentPage.url + pageSuffixName, sha:"master"}));
+                        }
+                    }
+                }
+
+                $scope.cmd_newpage = function (hidePageTree, url, event) {//{{{
+                    if (hidePageTree && !treeNodeMap[url]) {
+                        return;
+                    }
+                    $scope.hidePageTree=hidePageTree ? true : false;
+                    if (hidePageTree){
+                        $scope.nowHoverPage=treeNodeMap[url];
+                    }
+                    function openNewPage() {
+                        $uibModal.open({
+                            //templateUrl: WIKI_WEBROOT+ "html/editorNewPage.html",   // WIKI_WEBROOT 为后端变量前端不能用
+                            templateUrl: config.htmlPath + "editorNewPage.html",
+                            controller: "pageCtrl",
+                            size: (hidePageTree? "lg":"sm"),
+                            scope: $scope
+                        }).result.then(function (provider) {
+                            if (provider == "page") {
+                                getPageTemplateContent(currentPage.url, currentPage.template.contentUrl);
+                                allPageMap[currentPage.url] = currentPage;
+                                currentSite = getCurrentSite();
+                                initTree();
+                                util.post(config.apiUrlPrefix + "pages/insert", {
+                                    url: currentPage.url 
+                                }, function(data){
+                                    console.log(data);
+                                }, function(err){
+                                    console.log(err);
+                                });
+                            }
+                        }, function (text, error) {
+                            return;
+                        });
+                    }
+
+                    savePageContent(function () {
+                        //Message.warning("自动保存成功");
+                        openNewPage();
+                    }, function () {
+                        Message.warning("自动保存失败");
+                        openNewPage();
+                    });
+                    event && event.stopPropagation();
+                };
+
+                //保存页面
+                $scope.cmd_savepage = function (cb, errcb) {
+                    if (!util.isEmptyObject(currentPage)) {//修改
+                        var _currentPage = currentPage;    // 防止保存过程中 currentPage变量被修改导致保存错误
+                        savePageContent(function () {
+                            _currentPage.isModify = false;
+                            _currentPage.isConflict = false;
+                            _currentPage.blobId = undefined;
+                            initTree();
+                            cb && cb();
+                            Message.info("文件保存成功");
+                        }, function () {
+                            errcb && errcb();
+                            Message.danger("文件保存失败");
+                        });
+                    } else {
+                        storage.localStorageSetItem("wikiEditorTempContent", editor.getValue());
+                        errcb && errcb();
+                        // $uibModal.open({
+                        //     //templateUrl: WIKI_WEBROOT+ "html/editorNewPage.html",   // WIKI_WEBROOT 为后端变量前端不能用
+                        //     templateUrl: config.htmlPath + "editorNewPage.html",
+                        //     controller: "pageCtrl",
+                        // }).result.then(function (provider) {
+                        //     //console.log(provider);
+                        //     if (provider == "page") 
+                        //         //console.log(currentPage);
+                        //         allPageMap[currentPage.url] = currentPage;
+                        //         allWebstePageContent[currentPage.url] = editor.getValue();
+                        //         $scope.cmd_savepage(function () {
+                        //             openPage();
+                        //             storage.localStorageRemoveItem("wikiEditorTempContent");
+                        //         });
+                        //     }
+                        // }, function (text, error) {
+                        //     return;
+                        // });
+                    }
+                }
+
+                //删除
+                $scope.cmd_remove = function (url) {
+                    var page = getPageByUrl(url);
+                    if (!page) {
+                        return;
+                    }
+                    var titleInfo = "> " + page.url.split("/").splice(2).join(" > ");
+
+                    config.services.confirmDialog({
+                        "title": "删除提醒",
+                        "titleInfo": titleInfo,
+                        "theme": "danger",
+                        "confirmBtnClass": "btn-danger",
+                        "content": "确定删除 " + page.pagename + " 页面？"
+                    },function () {
+                        if (!util.isEmptyObject(page)) {
+                            var currentDataSource = dataSource.getDataSource(page.username, page.sitename);
+
+                            currentDataSource && currentDataSource.deleteFile({path: page.url + pageSuffixName}, function () {
+                                // console.log("删除文件成功:");
+                                util.http("DELETE", config.apiUrlPrefix + "pages/delete", {
+                                    url: page.url
+                                }, function(){}, function(err){
+                                    console.log(err);
+                                })
+                            }, function (response) {
+                                // console.log("删除文件失败:");
+                            });
+
+                            storage.indexedDBDeleteItem(config.pageStoreName, page.url);
+
+                            delete allPageMap[page.url];
+                            delete $scope.opens[page.url];
+                            storage.sessionStorageRemoveItem('urlObj');
+                            if (currentPage.url == page.url) {
+                                currentPage = undefined;
+                                initTree();
+                                openPage();
+                            }
+                        }
+                    });
+                };
+
+                //关闭
+                $scope.cmd_close = function (url) {
+                    var page = $scope.opens[url];
+                    if (!page) {
+                        return;
+                    }
+                    var result = false;
+                    if (page.isModify){
+                        result=window.confirm("当前有修改未保存，确定关闭？");
+                    }
+
+                    if(!page.isModify || result){
+                        delete $scope.opens[url];
+                        if (!util.isEmptyObject(currentPage) && currentPage.url != url) {
+                            return;
+                        }
+                        storage.sessionStorageRemoveItem('urlObj');
+                        currentPage = undefined;
+                        for (var url in $scope.opens){
+                            currentPage = $scope.opens[url];
+                        }
+                        openPage();
+                    }
+                };
+
+                //关闭全部已打开
+                $scope.cmd_closeAll = function (url) {
+                    // console.log(url);
+                    url = url || "";
+                    for (key in $scope.opens){
+                        if (key.indexOf(url) >= 0) {
+                            $scope.cmd_close(key);
+                        }
+                    }
+                };
+
+                $scope.cmd_goSetting = function (urlKey, event) {
+                    var website = allSiteMap[urlKey];
+                    // console.log(website);
+                    event && event.stopPropagation();
+                    storage.sessionStorageSetItem('userCenterContentType', 'editWebsite');
+                    storage.sessionStorageSetItem("editWebsiteParams", website);
+                    util.go("userCenter", true);
+                    util.html('#userCenterSubPage', editWebsiteHtmlContent);
+                };
+
+                $scope.goSetting = function (sitename) {
+                    storage.sessionStorageSetItem("urlObj",{username:$scope.user.username, sitename:sitename});
+                    util.go('wikieditor');
+                };
+
+                $scope.cmd_saveAll = function () {
+                    var tempCurrentPage=currentPage; 
+                    var fnList = [];
+                    var callback = undefined;
+                    for (url in $scope.opens){
+                        callback = (function(url){
+                            return function(cb, errcb) {
+                                currentPage=$scope.opens[url];
+                                $scope.cmd_savepage(function () {
+                                    allPageMap[url].isModify=false;
+                                    allPageMap[url].isConflict=false;
+                                    allPageMap[url].blobId=undefined;
+                                    cb && cb();
+                                }, errcb);
+                            }
+                        })(url);
+                        fnList.push(callback);
+                    }
+
+                    callback = function(){
+                        initTree();
+                        currentPage=tempCurrentPage;
+                    }
+                    
+                    util.batchRun(fnList, function(){
+                        callback();
+                        // console.log("全部保存结束");
+                    });
+                };
+
+                //刷新
+                $scope.cmd_refresh = function (url) {
+                    var page = getPageByUrl(url);
+                    //console.log(page);
+                    if (!page) {
+                        return ;
+                    }
+                    var siteDataSource = dataSource.getDataSource(page.username, page.sitename);
+                    if (!siteDataSource){
+                        return ;
+                    }
+                    siteDataSource.getRawContent({path:url + pageSuffixName, sha:"master", ref:"master"}, function (data) {
+                        var content = data || "";
+                        allWebstePageContent[url] = content;
+                        page.isConflict = false;
+                        page.isModify = false;
+                        page.blobId = undefined;
+                        page.content = content;                                    // 更新内容
+                        page.timestamp = (new Date()).getTime();                   // 更新时间戳
+                        storage.indexedDBSetItem(config.pageStoreName, page);      // 每次改动本地保存
+                        initTree();
+                        if (!util.isEmptyObject(currentPage) && url == currentPage.url) {
+                            //console.log("---------");
+                            openPage();
+                        }
+                    });
+                };
+
+                //新建文件夹
+                $scope.cmd_newFile = function (hidePageTree, url, event) {
+                    if (!treeNodeMap[url]) {
+                        return;
+                    }
+                    $scope.hidePageTree=hidePageTree ? true : false;
+                    if (hidePageTree){
+                        $scope.nowHoverFile=treeNodeMap[url];
+                    }
+                    $uibModal.open({
+                        //templateUrl: WIKI_WEBROOT+ "html/editorNewPage.html",   // WIKI_WEBROOT 为后端变量前端不能用
+                        templateUrl: config.htmlPath + "editorNewFile.html",
+                        controller: "fileCtrl",
+                        scope: $scope
+                    }).result.then(function (websiteFile) {
+                        var path = websiteFile.url + config.pageSuffixName;
+                        var currentDataSource = dataSource.getDataSource(websiteFile.username, websiteFile.sitename);
+                        if (!currentDataSource) {
+                            // console.log(websiteFile);
+                        } else {
+                            currentDataSource.writeFile({path:path, content:"占位文件"}, function(){
+                                // console.log("创建成功");
+                                initTree();
+                                allPageMap[websiteFile.url] = angular.copy(websiteFile);
+                                //console.log(allPageMap);
+                            }, function() {
+                                // console.log("创建失败");
+                            });
+                        }
+                    }, function (text, error) {
+                        return;
+                    });
+                    event && event.stopPropagation();
+                };
+
+                //撤销
+                $scope.cmd_undo = function () {
+                    if (isHTMLViewEditor) {
+                        formatHtmlView('undo');
+                        return;
+                    }
+                    editor.undo();
+                    editor.focus();
+                }
+
+                //重做
+                $scope.cmd_redo = function () {
+                    if (isHTMLViewEditor) {
+                        formatHtmlView('redo');
+                        return;
+                    }
+                    editor.redo();
+                    editor.focus();
+                }
+
+                //查找
+                $scope.cmd_find = function () {
+                    editor.execCommand("find");
+                    CodeMirror.commands.find(editor);
+                }
+
+                //替换
+                $scope.cmd_replace = function () {
+                    editor.execCommand("replace");
+                    CodeMirror.commands.replace(editor);
+                }
+
+                //标题    H1：Hn
+                $scope.cmd_headline = function (level) {
+                    if (isHTMLViewEditor) {
+                        formatHtmlView("formatblock", 'H' + level);
+                        return;
+                    }
+                    var preChar = '';
+                    while (level > 0) {
+                        preChar += '#';
+                        level--;
+                    }
+                    preChar += ' ';
+
+                    var cursor = editor.getCursor();
+                    var content = editor.getLine(cursor.line);
+
+                    var iSpace = 0;
+                    var chrCmp = '';
+                    for (var i = 0; i < content.length; i++) {
+                        chrCmp = content.substr(i, 1);
+                        if (chrCmp == '#') {
+                            continue;
+                        } else {
+                            if (chrCmp == ' ') {
+                                iSpace = i + 1;
+                            }
+                            break;
+                        }
+                    }
+                    editor.replaceRange(preChar, CodeMirror.Pos(cursor.line, 0), CodeMirror.Pos(cursor.line, iSpace));
+                    editor.focus();
+                    return;
+                }
+
+                //加粗
+                $scope.cmd_bold = function () {
+                    if (isHTMLViewEditor) {
+                        formatHtmlView('bold');
+                        return;
+                    }
+
+                    font_style('**');
+                }
+
+                //斜体
+                $scope.cmd_italic = function () {
+                    if (isHTMLViewEditor) {
+                        formatHtmlView('italic');
+                        return;
+                    }
+                    font_style('*');
+                }
+
+                //下划线
+                $scope.cmd_underline = function () {
+                    if (isHTMLViewEditor) {
+                        formatHtmlView('underline');
+                        return;
+                    }
+                }
+
+                //下划线
+                $scope.cmd_strikethrough = function () {
+                    if (isHTMLViewEditor) {
+                        formatHtmlView('strikethrough');
+                        return;
+                    }
+                    font_style('~~');
+                }
+
+                //上标
+                $scope.cmd_superscript = function () {
+                    if (isHTMLViewEditor) {
+                        formatHtmlView('superscript');
+                        return;
+                    }
+                    font_style('^');
+                }
+
+                //下标
+                $scope.cmd_subscript = function () {
+                    if (isHTMLViewEditor) {
+                        formatHtmlView('subscript');
+                        return;
+                    }
+                    font_style('~');
+                }
+
+                //有序列表
+                $scope.cmd_listol = function () {
+                    if (isHTMLViewEditor) {
+                        formatHtmlView('insertorderedlist');
+                        return;
+                    }
+
+                    if (editor.somethingSelected()) {
+                        var sel = editor.getSelection();
+                        var srcStr = '~ol~' + sel.replace(/\n/g, "\n~ol~");
+
+                        var id = 1;
+                        var desStr = srcStr.replace("~ol~", id + '. ');
+                        while (desStr.indexOf("~ol~") >= 0) {
+                            id++;
+                            desStr = desStr.replace("~ol~", id + '. ');
+                        }
+
+                        editor.replaceSelection(desStr);
+                    } else {
+                        var cursor = editor.getCursor();
+                        editor.replaceRange('1. ', CodeMirror.Pos(cursor.line, 0), CodeMirror.Pos(cursor.line, 0));
+                    }
+                    editor.focus();
+                };
+
+                //无序列表
+                $scope.cmd_listul = function () {
+                    if (isHTMLViewEditor) {
+                        formatHtmlView('insertunorderedlist');
+                        return;
+                    }
+                    hol_keyword('- ');
+                }
+
+                //引用内容
+                $scope.cmd_blockqote = function () {
+                    if (isHTMLViewEditor) {
+                        formatHtmlView('formatblock', 'blockquote');
+                        return;
+                    }
+
+                    hol_keyword('> ');
+                }
+
+                //表格
+                $scope.cmd_tabel = function () {
+                    $uibModal.open({
+                        templateUrl: config.htmlPath + "editorInsertTable.html",
+                        controller: "tableCtrl",
+                    }).result.then(function (provider) {
+                        //console.log(provider);
+                        if (provider == "table") {
+                            var table = $rootScope.table;
+                            //console.log(table);
+                            //| 0:0 | 1:0 |
+                            //| -- | -- |
+                            //| 0:2 | 1:2 |
+                            var wiki = '';
+                            for (var i = 0; i < table.rows; i++) {
+                                wiki += '\n';
+                                if (i == 1) {
+                                    for (var j = 0; j < table.cols; j++) {
+                                        switch (table.alignment) {
+                                            case 1:
+                                                wiki += '|:-- ';
+                                                break;
+                                            case 2:
+                                                wiki += '|:--:';
+                                                break;
+                                            case 3:
+                                                wiki += '| --:';
+                                                break;
+                                            default:
+                                                wiki += '| -- ';
+                                                break;
+                                        }
+                                    }
+                                    wiki += '|\n';
+                                }
+
+                                for (var j = 0; j < table.cols; j++) {
+                                    wiki += '| ' + j + ':' + i + ' ';
+                                }
+                                wiki += '|';
+                            }
+                            wiki += '\n';
+
+                            var cursor = editor.getCursor();
+                            var content = editor.getLine(cursor.line);
+                            if (content.length > 0) {
+                                wiki += '\n';
+                            }
+
+                            editor.replaceRange(wiki, CodeMirror.Pos(cursor.line + 1, 0), CodeMirror.Pos(cursor.line + 1, 0));
+                            editor.setCursor(CodeMirror.Pos(cursor.line + 1, 0));
+                            editor.focus();
+                        }
+                    }, function (text, error) {
+                        // console.log('text:' + text);
+                        // console.log('error:' + error);
+                        return;
+                    });
+                }
+
+                //水平分割线
+                $scope.cmd_horizontal = function () {
+                    var cursor = editor.getCursor();
+                    editor.replaceRange('---\n', CodeMirror.Pos(cursor.line + 1, 0), CodeMirror.Pos(cursor.line + 1, 0));
+                    editor.setCursor(CodeMirror.Pos(cursor.line + 2, 0));
+                    editor.focus();
+                }
+
+                //链接
+                $scope.cmd_link = function () {
+                    $uibModal.open({
+                        templateUrl: config.htmlPath + "editorInsertLink.html",
+                        controller: "linkCtrl",
+                    }).result.then(function (provider) {
+                        if (provider == "link") {
+                            var link = $rootScope.link;
+                            var wiki = '';
+                            /*
+                            if (isHTMLViewEditor) {
+                            formatHtmlView('createlink', link);
+                            return;
+                            }
+                            */
+                            if (editor.somethingSelected()) {
+                                wiki += '[' + editor.getSelection() + ']';
+                            } else {
+                                wiki += '[]';
+                            }
+
+                            // wiki += '(' + link.url + ')';
+                            editor.replaceSelection(wiki + '(' + link.url + ')');
+                            if (wiki == '[]') {
+                                editor.setCursor(CodeMirror.Pos(editor.getCursor().line, 1));
+                            }
+                            editor.focus();
+                        }
+                    }, function (text, error) {
+                        // console.log('text:' + text);
+                        // console.log('error:' + error);
+                        return;
+                    });
+                }
+
+                //图片
+                $scope.cmd_image = function () {
+                    $uibModal.open({
+                        templateUrl: config.htmlPath + "editorInsertImg.html",
+                        controller: "imgCtrl",
+                    }).result.then(function (provider) {
+                        // console.log(provider);
+                        if (provider == "img") {
+                            var url = $rootScope.img.url;
+                            var txt = $rootScope.img.txt;
+                            var dat = $rootScope.img.dat;
+                            var nam = $rootScope.img.nam;
+
+                            var wiki = '';
+                            if (txt) {
+                                wiki += '![' + txt + ']';
+                            } else if (editor.somethingSelected()) {
+                                wiki += '![' + editor.getSelection() + ']';
+                            } else {
+                                wiki += '![]';
+                            }
+
+                            if (url) {
+                                wiki += '(' + url + ')';
+                            } else {
+                                wiki += '(' + dat + ')';
+
+                            }
+
+                            editor.replaceSelection(wiki);
+                            editor.focus();
+                        }
+                    }, function (text, error) {
+                        // console.log('text:' + text);
+                        // console.log('error:' + error);
+                        return;
+                    });
+                }
+
+                //视频
+                $scope.cmd_video=function () {
+                    $uibModal.open({
+                        templateUrl: config.htmlPath + "editorInsertVideo.html",
+                        controller: "videoCtrl",
+                    }).result.then(function (result) {
+                        // console.log(result);
+                        if (result) {
+                            var videoContent = "";
+                            if (result.isNetUrl) {
+                                videoContent = '```@wiki/js/video\n{\n\t"videoUrl":"' + result.url + '"\n}\n```';
+
+                            } else {
+                                videoContent = '['+ result.filename +'](' + result.url + ')';
+                            }
+                            editor.replaceSelection(videoContent);
+                            editor.focus();
+                        }
+                    });
+                };
+
+                // 大文件
+                $scope.cmd_bigfile = function () {
+                    bigfileModal = $uibModal.open({
+                        "template": bigfileContent,
+                        "size": "lg",
+                        "controller": "bigfileController",
+                        "backdrop": "static"
+                    });
+                    bigfileModal.result.then(function (wikiBlock) {
+                        isBigfileModalShow = false;
+                        // console.log(wikiBlock);
+                    }, function (files) {
+                        isBigfileModalShow = false;
+                        if (!files){
+                            return;
+                        }
+
+                        var insertContent = "";
+                        // console.log(files);
+                        if (files.pasteUrl){
+                            insertContent = files.pasteUrl;
+                        } else if (files.url){
+                            insertContent += '```@wiki/js/bigfile\n{\n\t"fileType":"' + files.type + '",\n"fileUrl":"'+files.url+'"\n}\n```\n';
+                        }else{
+                            files.map(function (file) {
+                                insertContent += '```@wiki/js/bigfile\n{\n\t"fileId":"' + file._id + '","fileType":"'+file.file.type+'",\n"extraMsg":"'+file.filename+'","channel":"qiniu"\n}\n```\n';
+                            });
+                        }
+
+                        editor.replaceSelection(insertContent);
+                        editor.focus();
+                    });
+                };
+
+                // 文件上传
+                $scope.cmd_file_upload = function(fileObj, cb) {//{{{
+                    const UpperLimit = 10 * 1024 * 1024; // 大于10M上传到七牛
+                    const BrowerUpperLimit = 1 * 1024 * 1024 * 1024; // 大于1GB提示
+                    var currentDataSource = getCurrentDataSource();
+                    if (!currentDataSource) {
+                        Message.info("无法获取数据源信息，稍后重试....");
+                        return;
+                    }
+                    var qiniuBack;
+
+                    var path = fileObj.name;
+                    
+                    var initQiniu = function () {
+                        if (qiniuBack){
+                            return;
+                        }
+                        var qiniu = new QiniuJsSDK();
+                        var option = {
+                            "browse_button":"qiniuUploadBtn",
+                            "unique_names": true,
+                            "auto_start": false,
+                            "uptoken_url": '/api/wiki/models/qiniu/uploadToken',
+                            "domain": 'ov62qege8.bkt.clouddn.com',
+                            "chunk_size": "4mb",
+                            "init": {
+                                "FilesAdded": function (up,files) {
+                                    files.map(function (file) {
+                                        var uploadInfo = "***网盘： 正在上传文件 " + 0 + "/" + file.size + "(0%),上传完成后可以在网盘中进行管理，上传过程中请不要刷新窗口***";
+                                        line_keyword_nofocus(dropFiles[file.name].insertLinum, uploadInfo, 2);
+                                    });
+                                    this.start();
+                                },
+                                "BeforeUpload": function (up, file) {
+                                    // console.log("BeforeUpload");
+                                },
+                                "UploadProgress": function (up, file) {
+                                    var uploadInfo = "***网盘： 正在上传文件 " + file.loaded + "/" + file.size + "(" + file.percent + "%),上传完成后可以在网盘中进行管理，上传过程中请不要刷新窗口***";
+                                    line_keyword_nofocus(dropFiles[file.name].insertLinum, uploadInfo, 0);
+                                },
+                                "FileUploaded": function (up, file, info) {
+                                    // console.log("FileUploaded");
+                                    var lineNo = dropFiles[file.name].insertLinum;
+                                    line_keyword_nofocus(lineNo, file.name);
+                                    var params = {
+                                        filename:file.name,
+                                        domain:up.getOption('domain'),
+                                        key:info.key || file.target_name,
+                                        size:file.size,
+                                        type:file.type,
+                                        hash:info.hash,
+                                        channel:"qiniu"
+                                    };
+                                    util.post(config.apiUrlPrefix + 'bigfile/upload', params, function(data){
+                                        dropFiles[file.name]._id = data._id;
+                                        var insertContent = '```@wiki/js/bigfile\n{\n\t"fileId":"' + data._id + '","fileType":"'+file.type+'",\n"extraMsg":"'+file.name+'","channel":"qiniu"\n}\n```\n';
+                                        line_keyword_nofocus(dropFiles[file.name].insertLinum, insertContent);
+                                    }, function(){
+                                        line_keyword_nofocus(dropFiles[file.name].insertLinum, "***上传出错了，请重试，或者在网盘上传重试***", 0);
+                                        util.post(config.apiUrlPrefix + "qiniu/deleteFile", {
+                                            key:params.key
+                                        }, function (result) {
+                                        }, function (err) {
+                                        }, false);
+                                    }, false);
+                                },
+                                "UploadComplete": function (up, files, info) {
+                                    // console.log("UploadComplete");
+                                    // setBigfileValue();
+                                },
+                                "Error": function (up, file, errTip) {
+                                    // console.log(file.file);
+                                    // console.log(dropFiles[file.name]);
+                                    line_keyword_nofocus(dropFiles[file.file.name].insertLinum, "***上传出错了，请重试，或者在网盘上传重试***", 0);
+                                }
+                            }
+                        };
+
+                        util.get(config.apiUrlPrefix + 'qiniu/getUid',{}, function(data){
+                            if(data && data.uid) {
+                                var uid = data.uid;
+                                option.x_vars = {
+                                    "uid": uid
+                                };
+                                qiniuBack = qiniu.uploader(option);
+                            }else{
+                                // console.log("uid获取失败");
+                            }
+                        }, function () {
+                            // console.log("uid获取失败");
+                        });
+                    };
+                    initQiniu();
+
+                    var timer;
+
+                    var qiniuUpload = function (fileObj) {
+                        var insertLineNum = dropFiles[fileObj.name].insertLinum;
+                        if (!qiniuBack){
+                            timer = setTimeout(function () {
+                                qiniuUpload(fileObj);
+                            }, 500);
+                            return;
+                        }
+
+                        timer && clearTimeout(timer);
+
+                        util.post(config.apiUrlPrefix + "bigfile/getByFilenameList", {filelist:[fileObj.name]}, function(data){
+                        if (data.length > 0){
+                            var contentHtml = '<p class="dialog-info-title">网盘中已存在以下文件，是否覆盖？</p>';
+                            contentHtml+='<p class="dialog-info"><span class="text-success glyphicon glyphicon-ok"></span> '+ fileObj.name +'</p>';
+                            config.services.confirmDialog({
+                                "title": "上传提醒",
+                                "contentHtml": contentHtml
+                            }, function () {
+                                qiniuBack.addFile(fileObj);
+                                qiniuBack.start();
+                            }, function () {
+                                line_keyword_nofocus(insertLineNum, "", 0);
+                            });
+                        }else{
+                            qiniuBack.addFile(fileObj);
+                            qiniuBack.start();
+                        }
+                        });
+                    };
+
+                    var getEmptyLine = function (lineNo) {
+                        if(!angular.isNumber(lineNo)){
+                            return 0;
+                        }
+                        var content = editor.getLine(lineNo);
+                        while (content){
+                            content = editor.getLine(++lineNo);
+                        }
+                        if (!angular.isDefined(content)){
+                            editor.replaceRange("\n",{line: lineNo, ch: 0});
+                        }
+                        return lineNo;
+                    };
+
+                    if (window.FileReader) {
+                        var fileReader = new FileReader();
+                        var cursor = editor.getCursor();
+                        fileReader.onloadstart = function () {
+                            // console.log("fileLoadStart");
+                            var insertLineNum = getEmptyLine(cursor.line);
+                            dropFiles[fileObj.name].insertLinum = insertLineNum;
+                            var onloadInfo = "***正在获取文件 0/"+ fileObj.size +"***";
+                            line_keyword_nofocus(dropFiles[fileObj.name].insertLinum, onloadInfo, 0);
+                            // editor.setCursor(CodeMirror.Pos(++dropFiles[fileObj.name].insertLinum, 0));
+                            // cursor = editor.getCursor();
+                        };
+                        fileReader.onprogress = function (file) {
+                            var onprogressInfo = "***正在获取文件 "+ file.loaded +"/" + fileObj.size  + "***";
+                            line_keyword_nofocus(dropFiles[fileObj.name].insertLinum, onprogressInfo, 0);
+                        };
+                        fileReader.onload = function () {
+                            if (fileObj.size > UpperLimit || /video\/\w+/.test(fileObj.type)){ // 上传到七牛
+                                var cmd_bigfile = function(fileObj) {
+                                    // console.log(fileObj.name);
+                                    var msg = "editorUploadFile";
+                                    var data = dropFiles[fileObj.name];
+                                    line_keyword_nofocus(dropFiles[fileObj.name].insertLinum, "**已选择使用上传工具上传 "+fileObj.name+"。**", 0);
+                                    if (isBigfileModalShow) {
+                                        $rootScope.$broadcast(msg, data); 
+                                        return;
+                                    }
+                                    $scope.cmd_bigfile();
+                                    
+                                    bigfileModal.opened.then(function() {
+                                        isBigfileModalShow = true;
+                                        $rootScope.$broadcast(msg, data); 
+
+                                        confirmFilesQue.filter(function(file) {
+                                            line_keyword_nofocus(dropFiles[file.name].insertLinum, "**已选择使用上传工具上传 "+file.name+"。**", 0);
+                                            $rootScope.$broadcast(msg, file);
+                                            return false;
+                                        });
+                                    });
+                                }
+
+                                var stop = function(fileObj) {
+                                    line_keyword_nofocus(dropFiles[fileObj.name].insertLinum, "**因为 "+fileObj.name+" 容量较大，已取消上传。**", 0);
+                                    if (confirmFilesQue.length > 0) {
+                                        confirmFun(confirmFilesQue[0]);
+                                        confirmFilesQue.shift();
+                                        // console.log(confirmFilesQue);
+                                    }
+                                }
+
+                                var editorToQiniu = function(fileObj) {
+                                    // console.log("正在上传到七牛");
+                                    $scope.storeInfoByte.used += fileObj.size || 0;
+                                
+                                    if ($scope.storeInfoByte.used > $scope.storeInfoByte.total){
+                                        $scope.storeInfoByte.used -= fileObj.size || 0;
+                                        line_keyword_nofocus(dropFiles[fileObj.name].insertLinum, "**网盘容量不足,"+fileObj.name+" 文件上传失败**", 0);
+                                        return;
+                                    }
+        
+                                    qiniuUpload(fileObj);
+                                    if (confirmFilesQue.length > 0) {
+                                        confirmFun(confirmFilesQue[0]);
+                                        confirmFilesQue.shift();
+                                        // console.log(confirmFilesQue);
+                                    }
+                                }
+
+                                var confirmFun = function(fileObj){
+                                    var contentHtml = "<p class='file-large-info'>识别到您上传的文件:<span class='filename'>"+ fileObj.name +"</span>容量较大。我们推荐你使用网站的大文件工具上传。否则可能导致浏览器性能降低。</p>";
+                                    var uploadId = fileObj.name;
+                                    var confirmDialog = config.services.confirmDialog({
+                                        "title": "提醒",
+                                        "confirmBtn": false,
+                                        "cancelBtn": false,
+                                        "backdrop": "static",
+                                        "contentHtml": contentHtml,
+                                        "operationBtns": [
+                                            {
+                                                "id": uploadId,
+                                                "text": "打开上传工具",
+                                                "clickHandler": function ($dialogScope) {
+                                                    $dialogScope.$dismiss();
+                                                    isConfirmDialogShow = false;
+                                                    cmd_bigfile(fileObj);
+                                                }
+                                            },
+                                            {
+                                                "text": "继续上传",
+                                                "clickHandler": function ($dialogScope) {
+                                                    $dialogScope.$dismiss();
+                                                    isConfirmDialogShow = false;
+                                                    editorToQiniu(fileObj);
+                                                }
+                                            },
+                                            {
+                                                "text": "取消上传",
+                                                "class": "btn-fill btn-default",
+                                                "clickHandler": function ($dialogScope) {
+                                                    $dialogScope.$dismiss();
+                                                    isConfirmDialogShow = false;
+                                                    stop(fileObj);
+                                                }
+                                            },
+                                        ],
+                                        "openedCb": function() {
+                                        }
+                                    }, function(){
+                                        isBigfileModalShow = false;
+                                        isConfirmDialogShow = false;
+                                    }, function(){
+                                        isBigfileModalShow = false;
+                                        isConfirmDialogShow = false;
+                                        stop(fileObj);
+                                    }); 
+                                }
+
+                                if (fileObj.size > BrowerUpperLimit) {
+                                    if (isBigfileModalShow) {
+                                        // console.log(isBigfileModalShow);
+                                        cmd_bigfile();
+                                        return;
+                                    }
+                                    if (isConfirmDialogShow) {
+                                        confirmFilesQue = confirmFilesQue || [];
+                                        confirmFilesQue.push(fileObj);
+                                        return;
+                                    }
+                                    
+                                    isConfirmDialogShow = true;
+                                    confirmFun(fileObj);
+                                }else {
+                                    editorToQiniu(fileObj);
+                                }
+                            }else{ // 上传到数据源
+                                // console.log("正在上传到数据源");
+                                if (/image\/\w+/.test(fileObj.type)) {
+                                    currentDataSource.uploadImage({content: fileReader.result}, function (img_url) {
+                                        //console.log(img_url);
+                                        line_keyword_nofocus(dropFiles[fileObj.name].insertLinum, '![](' + img_url + ')', 2);
+                                        cb && cb(img_url);
+                                    });
+                                } else {
+                                    currentDataSource.uploadFile({path:path, content:fileReader.result}, function(linkUrl){
+                                        var callback = function() {
+                                            line_keyword_nofocus(dropFiles[fileObj.name].insertLinum, '['+ fileObj.name +'](' + linkUrl + ')', 2);
+                                            cb && cb(linkCtrl);
+                                        };
+
+                                        currentDataSource.getLastCommitId(callback, callback, false);
+                                    }, function(response){
+                                        Message.danger(response.data.message);
+                                        // console.log(data);
+                                    });
+                                }
+                            }
+                        };
+                        fileReader.readAsDataURL(fileObj);
+                    } else {
+                        alert('浏览器不支持');
+                    }
+                }
+
+                //图片上传
+                $scope.cmd_image_upload = function (fileObj, cb) {
+                    if (!/image\/\w+/.test(fileObj.type)) {
+                        alert("这不是图片！");
+                        return false;
+                    }
+                    $scope.cmd_file_upload(fileObj, cb);
+                }
+
+                //代码
+                $scope.cmd_code = function () {
+                    if (isHTMLViewEditor) {
+                        formatHtmlView('formatblock', 'pre');
+                        return;
+                    }
+
+                    var sel = editor.getSelection();
+                    var desStr = '```\n' + sel + '\n```';
+                    editor.replaceSelection(desStr);
+
+                    var cursor = editor.getCursor();
+                    editor.setCursor(CodeMirror.Pos(cursor.line - 1, cursor.ch));
+
+                    editor.focus();
+                }
+
+                //版本
+                $scope.cmd_version = function () {
+                    // util.go("gitVersion");
+                    $scope.currentPage = currentPage;
+                    modal('controller/gitVersionController', {
+                        controller: 'gitVersionController',
+                        size: 'lg',
+                        backdrop: true,
+                        scope: $scope
+                    }, function (wikiBlock) {
+                        // console.log(wikiBlock);
+                    }, function (result) {
+                        // console.log(result);
+                    });
+                }
+
+                $scope.cmd_transform = function () {
+                    $scope.enableTransform = !$scope.enableTransform;
+                    //console.log($scope.enableTransform);
+                    CodeMirror.signal(editor, 'change', editor);
+                }
+
+                $scope.$watch('$viewContentLoaded', function(){
+                    Account.getUser(function(userinfo){
+                        $scope.user = userinfo;
+                        init();
+                    }, function(){
+                        console.error("loaded error");
+                    });
+                });
         }
     ]);
 

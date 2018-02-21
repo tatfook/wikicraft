@@ -292,4 +292,10 @@
 	initConfig();
 
 	window.config = config;
+
+	if(!window.debug) {
+		console.log   = function(){};
+		console.error = function(){};
+		console.warn  = function(){};
+	}
 })();

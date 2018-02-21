@@ -183,6 +183,7 @@ function RenderServerWikiScript()
 		config.bustVersion = getBustVersion()
 	end
 	-- log(config)
+	echo(format('<script>window.debug=%s</script>\n', KEEPWORK.config.debug and 'true' or 'false'));
 	echo(format('<script>window.wiki_config=%s</script>\n', json_encode(config)))
 	echo(format('<script src="/' .. WIKI_CODE_ENV .. '/js/app/config.js?bust=%s"></script>\n', config.bustVersion))
 	echo(format('<script data-main="/' .. WIKI_CODE_ENV .. '/js/main.js?bust=%s" src="/wiki/js/lib/requirejs/require.js?bust=%s"></script>\n', config.bustVersion, config.bustVersion))
