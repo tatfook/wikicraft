@@ -507,7 +507,7 @@ select.resize-view {
     line-height: 34px;
     font-size: 30px;
     position: absolute;
-    left: 271px;
+    left: 50%;
     z-index: 11;
     cursor: pointer;
 }

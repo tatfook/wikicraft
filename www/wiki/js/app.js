@@ -3,15 +3,24 @@
  */
 ///wiki/js/lib/angular-ui-select/select.min.js
 define([
-		'angular',
-		'angular-ui-bootstrap',
-		'angular-ui-select',
-		'angular-sanitize',
-		'angular-translate',
-		'satellizer',
-        'angular-toggle-switch',
-        'helper/translationsTable'
-], function (angular, ngUiBootstrap, ngUiSelect, ngSanitize, ngTranslate, satellizer, ngToggleSwitch, translationsTable) {
+	'angular',
+	'angular-ui-bootstrap',
+	'angular-ui-select',
+	'angular-sanitize',
+	'angular-translate',
+	'satellizer',
+	'angular-toggle-switch',
+	'helper/translationsTable'
+], function (
+	angular,
+	ngUiBootstrap,
+	ngUiSelect,
+	ngSanitize,
+	ngTranslate,
+	satellizer,
+	ngToggleSwitch,
+	translationsTable
+) {
 	let app = {
 		'appName'    : "keepwork",
 		'objects'    : {

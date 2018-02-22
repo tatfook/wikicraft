@@ -245,22 +245,22 @@ define([
                 });
             }
 
-            function setFakeIconPosition(){
-                fakeIconDom = fakeIconDom.length > 0 ? fakeIconDom : $(".mod-container.active .fake-icon");
-                if (fakeIconDom.length <= 0) {
-                    setTimeout(function(){
-                        setFakeIconPosition();
-                    }, 300);
-                    return;
-                }
-                var boxWidth = $("#preview").width();
-                var leftDistance = boxWidth/2;
-                var scaleSize = $rootScope.scaleSelect.scaleValue;
-                fakeIconDom.css({
-                    "left" : leftDistance / scaleSize
-                });
-                fakeIconDom = [];
-            }
+            // function setFakeIconPosition(){
+            //     fakeIconDom = fakeIconDom.length > 0 ? fakeIconDom : $(".mod-container.active .fake-icon");
+            //     if (fakeIconDom.length <= 0) {
+            //         setTimeout(function(){
+            //             setFakeIconPosition();
+            //         }, 300);
+            //         return;
+            //     }
+            //     var boxWidth = $("#preview").width();
+            //     var leftDistance = boxWidth/2;
+            //     var scaleSize = $rootScope.scaleSelect.scaleValue;
+            //     fakeIconDom.css({
+            //         "left" : leftDistance / scaleSize
+            //     });
+            //     fakeIconDom = [];
+            // }
 
             function initAgent(){
                 agent.init("agent", "/agent")
@@ -293,16 +293,16 @@ define([
                     var block = this.block;
 
                     if (block && typeof(block.wikimod) == "object" && typeof(block.wikimod.mod) == "object") {
-                        if (typeof(block.wikimod.mod.getEditorParams) == "function") {
-                            this.params = block.wikimod.mod.getEditorParams(block.modParams);
+                        if (typeof(block.wikimod.mod.getEditorParams) == "object") {
+                            this.params = app.objects.mainMdwiki.getEditorParams(block.modParams, block.wikimod.mod.getEditorParams);
                             this.datas  = getOrderDatas(this.params);
                         } else {
                             this.params = undefined;
                             this.datas  = undefined;
                         }
 
-                        if (typeof(block.wikimod.mod.getStyleList) == "function") {
-                            this.styles = block.wikimod.mod.getStyleList(block);
+                        if (typeof(block.wikimod.mod.getStyleList) == "object") {
+                            this.styles = block.wikimod.mod.getStyleList;
                         } else {
                             this.styles = undefined;
                         }
@@ -328,7 +328,7 @@ define([
                     self.block = block;
                     self.reload();
 
-                    setFakeIconPosition();
+                    // setFakeIconPosition();
 
                     var blockLineNumFrom = self.block.token.start;
                     var blockLineNumTo   = self.block.token.to;

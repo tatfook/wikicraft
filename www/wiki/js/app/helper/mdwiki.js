@@ -314,7 +314,24 @@ define([
 			}
 
 			return false;
-        }
+		}
+		
+		md.getEditorParams = function(modParams, params_template) {
+			modParams = modParams || {};
+
+			for (var key in params_template) {
+				if (key == "design") {
+					modParams.design = modParams.design || {};
+					modParams.design.text = modParams.design.text || params_template[key].text;
+				} else {
+					modParams[key] = modParams[key] || {};
+					modParams[key]["$data"] = params_template[key];
+					modParams[key]["text"] = modParams[key]["text"] || params_template[key]["text"];
+				}
+			}
+	
+			return modParams;
+		}
 
         md.parse = function (text, theme) {
 			theme          = theme || "";
@@ -399,9 +416,10 @@ define([
         }
 
 		md.cursorActivity = function(cm) {
-			var pos = this.editor.getCursor();
-			var blockList = this.getBlockList();
-			var block = undefined, tmp = undefined;
+			var pos                = this.editor.getCursor();
+			var blockList          = this.getBlockList();
+			var block              = undefined
+			var tmp                = undefined;
 			var moduleEditorParams = config.shareMap.moduleEditorParams;
 
 			if (!moduleEditorParams) {

@@ -3407,7 +3407,7 @@ define([
                 };
 
                 // 文件上传
-                $scope.cmd_file_upload = function(fileObj, cb) {//{{{
+                $scope.cmd_file_upload = function(fileObj, cb) {
                     const UpperLimit = 10 * 1024 * 1024; // 大于10M上传到七牛
                     const BrowerUpperLimit = 1 * 1024 * 1024 * 1024; // 大于1GB提示
                     var currentDataSource = getCurrentDataSource();

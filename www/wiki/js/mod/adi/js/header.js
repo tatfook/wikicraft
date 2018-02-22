@@ -8,8 +8,7 @@ define([
 	'wikimod/adi/component/menu/menu',
 	'wikimod/adi/component/logo/logo',
 ], function (app, util, htmlContent, menuComponent) {
-	var initObj = {
-		styles:[
+	var styles = [
 		{
 			design:{
 				text:'left',
@@ -22,71 +21,48 @@ define([
 				cover: 'http://git.keepwork.com/gitlab_rls_official/keepworkimages/raw/master/official_images/img_1515414083068.jpeg'
 			}
 		}
-		],
-		params_template:{
-			design:{
-				is_leaf: true,
-				require: true,
-				text:"left", // 默认值
-			},
-			menu_menu:{
-				is_leaf: true,
-				type: "menu",
-				editable: true,
-				is_mod_hide: false,
-				name: "菜单",
-				require: true,
-				text: [
-					{
-						name : '菜单1',
-						url  : '',
-						children: [
-							{
-								name : '菜单1.1',
-								url  : ''
-							}
-						]
-					}
-				]
-			},
-		}
-	};
+	];
 
-	function getEditorParams(modParams) {
-		modParams = modParams || {};
-
-		var params_template = initObj.params_template;
-		for (var key in params_template) {
-			if (key == "design") {
-				modParams.design = modParams.design || {};
-				modParams.design.text = modParams.design.text || params_template[key].text;
-			} else {
-				modParams[key] = modParams[key] || {};
-				modParams[key]["$data"] = params_template[key];
-				modParams[key]["text"] = modParams[key]["text"] || params_template[key]["text"];
-			}
-		}
-
-		return modParams;
-	}
-
-	function getStyleList() {
-		return initObj.styles;
-	}
-
-    function render(wikiBlock) {
-		menuComponent(wikiBlock);
-
-		var $scope = wikiBlock.$scope;
-		$scope.params = getEditorParams(wikiBlock.modParams);
-		$scope.mode = wikiBlock.mode;
-
-		return htmlContent;
+	var	modParams = {
+		design    : {
+			is_leaf: true,
+			require: true,
+			text:"left", // 默认值
+		},
+		menu_menu : {
+			is_leaf: true,
+			type: "menu",
+			editable: true,
+			is_mod_hide: false,
+			name: "菜单",
+			require: true,
+			text: [
+				{
+					name : '菜单1',
+					url  : '',
+					children: [
+						{
+							name : '菜单1.1',
+							url  : ''
+						}
+					]
+				}
+			]
+		},
 	}
 	
     return {
-        render          : render,
-		getEditorParams : getEditorParams,
-		getStyleList    : getStyleList,
+        render : function (wikiBlock) {
+			menuComponent(wikiBlock);
+	
+			var $scope  = wikiBlock.$scope;
+	
+			$scope.params = app.objects.mainMdwiki.getEditorParams(wikiBlock.modParams, modParams);
+			$scope.mode   = wikiBlock.mode;
+	
+			return htmlContent;
+		},
+		getEditorParams : modParams,
+		getStyleList    : styles,
     }
 });
