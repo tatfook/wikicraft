@@ -468,7 +468,7 @@ function skills:wrap_search_result(result)
         local work = {}
         for j, work_link in ipairs(hit._source.works) do
             work = {
-                access_url = work_link,
+                url = work_link,
                 username = hit._source.username,
                 skill = hit._source.title
             }
