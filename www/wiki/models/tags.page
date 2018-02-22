@@ -28,7 +28,6 @@ end
 
 -- to insert an tags array
 function tags:insert(params)
-    ensureAuthenticated()
     if (not params.tags) or (not params.url) then
         return errors:wrap(REQUEST_PARAMS_ERROR)
     end
