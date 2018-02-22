@@ -140,6 +140,7 @@ function elasticsearch:search(params, callback)
     body.size = params.size
     body.from = params.from
 
+    body.timeout = "50ms"
     return self:sendToES({send_to=search_in, method="GET", form=body}, callback)
 end
 
