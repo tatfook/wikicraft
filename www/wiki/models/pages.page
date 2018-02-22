@@ -20,7 +20,8 @@ local pages = inherit(models.abstract.base, gettable("models.pages"))
 pages.db_name = "pages"
 local validators = models.validators:new()
 local es = models.elasticsearch:new()
-es:connect({index="kw_pages"})
+local index = CURRENT_ENV .. "_kw_pages"
+es:connect({index=index})
 
 
 function pages:ctor()
@@ -35,14 +36,15 @@ function pages:api_insert(params)
     ensureAuthenticated()
     local page, is_params_error, message = self:insert_validator(params)
     if (is_params_error) then
-        return response:status(404):send({error={message=message,status=404}})
+        return response:status(400):send({error={message=message,status=400}})
     end
     self:db():insertOne({["+url"] = {page.url}}, page, resume)
     local err, result = yield()
     if (result) then
-        -- params.id = result._id
-        -- self:insert_to_es(params)
-        result = {url = result.url, tags = result.tags}
+        params.id = result._id
+        self:insert_to_es(params)
+        result = {url = result.url, tags = result.tags or {}}
+        self:save_tags_for_analysis(result)
     end
     return errors:wrap(err, result)
 end
@@ -70,7 +72,7 @@ function pages:insert_validator(params)
         }, {
             validator = validators.existence_validator,
             condition = index_fields_and_model_instance
-        }
+        },
     }
     validators:add_validate_tasks(validate_tasks, params)
     local is_params_error, message = validators:get_validate_result()
@@ -80,37 +82,35 @@ function pages:insert_validator(params)
         clean_data = {
             url = params.url,
             tags = params.tags,
-            siteUrl = format("/%s/%s", splited_url[1], splited_url[2])
         }
+        if (splited_url[2]) then 
+            clean_data.siteUrl = format("/%s/%s", splited_url[1], splited_url[2])
+        end
     end
     return clean_data, is_params_error, message
 end
 
 
 function pages:api_updateTags(params)
+    if (params.url) then
+        self:db():findOne({["+url"]={params.url}}, resume)
+        local err, result = yield()
+        if (not result) then return self:api_insert(params) end
+    end
+
     ensureAuthenticated()
     local page, is_params_error, message = self:update_tags_validator(params)
     if (is_params_error) then
-        return response:status(404):send({error={message=message,status=404}})
+        return response:status(400):send({error={message=message,status=400}})
     end
-    self:db():findOne({["+url"]={page.url}}, resume)
+    self:db():updateOne({["+url"] = {page.url}}, {tags = page.tags}, resume)
     local err, result = yield()
     if (result) then
-        self:db():updateOne({["+url"] = {page.url}}, {tags = page.tags}, resume)
-        err, result = yield()
-        -- if (result) then self:update_to_es(params) end
-    else
-        self:db():insertOne({["+url"] = {page.url}}, page, resume)
-        err, result = yield()
-        -- if (result) then self:insert_to_es(params) end
+        params.id = result._id
+        self:update_to_es(params)
+        result = {url = result.url, tags = result.tags or {}}
+        self:save_tags_for_analysis(result)
     end
-    result = {url = result.url, tags = result.tags}
-
-    local tags_model = models.tags:new()
-    local user_tags_model = models.user_tags:new()
-    tags_model:insert(result)
-    user_tags_model:insert(result)
-
     return errors:wrap(err, result)
 end
 
@@ -130,7 +130,7 @@ function pages:update_tags_validator(params)
         }, {
             validator = validators.fields_length_validator,
             condition = fields_length
-        }
+        },
     }
     validators:add_validate_tasks(validate_tasks, params)
     local is_params_error, message = validators:get_validate_result()
@@ -138,7 +138,51 @@ function pages:update_tags_validator(params)
     if (not is_params_error) then
         clean_data = {
             url = params.url,
-            tags = params.tags
+            tags = params.tags,
+        }
+    end
+    return clean_data, is_params_error, message
+end
+
+
+function pages:save_tags_for_analysis(params)
+    local tags_model = models.tags:new()
+    local user_tags_model = models.user_tags:new()
+    tags_model:insert(params)
+    user_tags_model:insert(params)
+end
+
+
+function pages:api_updateContent(params)
+    if (params.url) then
+        self:db():findOne({["+url"]={params.url}}, resume)
+        local err, result = yield()
+        if (not result) then
+            return self:api_insert(params)
+        else
+            params.id = result._id
+        end
+    end
+
+    ensureAuthenticated()
+    local page, is_params_error, message = self:update_content_validator(params)
+    if (is_params_error) then
+        return response:status(400):send({error={message=message,status=400}})
+    end
+    self:update_to_es(page)
+    return errors:wrap(nil)
+end
+
+
+function pages:update_content_validator(params)
+    local clean_data = {}
+    local required_fields = {"url", "content"}
+    local is_params_error, message = validators.required_fields_validator(params, required_fields)
+    if (not is_params_error) then
+        clean_data = {
+            id = params.id,
+            url = params.url,
+            content = params.content,
         }
     end
     return clean_data, is_params_error, message
@@ -153,11 +197,10 @@ end
 
 
 function pages:updateVisitCount(params)
-    -- ensureAuthenticated()
     local required_fields = {"url"}
     local is_params_error, message = validators.required_fields_validator(params, required_fields)
     if (is_params_error) then
-        return response:status(404):send({error={message=message,status=404}})
+        return response:status(400):send({error={message=message,status=400}})
     end
     local page = {url = params.url}
     self:db():findOne({["+url"]={page.url}}, resume)
@@ -179,7 +222,7 @@ function pages:api_getDetail(params)
     local required_fields = {"url", "visitor"}
     local is_params_error, message = validators.required_fields_validator(params, required_fields)
     if (is_params_error) then
-        return response:status(404):send({error={message=message,status=404}})
+        return response:status(400):send({error={message=message,status=400}})
     end
     local page = {url = params.url, visitor = params.visitor}
     self:db():findOne({["+url"] = {page.url}}, resume)
@@ -203,7 +246,7 @@ function pages:api_delete(params)
     local required_fields = {"url"}
     local is_params_error, message = validators.required_fields_validator(params, required_fields)
     if (is_params_error) then
-        return response:status(404):send({error={message=message,status=404}})
+        return response:status(400):send({error={message=message,status=400}})
     end
     local url = params.url
     local stars = models.pages_stars:new()
@@ -222,7 +265,7 @@ function pages:delete_website(params)
     local required_fields = {"username", "sitename"}
     local is_params_error, message = validators.required_fields_validator(params, required_fields)
     if (is_params_error) then
-        return response:status(404):send({error={message=message,status=404}})
+        return response:status(400):send({error={message=message,status=400}})
     end
     local siteUrl = format("/%s/%s", params.username, params.sitename)
     local stars = models.pages_stars:new()
@@ -246,13 +289,20 @@ function pages:insert_to_es(params)
         id = params.id,
         username = splited_url[1],
         sitename = splited_url[2],
-        pagename = sting,
         url = params.url,
-        pagetype = params.pagetype,
-        tags = params.tags,
-        content = self:md_to_string(params.content)
+        tags = params.tags or {},
+        content = self:md_to_string(params.content),
+        update_time = ParaGlobal.GetDateFormat("yyyy-MM-dd") .. " " .. ParaGlobal.GetTimeFormat("HH:mm:ss"),
     }
-    return es:insertOne(page)
+
+    if (page.sitename) then
+        page.pagename = string.gsub(page.url, format("/%s/%s/", page.username, page.sitename), "")
+        page.pagetype = "normal"
+    else
+        page.pagetype = "profile"
+    end
+
+    es:insertOne(page, function(err, data) end)
 end
 
 
@@ -264,9 +314,15 @@ function pages:update_to_es(params)
         type = "pages",
         id = params.id,
         tags = params.tags,
-        content = self:md_to_string(params.content)
+        content = self:md_to_string(params.content),
+        update_time = ParaGlobal.GetDateFormat("yyyy-MM-dd") .. " " .. ParaGlobal.GetTimeFormat("HH:mm:ss"),
     }
-    return es:updateOne(page)
+    return es:updateOne(page, function(err, data) end)
+end
+
+
+function pages:md_to_string(content)
+    return content
 end
 
 
@@ -295,15 +351,10 @@ function pages:delet_website_in_es(params)
 end
 
 
-function pages:md_to_string(content)
-    return content or ""
-end
-
-
 function pages:api_search(params)
     local clean_params, is_params_error, message = self:search_validator(params)
     if (is_params_error) then
-        return response:status(404):send({error={message=message,status=404}})
+        return response:status(400):send({error={message=message,status=400}})
     end
     local search_result = es:search(clean_params)
     local rcode = search_result.data.rcode
