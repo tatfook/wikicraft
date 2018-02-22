@@ -25,7 +25,6 @@ define([
 					self.$scope = $scope.$new(false);
 				}
 
-				
 				block.$apply = function(callback) {
 					setTimeout(function(){
 						block.$scope && block.$scope.$apply();

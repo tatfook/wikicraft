@@ -69,11 +69,13 @@ define([
 
                 for (var i = 0; i < (dataSourceList || []).length; i++) {
                     var siteDataSource = dataSourceList[i];
+
                     siteDataSource.getTree({path:'/'+ username}, function (data) {
                         for (var i = 0; i < (data || []).length; i++) {
                             if (data[i].pagename.indexOf(".gitignore") >= 0) {
                                 continue;
                             }
+
                             $scope.filelist.push(data[i]);
                         }
                     });
@@ -95,6 +97,7 @@ define([
                     for (var j = i + 1; j < datas.length; j++) {
                         datas[i].$data.order = datas[i].$data.order || 0;
                         datas[j].$data.order = datas[j].$data.order || 0;
+                        
                         if (datas[i].$data.order < datas[j].$data.order) {
                             var tmp = datas[i];
                             datas[i] = datas[j];
@@ -120,8 +123,10 @@ define([
                     for (var j = i+1; j < list.length; j++) {
                         var io = list[i].order || 9999;
                         var jo = list[j].order || 9999;
+
                         if (io > jo) {
                             var temp = list[j];
+
                             list[j] = list[i];
                             list[i] = temp;
                         }
@@ -160,8 +165,10 @@ define([
                 if (!moduleEditorParams.block) {
                     return ;
                 }
-                var block = moduleEditorParams.block;
+
+                var block     = moduleEditorParams.block;
                 var modParams = moduleEditorParams.params;
+                
                 if (block.wikimod && block.wikimod.mod.getModuleParams) {
                     modParams = block.wikimod.mod.getModuleParams(modParams);
                 }
@@ -262,26 +269,36 @@ define([
 
             function init() {
                 $scope.params = moduleEditorParams;
-                editor = editor || $rootScope.editor || {};
-                
-                var isFunction = function (functionToCheck) {
-                    var getType = {};
-                    return functionToCheck && getType.toString.call(functionToCheck) === '[object Function]';
+                editor        = editor || $rootScope.editor || {};
+
+                function setDesignViewWidth () {
+                    win = win || $(window);
+
+                    var winWidth  = win.width();
+                    var scaleSize = designViewWidth / winWidth;
+
+                    setTimeout(function () {
+                        $("#designSwiper div.design-view").css({
+                            "transform": "scale(" + scaleSize + ")",
+                            "transform-origin": "left top"
+                        });
+                    });
                 }
 
                 moduleEditorParams.reload = function() {
                     if (!this.block) {
                         return;
                     }
+
                     var block = this.block;
-                    //console.log(block);
+
                     if (block && typeof(block.wikimod) == "object" && typeof(block.wikimod.mod) == "object") {
                         if (typeof(block.wikimod.mod.getEditorParams) == "function") {
                             this.params = block.wikimod.mod.getEditorParams(block.modParams);
-                            this.datas = getOrderDatas(this.params);
+                            this.datas  = getOrderDatas(this.params);
                         } else {
                             this.params = undefined;
-                            this.datas = undefined;
+                            this.datas  = undefined;
                         }
 
                         if (typeof(block.wikimod.mod.getStyleList) == "function") {
@@ -291,7 +308,7 @@ define([
                         }
                     } else {
                         this.params = undefined;
-                        this.datas = undefined;
+                        this.datas  = undefined;
                         this.styles = undefined;
                     }
                 }
@@ -302,17 +319,20 @@ define([
                     }
 
                     var self = this;
+
                     if (self.block && block && self.block.token.start == block.token.start && (self.datas || self.styles)) {
                         angular.merge(self.params, block.modParams);
                         return;
                     }
+
                     self.block = block;
                     self.reload();
 
                     setFakeIconPosition();
 
                     var blockLineNumFrom = self.block.token.start;
-                    var blockLineNumTo = self.block.token.to;
+                    var blockLineNumTo   = self.block.token.to;
+
                     setCodePosition(blockLineNumFrom, blockLineNumTo);
 
                     if(self.styles && self.styles.length > 0){
@@ -322,21 +342,23 @@ define([
                     }
 
                     self.setShowType("editor");
+
                     moduleScope = self.block.$scope;
 
                     util.$apply();
                 }
 
                 moduleEditorParams.setShowType = function(show_type) {
-                    this.show_type = show_type;
+                    this.show_type   = show_type;
                     $scope.show_type = show_type;
-                    console.log(show_type);
+
                     if (show_type == "knowledge") {
                         this.setKnowledge("");
                         this.params = this.datas = this.styles = this.block = undefined;
                     } else {
                         initSwiper(show_type);
                     }
+
                     util.$apply();
                 }
 
@@ -368,27 +390,19 @@ define([
                         //$("#" + slideToId + " .js-focus").focus();
                     //}
                 }
-                var setDesignViewWidth = function(){
-                    win = win || $(window);
-                    var winWidth = win.width();
-                    var scaleSize = designViewWidth / winWidth;
-                    setTimeout(function () {
-                        $("#designSwiper div.design-view").css({
-                            "transform": "scale(" + scaleSize + ")",
-                            "transform-origin": "left top"
-                        });
-                    });
 
-                }
                 moduleEditorParams.setDesignList = function(list) {
-                    var self = this;
-                    var styles = self.styles || [];
+                    var self      = this;
+                    var styles    = self.styles || [];
                     var modParams = self.params;
+
                     self.setShowType("design");
-                    $scope.designDatas = [];
+
+                    $scope.designDatas    = [];
                     $scope.selectedDesign = modParams.design.text;
+
                     for (var i = 0; i < styles.length; i++) {
-                        var style = styles[i];
+                        var style  = styles[i];
                         var design = {
                             "text": style.design.text,
                             "cover": style.design.cover || ""
@@ -397,15 +411,19 @@ define([
                         $scope.designDatas.push(design);
                         // setDesignViewWidth();
                     }
+
                     initSwiper("design");
                 }
 
                 moduleEditorParams.setKnowledge = function(lineContent){
                     removeAllLineClass();
-                    moduleEditorParams = config.shareMap.moduleEditorParams || {};
+
+                    moduleEditorParams           = config.shareMap.moduleEditorParams || {};
                     moduleEditorParams.show_type = "knowledge";
-                    $scope.show_type = "knowledge";
+
+                    $scope.show_type   = "knowledge";
                     $scope.lineContent = lineContent;
+
                     if(!$scope.agentEnable){
                         $scope.agentEnable = true;
                         initAgent();
@@ -414,7 +432,9 @@ define([
 
                 // $scope.show_type = "editor";
                 $scope.datas_stack = [];
+
                 getFileList();
+
                 moduleEditorParams.setKnowledge("");
                 moduleEditorParams.setShowType("knowledge");
             }

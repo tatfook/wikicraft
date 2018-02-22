@@ -277,6 +277,10 @@ define([
         return date.getFullYear() + '/' + date.getMonth() + '/' + date.getDate() + ' ' + date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds();
     }
 
+    util.isFunction = function (func) {
+        return func && typeof(func) == "function";
+    }
+
 	util.ajax = function(obj) {
 		$.ajax({
 			url:obj.url,
