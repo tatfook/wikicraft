@@ -7,7 +7,7 @@ define([
 	'text!wikimod/adi/html/header.html',
 	'wikimod/adi/component/menu/menu',
 	'wikimod/adi/component/logo/logo',
-], function (app, util, htmlContent) {
+], function (app, util, htmlContent, menuComponent) {
 	var initObj = {
 		styles:[
 		{
@@ -67,7 +67,6 @@ define([
 			}
 		}
 
-
 		return modParams;
 	}
 
@@ -75,18 +74,19 @@ define([
 		return initObj.styles;
 	}
 
-    function render(wikiblock) {
-		var $scope = wikiblock.$scope;
-		$scope.params = getEditorParams(wikiblock.modParams);
-		$scope.mode = wikiblock.mode;
+    function render(wikiBlock) {
+		menuComponent(wikiBlock);
+
+		var $scope = wikiBlock.$scope;
+		$scope.params = getEditorParams(wikiBlock.modParams);
+		$scope.mode = wikiBlock.mode;
 
 		return htmlContent;
-
 	}
 	
     return {
-        render: render,
-		getEditorParams: getEditorParams,
-		getStyleList: getStyleList,
+        render          : render,
+		getEditorParams : getEditorParams,
+		getStyleList    : getStyleList,
     }
 });

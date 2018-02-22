@@ -64,7 +64,7 @@ define([
     var editor;
     var otherUserinfo        = undefined;
     var pageSuffixName       = config.pageSuffixName;
-    var mdwiki               = mdwiki({mode: "editor", use_template: true, containerId:"result-html"});
+    var mdwikiObj            = mdwiki({mode: "editor", use_template: true, containerId:"result-html"});
     var allWebsites          = [];
     var allWebstePageContent = {};
     var allPageMap           = {};        // 页面映射
@@ -80,8 +80,8 @@ define([
     var urlParamsMap         = {};        // url 参数映射
     //var mdwiki = markdownwiki({editorMode: true, breaks: true, isMainMd:true});
 
-    app.objects.mainMdwiki = mdwiki;
-    app.objects.editormd   = mdwiki;
+    app.objects.mainMdwiki = mdwikiObj;
+    app.objects.editormd   = mdwikiObj;
 	app.objects.editor     = editor;
 
     function getCurrentDataSource() {
@@ -958,7 +958,7 @@ define([
 
                 // 生成页面快照
                 function makeSnapshot(currentDataSource, page) {
-                    var containerId = mdwiki.getMdWikiContainerId();
+                    var containerId = mdwikiObj.getMdWikiContainerId();
 
                     setTimeout(function() {
                         html2canvas(document.getElementById(containerId),{
@@ -1568,7 +1568,7 @@ define([
 
                 function initEditor() {
                     function htmlToMd(block) {
-                        if (!block || !mdwiki.isEditor())
+                        if (!block || !mdwikiObj.isEditor())
                             return;
                         var domNode = $('#' + block.blockCache.containerId)[0];
                         var mdText = toMarkdown(domNode.innerHTML, {
@@ -2301,8 +2301,8 @@ define([
 
                     $rootScope.editor = editor;
 
-                    mdwiki.setEditor(editor);
-                    config.shareMap.mdwiki = mdwiki;
+                    mdwikiObj.setEditor(editor);
+                    config.shareMap.mdwiki = mdwikiObj;
 
                     var scrollTimer     = undefined
                     var changeTimer     = undefined;
@@ -2328,7 +2328,7 @@ define([
                     });
 
                     editor.on("cursorActivity", function(cm){
-                        mdwiki.cursorActivity && mdwiki.cursorActivity();
+                        mdwikiObj.cursorActivity && mdwikiObj.cursorActivity();
                     });
 
                     editor.on("beforeChange", function (cm, changeObj) {
@@ -2353,7 +2353,7 @@ define([
                             var initHegiht = editor.getScrollInfo().top + editor.heightAtLine(0);
                             var index = 0;
                             var block;
-                            var blockList = mdwiki.template.blockList;
+                            var blockList = mdwikiObj.template.blockList;
                             for (index = 0; index < blockList.length - 1; index++) {
                                 block = blockList[index];
                                 if (block.isTemplate || !block.$element)
@@ -2442,7 +2442,7 @@ define([
                                 //text = filterSensitive(text) || text;
                             //}
                             
-                            mdwiki.render(text, undefined, true);
+                            mdwikiObj.render(text, undefined, true);
 
                             //var toLineInfo = changeObj && editor.lineInfo(changeObj.to.line);
                             //moduleEditorParams.show_type = "knowledge";
@@ -2538,7 +2538,7 @@ define([
                                 var initHeight = editor.getScrollInfo().top + editor.heightAtLine(0);
                                 var index = 0;
                                 var block;
-                                var blockList = mdwiki.template.blockList;
+                                var blockList = mdwikiObj.template.blockList;
                                 var scrollTop = $('#preview')[0].scrollTop;
                                 for (index = 0; index < blockList.length - 1; index++) {
                                     block = blockList[index];

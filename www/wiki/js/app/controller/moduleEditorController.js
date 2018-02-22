@@ -12,20 +12,22 @@ define([
 	config.shareMap.moduleEditorParams = moduleEditorParams;
 
 	var objectEditor = {
-		data: {},
-		fields:[],
-	}
-
-	// 添加输入字段 {id:"html id". key:"key1.key2", type:"text!link|media", value:"字段值", isHide:false}
-	objectEditor.addInputField = function(field){
-		if (!field.id || !field.type) {
-			// console.log("object editor addInputField params error!");
-			return;
-		}
-
-		field.key = field.key || field.id;
-		field.displayName = field.displayName || field.key;
-		self.fields.push(field);
+		data          : {},
+        fields        : [],
+        addInputField : function(field){
+            // 添加输入字段 {id:"html id". key:"key1.key2", type:"text!link|media", value:"字段值", isHide:false}
+            
+            if (!field.id || !field.type) {
+                console.error("object editor addInputField params error!");
+                
+                return;
+            }
+    
+            field.key         = field.key || field.id;
+            field.displayName = field.displayName || field.key;
+            
+            self.fields.push(field);
+        }
 	}
 
 	app.registerController("moduleEditorController", [
@@ -39,26 +41,32 @@ define([
             $uibModal,
             selfDefinedModal
         ) {
-            var design_list = [];
-            var lastSelectObj = undefined;
             var editor;
-            var designViewWidth = 350, win;
-            var lineClassesMap = [];
-            var fakeIconDom = [];
             var moduleScope;
-            $scope.filelist = [];
-            $scope.linkFilter = "";
-            $scope.hasStyle = false;
+            var design_list     = [];
+            var lastSelectObj   = undefined;
+            var designViewWidth = 350, win;
+            var lineClassesMap  = [];
+            var fakeIconDom     = [];
+            var swiper          = {
+                "editor" : {},
+                "design" : {},
+            };
+
+            $scope.filelist    = [];
+            $scope.linkFilter  = "";
+            $scope.hasStyle    = false;
             $scope.agentEnable = false;
-            $scope.viewIsOpen = true;
+            $scope.viewIsOpen  = true;
 
             $scope.$watch('viewIsOpen', function() {
                 $(window).trigger('resize');
             });
 
-            var getFileList = function(){
-                var username = $scope.user.username;
+            function getFileList(){
+                var username       = $scope.user.username;
                 var dataSourceList = dataSource.getDataSourceList(username);
+
                 for (var i = 0; i < (dataSourceList || []).length; i++) {
                     var siteDataSource = dataSourceList[i];
                     siteDataSource.getTree({path:'/'+ username}, function (data) {
@@ -76,6 +84,7 @@ define([
                 var datas = [];
 
                 editorParams = editorParams || {};
+
                 for (var key in editorParams) {
                     if (editorParams[key].$data) {
                         datas.push(editorParams[key]);
@@ -99,8 +108,8 @@ define([
 
             // 转换数据格式
             function get_order_list(obj){
-                //console.log(obj);
                 var list = [];
+
                 for (var key in obj) {
                     if (typeof(obj[key]) == "object" && obj[key].is_leaf && obj[key].editable) {
                         list.push(obj[key]);
@@ -118,9 +127,12 @@ define([
                         }
                     }
                 }
+
                 var newList = [];
+
                 for (var i = 0; i < list.length; i++) {
                     var obj = list[i];
+
                     if (obj.type == "simple_list") {
                         for (var j = 0; j < obj.list.length; j++) {
                             if (obj.list[j].is_leaf && obj.list[j].editable){
@@ -137,215 +149,14 @@ define([
                     }
                 }
 
-                //console.log(newList);
                 return newList;
             }
 
-
-            // 隐藏事件
-            $scope.click_hide = function(data) {
-                data.is_mod_hide = !data.is_mod_hide;
-                //applyAttrChange();
-                throttle(applyAttrChange);
-            }
-
-            // 点击菜单
-            $scope.openMenuEditor = function(data) {
-                // console.log(data);
-                config.services.datatreeEditorModal({
-                    title: '菜单编辑器',
-                    keys: [
-                        {key:'url', name: '链接', placeholder:"请输入链接"},
-                    ],
-                    showLocation: true,
-                    datatree: data.text
-                }, function(result){
-                    data.text = result;
-                    //applyAttrChange();
-                    throttle(applyAttrChange);
-                    // console.log(result);
-                }, function(err){
-                    // console.log(err);
-                });
-            }
-
-            // 打开自定义Modal
-            $scope.openModal = function(data){
-                if(moduleScope.options && moduleScope.success && moduleScope.error){
-                    selfDefinedModal(moduleScope.options, moduleScope.success, moduleScope.error);
-                }
-            }
-
-            // 多行文本弹窗
-            $scope.openMultiText = function(data, key){
-                key = key || "text";
-                $scope.editingData = data[key];
-                $uibModal.open({
-                    templateUrl: config.htmlPath + "editMultiText.html",
-                    controller: "multiTextController",
-                    size: "multi-text",
-                    scope: $scope
-                }).result.then(function(result){
-                    // console.log(result);
-                    //applyAttrChange();
-                    data[key] = result;
-                    throttle(applyAttrChange);
-                    // $scope.editingData.text = result;
-                });
-            }
-
-            // 图库弹窗
-            $scope.showImageModal = function(data){
-                // console.log(data);
-                config.services.assetsManagerModal({
-                    title: '选择图片',
-                    nav: 'myImages' ,//or 'internetImage' or 'beautifyImage'
-                    modalPositionCenter: true,
-                    currentPage: {
-                        username: $scope.userinfo.username,
-                        sitename: $scope.userinfo.sitename
-                    }
-                }, function(url) {
-                    //handle url
-                    // console.log(data);
-                    data.text = url;
-                    //applyAttrChange();
-                    throttle(applyAttrChange);
-                });
-            }
-
-            $scope.setItem = function(data, type){
-                switch (type) {
-                    case "image":
-                        data.mediaType = type;
-                        break;
-                    case "video":
-                        data.mediaType = type;
-                        break;
-                    default:
-                        data.mediaType = "image";
-                        break;
-                }
-            }
-
-            $scope.setLink = function(key, data){
-                $uibModal.open({
-                    templateUrl: config.htmlPath + "editorInsertLink.html",
-                    controller: "linkCtrl",
-                }).result.then(function (provider) {
-                    if (provider == "link") {
-                        var link = $rootScope.link;
-                        data[key] = link.url;
-                        //applyAttrChange();
-                        throttle(applyAttrChange);
-                    }
-                }, function (text, error) {
-                    // console.log('text:' + text);
-                    // console.log('error:' + error);
-                    return;
-                });
-            }
-
-            $scope.setShowResult = function(value){
-                setTimeout(function(){
-                    $scope.showResult = value;
-                    $scope.linkFilter = "";
-                });
-            }
-
-            $scope.urlSelected = function(item, modal, data, key){
-                key = key || "href";
-                data[key] = item.url;
-                //applyAttrChange();
-                throttle(applyAttrChange);
-            }
-
-            $scope.selectUrl = function(data, url){
-                data.href = url;
-                $scope.showResult = false;
-                $scope.linkFilter = "";
-                //applyAttrChange();
-                throttle(applyAttrChange);
-            }
-
-            $scope.userInputLink = function($select, data, key){
-                var search = $select.search,
-                    list = angular.copy($select.items),
-                    FLAG = -1;
-                //remove last user input
-                list = list.filter(function(item) {
-                    return item.id !== FLAG;
-                });
-                if (!search) {
-                    $select.items = list;
-                }
-                else {
-                    //manually add user input and set selection
-                    var userInputItem = {
-                        id: FLAG,
-                        url: search
-                    };
-                    $select.items = [userInputItem].concat(list);
-                    $select.selected = userInputItem.url;
-                    data[key || "href"] = userInputItem.url;
-                    applyAttrChange();
-                }
-            }
-
-            $scope.showAllLink = function(){
-                $scope.linkFilter = $scope.user.username;
-                $scope.showResult = true;
-                setTimeout(function(){
-                    $(document).bind("click.allLink", function(e){
-                        $scope.showResult = false;
-                        $scope.linkFilter = "";
-                        $scope.$apply();
-                        $(document).unbind("click.allLink");
-                    });
-                });
-            }
-
-            $scope.getLinkTarget = function(data){
-                if (!data.target) {
-                    data.target = "_blank";
-                }
-                var linkTarget;
-                switch (data.target) {
-                    case "_self":
-                        linkTarget = "本窗口打开";
-                        break;
-                    default:
-                        linkTarget = "新窗口打开";
-                        break;
-                }
-                return linkTarget;
-            }
-
-            $scope.setLinkTarget = function(data, value){
-                if (value == "_blank" || value == "_self") {
-                    data.target = value;
-                }
-                data.target = data.target || "_blank";
-                //applyAttrChange();
-                throttle(applyAttrChange);
-            }
-
-            $scope.enablePack = function(pack){
-                $scope.memoryContext = {}
-            }
-
-            function throttle(method, context) {
-                clearTimeout(method.stickTimer);
-                method.stickTimer = setTimeout(function () {
-                    method.call(context);
-                    util.$apply();
-                });
-            }
-
-            var applyModParams = function(block, modParams) {
+            function applyModParams (block, modParams) {
                 block.applyModParams(modParams);
             }
-            var applyAttrChange = function(){
+
+            function applyAttrChange () {
                 if (!moduleEditorParams.block) {
                     return ;
                 }
@@ -358,61 +169,7 @@ define([
                 block.applyModParams(modParams);
             }
 
-            $scope.applyAttrChange = function (text) {
-                throttle(applyAttrChange);
-                util.$apply();
-            }
-
-            $scope.click_apply_design = function(index) {
-                var block = moduleEditorParams.block;
-                var style = moduleEditorParams.styles[index];
-                var modParams = moduleEditorParams.params;
-                $scope.selectedDesign = style.design.text;
-                if (block.wikimod && block.wikimod.mod.getStyleParams) {
-                    modParams = block.wikimod.mod.getStyleParams(modParams, style);
-                    block.applyModParams(modParams);
-                } else {
-                    angular.extend(modParams, style);
-                    applyAttrChange();
-                }
-
-                block.modParams = modParams;
-                moduleEditorParams.reload();
-                //util.$apply();
-            }
-
-            $scope.tabTo = function (tabname) {
-                var moduleEditorParams = config.shareMap.moduleEditorParams || {};
-                $scope.show_type = tabname;
-                if (tabname == "design") {
-                    moduleEditorParams.setDesignList();
-                }
-            }
-
-            $scope.deleteMod = function(){
-                config.services.confirmDialog({
-                    "title": "删除提示",
-                    "theme": "danger",
-                    "content": "确定删除这个模块？"
-                }, function(result){
-                    removeAllLineClass();
-                    var moduleEditorParams = config.shareMap.moduleEditorParams || {};
-                    var editor = editor || $rootScope.editor || {};
-                    var from = moduleEditorParams.wikiBlock.blockCache.block.textPosition.from;
-                    var to = moduleEditorParams.wikiBlock.blockCache.block.textPosition.to;
-                    editor.replaceRange("", {
-                        "line": from,
-                        "ch": 0
-                    }, {
-                        "line": to,
-                        "ch": editor.getLine(to).length
-                    });
-                }, function(cancel){
-                    // console.log("cancel delete");
-                });
-            }
-
-            var removeAllLineClass = function(){
+            function removeAllLineClass (){
                 var editor = editor || $rootScope.editor || {};
                 var len = lineClassesMap.length;
                 if (len <= 0) {
@@ -425,7 +182,7 @@ define([
                 // $(".mod-container.active").removeClass("active");
             }
 
-            var setCodePosition = function(from, to){
+            function setCodePosition(from, to){
                 removeAllLineClass();
                 var editor = editor || $rootScope.editor || {};
                 for(var i = from; i < to; i++){
@@ -436,12 +193,7 @@ define([
                 }
             }
 
-            var swiper = {
-                "editor":{},
-                "design":{},
-            };
-
-            var initSwiper = function(type){
+            function initSwiper (type) {
                 if (type == "knowledge"){
                     return;
                 }
@@ -596,7 +348,7 @@ define([
                     }
 
                     moduleScope.applyAttrChange = function(){
-                        throttle(applyAttrChange);
+                        util.throttle(applyAttrChange);
                     }
 
                     self.setShowType("editor");
@@ -667,13 +419,259 @@ define([
                 moduleEditorParams.setShowType("knowledge");
             }
 
+            // 隐藏事件
+            $scope.click_hide = function(data) {
+                data.is_mod_hide = !data.is_mod_hide;
+                //applyAttrChange();
+                util.throttle(applyAttrChange);
+            }
+
+            // 点击菜单
+            $scope.openMenuEditor = function(data) {
+                // console.log(data);
+                config.services.datatreeEditorModal({
+                    title: '菜单编辑器',
+                    keys: [
+                        {key:'url', name: '链接', placeholder:"请输入链接"},
+                    ],
+                    showLocation: true,
+                    datatree: data.text
+                }, function(result){
+                    data.text = result;
+                    //applyAttrChange();
+                    util.throttle(applyAttrChange);
+                    // console.log(result);
+                }, function(err){
+                    // console.log(err);
+                });
+            }
+
+            // 打开自定义Modal
+            $scope.openModal = function(data){
+                if(moduleScope.options && moduleScope.success && moduleScope.error){
+                    selfDefinedModal(moduleScope.options, moduleScope.success, moduleScope.error);
+                }
+            }
+
+            // 多行文本弹窗
+            $scope.openMultiText = function(data, key){
+                key = key || "text";
+                $scope.editingData = data[key];
+                $uibModal.open({
+                    templateUrl: config.htmlPath + "editMultiText.html",
+                    controller: "multiTextController",
+                    size: "multi-text",
+                    scope: $scope
+                }).result.then(function(result){
+                    // console.log(result);
+                    //applyAttrChange();
+                    data[key] = result;
+                    util.throttle(applyAttrChange);
+                    // $scope.editingData.text = result;
+                });
+            }
+
+            // 图库弹窗
+            $scope.showImageModal = function(data){
+                // console.log(data);
+                config.services.assetsManagerModal({
+                    title: '选择图片',
+                    nav: 'myImages' ,//or 'internetImage' or 'beautifyImage'
+                    modalPositionCenter: true,
+                    currentPage: {
+                        username: $scope.userinfo.username,
+                        sitename: $scope.userinfo.sitename
+                    }
+                }, function(url) {
+                    //handle url
+                    // console.log(data);
+                    data.text = url;
+                    //applyAttrChange();
+                    util.throttle(applyAttrChange);
+                });
+            }
+
+            $scope.setItem = function(data, type){
+                switch (type) {
+                    case "image":
+                        data.mediaType = type;
+                        break;
+                    case "video":
+                        data.mediaType = type;
+                        break;
+                    default:
+                        data.mediaType = "image";
+                        break;
+                }
+            }
+
+            $scope.setLink = function(key, data){
+                $uibModal.open({
+                    templateUrl: config.htmlPath + "editorInsertLink.html",
+                    controller: "linkCtrl",
+                }).result.then(function (provider) {
+                    if (provider == "link") {
+                        var link = $rootScope.link;
+                        data[key] = link.url;
+                        //applyAttrChange();
+                        util.throttle(applyAttrChange);
+                    }
+                }, function (text, error) {
+                    // console.log('text:' + text);
+                    // console.log('error:' + error);
+                    return;
+                });
+            }
+
+            $scope.setShowResult = function(value){
+                setTimeout(function(){
+                    $scope.showResult = value;
+                    $scope.linkFilter = "";
+                });
+            }
+
+            $scope.urlSelected = function(item, modal, data, key){
+                key = key || "href";
+                data[key] = item.url;
+                //applyAttrChange();
+                util.throttle(applyAttrChange);
+            }
+
+            $scope.selectUrl = function(data, url){
+                data.href = url;
+                $scope.showResult = false;
+                $scope.linkFilter = "";
+                //applyAttrChange();
+                util.throttle(applyAttrChange);
+            }
+
+            $scope.userInputLink = function($select, data, key){
+                var search = $select.search,
+                    list = angular.copy($select.items),
+                    FLAG = -1;
+                //remove last user input
+                list = list.filter(function(item) {
+                    return item.id !== FLAG;
+                });
+                if (!search) {
+                    $select.items = list;
+                }
+                else {
+                    //manually add user input and set selection
+                    var userInputItem = {
+                        id: FLAG,
+                        url: search
+                    };
+                    $select.items = [userInputItem].concat(list);
+                    $select.selected = userInputItem.url;
+                    data[key || "href"] = userInputItem.url;
+                    applyAttrChange();
+                }
+            }
+
+            $scope.showAllLink = function(){
+                $scope.linkFilter = $scope.user.username;
+                $scope.showResult = true;
+                setTimeout(function(){
+                    $(document).bind("click.allLink", function(e){
+                        $scope.showResult = false;
+                        $scope.linkFilter = "";
+                        $scope.$apply();
+                        $(document).unbind("click.allLink");
+                    });
+                });
+            }
+
+            $scope.getLinkTarget = function(data){
+                if (!data.target) {
+                    data.target = "_blank";
+                }
+                var linkTarget;
+                switch (data.target) {
+                    case "_self":
+                        linkTarget = "本窗口打开";
+                        break;
+                    default:
+                        linkTarget = "新窗口打开";
+                        break;
+                }
+                return linkTarget;
+            }
+
+            $scope.setLinkTarget = function(data, value){
+                if (value == "_blank" || value == "_self") {
+                    data.target = value;
+                }
+                data.target = data.target || "_blank";
+                //applyAttrChange();
+                util.throttle(applyAttrChange);
+            }
+
+            $scope.enablePack = function(pack){
+                $scope.memoryContext = {}
+            }
+
+            $scope.applyAttrChange = function (text) {
+                util.throttle(applyAttrChange);
+                util.$apply();
+            }
+
+            $scope.click_apply_design = function(index) {
+                var block = moduleEditorParams.block;
+                var style = moduleEditorParams.styles[index];
+                var modParams = moduleEditorParams.params;
+                $scope.selectedDesign = style.design.text;
+                if (block.wikimod && block.wikimod.mod.getStyleParams) {
+                    modParams = block.wikimod.mod.getStyleParams(modParams, style);
+                    block.applyModParams(modParams);
+                } else {
+                    angular.extend(modParams, style);
+                    applyAttrChange();
+                }
+
+                block.modParams = modParams;
+                moduleEditorParams.reload();
+                //util.$apply();
+            }
+
+            $scope.tabTo = function (tabname) {
+                var moduleEditorParams = config.shareMap.moduleEditorParams || {};
+                $scope.show_type = tabname;
+                if (tabname == "design") {
+                    moduleEditorParams.setDesignList();
+                }
+            }
+
+            $scope.deleteMod = function(){
+                config.services.confirmDialog({
+                    "title": "删除提示",
+                    "theme": "danger",
+                    "content": "确定删除这个模块？"
+                }, function(result){
+                    removeAllLineClass();
+                    var moduleEditorParams = config.shareMap.moduleEditorParams || {};
+                    var editor = editor || $rootScope.editor || {};
+                    var from = moduleEditorParams.wikiBlock.blockCache.block.textPosition.from;
+                    var to = moduleEditorParams.wikiBlock.blockCache.block.textPosition.to;
+                    editor.replaceRange("", {
+                        "line": from,
+                        "ch": 0
+                    }, {
+                        "line": to,
+                        "ch": editor.getLine(to).length
+                    });
+                }, function(cancel){
+                    // console.log("cancel delete");
+                });
+            }
+
             $scope.$watch("$viewContentLoaded", init);
         }
     ]);
 
     app.registerController("multiTextController", ["$scope", "$uibModalInstance", function($scope, $uibModalInstance){
         $scope.multiText = $scope.editingData;
-        // console.log("multiTextController");
+
         $scope.cancel = function () {
             $uibModalInstance.dismiss('cancel');
         }

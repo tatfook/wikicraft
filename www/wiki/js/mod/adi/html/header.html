@@ -77,12 +77,9 @@
     } */
 </style>
 
-<div ng-controller="headerController"
-     ng-class="{true : 'clear-pointer', false : 'clear'}[editorMode]">
+<div>
     <div ng-if="params.design.text == 'left' && !params.menu_menu.is_mod_hide">
-        <editor-mode>
-            <adi-menu menu="params.menu_menu" bgcolor="color-11"></adi-menu>
-        </editor-mode>
+        <adi-menu menu="params.menu_menu" bgcolor="color-11"></adi-menu>
     </div>
 
     <div ng-if="params.design.text == 'right'  && !params.menu_menu.is_mod_hide">

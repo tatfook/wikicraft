@@ -68,7 +68,7 @@ define([
 					}
 
 					var moduleEditorParams = config.shareMap.moduleEditorParams;
-					
+
 					if (!moduleEditorParams) {
 						return;
 					}
