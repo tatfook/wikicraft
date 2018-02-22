@@ -2331,76 +2331,6 @@ define([
                         mdwiki.cursorActivity && mdwiki.cursorActivity();
                     });
 
-                    editor.on("change", function (cm, changeObj) {
-                        var moduleEditorParams = config.shareMap.moduleEditorParams || {};
-                        var isStopRender       = moduleEditorParams.renderMod == "editorToCode";
-
-                        changeCallback(cm, changeObj);
-
-                        if (currentPage && currentPage.url) {
-                            allWebstePageContent[currentPage.url] = editor.getValue();
-                        }
-
-                        renderTimer && clearTimeout(renderTimer);
-                        renderTimer = setTimeout((function (isStopRender) {
-                            renderAutoSave();
-                            //if (isStopRender){
-                                //moduleEditorParams.renderMod = undefined;
-                                //return;
-                            //}
-                            var text = editor.getValue();
-                            //if((!currentSite || currentSite.sensitiveWordLevel & 1) <= 0){
-                                //text = filterSensitive(text) || text;
-                            //}
-                            mdwiki.render(text, undefined, true);
-
-                            //var toLineInfo = changeObj && editor.lineInfo(changeObj.to.line);
-                            //moduleEditorParams.show_type = "knowledge";
-                            //moduleEditorParams.setKnowledge(toLineInfo ? toLineInfo.text:"");
-
-                            timer = undefined;
-                        })(isStopRender));
-                    });
-
-                    editor.focus();
-
-                    setEditorHeight();
-
-                    // 阻止浏览器默认打开拖拽文件的行为
-                    window.addEventListener("drop", function (e) {
-                        e = e || event;
-                        e.preventDefault();
-                        if (e.target.tagName == "textarea") {  // check wich element is our target
-                            e.preventDefault();
-                        }
-                    }, false);
-
-                    // 全屏和取消全屏时调整编辑器高度
-                    document.addEventListener("fullscreenchange", function(e) {
-                        setTimeout(function () {
-                            setEditorHeight();
-                        });
-                    });
-
-                    document.addEventListener("mozfullscreenchange", function(e) {
-                        setTimeout(function () {
-                            setEditorHeight();
-                        });
-                    });
-
-                    document.addEventListener("webkitfullscreenchange", function(e) {
-                        setTimeout(function () {
-                            setEditorHeight();
-                        });
-
-                    });
-
-                    document.addEventListener("msfullscreenchange", function(e) {
-                        setTimeout(function () {
-                            setEditorHeight();
-                        });
-                    });
-
                     editor.on("beforeChange", function (cm, changeObj) {
                         //console.log(changeObj);
                         if (currentPage && currentPage.isFirstEditor) {
@@ -2487,6 +2417,78 @@ define([
                         });
 
                         e.preventDefault();
+                    });
+
+                    editor.on("change", function (cm, changeObj) {
+                        var moduleEditorParams = config.shareMap.moduleEditorParams || {};
+                        var isStopRender       = moduleEditorParams.renderMod == "editorToCode";
+
+                        changeCallback(cm, changeObj);
+
+                        if (currentPage && currentPage.url) {
+                            allWebstePageContent[currentPage.url] = editor.getValue();
+                        }
+
+                        renderTimer && clearTimeout(renderTimer);
+                        renderTimer = setTimeout((function (isStopRender) {
+                            renderAutoSave();
+                            //if (isStopRender){
+                                //moduleEditorParams.renderMod = undefined;
+                                //return;
+                            //}
+                            var text = editor.getValue();
+
+                            //if((!currentSite || currentSite.sensitiveWordLevel & 1) <= 0){
+                                //text = filterSensitive(text) || text;
+                            //}
+                            
+                            mdwiki.render(text, undefined, true);
+
+                            //var toLineInfo = changeObj && editor.lineInfo(changeObj.to.line);
+                            //moduleEditorParams.show_type = "knowledge";
+                            //moduleEditorParams.setKnowledge(toLineInfo ? toLineInfo.text:"");
+
+                            timer = undefined;
+                        })(isStopRender));
+                    });
+
+                    editor.focus();
+
+                    setEditorHeight();
+
+                    // 阻止浏览器默认打开拖拽文件的行为
+                    window.addEventListener("drop", function (e) {
+                        e = e || event;
+                        e.preventDefault();
+                        if (e.target.tagName == "textarea") {  // check wich element is our target
+                            e.preventDefault();
+                        }
+                    }, false);
+
+                    // 全屏和取消全屏时调整编辑器高度
+                    document.addEventListener("fullscreenchange", function(e) {
+                        setTimeout(function () {
+                            setEditorHeight();
+                        });
+                    });
+
+                    document.addEventListener("mozfullscreenchange", function(e) {
+                        setTimeout(function () {
+                            setEditorHeight();
+                        });
+                    });
+
+                    document.addEventListener("webkitfullscreenchange", function(e) {
+                        setTimeout(function () {
+                            setEditorHeight();
+                        });
+
+                    });
+
+                    document.addEventListener("msfullscreenchange", function(e) {
+                        setTimeout(function () {
+                            setEditorHeight();
+                        });
                     });
 
                     $('.toolbar-page-copyurl').on('click', function () {

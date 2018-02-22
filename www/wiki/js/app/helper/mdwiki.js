@@ -139,51 +139,51 @@ define([
         // md.bind
         md.parseBlock = function (block) {
 			// 进来表明该模块发生变化 应重置所有状态
-			var token = block.token;
-            var content = token.content;
-			var text = token.text;
-			var line = text.split("\n")[0];
-            var isWikiBlock = token.tag == "pre"  && /^```@([\w_\/]+)/.test(line);
+			var token       = block.token;
+            var content     = token.content;
+			var text        = token.text;
+			var multiline   = text.split("\n");
+			var firstline   = multiline[0];
+			var lastline    = multiline[multiline.length - 1];
+            var isWikiBlock = token.tag == "pre"  && /^```@([\w_\/]+)/.test(firstline) && lastline == '```';
 
-            block.isWikiBlock = isWikiBlock;
+			block.isWikiBlock = isWikiBlock;
+
             if (!isWikiBlock) {
-				//block.blockUrl = undefined;
-				block.isTemplate = false;
-				block.modName = undefined;
-				block.cmdName = undefined;
-				block.modParams = undefined;
-				block.wikimod = undefined;
+				// block.blockUrl       = undefined;
+				block.isTemplate     = false;
+				block.modName        = undefined;
+				block.cmdName        = undefined;
+				block.modParams      = undefined;
+				block.wikimod        = undefined;
 				block.applyModParams = undefined;
-				block.render = function() {
+				block.render         = function() {
 					if (block.htmlContent != token.htmlContent && block.$render) {
 						block.htmlContent = token.htmlContent;
-						//console.log(block.htmlContent, block);
 						block.$render(block.htmlContent);
 					}
 				}
             } else {
-                var wikiCmdRE = /^```@([\w_\/]+)/;
+                var wikiCmdRE     = /^```@([\w_\/]+)/;
                 var wikiModNameRE = /^([\w_]+)/;
-                var cmdName = line.match(wikiCmdRE)[1];
-                var modName = cmdName.match(wikiModNameRE)[1];
-				var modParams = undefined;
+                var cmdName       = firstline.match(wikiCmdRE)[1];
+                var modName       = cmdName.match(wikiModNameRE)[1];
+				var modParams     = undefined;
 
                 try {
                     modParams = angular.fromJson(content.trim())
-                }
-                catch (e) {
+                } catch (e) {
                     modParams = mdconf.mdToJson(content) || content;
                 }
 
-				//console.log(modParams);
 				if (block.cmdName != cmdName) {
 					block.wikimod = undefined;
 				}
 
-                block.modName = modName;
-                block.cmdName = cmdName;
-                block.modParams = modParams;
-                block.isTemplate = modName == "template";
+                block.modName         = modName;
+                block.cmdName         = cmdName;
+                block.modParams       = modParams;
+                block.isTemplate      = modName == "template";
 				block.templateContent = block.isTemplate ? templateContent : undefined;
 
 				if (typeof(block.modParams) == "string" && !block.modParams.trim()) {
@@ -191,7 +191,7 @@ define([
 				}
 
 				block.applyModParams = function(modParams) {
-					var md = getMd(block.mdName);
+					var md     = getMd(block.mdName);
 					var editor = md.editor || {};
 
 					if (!editor) {
@@ -199,10 +199,10 @@ define([
 					}
 
 					var from = block.token.start;
-					var to = block.token.end;
+					var to   = block.token.end;
+
 					modParams = modParams || block.modParams;
 
-					//console.log(modParams);
 					if (typeof(modParams) == "object") {
 						//modParams = angular.toJson(modParams, 4);
 						modParams = mdconf.jsonToMd(modParams);
@@ -213,9 +213,15 @@ define([
 
 				block.render = function(success, error) {
 					var self = this;
+
 					// 强制渲染
-					if (self.$render && self.cmdName && self.wikimod && self.cmdName == self.wikimod.cmdName && 
-							self.wikimod.mod && self.wikimod.mod.forceRender) {
+					if (self.$render &&
+						self.cmdName &&
+						self.wikimod &&
+						self.cmdName == self.wikimod.cmdName && 
+						self.wikimod.mod &&
+						self.wikimod.mod.forceRender) {
+
 						self.wikimod.mod.forceRender(self);
 					}
 
@@ -224,7 +230,6 @@ define([
 						return;
 					}
 
-					//console.log(self);
 					function _render(mod) {
 						if (!self.$render) {
 							return;
@@ -281,7 +286,7 @@ define([
 		// 模板匹配
 		md.templateMatch = function(wikiBlock) {
 			var modParams = wikiBlock.modParams;
-			var pageinfo = app.ng_objects.$rootScope.pageinfo;
+			var pageinfo  = app.ng_objects.$rootScope.pageinfo;
 
 			// 临时页做全匹配
 			if (!pageinfo) {
@@ -295,11 +300,11 @@ define([
 			if (typeof(modParams) != "object" || !modParams.urlmatch || !modParams.urlmatch.text) {
 				return true;
 			}
+
 			// 存在urlmatch 字段 做一个子串匹配
 			if (pagePath && pagePath.indexOf(modParams.urlmatch.text) >= 0) {
 				return true;
 			}
-			//console.log(pageinfo, pagePath, modParams);
 
 			return false;
         }
@@ -372,7 +377,7 @@ define([
 						md.template.htmlContent = blankTemplateContent;
 						md.template.$render(blankTemplateContent);
 					}
-					
+
 					success && success();
 				};
 			}
@@ -419,14 +424,16 @@ define([
 				md.template.render(function(){
 					for(var i = 0; i < md.template.blockList.length; i++) {
 						var block = md.template.blockList[i];
+						
 						block.render();
 					}
 				});
-
+				
 				md.template.$apply && md.template.$apply();
 
 				md.bindContainer();
-				return '<wiki-block-container data-template="true" data-params="' + encodeURI(md.mdName) + '"></wiki-block-container>';
+
+				return '<wiki-block-container data-template="true" data-params="' + encodeMdName + '"></wiki-block-container>';
 			}
 
 			if (!isLoadTheme) {
