@@ -78,16 +78,29 @@ function pages:insert_validator(params)
     local is_params_error, message = validators:get_validate_result()
 
     if (not is_params_error) then
-        local splited_url = commonlib.split(params.url, "/")
         clean_data = {
             url = params.url,
             tags = params.tags,
+            siteUrl = self:get_site_url(params),
         }
-        if (splited_url[2]) then 
-            clean_data.siteUrl = format("/%s/%s", splited_url[1], splited_url[2])
-        end
     end
     return clean_data, is_params_error, message
+end
+
+
+function pages:get_site_url(params)
+    local site_url
+    if (params.url) then
+        local splited_page_url = commonlib.split(params.url, "/")
+        if (splited_page_url[2]) then 
+            site_url = format("/%s/%s", splited_page_url[1], splited_page_url[2])
+        end
+    end
+    if (params.username) then
+        site_url = "/" .. params.username
+        if (params.sitename) then site_url = site_url .. "/" .. params.sitename end
+    end
+    return site_url
 end
 
 
@@ -208,11 +221,14 @@ function pages:updateVisitCount(params)
     if (result) then
         visitCount = (result.visitCount or 0) + 1
         self:db():updateOne({["+url"] = {page.url}}, {visitCount = visitCount}, resume)
+        err, result = yield()
     else
         page.visitCount = 1
+        page.siteUrl = self:get_site_url(page)
         self:db():insertOne({["+url"] = {page.url}}, page, resume)
+        err, result = yield()
+        if (result) then self:insert_to_es(page) end
     end
-    err, result = yield()
     result = {visitCount = result.visitCount}
     return errors:wrap(err, result)
 end
@@ -271,22 +287,47 @@ function pages:delete_validator(params)
     return clean_data, is_params_error, message
 end
 
+
 function pages:delete_website(params)
     -- ensureAuthenticated()
-    local required_fields = {"username", "sitename"}
-    local is_params_error, message = validators.required_fields_validator(params, required_fields)
+    local site, is_params_error, message = self:delete_website_validator(params)
     if (is_params_error) then
         return response:status(400):send({error={message=message,status=400}})
     end
-    local siteUrl = format("/%s/%s", params.username, params.sitename)
+    local siteUrl = self:get_site_url(params)
     local stars = models.pages_stars:new()
     local err, result = stars:delete_website({siteUrl = siteUrl})
+    self:db():find({_id={gt=0, limit=100000}, siteUrl= siteUrl}, resume)
+    local err, pages = yield()
     if (not err) then
         self:db():delete({siteUrl = siteUrl}, resume)
         err, result = yield()
-        -- self:delete_in_es(params)
+        self:delet_website_in_es(pages)
     end
     return err, result
+end
+
+
+function pages:api_test()
+    local website = {
+        username = "chatalove52",
+        sitename =  "home2",
+    }
+    return self:delete_website(website)
+end
+
+
+function pages:delete_website_validator(params)
+    local clean_data = {}
+    local required_fields = {"username", "sitename"}
+    local is_params_error, message = validators.required_fields_validator(params, required_fields)
+    if (not is_params_error) then
+        clean_data = {
+            username = params.username,
+            sitename = params.sitename,
+        }
+    end
+    return clean_data, is_params_error, message
 end
 
 
@@ -342,23 +383,16 @@ function pages:delete_in_es(params)
         type = "pages",
         id = params.id,
     }
-    return es:deleteOne(page)
+    es:deleteOne(page, function(err, data) end)
 end
 
 
-function pages:delet_website_in_es(params)
-    self:db():find({siteUrl=params.siteUrl}, resume)
-    local err, result = yield()
-    if (not err) then
-        local pages = {type = "pages"}
-        local bulk_data = ""
-        for i, page in ipairs(result) do
-            bulk_data = bulk_data .. format('{"delete":{"_id":"%d"}}', page._id) .. "\n"
-        end
-        pages.data = bulk_data
-        return es:bulk(pages)
+function pages:delet_website_in_es(pages)
+    local bulk_data = ""
+    for i, page in ipairs(pages) do
+        bulk_data = bulk_data .. format('{"delete":{"_id":"%d"}}', page._id) .. "\n"
     end
-    return err, result
+    return es:bulk({data = bulk_data, type = "pages"}, function(err, data) end)
 end
 
 
