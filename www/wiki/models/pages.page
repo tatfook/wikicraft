@@ -243,27 +243,33 @@ end
 
 function pages:api_delete(params)
     ensureAuthenticated()
-    local required_fields = {"url"}
-    local is_params_error, message = validators.required_fields_validator(params, required_fields)
+    local page, is_params_error, message = self:delete_validator(params)
     if (is_params_error) then
         return response:status(400):send({error={message=message,status=400}})
     end
-    self:db():findOne({url = url}, resume)
+    self:db():findOne({["+url"] = {page.url}}, resume)
     local err, result = yield()
     if (result) then
         params.id = result._id
-        local url = params.url
         local stars = models.pages_stars:new()
         local err, result = stars:delete_page(page)
         if (not err) then
             self:delete_in_es(params)
-            self:db():deleteOne({url = url}, resume)
+            self:db():deleteOne({url = page.url}, resume)
             err, result = yield()
         end
     end
     return errors:wrap(err, result)
 end
 
+
+function pages:delete_validator(params)
+    local clean_data = {}
+    local required_fields = {"url"}
+    local is_params_error, message = validators.required_fields_validator(params, required_fields)
+    if (not is_params_error) then clean_data = {url = params.url} end
+    return clean_data, is_params_error, message
+end
 
 function pages:delete_website(params)
     -- ensureAuthenticated()
