@@ -248,13 +248,18 @@ function pages:api_delete(params)
     if (is_params_error) then
         return response:status(400):send({error={message=message,status=400}})
     end
-    local url = params.url
-    local stars = models.pages_stars:new()
-    local err, result = stars:delete_page(page)
-    if (not err) then
-        self:db():deleteOne({url = url}, resume)
-        err, result = yield()
-        -- self:delete_in_es(params)
+    self:db():findOne({url = url}, resume)
+    local err, result = yield()
+    if (result) then
+        params.id = result._id
+        local url = params.url
+        local stars = models.pages_stars:new()
+        local err, result = stars:delete_page(page)
+        if (not err) then
+            self:delete_in_es(params)
+            self:db():deleteOne({url = url}, resume)
+            err, result = yield()
+        end
     end
     return errors:wrap(err, result)
 end
