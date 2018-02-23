@@ -261,7 +261,7 @@ define([
                 // 注册路由改变事件, 改变路由时清空相关内容
                 $rootScope.$on('$locationChangeSuccess', function () {
 					if (util.isEditorPage()) {
-                        let url = config.hash.substring(1);
+                        let url = config.hash().substring(1);
 
 						if (url[0] != '/') {
 							url = "/" + url;

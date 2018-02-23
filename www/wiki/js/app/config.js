@@ -8,7 +8,9 @@
 	const host        = window.location.host;
 	const hostname    = window.location.hostname;
 	const pathname    = window.location.pathname;
-	const hash        = window.location.hash;
+	const hash        = function(){
+		return window.location.hash;
+	};
     const prodHost    = "^keepwork.com$";
 	const releaseHost = "^release.keepwork.com$";
 	

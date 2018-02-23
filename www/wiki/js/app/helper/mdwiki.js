@@ -301,8 +301,8 @@ define([
 			}
 
             var urlPrefix = "/" + pageinfo.username + "/" + pageinfo.sitename + "/";
-            var tempUrl = pageinfo.url || pageinfo.pagepath || pageinfo.pagename;
-			var pagePath = tempUrl.substring(urlPrefix.length);
+            var tempUrl   = pageinfo.url || pageinfo.pagepath || pageinfo.pagename;
+			var pagePath  = tempUrl.substring(urlPrefix.length);
 
 			if (typeof(modParams) != "object" || !modParams.urlmatch || !modParams.urlmatch.text) {
 				return true;
@@ -376,8 +376,8 @@ define([
 
 			var templateText = md.template.text;
 
-			//  预览模式不支持template
-			if (md.mode != "preview" && template) {
+			// 预览模式不支持template
+			if (Boolean(template) && md.mode != "preview") {
 				md.template.text           = template.text;
 				md.template.token          = template.token;
 				md.template.modName        = template.modName;

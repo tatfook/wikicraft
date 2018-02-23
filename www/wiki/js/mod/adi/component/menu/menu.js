@@ -10,7 +10,7 @@ define([
     'jss',
     'jss-preset-default',
 ], function (app, template, jss, preset) {
-    function register(wikiBlock){
+    function register(block, style){
         var css;
 
         function create(){
@@ -41,12 +41,9 @@ define([
                 bgcolor: "@",
             },
             controller: function($scope){
-                console.log($scope)
-                console.log(app.objects.mainMdwiki);
                 create();
                 this.css = css;
-                // console.log(this);
-                // console.log(this.menu);
+                console.log(this);
             }
         });
     }

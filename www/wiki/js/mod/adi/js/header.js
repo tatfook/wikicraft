@@ -8,7 +8,7 @@ define([
 	'wikimod/adi/component/menu/menu',
 	'wikimod/adi/component/logo/logo',
 ], function (app, util, htmlContent, menuComponent) {
-	var styles = [
+	var desgin = [
 		{
 			design:{
 				text:'left',
@@ -50,19 +50,23 @@ define([
 			]
 		},
 	}
+
+	var styles = {
+
+	}
 	
     return {
-        render : function (wikiBlock) {
-			menuComponent(wikiBlock);
+        render : function (block) {
+			menuComponent(block, styles);
 	
-			var $scope  = wikiBlock.$scope;
+			var $scope  = block.$scope;
 	
-			$scope.params = app.objects.mainMdwiki.getEditorParams(wikiBlock.modParams, modParams);
-			$scope.mode   = wikiBlock.mode;
+			$scope.params = app.objects.mainMdwiki.getEditorParams(block.modParams, modParams);
+			$scope.mode   = block.mode;
 	
 			return htmlContent;
 		},
 		getEditorParams : modParams,
-		getStyleList    : styles,
+		getStyleList    : desgin,
     }
 });

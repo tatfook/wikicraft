@@ -41,7 +41,7 @@ define([
 					if (typeof(htmlContent) == "function") {
 						htmlContent = htmlContent();
 					}
-
+					
 					$element.html($compile(htmlContent)(self.$scope));
 
 					self.$apply(function(){
