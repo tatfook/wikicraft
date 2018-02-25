@@ -444,7 +444,7 @@ function skills:search_validator(params)
             page = tonumber(params.page) or 1,
             size = tonumber(params.size) or 500,
             sort = params.sort,
-            highlight = tonumber(params.highlight) or 1
+            highlight = tonumber(params.highlight) or 1,
         }
         if (clean_data.size > 500) then clean_data.size = 500 end
     end

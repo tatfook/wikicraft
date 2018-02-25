@@ -125,10 +125,11 @@ function elasticsearch:search(params, callback)
     local search_in = location .. "_search"
     local body = {}
     body = self:query_generator(params)
-
     -- highlight
     if (params.highlight == 1) then
         body.highlight = {fields = self:highlight_fields_generator(params)}
+        body.highlight.pre_tags = params.pre_tags
+        body.highlight.post_tags = params.post_tags
     end
 
     -- sort
