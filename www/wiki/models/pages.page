@@ -401,7 +401,7 @@ function pages:api_search(params)
     if (rcode == 200) then
         wrapped_result = self:wrap_search_result(search_result)
     else
-        wrapped_result = result.data.data
+        wrapped_result = search_result.data.data
     end
     return wrapped_result
 end
