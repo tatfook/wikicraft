@@ -37,8 +37,7 @@ define([
             util.get(config.apiUrlPrefix + "pages/search", params, function(result) {
             }, function(result) {
                 $scope.pageResult = result;
-                console.log($scope.pageResult.total);
-            })
+            });
         }
 
 		function elasticSearch(query) {
@@ -50,7 +49,7 @@ define([
             if (searchType == "pageinfo") {
                 var queryParams = {
                     "q": query.keyword,
-                    "from": (page - 1) * size,
+                    "from": page,
                     "size": size
                 };
                 searchPages(queryParams);
