@@ -227,7 +227,10 @@ function pages:updateVisitCount(params)
         page.siteUrl = self:get_site_url(page)
         self:db():insertOne({["+url"] = {page.url}}, page, resume)
         err, result = yield()
-        if (result) then self:insert_to_es(page) end
+        if (result) then
+            page.id = result._id
+            self:insert_to_es(page)
+        end
     end
     result = {visitCount = result.visitCount}
     return errors:wrap(err, result)
@@ -305,15 +308,6 @@ function pages:delete_website(params)
         self:delet_website_in_es(pages)
     end
     return err, result
-end
-
-
-function pages:api_test()
-    local website = {
-        username = "chatalove52",
-        sitename =  "home2",
-    }
-    return self:delete_website(website)
 end
 
 
