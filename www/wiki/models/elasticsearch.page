@@ -137,8 +137,13 @@ function elasticsearch:search(params, callback)
     end
 
     -- pagination
-    body.size = params.size
-    body.from = params.from
+    if (params.size) and ((params.page) or (params.from)) then
+        body.size = params.size
+        if (params.page) then
+            if (params.page < 1) then params.page = 1 end
+        end
+        body.from = params.from or ((params.page - 1) * body.size)
+    end
 
     body.timeout = "50ms"
     return self:sendToES({send_to=search_in, method="GET", form=body}, callback)
@@ -159,7 +164,7 @@ function elasticsearch:query_generator(params)
         query = {
         multi_match = {
             query = params.q,   --string
-            fields = params.fields   --array
+            fields = params.fields,   --array
             }
         }
     end

@@ -441,8 +441,8 @@ function skills:search_validator(params)
         clean_data = {
             q = params.q,
             fields = {"title"},
+            page = tonumber(params.page) or 1,
             size = tonumber(params.size) or 500,
-            from = tonumber(params.from),
             sort = params.sort,
             highlight = tonumber(params.highlight) or 1
         }

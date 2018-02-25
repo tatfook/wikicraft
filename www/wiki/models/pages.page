@@ -416,10 +416,10 @@ function pages:search_validator(params)
             type = "pages",
             q = params.q,
             fields = {'tags', 'content', 'username', 'sitename', 'pagename'},
+            page = tonumber(params.page) or 1,
             size = tonumber(params.size) or 500,
-            from = tonumber(params.from),
             sort = params.sort,
-            highlight = tonumber(params.highlight) or 1
+            highlight = tonumber(params.highlight) or 1,
         }
         if (clean_data.size > 500) then clean_data.size = 500 end
     end
