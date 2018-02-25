@@ -1573,6 +1573,19 @@ define([
                 event && event.stopPropagation();
             };//}}}
 
+            var updateSearchPageContent = function() {
+                var url = currentPage.url;
+                var pageContent = currentPage.content;
+                util.post(config.apiUrlPrefix + 'pages/updateContent', {
+                    "url": url,
+                    "content": pageContent
+                }, function(result) {
+                    console.log(result);
+                }, function(err) {
+                    console.log(err);
+                });
+            }
+
             //保存页面
             $scope.cmd_savepage = function (cb, errcb) {//{{{
                 if (!isEmptyObject(currentPage)) {//修改
@@ -1584,6 +1597,7 @@ define([
                         initTree();
                         cb && cb();
                         Message.info("文件保存成功");
+                        updateSearchPageContent();
                     }, function () {
                         errcb && errcb();
                         Message.danger("文件保存失败");

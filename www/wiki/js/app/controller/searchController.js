@@ -33,11 +33,30 @@ define([
 			elasticSearch(searchParams);
         }
 
+        var searchPages = function(params) {
+            util.get(config.apiUrlPrefix + "pages/search", params, function(result) {
+            }, function(result) {
+                $scope.pageResult = result;
+                console.log($scope.pageResult.total);
+            })
+        }
+
 		function elasticSearch(query) {
 			query.keyword = query.keyword || "";
 			var searchType = query.searchType || "pageinfo";
 			var page = query.currentPage || $scope.currentPage;
-			var size = query.pageSize || $scope.pageSize;
+            var size = query.pageSize || $scope.pageSize;
+            
+            if (searchType == "pageinfo") {
+                var queryParams = {
+                    "q": query.keyword,
+                    "from": (page - 1) * size,
+                    "size": size
+                };
+                searchPages(queryParams);
+                return;
+            }
+
 			var keyword = {
 				bool:{
 					should:[

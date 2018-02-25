@@ -202,8 +202,8 @@
         </div>
         <div class="tab-content">
             <div role="tabpanel" class="tab-pane clearfix" ng-class="{true:'active'}[searchType == 'pageinfo']" id="pageinfo">
-                <h4 class="title">{{ "共" | translate }}{{totalItems || 0}}条页面：</h4>
-                <div class="empty-box" ng-hide="searchList.length > 0">
+                <h4 class="title">{{ "共" | translate }}{{pageResult.total || 0}}条页面：</h4>
+                <div class="empty-box" ng-hide="pageResult.total > 0">
                     <span class="iconfont icon-sousuo"></span>
                     <p>{{ "抱歉！ ~没有搜索到" | translate }}
                         <span title="{{searchKeyword}}">{{searchKeyword.length > 10 ? (searchKeyword | limitTo: 10) + '...' : searchKeyword}}</span>
@@ -211,10 +211,10 @@
                     </p>
                 </div>
                 <div class="content">
-                    <div class="content-item" ng-repeat="item in searchList">
+                    <div class="content-item" ng-repeat="item in pageResult.hits">
                         <h3><a href="{{item.url}}">{{item.sitename || translate("站点名")}}——{{item.pagename || translate("页面名")}}</a></h3>
                         <p class="info"><a href="{{item.url}}">{{item.url}}</a></p>
-                        <p class="search-result-content" ng-bind-html="item.highlight_ext"></p>
+                        <p class="search-result-content" ng-repeat="content in item.highlight.content" ng-bind-html="content"></p>
                     </div>
                 </div>
             </div>
