@@ -343,8 +343,8 @@ function pages:insert_to_es(params)
         sitename = splited_url[2],
         url = params.url,
         tags = params.tags or {},
-        content = self:md_to_string(params.content),
-        update_time = ParaGlobal.GetDateFormat("yyyy-MM-dd") .. " " .. ParaGlobal.GetTimeFormat("HH:mm:ss"),
+        content = self:md_to_string(params.content) or "",
+        update_time = datetime(),
     }
 
     if (page.sitename) then
@@ -367,7 +367,7 @@ function pages:update_to_es(params)
         id = params.id,
         tags = params.tags,
         content = self:md_to_string(params.content),
-        update_time = ParaGlobal.GetDateFormat("yyyy-MM-dd") .. " " .. ParaGlobal.GetTimeFormat("HH:mm:ss"),
+        update_time = datetime(),
     }
     return es:updateOne(page, function(err, data) end)
 end
