@@ -6,20 +6,20 @@ define([
     'app',
     'markdown-it',
     'helper/toolbase',
-    'helper/mdwiki',
-    'helper/markdownwiki',
     'helper/storage',
     'helper/util',
-    'helper/mdconf',
     'helper/dataSource',
     'helper/loading',
+    'renderer/page',
+    'renderer/mdconf',
+    'renderer/markdown',
     'controller/homeController',
     'controller/headerController',
     'controller/footerController',
     'controller/userController',
     'controller/notfoundController',
     'controller/crosController',
-], function (app, markdownit, toolbase, mdwiki, markdownwiki, storage, util, mdconf, dataSource, loading, homeHtmlContent, headerHtmlContent, footerHtmlContent, userHtmlContent, notfoundHtmlContent, crosHtmlContent) {
+], function (app, markdownit, toolbase, storage, util, dataSource, loading, mdwiki, mdconf, markdown, homeHtmlContent, headerHtmlContent, footerHtmlContent, userHtmlContent, notfoundHtmlContent, crosHtmlContent) {
 	//var md = markdownwiki({breaks: true, isMainMd:true});
 	var md = mdwiki({use_template:true});
 
@@ -127,6 +127,8 @@ define([
 				app.objects.config = config;
 				app.objects.util = util;
 				app.objects.mdwiki = mdwiki;
+				app.objects.mdconf = mdconf;
+				app.objects.md = markdown;
 				app.objects.dataSource = dataSource;
 				app.objects.mainMdwiki = app.objects.mainMdwiki || md;
 				app.objects.toolbase = toolbase;

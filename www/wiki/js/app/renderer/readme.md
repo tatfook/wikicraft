@@ -46,3 +46,11 @@ forceRender function 强制渲染 编辑模式 改动即调用 不做缓存
 render function 模块渲染回调 做缓存
 renderAfter function 模块渲染结束后回调
 usage function 模块帮助函数
+
+
+### 文件功能
+block 一个html块 通常为一个wiki cmd 或一个html块元素   
+markdown  md解析器
+mdconf  md格式配置解析
+page mdwiki文本解析器
+template 模板块

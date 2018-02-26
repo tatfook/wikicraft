@@ -5,6 +5,7 @@ define([
 	"text!html/directive/wikiBlockContainer.html",
 	'directive/wikiBlock',
 ], function(app, mdconf, wikiBlockContainerHtml){
+	return;
     function getMd(mdName) {
 		return app.objects.mds[mdName];
     }
@@ -33,7 +34,7 @@ define([
     }
 
 	// 定义模块编辑器
-	app.directive("wikiBlockContainer", ["$compile", function($compile){
+	app.registerDirective("wikiBlockContainer", ["$compile", function($compile){
 		return {
 			restrict:'E',
 			//scope: true,

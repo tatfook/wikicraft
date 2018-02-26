@@ -5,12 +5,11 @@
 define([
     'app',
     'helper/util',
-    'helper/markdownwiki',
     'helper/storage',
     'helper/dataSource',
     'text!html/home.html',
     'text!html/articles/featurelist.md',
-], function (app, util, markdownwiki, storage, dataSource, htmlContent, featureListContent) {
+], function (app, util, storage, dataSource, htmlContent, featureListContent) {
     // 动态加载
     app.controller('homeController', ['$scope', '$rootScope', '$auth', '$sce', 'Account', 'Message', function ($scope, $rootScope, $auth, $sce, Account, Message) {
 		$scope.keepPassword = storage.localStorageGetItem("keepPassword");

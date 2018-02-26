@@ -168,6 +168,23 @@ define([
 		app.ng_app.directive(arg1, arg2);
 	}
 
+	app.mixin = function(proto, mixins)	{
+		proto = proto || {};
+
+		if (angular.isArray(mixins)) {
+			for (var i = 0; i < mixins.length; i++) {
+				// 浅赋值
+				angular.extend(proto, mixins[i]);
+				// 深赋值
+				//angular.merge(proto, mixins[i]);
+			}	
+		} else {
+			angular.extend(proto, mixins);
+		}
+
+		return proto;
+	}
+
 	window.app = app;//{{{
 	return app;//}}}
 });
