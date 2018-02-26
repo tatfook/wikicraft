@@ -2332,7 +2332,6 @@ define([
                     });
 
                     editor.on("beforeChange", function (cm, changeObj) {
-                        //console.log(changeObj);
                         if (currentPage && currentPage.isFirstEditor) {
                             return;
                         }

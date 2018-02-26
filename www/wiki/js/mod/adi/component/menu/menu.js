@@ -10,27 +10,40 @@ define([
     'jss',
     'jss-preset-default',
 ], function (app, template, jss, preset) {
+    const createGenerateClassName = () => {
+        let counter = 0
+      
+        return (rule, sheet) => `pizza--${rule.key}-${counter++}`
+    }
+
+    jss.default.setup({createGenerateClassName})
+
     function register(block, style){
         var css;
+        jss.create(preset.default());
 
         function create(){
-            jss.create(preset.default());
-    
-            // Create your style.
-            const style = {
-                myButton: {
-                    color: 'green'
+            const styles = {
+                button: {
+                    fontSize: 12,
+                },
+                ctaButton: {
+                    extend: 'button',
+                    // '&:hover': {
+                    // background: color('blue')
+                    //     .darken(0.3)
+                    //     .hex()
+                    // }
+                },
+                '@media (min-width: 1024px)': {
+                    button: {
+                    width: 200
+                    }
                 }
             }
-    
-            // Compile styles, apply plugins.
-            const sheet = jss.default.createStyleSheet(style)
-    
-            // If you want to render on the client, insert it into DOM.
-            sheet.attach()
-    
-            // If you want to render server-side, get the css text.
-            css = sheet.toString();
+            
+            sheet = jss.default.createStyleSheet(styles)
+            return sheet;
         }
     
         app.registerComponent("adiMenu", {
@@ -41,9 +54,15 @@ define([
                 bgcolor: "@",
             },
             controller: function($scope){
-                create();
-                this.css = css;
-                console.log(this);
+                var sheet = create();
+                this.css = sheet.toString();
+
+                setTimeout(function(){
+                    $scope.$ctrl.css = "";
+                    console.log($scope.$ctrl.css);
+                    $scope.$apply();
+                }.bind(this), 5000);
+                // console.log(css);
             }
         });
     }
