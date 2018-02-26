@@ -90,17 +90,18 @@ end
 
 function pages:get_site_url(params)
     local site_url
-    if (params.url) then
-        local splited_page_url = commonlib.split(params.url, "/")
-        if (splited_page_url[2]) then 
-            site_url = format("/%s/%s", splited_page_url[1], splited_page_url[2])
-        end
+    if (not params.username) and (params.url) then
+        params.username, params.sitename = self:get_username_and_sitename(params.url)
     end
-    if (params.username) then
-        site_url = "/" .. params.username
-        if (params.sitename) then site_url = site_url .. "/" .. params.sitename end
-    end
+    site_url = "/" .. params.username
+    if (params.sitename) then site_url = site_url .. "/" .. params.sitename end
     return site_url
+end
+
+
+function pages:get_username_and_sitename(url)
+    local splited_url = commonlib.split(url, "/")
+    return splited_url[1], splited_url[2]
 end
 
 
@@ -326,15 +327,22 @@ end
 
 
 function pages:insert_to_es(params)
-    if (params.visibility == "private") then
-        return nil
+    local username, sitename = self:get_username_and_sitename(params.url)
+    local website_model = models.website:new()
+
+    -- not going to insert pages to elasticsearch if the website is not public
+    if (sitename) then
+        website_model:db():findOne({["+username+sitename"] = {username, sitename}}, resume)
+        local err, site = yield()
+        if (site.visibility ~= "public") then
+            return nil
+        end
     end
-    local splited_url = commonlib.split(params.url, "/")
     local page = {
         type = "pages",
         id = params.id,
-        username = splited_url[1],
-        sitename = splited_url[2],
+        username = username,
+        sitename = sitename,
         url = params.url,
         tags = params.tags or {},
         content = self:md_to_string(params.content) or "",
@@ -363,7 +371,7 @@ function pages:update_to_es(params)
         content = self:md_to_string(params.content),
         update_time = datetime(),
     }
-    return es:updateOne(page, function(err, data) end)
+    es:updateOne(page, function(err, data) end)
 end
 
 
