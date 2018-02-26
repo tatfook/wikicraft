@@ -123,30 +123,8 @@ end
 function elasticsearch:search(params, callback)
     local location = self:locator(params)
     local search_in = location .. "_search"
-    local body = {}
-    body = self:query_generator(params)
-    -- highlight
-    if (params.highlight == 1) then
-        body.highlight = {fields = self:highlight_fields_generator(params)}
-        body.highlight.pre_tags = params.pre_tags
-        body.highlight.post_tags = params.post_tags
-    end
-
-    -- sort
-    if params.sort then
-        body.sort = params.sort      -- array
-    end
-
-    -- pagination
-    if (params.size) and ((params.page) or (params.from)) then
-        body.size = params.size
-        if (params.page) then
-            if (params.page < 1) then params.page = 1 end
-        end
-        body.from = params.from or ((params.page - 1) * body.size)
-    end
-
-    body.timeout = "50ms"
+    local body = params.body or self:query_generator(params)
+    if (not params.body) then body = self:add_extra_search_conditions(params, body) end
     return self:sendToES({send_to=search_in, method="GET", form=body}, callback)
 end
 
@@ -158,6 +136,7 @@ function elasticsearch:query_generator(params)
     if (#params.fields == 1) then
         local match = {}
         match[params.fields[1]] = params.q
+        match.fuzziness = params.fuzziness
         query = {match = match}
 
     -- 多字段搜索
@@ -166,11 +145,39 @@ function elasticsearch:query_generator(params)
         multi_match = {
             query = params.q,   --string
             fields = params.fields,   --array
+            fuzziness = params.fuzziness,
             }
         }
     end
 
     return {query=query}
+end
+
+
+function elasticsearch:add_extra_search_conditions(params, body)
+        -- highlight
+        if (params.highlight == 1) then
+            body.highlight = {fields = self:highlight_fields_generator(params)}
+            body.highlight.pre_tags = params.pre_tags
+            body.highlight.post_tags = params.post_tags
+        end
+    
+        -- sort
+        if params.sort then
+            body.sort = params.sort      -- array
+        end
+    
+        -- pagination
+        if (params.size) and ((params.page) or (params.from)) then
+            body.size = params.size
+            if (params.page) then
+                if (params.page < 1) then params.page = 1 end
+            end
+            body.from = params.from or ((params.page - 1) * body.size)
+        end
+
+        body.timeout = "50ms"
+    return body
 end
 
 
@@ -185,8 +192,6 @@ end
 
 function elasticsearch:bulk(params, callback)
     if (not params.data) then
-        -- params.flag = "elasticsearch:bulk"
-        -- log(params, true)
         local message = "serialized data required"
         return response:status(400):send({error={message=message,status=400}})
     end

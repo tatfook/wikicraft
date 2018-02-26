@@ -430,6 +430,7 @@ function pages:search_validator(params)
             highlight = tonumber(params.highlight) or 1,
             pre_tags = {"<span>"},
             post_tags = {"</span>"},
+            fuzziness = "AUTO",
         }
         if (clean_data.size > 500) then clean_data.size = 500 end
     end
