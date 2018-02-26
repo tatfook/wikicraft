@@ -37,6 +37,7 @@ define([
             util.get(config.apiUrlPrefix + "pages/search", params, function(result) {
             }, function(result) {
                 $scope.pageResult = result;
+                $scope.totalItems = result.total;
             });
         }
 
@@ -49,7 +50,7 @@ define([
             if (searchType == "pageinfo") {
                 var queryParams = {
                     "q": query.keyword,
-                    "from": page,
+                    "page": page,
                     "size": size
                 };
                 searchPages(queryParams);

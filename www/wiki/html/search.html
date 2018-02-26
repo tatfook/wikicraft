@@ -252,7 +252,7 @@
                 </div>
             </div>
         </div>
-        <div class="pagination-box" ng-show="searchList.length > 0">
+        <div class="pagination-box" ng-show="searchList.length > 0 || pageResult.total > 0">
             <ul uib-pagination ng-change="sitePageChanged()" items-per-page='pageSize' previous-text="上一页"
                 next-text="下一页" total-items="totalItems" ng-model="currentPage" max-size="5"
                 class="pagination-sm" boundary-link-numbers="true"></ul>
