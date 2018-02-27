@@ -110,7 +110,7 @@ define([
         let pathname = config.pathname;
 
         if(config.islocalWinEnv()) {
-            pathname = config.hash ? config.hash.substring(1) : '/';
+            pathname = config.hash() ? config.hash() : '/';
 
             if (pathname.indexOf('?') >= 0) {
                 pathname = pathname.substring(0, pathname.indexOf('?'));

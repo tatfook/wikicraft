@@ -4,7 +4,7 @@
 define([
 	'app',
 	'helper/util',
-	'text!wikimod/adi/html/header.html',
+	'text!wikimod/adi/header/header.template.html',
 	'wikimod/adi/component/menu/menu',
 	'wikimod/adi/component/logo/logo',
 ], function (app, util, htmlContent, menuComponent) {

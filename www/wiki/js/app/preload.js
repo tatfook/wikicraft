@@ -48,9 +48,6 @@ define([
     'factory/assetsManagerModal',
     'factory/loadingInterceptor',
     'factory/selfDefinedModal',
-
-    // components
-    'components/editorMode',
 ], function () {
     return {};
 });
