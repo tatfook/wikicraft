@@ -24,6 +24,8 @@ include_once("./website_domain.page")
 include_once("./site_data_source.page")
 include_once("./site_group.page")
 include_once("./pages.page")
+include_once("./elasticsearch.page")
+include_once("./validators.page")
 
 NPL.load("(gl)script/ide/math/bit.lua")
 
@@ -32,6 +34,11 @@ local website = inherit(models.abstract.base, gettable("models.website"))
 website.db_name = "website"
 -- max items per user
 -- website.max_items_per_user = 10
+
+local es = models.elasticsearch:new()
+local index = CURRENT_ENV .. "_kw_websites"
+es:connect({index=index})
+
 
 function website:ctor()
 	self:addfield("name", "string", false, 30)
@@ -82,8 +89,11 @@ function website:api_create(params)
 	params.createDate = ParaGlobal.GetDateFormat("yyyy-MM-dd")
 
 
-	self:db():insertOne({["+username+name"]={params.username, params.name}}, params, resume)	
-	return errors:wrap(yield())
+	self:db():insertOne({["+username+name"]={params.username, params.name}}, params, resume)
+	local err, site = yield()
+	self:insert_to_es(site)
+
+	return errors:wrap(err, site)
 end
 
 function website:api_createSite(params)
@@ -124,6 +134,8 @@ function website:api_createSite(params)
 	if not site then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
+
+	self:insert_to_es(site)
 
 	local siteDataSourceDB = models.site_data_source:new()
 	siteDataSourceDB:api_createSiteDataSource({username=site.username, sitename=site.sitename, visibility=site.visibility, dataSourceName=userinfo.defaultDataSourceName, isolateDataSource=params.isolateDataSource})
@@ -170,6 +182,8 @@ function website:api_upsert(params)
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
 	
+	self:insert_to_es(site)
+
 	local projectName = nil
 	if params.isolateDataSource == 0 then
 		projectName = const.DEFAULT_DATA_SOURCE_PROJECT_NAME
@@ -214,6 +228,8 @@ function website:deleteById(websiteId)
 	if not site then
 		return errors:wrap(nil)
 	end
+
+	self:delete_in_es(site)
 
 	--user_log("删除站点:" .. site.sitename)
 
@@ -353,8 +369,10 @@ function website:api_updateByName(params)
 	params.updateDate = ParaGlobal.GetDateFormat("yyyy-MM-dd")
 
 	self:db():updateOne({["+username+name"]={params.username, sitename}}, params, resume)
+	local err, site = yield()
+	self:update_to_es(site)
 
-	return errors:wrap(yield())
+	return errors:wrap(err, site)
 end
 
 -- 获得用户的网站数量
@@ -450,7 +468,7 @@ function website:api_getById(params)
 
 	self:db():findOne({_id=params.websiteId}, resume)
 
-	return errors:wrap(yield())		
+	return errors:wrap(yield())
 end
 
 -- 更新访问计数
@@ -781,9 +799,118 @@ function website:api_setTop(params)
 end
 
 
+function website:insert_to_es(params)
+	local website = {
+		type = "websites",
+		id = tonumber(params._id),
+		username = params.username,
+		sitename = params.sitename,
+		url = params.url,
+		desc = params.desc,
+		logoUrl = params.logoUrl,
+		display_name = params.displayName,
+	}
+	es:insertOne(website, function(err, data) end)
+end
 
 
+function website:update_to_es(params)
+	local website = {
+		type = "websites",
+		id = tonumber(params._id),
+		desc = params.desc,
+		logoUrl = params.logoUrl,
+		display_name = params.displayName,
+	}
+	es:updateOne(website, function(err, data) end)
+end
 
+
+function website:delete_in_es(params)
+	local website = {
+		type = "websites",
+		id = tonumber(params._id),
+	}
+	es:deleteOne(website, function(err, data) end)
+end
+
+
+function website:api_search(params)
+	local clean_params, is_params_error, message = self:search_validator(params)
+	if (is_params_error) then
+		return response:status(400):send({error={message=message,status=400}})
+	end
+	local search_result = es:search(clean_params)
+	local rcode = search_result.data.rcode
+	local wrapped_result = {}
+	if (rcode == 200) then
+		wrapped_result = self:wrap_search_result(search_result)
+	else
+		wrapped_result = search_result.data.data
+	end
+	return wrapped_result
+end
+
+
+function website:search_validator(params)
+	local validators = models.validators:new()
+	local clean_data = {}
+	local required_fields = {"q"}
+	local is_params_error, message = validators.required_fields_validator(params, required_fields)
+	if (not is_params_error) then
+		clean_data = {
+			type = "websites",
+			q = params.q,
+			fields = {'sitename', 'display_name'},
+			page = tonumber(params.page) or 1,
+			size = tonumber(params.size) or 500,
+			sort = params.sort,
+			highlight = 0,
+			fuzziness = "AUTO",
+		}
+		if (clean_data.size > 500) then clean_data.size = 500 end
+	end
+	return clean_data, is_params_error, message
+end
+
+
+function website:wrap_search_result(result)
+	local wrapped_result = {}
+	local err, visitor_info
+	local rcode = result.data.rcode
+
+	wrapped_result = {
+		timed_out = result.data.data.timed_out,
+		took = result.data.data.took,
+		total = result.data.data.hits.total,
+		status = rcode
+	}
+
+	local hits = {}
+	for i, hit in ipairs(result.data.data.hits.hits) do
+		hit._source._id = tonumber(hit._id)
+		hits[#hits + 1] = hit._source
+	end
+
+	local finished_count = 0
+	for i, website in ipairs(hits) do
+		self:db():findOne({_id = website._id},
+			function(err, data)
+				finished_count = finished_count + 1
+				if (data) then 
+					website.visitCount = data.visitCount
+					website.favoriteCount = data.favoriteCount
+				end
+				if (finished_count == #hits) then resume() end
+			end
+		)
+		website._id = nil
+		if (i == #hits) then yield() end
+	end
+
+	wrapped_result.hits = hits
+	return wrapped_result
+end
 
 
 
