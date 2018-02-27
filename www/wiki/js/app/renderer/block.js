@@ -178,6 +178,7 @@ define([
 				}
 
 				self.wikimod = {cmdName: cmdName, mod: mod};
+
 				_render(self.wikimod.mod);
 			}, function () {
 				console.log("加载模块" + self.cmdName + "失败");

@@ -18,10 +18,11 @@ define([
                         <span class="pull-right" ng-click="showVersions()">上次保存：{{committer_name}}于{{committed_date}}</span>\
                       </div>',
 			controller: ["$rootScope", "$scope", "$attrs", "modal", function($rootScope, $scope, $attrs, modal){
-				var clickEventType = undefined;
-				var mdwiki         = app.objects.editormd;
-				var pageinfo       = $rootScope.pageinfo;
-				var template       = mdwiki.template;
+				var clickEventType     = undefined;
+				var mdwiki             = app.objects.editormd;
+				var pageinfo           = $rootScope.pageinfo;
+				var template           = mdwiki.template;
+				var moduleEditorParams = config.shareMap.moduleEditorParams;
 
 				$scope.$rootScope = $rootScope;
 				$scope.isShow     = mdwiki.mode == "editor" && $rootScope.pageinfo;
@@ -103,14 +104,17 @@ define([
 						$rootScope.$broadcast('changeEditorPage', urlObj);
 						return;
 					}
-
-					var moduleEditorParams = config.shareMap.moduleEditorParams;
+					
 					moduleEditorParams.setBlock(template);
 					util.$apply();	
 				}
 
 				$scope.setTheme = function(){
-					alert('setTheme');
+					for(var item in template.blockList){
+						if(template.blockList[item].cmdName == 'adi/theme'){
+							moduleEditorParams.setBlock(template.blockList[item]);
+						}
+					}
 				}
 			}],
 		}
