@@ -1,4 +1,9 @@
 <style>
+    .user-works .ellipsis{
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
+    }
     .user-works .works-list {
         padding: 0 20px;
         border: 1px solid #F2F2F2;
@@ -26,6 +31,8 @@
     .user-works .work-detail {
         margin-left: 7px;
         flex: 1;
+        padding-right: 100px;
+        min-width: 0;
     }
 
     .user-works .work-detail h4 {
@@ -218,6 +225,28 @@
     .add-modal .preview-zone:hover .upload-info.have-img .info {
         color: #FFF;
     }
+
+    @media(max-width: 768px){
+        .user-works .works-list{
+            border: none;
+            margin: 0;
+            padding: 5px 15px 15px;
+        }
+
+        .user-works .works-item{
+            padding: 6px 0;
+            width: 100%;
+        }
+
+        .user-works .work-detail{
+            padding-right: 0;
+        }
+
+        .user-works .absolute-right{
+            top: auto;
+            bottom: 5px;
+        }
+    }
 </style>
 <div class="user-works" ng-controller="worksCtrl" ng-hide="works.length <=0 && !isSelf">
     <h4 class="title">
@@ -237,18 +266,18 @@
         <div class="works-item" ng-repeat="work in works track by $index" ng-show="works.length>0 && work">
             <img ng-src="{{work.logoUrl || getImageUrl('wiki_cover.jpg', imgsPath)}}">
             <div class="work-detail">
-                <h4>
+                <h4 class="ellipsis" title="work.title">
                     <a ng-href="{{work.workLink}}" target="_blank">{{work.title}}</a>
                 </h4>
-                <p class="p-link">
-                    <a ng-href="{{work.workLink}}" target="_blank">{{work.workLink}}</a>
+                <p class="p-link ellipsis">
+                    <a ng-href="{{work.workLink}}" target="_blank" title="work.workLink">{{work.workLink}}</a>
                 </p>
-                <p class="p-desc">{{(work.desc || "暂无描述") | translate}}</p>
-                <p class="p-tags" ng-hide="work.isThirdLink">
+                <p class="p-desc ellipsis">{{(work.desc || "暂无描述") | translate}}</p>
+                <p class="p-tags ellipsis" ng-hide="work.isThirdLink">
                     <span ng-repeat="tag in work.data.tags track by $index">{{tag}}</span>
                 </p>
             </div>
-            <div class="work-other-msg absolute-right" ng-hide="editing || work.isThirdLink">
+            <div class="work-other-msg absolute-right hidden-xs" ng-hide="editing || work.isThirdLink">
                 <span>
                     <i class="iconfont icon-browse"></i>{{work.data.visitCount || 0}}
                 </span>
