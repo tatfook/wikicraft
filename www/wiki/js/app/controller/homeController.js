@@ -5,7 +5,6 @@
 define([
     'app',
     'helper/util',
-    'helper/markdownwiki',
     'helper/storage',
     'helper/dataSource',
     'text!html/home.html',
@@ -13,7 +12,6 @@ define([
 ], function (
     app,
     util,
-    markdownwiki,
     storage,
     dataSource,
     htmlContent,

@@ -11,7 +11,7 @@ define([
 			restrict: 'E',
 			scope: true,
 			template:'<div ng-show="isShow" class="tpl-header" ng-click="click()">\
-			            <button ng-click=“setTheme()”>设置主题</button>\
+			            <button ng-click="setTheme()">设置主题</button>\
 						{{templateSrc}}\
 						<i ng-show="isShowEdit" class="iconfont icon-bianji"></i>\
 						<i ng-show="isShowNew" ng-click="clickNewTemplate($event)" class="iconfont icon-tianjia"></i>\

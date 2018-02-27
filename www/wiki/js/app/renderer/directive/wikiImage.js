@@ -3,7 +3,7 @@
  */
 
 define(['require', 'app'], function (require, app) {
-    app.directive('wikiImage', ['$http', 'github',function ($http, github) {
+    app.registerDirective('wikiImage', ['$http', 'github',function ($http, github) {
         return {
             restrict: 'EA',
             replace: true,

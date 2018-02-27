@@ -6,13 +6,13 @@ define([
     'app',
     'markdown-it',
     'helper/toolbase',
-    'helper/mdwiki',
-    'helper/markdownwiki',
     'helper/storage',
     'helper/util',
-    'helper/mdconf',
     'helper/dataSource',
     'helper/loading',
+    'renderer/page',
+    'renderer/mdconf',
+    'renderer/markdown',
     'controller/homeController',
     'controller/headerController',
     'controller/footerController',
@@ -23,13 +23,13 @@ define([
     app,
     markdownit,
     toolbase,
-    mdwiki,
-    markdownwiki,
     storage,
     util,
-    mdconf,
     dataSource,
     loading,
+    mdwiki,
+    mdconf,
+    markdown,
     homeHtmlContent,
     headerHtmlContent,
     footerHtmlContent,
@@ -139,6 +139,8 @@ define([
 				app.objects.config     = config;
 				app.objects.util       = util;
 				app.objects.mdwiki     = mdwiki;
+				app.objects.mdconf     = mdconf;
+				app.objects.md         = markdown;
 				app.objects.dataSource = dataSource;
 				app.objects.mainMdwiki = app.objects.mainMdwiki || md;
 				app.objects.toolbase   = toolbase;
@@ -344,7 +346,7 @@ define([
                     if (config.mainContentType == "wiki_page") {
 						//if (urlObj.pathname == "/wiki/test") {
 							//config.mainContent = md.render(config.mainContent);
-						//}
+                        //}
                         util.html('#__UserSitePageContent__', config.mainContent, $scope);
                         //config.mainContent = undefined;
                     } else {

@@ -5,9 +5,11 @@ define([
 	'helper/md/md',
 	'directive/wikiBlock',
 	'directive/wikiBlockContainer',
+	'directive/wikipage',
+	'directive/wikiImage',
+	'directive/wikiLink',
 ], function(app, util, mdconf, markdown){
-	app.objects.mds = {};
-	
+    app.objects.mds = {};
     var instCount = 0;
 	var mds       = app.objects.mds;
 

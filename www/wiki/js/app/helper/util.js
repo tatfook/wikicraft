@@ -78,7 +78,7 @@ define([
             let $compile = util.angularServices.$compile;
             htmlStr = $compile(htmlStr)($scope);
         }
-
+        
         $(selector).html(htmlStr);
 
 		util.broadcastViewContentLoaded({containerId : selector}, $scope);

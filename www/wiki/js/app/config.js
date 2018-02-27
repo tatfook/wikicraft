@@ -169,7 +169,7 @@
 			let rawPathname     = currentPathname;
 
 			currentPathname = this.util.snakeToHump(currentPathname);
-
+			
 			if (currentPathname.indexOf('/wiki/mod/') == 0) {
 				// mod 模块
 				currentPathname = currentPathname.substring('/wiki/mod/' . length);
