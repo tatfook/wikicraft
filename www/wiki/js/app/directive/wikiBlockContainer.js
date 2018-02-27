@@ -5,7 +5,6 @@ define([
 	"text!html/directive/wikiBlockContainer.html",
 	'directive/wikiBlock',
 ], function(app, mdconf, wikiBlockContainerHtml){
-	return;
     function getMd(mdName) {
 		return app.objects.mds[mdName];
     }

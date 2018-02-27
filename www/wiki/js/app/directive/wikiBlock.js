@@ -2,7 +2,6 @@
 define([
 	'app',
 ], function(app) {
-	return;
     // 加载mod
     // 定义扩展指令
     app.registerDirective("wikiBlock", ['$compile', function ($compile) {

@@ -17,7 +17,7 @@ define([
     'helper/storage',
     'helper/util',
 	"helper/md/mdconf",
-	"helper/mdwiki",
+	//"helper/mdwiki",
 	"helper/toolbase",
 	
 	// controller

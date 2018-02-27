@@ -4,6 +4,9 @@ define([
 	"helper/md/md",
 	'directive/wikiBlock',
 	'directive/wikiBlockContainer',
+	'directive/wikipage',
+	'directive/wikiImage',
+	'directive/wikiLink',
 ], function(app, mdconf, markdown){
     app.objects.mds = {};
     var instCount = 0;
