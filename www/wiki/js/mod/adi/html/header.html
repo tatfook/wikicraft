@@ -1,83 +1,4 @@
-<style>
-    /* .menu {
-        width: 100%;
-        height: 50px;
-        background-color: #327abf;
-    }
-
-    .menu > .container > ul{
-        list-style-type: none;
-        padding-left: 0;
-        margin: 0;
-        height: 100%;
-        width: auto;
-        background-image: url("/wiki/js/mod/adi/assets/imgs/menu-button-bg.png");
-        background-repeat: no-repeat;
-    }
-
-    .menu > .container > ul > li{
-        float: left;
-        height: 50px;
-        color: white;
-        text-align: center;
-        line-height: 50px;
-        padding: 0 30px;
-        background-image: url("/wiki/js/mod/adi/assets/imgs/menu-button-bg.png");
-        background-repeat: no-repeat;
-        background-position-x: 100%;
-        position: relative;
-        font-size: 17px;
-    }
-
-    .menu > .container > ul > li a{
-        color: white;
-        text-decoration: none;
-    }
-
-    .menu > .container > ul > li:hover > .sub-menu{
-        display: block;
-    }
-
-    .menu > .container > ul > li > .sub-menu{
-        display: none;
-        position: absolute;
-        width: auto;
-        z-index: 9999;
-        list-style-type: none;
-        padding: 0;
-        left: 0;
-    }
-
-    .menu > .container > ul > li > .sub-menu > li{
-        background: #183d60;
-        border-bottom: solid 1px #3a90e3;
-        padding: 0 20px;
-        white-space: nowrap;
-        height: 35px;
-        line-height: 35px;
-        font-size: 14px;
-    }
-
-    .menu > .container > ul > li > .sub-menu > li:last-child{
-        border-bottom-left-radius: 10px;
-        border-bottom-right-radius: 10px;
-    }
-
-    .menu-right > .container > ul{
-        padding-left: 0;
-        background: none;
-        float: right;
-    }
-
-    .menu-right > .container > ul > li{
-        background-position-x: 0;
-    }
-    .clear-pointer a{
-        cursor : default;
-    } */
-</style>
-
-<div ng-controller="headerController"
+<!-- <div ng-controller="headerController"
      ng-class="{true : 'clear-pointer', false : 'clear'}[editorMode]">
     <div ng-if="params.design.text == 'left' && !params.menu_menu.is_mod_hide">
         <editor-mode>
@@ -90,4 +11,29 @@
             <adi-menu menu="params.menu_menu"></adi-menu>
         </div>
     </div>
-</div>
+</div> -->
+
+<adi-header>
+    <div ng-if="params.design.text == 'style1'">
+        <div class="app-wikiblock-fullwidth" ng-class="{{theme.main_site_color}}">
+            <div class="app-wikiblock-text">
+                <div style="padding:5px;float:left;"><adi-img params="{{params.icon}}" ></adi-img></div>
+                <div style="padding:5px;float:left;"><adi-label params="{{params.label}}" ></adi-label></div>
+                <div style="float:left;padding:5px">
+                    <adi-menu params="{{params.menu}}" ></adi-menu>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div ng-if="params.design.text == 'style2'">
+        <div class="app-wikiblock-fullwidth" ng-class="{{theme.main_site_color}}">
+            <div class="app-wikiblock-text">
+                <div style="padding:5px;float:left;"><adi-img params="{{params.icon}}" ></adi-img></div>
+                <div style="padding:5px;float:left;"><adi-label params="{{params.label}}" ></adi-label></div>
+                <div style="float:right;padding:5px">
+                    <adi-menu params="{{params.menu}}" ></adi-menu>
+                </div>
+            </div>
+        </div>
+    </div>
+</adi-header>

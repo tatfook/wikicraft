@@ -1,0 +1,16 @@
+<edit-selector isEditMode="$ctrl.editorMode" params="{{$ctrl.menu}}">
+    <li ng-repeat="item in menu.text">
+        <a ng-href="{{item.url}}" 
+            target="_blank">
+            {{item.name}}
+        </a>
+        <ul class="sub-menu">
+            <li ng-repeat="subItem in item.children">
+                <a ng-href="{{subItem.url}}" 
+                    target="_blank">
+                    {{subItem.name}}
+                </a>
+            </li>
+        </ul>
+    </li>
+</edit-selector>

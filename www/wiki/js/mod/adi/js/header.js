@@ -84,7 +84,7 @@ define([
     }
 
     return {
-        render: render,
+		render: render,
 		getEditorParams: getEditorParams,
 		getStyleList: getStyleList,
     }
