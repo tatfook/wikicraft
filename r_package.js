@@ -104,6 +104,7 @@
         // html dir
         'html': '../html',
 		'css': '../assets/css',
+		"renderer": "app/renderer",
 
 		'helper/sensitiveWord':"empty:"
     },

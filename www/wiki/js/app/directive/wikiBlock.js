@@ -4,7 +4,7 @@ define([
 ], function(app) {
     // 加载mod
     // 定义扩展指令
-    app.directive("wikiBlock", ['$compile', function ($compile) {
+    app.registerDirective("wikiBlock", ['$compile', function ($compile) {
         return {
             restrict:'E',
             controller: ['$scope', '$attrs', '$element', function ($scope, $attrs, $element) {

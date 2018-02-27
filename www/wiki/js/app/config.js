@@ -279,7 +279,8 @@
 					config.mainContent = mainContent;
 				}
 				cb && cb();
-			}, function () {
+			}, function (e) {
+				console.log(e);
 				errcb && errcb();
 			});
 		} else {

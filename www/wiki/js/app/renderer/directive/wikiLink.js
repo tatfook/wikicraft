@@ -9,7 +9,7 @@ define([
 	'helper/mdconf',
 ], function (app, dataSource, markdownwiki, mdconf) {
 	var md = markdownwiki({use_template:false});
-    app.directive('wikiLink', ['$http', '$rootScope', function ($http, $rootScope) {
+    app.registerDirective('wikiLink', ['$http', '$rootScope', function ($http, $rootScope) {
         return {
             restrict: 'E',
             scope:{},

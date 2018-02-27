@@ -17,7 +17,7 @@ define([
     'helper/storage',
     'helper/util',
 	"helper/md/mdconf",
-	"helper/mdwiki",
+	//"helper/mdwiki",
 	"helper/toolbase",
 	
 	// controller
@@ -65,14 +65,14 @@ define([
     'directive/moduleDirective',
     'directive/userpage',
     'directive/tplheader',
-    'directive/wikiImage',
-    'directive/wikiLink',
-    'directive/wikiUISelect',
-    'directive/wikiHtml',
+    //'directive/wikiImage',
+    //'directive/wikiLink',
+	'directive/wikiUISelect',
+	'directive/wikiHtml',
     'directive/ngOn',
-    'directive/wikipage',
-    'directive/wikiBlock',
-    'directive/wikiBlockContainer',
+    //'directive/wikipage',
+    //'directive/wikiBlock',
+    //'directive/wikiBlockContainer',
 
     // factory
     'factory/account',

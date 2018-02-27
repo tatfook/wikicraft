@@ -1,0 +1,30 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        
+        {
+            "type": "chrome",
+            "request": "launch",
+            "name": "Launch Chrome",
+            "url": "http://localhost:8099/wiki/index.html",
+            "webRoot": "${workspaceFolder}/www"
+        },
+        {
+            "type": "NPL",
+            "request": "attach",
+            "name": "Attach NPL",
+            "port": 8099,
+            "searchpath": ["${workspaceFolder}/npl_packages/main"],
+            "trace": false
+        },
+    ],
+    "compounds": [
+		{
+			"name": "NPLServer + Chrome",
+			"configurations": [ "Attach NPL", "Launch Chrome" ]
+		}
+	]
+}

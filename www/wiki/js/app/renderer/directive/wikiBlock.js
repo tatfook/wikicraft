@@ -4,7 +4,7 @@ define([
 ], function(app) {
     // 加载mod
     // 定义扩展指令
-    app.directive("wikiBlock", ['$compile', function ($compile) {
+    app.registerDirective("wikiBlock", ['$compile', function ($compile) {
         return {
             restrict:'E',
             controller: ['$scope', '$attrs', '$element', function ($scope, $attrs, $element) {
@@ -15,7 +15,7 @@ define([
 				}
 
 				// 获取新scope 避免模块重用干扰
-				block.getNewScope = function() {
+				block.$getNewScope = function() {
 					var self = this;
 					if (self.$scope) {
 						self.$scope.$destroy();
@@ -35,7 +35,7 @@ define([
 				block.$render = function(htmlContent) {
 					var self = this;
 
-					self.getNewScope();
+					self.$getNewScope();
 
 					if (typeof(htmlContent) == "function") {
 						htmlContent = htmlContent();
@@ -50,9 +50,23 @@ define([
 					});
 				}
 
+				var renderListener = function(htmlContent){
+					block.$render(htmlContent);
+				}
+
+				var applyListener = function(callback) {
+					block.$apply(callback);
+				}
+
+				block.removeEventListener("render", renderListener);
+				block.addEventListener("render", renderListener);
+
+				block.removeEventListener("apply", applyListener);
+				block.addEventListener("apply", applyListener);
+
 				//console.log("init block:" + block.cmdName);
 				// 将htmlContent置空 确保初始化的render正确的执行
-				block.getNewScope();
+				block.$getNewScope();
 				block.htmlContent = undefined;
 				block.render();
             }],
