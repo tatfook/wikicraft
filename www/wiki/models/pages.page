@@ -455,7 +455,7 @@ function pages:wrap_search_result(result)
         hit._source.highlight = hit.highlight
         hits[#hits + 1] = hit._source
     end
-    
+
     wrapped_result.hits = hits
     return wrapped_result
 end
