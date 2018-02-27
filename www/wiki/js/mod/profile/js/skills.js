@@ -2,7 +2,7 @@
  * @Author: ZhangKaitlyn 
  * @Date: 2018-01-19
  * @Last Modified by: none
- * @Last Modified time: 2018-02-12 11:18:57
+ * @Last Modified time: 2018-02-27 17:45:30
  */
 define([
     'app', 
@@ -13,7 +13,7 @@ define([
     'echarts-radar',
 ], function (app, htmlContent, addSkillModalHtmlContent, mdconf, util, echartsRadar) {
     function registerController(wikiBlock) {
-        app.registerController("skillCtrl", ['$rootScope', '$scope', '$uibModal', '$translate', 'Message', function ($rootScope, $scope, $uibModal, $translate, Message) {
+        app.registerController("skillCtrl", ['$rootScope', '$scope', '$uibModal', '$translate', 'Message', 'Account', 'modal', function ($rootScope, $scope, $uibModal, $translate, Message, Account, modal) {
             const modCmd = "```@profile/js/skills";
             var thisInBlockIndex;
             var thisContainerId;
@@ -93,11 +93,20 @@ define([
             }
 
             $scope.showSkillModal = function(index){
+                if (!Account.isAuthenticated()) {
+                    $rootScope.$broadcast("onLogout", "");
+                    modal('controller/loginController', {
+                        controller: 'loginController',
+                        size: 'lg',
+                        backdrop: true
+                    });
+                    return;
+                }
                 $scope.addingSkill = angular.copy($scope.skills[index]);
                 $uibModal.open({
                     template: addSkillModalHtmlContent,
                     controller: "addSkillModalCtrl",
-                    appendTo: $(".user-skills .modal-parent"),
+                    openedClass: "add-skill-modal",
                     scope: $scope,
                     backdrop:'static'
                 }).result.then(function(result){
@@ -259,7 +268,7 @@ define([
             $scope.$watch('$viewContentLoaded', initRadar);
         }]);
 
-        app.registerController("addSkillModalCtrl", ['$scope', '$uibModalInstance', '$translate', function ($scope, $uibModalInstance, $translate) {
+        app.registerController("addSkillModalCtrl", ['$rootScope', '$scope', '$uibModalInstance', '$translate', 'Account', 'modal', function ($rootScope, $scope, $uibModalInstance, $translate, Account, modal) {
             const SkillNameMaxLen = 10;
             $scope.addingSkill = $scope.addingSkill || {};
             $scope.cancel = function(){
@@ -281,6 +290,15 @@ define([
             }
 
             $scope.submitAddingSkill = function(){
+                if (!Account.isAuthenticated()) {
+                    $rootScope.$broadcast("onLogout", "");
+                    modal('controller/loginController', {
+                        controller: 'loginController',
+                        size: 'lg',
+                        backdrop: true
+                    });
+                    return;
+                }
                 $scope.errMsg = "";
                 var requiredAttrs = [{
                     'key': 'title',

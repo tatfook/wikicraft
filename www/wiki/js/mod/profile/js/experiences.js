@@ -2,7 +2,7 @@
  * @Author: ZhangKaitlyn 
  * @Date: 2018-01-19
  * @Last Modified by: none
- * @Last Modified time: 2018-02-08 15:41:51
+ * @Last Modified time: 2018-02-27 17:45:44
  */
 define([
     'app', 
@@ -12,7 +12,7 @@ define([
     'helper/util',
 ], function (app, htmlContent, addExperienceModalHtmlContent, mdconf, util) {
     function registerController(wikiBlock) {
-        app.registerController("experienceCtrl", ['$rootScope', '$scope', '$uibModal', '$translate', function ($rootScope, $scope, $uibModal, $translate) {
+        app.registerController("experienceCtrl", ['$rootScope', '$scope', '$uibModal', '$translate', 'Account', 'modal', function ($rootScope, $scope, $uibModal, $translate, Account, modal) {
             const modCmd = "```@profile/js/experiences";
             var thisInBlockIndex;
             var thisContainerId;
@@ -67,11 +67,20 @@ define([
             }
 
             $scope.showExperienceModal = function(index){
+                if (!Account.isAuthenticated()) {
+                    $rootScope.$broadcast("onLogout", "");
+                    modal('controller/loginController', {
+                        controller: 'loginController',
+                        size: 'lg',
+                        backdrop: true
+                    });
+                    return;
+                }
                 $scope.addingExperience = angular.copy($scope.experiences[index]);
                 $uibModal.open({
                     template: addExperienceModalHtmlContent,
                     controller: "addExperiencelModalCtrl",
-                    appendTo: $(".user-experience .modal-parent"),
+                    openedClass: "add-experience-modal",
                     scope: $scope,
                     backdrop:'static'
                 }).result.then(function(result){
@@ -125,7 +134,7 @@ define([
             };
         }]);
 
-        app.registerController("addExperiencelModalCtrl", ['$scope', '$uibModalInstance', '$translate', function ($scope, $uibModalInstance, $translate) {
+        app.registerController("addExperiencelModalCtrl", ['$rootScope', '$scope', '$uibModalInstance', '$translate', 'Account', 'modal', function ($rootScope, $scope, $uibModalInstance, $translate, Account, modal) {
             $scope.addingExperience = $scope.addingExperience || {};
             $scope.cancel = function(){
                 $uibModalInstance.dismiss("cancel");
@@ -146,6 +155,15 @@ define([
             }
 
             $scope.submitaddingExperience = function(){
+                if (!Account.isAuthenticated()) {
+                    $rootScope.$broadcast("onLogout", "");
+                    modal('controller/loginController', {
+                        controller: 'loginController',
+                        size: 'lg',
+                        backdrop: true
+                    });
+                    return;
+                }
                 $scope.errMsg = "";
                 var requiredAttrs = [{
                     'key': 'title',
