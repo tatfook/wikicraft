@@ -174,6 +174,7 @@ define([
             });
         }
 
+        var errorCount = 0;
         var saveNewProfileToGit = function(){
             var content = "";
             var subPartContent = "";
@@ -190,8 +191,14 @@ define([
                 path: profileDataPath,
                 content: content
             }, function(){
+                errorCount = 0;
                 Message.info("修改成功");
             }, function(){
+                errorCount ++;
+                if (errorCount > 3) {
+                    Message.danger("修改失败");
+                    return;
+                }
                 saveNewProfileToGit();
                 console.log("修改失败");
             });
