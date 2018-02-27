@@ -90,11 +90,12 @@ end
 
 function pages:get_site_url(params)
     local site_url
+    local username, sitename
     if (not params.username) and (params.url) then
-        params.username, params.sitename = self:get_username_and_sitename(params.url)
+        username, sitename = self:get_username_and_sitename(params.url)
     end
-    site_url = "/" .. params.username
-    if (params.sitename) then site_url = site_url .. "/" .. params.sitename end
+    site_url = "/" .. username
+    if (sitename) then site_url = site_url .. "/" .. sitename end
     return site_url
 end
 
@@ -178,7 +179,7 @@ function pages:api_updateContent(params)
         end
     end
 
-    ensureAuthenticated()
+    -- ensureAuthenticated()
     local page, is_params_error, message = self:update_content_validator(params)
     if (is_params_error) then
         return response:status(400):send({error={message=message,status=400}})
@@ -225,7 +226,7 @@ function pages:updateVisitCount(params)
         err, result = yield()
     else
         page.visitCount = 1
-        page.siteUrl = self:get_site_url(page)
+        page.siteUrl = self:get_site_url(params)
         self:db():insertOne({["+url"] = {page.url}}, page, resume)
         err, result = yield()
         if (result) then
@@ -329,15 +330,14 @@ end
 function pages:insert_to_es(params)
     local username, sitename = self:get_username_and_sitename(params.url)
     local website_model = models.website:new()
+    params.visibility = "public"
 
-    -- not going to insert pages to elasticsearch if the website is not public
     if (sitename) then
         website_model:db():findOne({["+username+sitename"] = {username, sitename}}, resume)
         local err, site = yield()
-        if (site.visibility ~= "public") then
-            return nil
-        end
+        if (site) then params.visibility = site.visibility or "public" end
     end
+
     local page = {
         type = "pages",
         id = params.id,
@@ -347,6 +347,7 @@ function pages:insert_to_es(params)
         tags = params.tags or {},
         content = self:md_to_string(params.content) or "",
         update_time = datetime(),
+        visibility = params.visibility,
     }
 
     if (page.sitename) then
@@ -361,16 +362,25 @@ end
 
 
 function pages:update_to_es(params)
-    if (params.visibility == "private") then
-        return nil
+    local username, sitename = self:get_username_and_sitename(params.url)
+    local website_model = models.website:new()
+    params.visibility = "public"
+
+    if (sitename) then
+        website_model:db():findOne({["+username+sitename"] = {username, sitename}}, resume)
+        local err, site = yield()
+        if (site) then params.visibility = site.visibility or "public" end
     end
+
     local page = {
         type = "pages",
         id = params.id,
         tags = params.tags,
         content = self:md_to_string(params.content),
         update_time = datetime(),
+        visibility = params.visibility,
     }
+
     es:updateOne(page, function(err, data) end)
 end
 
@@ -451,8 +461,12 @@ function pages:wrap_search_result(result)
 
     local hits = {}
     for i, hit in ipairs(result.data.data.hits.hits) do
-        hit._source._score = hit._score
-        hit._source.highlight = hit.highlight
+        if (hit._source.visibility ~= "private") then
+            hit._source.highlight = hit.highlight
+        else
+            hit._source.tags = {}
+        end
+        hit._source.content = nil
         hits[#hits + 1] = hit._source
     end
 
