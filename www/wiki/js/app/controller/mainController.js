@@ -18,10 +18,33 @@ define([
     'controller/footerController',
     'controller/userController',
     'controller/notfoundController',
+<<<<<<< HEAD
     'controller/crosController',
 ], function (app, markdownit, toolbase, storage, util, dataSource, loading, mdwiki, mdconf, markdown, homeHtmlContent, headerHtmlContent, footerHtmlContent, userHtmlContent, notfoundHtmlContent, crosHtmlContent) {
 	//var md = markdownwiki({breaks: true, isMainMd:true});
 	var md = mdwiki({use_template:true});
+=======
+    'controller/crosController'
+], function (
+    app,
+    markdownit,
+    toolbase,
+    storage,
+    util,
+    dataSource,
+    loading,
+    mdwiki,
+    mdconf,
+    markdown,
+    homeHtmlContent,
+    headerHtmlContent,
+    footerHtmlContent,
+    userHtmlContent,
+    notfoundHtmlContent,
+    crosHtmlContent
+) {
+	let md = mdwiki({use_template : true}); //var md = markdownwiki({breaks: true, isMainMd:true});
+>>>>>>> 63a59e76fe4787884a5ced92549757f424f80e9e
 
     app.controller('mainController', [
         '$scope',
@@ -43,7 +66,6 @@ define([
         'confirmDialog',
         'realnameVerifyModal',
         'datatreeEditorModal',
-        'selfDefinedModal',
         'assetsManagerModal',
         function (
             $scope,
@@ -65,62 +87,60 @@ define([
             confirmDialog,
             realnameVerifyModal,
             datatreeEditorModal,
-            selfDefinedModal,
             assetsManagerModal
         ) {
-            //console.log("mainController");
-            
             // 初始化基本信息
             function initBaseInfo() {
-				config.isBoostrap = true;
+                config.isBoostrap = true;
+                
                 //配置一些全局服务
                 config.services = {
-                    $rootScope: $rootScope,
-                    $sce: $sce,
-					$timeout: $timeout,
-                    $http: $http,
-                    $compile: $compile,
-                    $auth: $auth,
-                    $location:$location,
-					$anchorScroll:$anchorScroll,
-                    markdownit:markdownit({}),
-					mdconf:mdconf,
-                    storage: storage,
-                    Account: Account,
-                    Message: Message,
-                    github: github,
-					modal: modal,
-                    gitlab:gitlab,
-                    dataSource:dataSource,
-                    loading:loading,
-                    confirmDialog:confirmDialog,
-                    realnameVerifyModal:realnameVerifyModal,
-                    datatreeEditorModal:datatreeEditorModal,
-                    selfDefinedModal:selfDefinedModal,
-                    assetsManagerModal:assetsManagerModal
+                    $rootScope          : $rootScope,
+                    $sce                : $sce,
+					$timeout            : $timeout,
+                    $http               : $http,
+                    $compile            : $compile,
+                    $auth               : $auth,
+                    $location           : $location,
+					$anchorScroll       : $anchorScroll,
+                    markdownit          : markdownit({}),
+					mdconf              : mdconf,
+                    storage             : storage,
+                    Account             : Account,
+                    Message             : Message,
+                    github              : github,
+					modal               : modal,
+                    gitlab              : gitlab,
+                    dataSource          : dataSource,
+                    loading             : loading,
+                    confirmDialog       : confirmDialog,
+                    realnameVerifyModal : realnameVerifyModal,
+                    datatreeEditorModal : datatreeEditorModal,
+                    assetsManagerModal  : assetsManagerModal
                 };
 
                 util.setAngularServices({
-                    $rootScope: $rootScope,
-                    $http: $http,
-                    $compile: $compile,
-                    $auth: $auth,
-                    $location:$location,
+                    $rootScope : $rootScope,
+                    $http      : $http,
+                    $compile   : $compile,
+                    $auth      : $auth,
+                    $location  : $location,
                 });
 
                 util.setSelfServices({
-                    config: config,
-                    storage: storage,
-                    Account: Account,
-                    Message: Message,
-                    github: github,
-                    gitlab:gitlab,
-                    dataSource:dataSource,
-                    loading:loading,
-                    confirmDialog:confirmDialog,
-                    realnameVerifyModal:realnameVerifyModal
+                    config              : config,
+                    storage             : storage,
+                    Account             : Account,
+                    Message             : Message,
+                    github              : github,
+                    gitlab              : gitlab,
+                    dataSource          : dataSource,
+                    loading             : loading,
+                    confirmDialog       : confirmDialog,
+                    realnameVerifyModal : realnameVerifyModal
                 });
 
+<<<<<<< HEAD
 				app.objects.Account = Account;
 				app.objects.Message = Message;
 				app.objects.modal = modal;
@@ -129,46 +149,60 @@ define([
 				app.objects.mdwiki = mdwiki;
 				app.objects.mdconf = mdconf;
 				app.objects.md = markdown;
+=======
+				app.objects.Account    = Account;
+				app.objects.Message    = Message;
+				app.objects.modal      = modal;
+				app.objects.config     = config;
+				app.objects.util       = util;
+				app.objects.mdwiki     = mdwiki;
+				app.objects.mdconf     = mdconf;
+				app.objects.md         = markdown;
+>>>>>>> 63a59e76fe4787884a5ced92549757f424f80e9e
 				app.objects.dataSource = dataSource;
 				app.objects.mainMdwiki = app.objects.mainMdwiki || md;
-				app.objects.toolbase = toolbase;
+				app.objects.toolbase   = toolbase;
 
 				app.ng_objects.$rootScope = $rootScope;
-				app.ng_objects.$compile = $compile;
-				app.ng_objects.$http = $http;
-				app.ng_objects.$auth = $auth;
-				app.ng_objects.$timeout = $timeout;
-				app.ng_objects.$uibModal = $uibModal;
-				app.ng_objects.$sce = $sce;
+				app.ng_objects.$compile   = $compile;
+				app.ng_objects.$http      = $http;
+				app.ng_objects.$auth      = $auth;
+				app.ng_objects.$timeout   = $timeout;
+				app.ng_objects.$uibModal  = $uibModal;
+				app.ng_objects.$sce       = $sce;
 
-                $rootScope.imgsPath = config.imgsPath;
-                $rootScope.cssPath = config.cssPath;
-                $rootScope.user = Account.getUser();
-                $rootScope.userinfo = $rootScope.user;
+                $rootScope.imgsPath         = config.imgsPath;
+                $rootScope.cssPath          = config.cssPath;
+                $rootScope.user             = Account.getUser();
+                $rootScope.userinfo         = $rootScope.user;
 				$rootScope.frameHeaderExist = true;
                 $rootScope.frameFooterExist = true;
-                $rootScope.translate = $translate.instant.bind($translate);
-                if (config.isLocal()) {
+                $rootScope.translate        = $translate.instant.bind($translate);
+
+                /*if (config.isLocal()) {
                     $rootScope.frameHeaderExist = true;
                     $rootScope.frameFooterExist = true;
                 } else {
                     //$rootScope.frameHeaderExist = config.isOfficialDomain(window.location.hostname);
                     //$rootScope.frameFooterExist = config.isOfficialDomain(window.location.hostname);
-                }
+                }*/
 
-                $rootScope.isLogin = Account.isAuthenticated();
+                $rootScope.isLogin    = Account.isAuthenticated();
                 $rootScope.isSelfSite = function () {
                     return $rootScope.user._id == $rootScope.userinfo._id;
                 }
 
-                $rootScope.getImageUrl = function(imgUrl,imgsPath) {
-					var bustVersion = config.bustVersion;
+                $rootScope.getImageUrl = function(imgUrl, imgsPath) {
+                    let bustVersion = config.bustVersion;
+                    
 					if (imgUrl.indexOf("?bust=") > 0 || imgUrl.indexOf("?ver=") > 0) {
 						bustVersion = "";
-					}
+                    }
+                    
                     if (imgUrl.indexOf("://") >= 0) {
                         return imgUrl;
                     }
+
                     if (imgUrl.indexOf("/wiki/") >= 0) {
                         return imgUrl + "?bust=" + bustVersion;
                     }
@@ -177,13 +211,16 @@ define([
                 }
 
                 $rootScope.getCssUrl = function(cssUrl, cssPath) {
-					var bustVersion = config.bustVersion;
+                    let bustVersion = config.bustVersion;
+                    
 					if (cssUrl.indexOf("?bust=") > 0 || cssUrl.indexOf("?ver=") > 0) {
 						bustVersion = "";
-					}
+                    }
+                    
                     if (cssUrl.indexOf("://") >= 0) {
                         return cssUrl;
                     }
+
                     if (cssUrl.indexOf("/wiki/") >= 0) {
                         return cssUrl + "?bust=" + bustVersion;
                     }
@@ -203,27 +240,16 @@ define([
 
             // 底部高度自适应
             function stickFooter() {
-                var winH=$(window).height();
-                var headerH=52;
-                var footerH=$("#_footer_").height();
-                var minH=winH-headerH-footerH;
-                var w = $("#__mainContent__");
+                let winH    = $(window).height();
+                let headerH = 52;
+                let footerH = $("#_footer_").height();
+                let minH    = winH - headerH - footerH;
+                let w       = $("#__mainContent__");
+
                 w.css("min-height", minH);
             }
 
-            function throttle(method, context) {
-                clearTimeout(method.stickTimer);
-                method.stickTimer = setTimeout(function () {
-                    method.call(context);
-                },100);
-            }
-
-            window.onresize = function () {
-                throttle(stickFooter);
-            };
-
             function initView() {
-
                 // 信息提示框
                 $("#messageTipCloseId").click(function () {
                     Message.hide();
@@ -232,6 +258,7 @@ define([
                 if ($rootScope.frameHeaderExist) {
                     util.html('#__wikiHeader__', headerHtmlContent, $scope);
                 }
+
                 if ($rootScope.frameFooterExist) {
                     util.html('#__wikiFooter__', footerHtmlContent, $scope);
                 }
@@ -249,74 +276,144 @@ define([
 
                 stickFooter();
 
-                var isFirstLocationChange = true;
+                let isFirstLocationChange = true;
+
                 // 注册路由改变事件, 改变路由时清空相关内容
                 $rootScope.$on('$locationChangeSuccess', function () {
-                    //console.log("$locationChangeSuccess change");
 					if (util.isEditorPage()) {
-						var url = window.location.hash.substring(1);
+                        let url = config.hash();
+
 						if (url[0] != '/') {
 							url = "/" + url;
-						}
-						url = decodeURIComponent(url);
-						var paths = url.split("/");
+                        }
+                        
+                        url = decodeURIComponent(url);
+                        
+                        let paths = url.split("/");
+                        
 						// url作严格控制，避免错误url导致异常逻辑
 						if (paths.length > 3 && paths.length < 6 && url.length < 256) {
-							var urlObj = {
-								url:url,
-								username:paths[1],
-								sitename:paths[2],
-								pagename:paths[paths.length-1],
-								pagepath:url,
-							};
-							//console.log(urlObj);
+							let urlObj = {
+								url      : url,
+								username : paths[1],
+								sitename : paths[2],
+								pagename : paths[paths.length-1],
+								pagepath : url,
+                            };
+                            
 							if (isFirstLocationChange) {
 								storage.sessionStorageSetItem("urlObj", urlObj);
 							} else {
 								$rootScope.$broadcast('changeEditorPage', urlObj);
 							}
 						}
-					}
+                    }
+                    
                     if (!isFirstLocationChange && (util.isEditorPage() || !config.islocalWinEnv())) {
                         return ;
                     }
+
                     isFirstLocationChange = false;
+
                     config.loadMainContent(initContentInfo);
                 });
             }
 
             function setWindowTitle(urlObj) {
-                var pathname = urlObj.pathname;
-                //console.log(pathname);
-                var paths = pathname.split('/');
+                let pathname = urlObj.pathname;
+                let paths    = pathname.split('/');
+
                 if (paths.length > 1 && paths[1]) {
-                    $rootScope.title = paths[paths.length-1] + (paths.length > 2 ? (' - ' +paths.slice(1,paths.length-1).join('/')) : "");
+                    $rootScope.title = paths[paths.length - 1] + (paths.length > 2 ? (' - ' +paths.slice(1, paths.length-1).join('/')) : "");
                 } else {
                     $rootScope.title = config.hostname.substring(0,config.hostname.indexOf('.'));
                 }
             }
 
+            // 加载内容信息
+            function initContentInfo() {
+                util.html('#__UserSitePageContent__', '<div></div>', $scope);
+
+                $rootScope.urlObj = util.parseUrl();
+
+                var urlObj = $rootScope.urlObj;
+                
+                setWindowTitle(urlObj);
+				
+				if (!util.isEditorPage()) {
+					storage.sessionStorageRemoveItem("otherUsername");
+				}
+
+				if (urlObj.domain && !config.isOfficialDomain(urlObj.domain)) {
+					util.post(config.apiUrlPrefix + 'website_domain/getByDomain',{domain:urlObj.domain}, function (data) {
+						if (data) {
+							urlObj.username = data.username;
+							urlObj.sitename = data.sitename;
+							var urlPrefix = '/' + data.username + '/' + data.sitename;
+							var pathname = urlObj.pathname.length > 1 ? urlObj.pathname : "/index";
+							urlObj.pagepath = pathname.indexOf(urlPrefix) == 0 ? pathname : urlPrefix + pathname;
+						}
+						getUserPage();
+					}, function () {
+						getUserPage();
+					});
+					return;
+				}
+                
+                if (config.mainContent) {
+                    if (config.mainContentType == "wiki_page") {
+						//if (urlObj.pathname == "/wiki/test") {
+							//config.mainContent = md.render(config.mainContent);
+                        //}
+                        util.html('#__UserSitePageContent__', config.mainContent, $scope);
+                        //config.mainContent = undefined;
+                    } else {
+                        util.html('#__UserSitePageContent__', config.mainContent, $scope);
+                        config.mainContent = undefined;
+                    }
+                } else if (!urlObj.username){
+                    if (Account.isAuthenticated()) {
+                        Account.getUser(function (userinfo) {
+                            util.go("/" + userinfo.username);
+						}, function() {
+							Account.logout();
+						    window.location.reload();
+							//util.html('#__UserSitePageContent__', homeHtmlContent, $scope);
+						});
+                    } else {
+                        util.html('#__UserSitePageContent__', homeHtmlContent, $scope);
+                    }
+                } else {
+					getUserPage();
+                }
+
+            }
+
             function getUserPage() {
                 var urlObj = $rootScope.urlObj;
+
                 // 访问用户页
                 $rootScope.userinfo = undefined;
                 $rootScope.siteinfo = undefined;
                 $rootScope.pageinfo = undefined;
-                $rootScope.tplinfo = undefined;
+                $rootScope.tplinfo  = undefined;
+
                 if (urlObj.username && urlObj.sitename) {
                     $rootScope.isHeaderScroll = true;
+
                     util.http("POST", config.apiUrlPrefix + "website/getDetailInfo", {
-                        username: urlObj.username,
-                        sitename: urlObj.sitename,
-                        pagename: urlObj.pagename || 'index',
-						url:urlObj.pagepath,
+                        username : urlObj.username,
+                        sitename : urlObj.sitename,
+                        pagename : urlObj.pagename || 'index',
+						url      : urlObj.pagepath,
                     }, function (data) {
                         data = data || {};
+                        
                         // 这三种基本信息根化，便于用户页内模块公用
                         $rootScope.userinfo = data.userinfo;
                         $rootScope.siteinfo = data.siteinfo || {};
                         $rootScope.pageinfo = {username:urlObj.username,sitename:urlObj.sitename, pagename:urlObj.pagename, pagepath:urlObj.pagepath};
-                        $rootScope.tplinfo = {username:urlObj.username,sitename:urlObj.sitename, pagename:"_theme"};
+                        $rootScope.tplinfo  = {username:urlObj.username,sitename:urlObj.sitename, pagename:"_theme"};
 
                         var userDataSource = dataSource.getUserDataSource(data.userinfo.username);
                         //var filterSensitive = function (inputText) {
@@ -393,69 +490,14 @@ define([
                 }
             }
 
-            // 加载内容信息
-            function initContentInfo() {
-                util.html('#__UserSitePageContent__', '<div></div>', $scope);
-                $rootScope.urlObj = util.parseUrl();
-
-                var urlObj = $rootScope.urlObj;
-                // 置空用户页面内容
-                // console.log(urlObj);
-                setWindowTitle(urlObj);
-				
-				if (!util.isEditorPage()) {
-					storage.sessionStorageRemoveItem("otherUsername");
-				}
-
-				if (urlObj.domain && !config.isOfficialDomain(urlObj.domain)) {
-					util.post(config.apiUrlPrefix + 'website_domain/getByDomain',{domain:urlObj.domain}, function (data) {
-						if (data) {
-							urlObj.username = data.username;
-							urlObj.sitename = data.sitename;
-							var urlPrefix = '/' + data.username + '/' + data.sitename;
-							var pathname = urlObj.pathname.length > 1 ? urlObj.pathname : "/index";
-							urlObj.pagepath = pathname.indexOf(urlPrefix) == 0 ? pathname : urlPrefix + pathname;
-						}
-						getUserPage();
-					}, function () {
-						getUserPage();
-					});
-					return;
-				}
-
-                if (config.mainContent) {
-                    if (config.mainContentType == "wiki_page") {
-						//if (urlObj.pathname == "/wiki/test") {
-							//config.mainContent = md.render(config.mainContent);
-						//}
-                        util.html('#__UserSitePageContent__', config.mainContent, $scope);
-                        //config.mainContent = undefined;
-                    } else {
-                        util.html('#__UserSitePageContent__', config.mainContent, $scope);
-                        config.mainContent = undefined;
-                    }
-                } else if (!urlObj.username){
-                    if (Account.isAuthenticated()) {
-                        Account.getUser(function (userinfo) {
-                            util.go("/" + userinfo.username);
-						}, function() {
-							Account.logout();
-						    window.location.reload();
-							//util.html('#__UserSitePageContent__', homeHtmlContent, $scope);
-						});
-                    } else {
-                        util.html('#__UserSitePageContent__', homeHtmlContent, $scope);
-                    }
-                } else {
-					getUserPage();
-                }
-
-            }
-
             function init() {
                 initBaseInfo();
                 initView();
             }
+
+            window.onresize = function () {
+                util.throttle(stickFooter);
+            };
 
             init();
 

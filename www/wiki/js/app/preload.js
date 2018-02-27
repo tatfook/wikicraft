@@ -16,6 +16,7 @@ define([
     'helper/siteStyle',
     'helper/storage',
     'helper/util',
+<<<<<<< HEAD
 	"helper/md/mdconf",
 	//"helper/mdwiki",
 	"helper/toolbase",
@@ -39,29 +40,16 @@ define([
 	//'controller/knowledgeController',
 	//'controller/licenseController',
 	//'controller/loginController',
+=======
+	'helper/md/mdconf',
+	// 'helper/mdwiki',
+	'helper/toolbase',
+    
+    // controller
+>>>>>>> 63a59e76fe4787884a5ced92549757f424f80e9e
     'controller/mainController',
-	//'controller/myVIPController',
-	//'controller/notfoundController',
-	//'controller/oauthController',
-	//'controller/payController',
-	//'controller/previewController',
-	//'controller/searchController',
-	//'controller/servicesController',
-	//'controller/staticsController',
-	//'controller/userCenterController',
-    //'controller/userController',
-	//'controller/userProfileController',
-	//'controller/usershowController',
-	//'controller/verifyEmailController',
-	//'controller/vipController',
-	//'controller/VIPLevelController',
-	//'controller/websiteController',
-	//'controller/wikiBlockController',
-	//'controller/worksApplyController',
-    //'controller/testController',
 
     // directives
-    //'directive/directive', // 不支持打包 动态加载
     'directive/moduleDirective',
     'directive/userpage',
     'directive/tplheader',
@@ -86,9 +74,6 @@ define([
     'factory/assetsManagerModal',
     'factory/loadingInterceptor',
     'factory/selfDefinedModal',
-
-    // components
-    'components/editorMode',
 ], function () {
     return {};
 });

@@ -8,22 +8,27 @@ define([
 	// markdown 特殊字符转义
 	function md_special_char_escape(text) {
 		var new_text = "";
+
 		for (var i = 0; i < text.length; i++) {
-			var ch = text[i];
+			var ch     = text[i];
 			var nextch = text[i+1];
+
 			if (ch == escape_ch) {
 				new_text += escape_ch + escape_ch;
 				continue;
-			} 
+			}
+
 			if (ch == '\\' && nextch && special_str.indexOf(nextch) >= 0) {
 				new_text += nextch;
 				i++;	
 				continue;
 			}
+
 			if (special_str.indexOf(ch) >= 0) {
 				new_text += escape_ch + ch;	
 				continue;
 			}
+
 			new_text += ch;
 		}
 
@@ -755,13 +760,13 @@ define([
 
 	function markdown(options) {
 		var md = {
-			block_rule_list:[],
-			inline_rule_list:[],
-			rule_render:{},
-			options: options,
+			block_rule_list  : [],
+			inline_rule_list : [],
+			rule_render      : {},
+			options          : options,
 		};
 
-		md.md_special_char_escape = md_special_char_escape;
+		md.md_special_char_escape   = md_special_char_escape;
 		md.md_special_char_unescape = md_special_char_unescape;
 
 		md.register_inline_rule = function(rule) {
@@ -789,10 +794,8 @@ define([
 		md.register_block_rule(blockquote);
 		md.register_block_rule(list);
 		md.register_block_rule(table);
-
 		md.register_block_rule(htmlcode);
-		// 段落需放最后
-		md.register_block_rule(paragraph);
+		md.register_block_rule(paragraph);// 段落需放最后
 
 		md.line_parse = function(text) {
 			for (var i = 0; i < md.inline_rule_list.length; i++) {
@@ -803,23 +806,28 @@ define([
 		}
 
 		md.block_parse = function(text, env) {
-			var self = this;
-			var params = {}, tokens = [], lines = text.split("\n"), start = 0;
-			//console.log(lines);	
+			var self   = this;
+			var params = {}
+			var tokens = []
+			var lines  = text.split("\n")
+			var start  = 0;
+
 			while(start < lines.length && start >= 0) {
 				params.start = start;
 				params.lines = lines;
-				params.md = self;
+				params.md    = self;
 
 				for (var i = 0; i < md.block_rule_list.length; i++){
 					var block_rule = md.block_rule_list[i];
-					var token = block_rule(params, env);
+					var token      = block_rule(params, env);
+
 					if (token) {
 						tokens.push(token);
 						start = token.end - 1;
 						break;
 					}
 				}
+				
 				start++;
 			}	
 
@@ -828,25 +836,26 @@ define([
 
 		md.parse = function(text) {
 			text = md_special_char_escape(text || "");
+
 			var tokens = this.block_parse(text);
+
 			for (var i = 0; i < tokens.length; i++) {
 				var token = tokens[i];
 				token.htmlContent = render_token(token)
-				token.content = md.md_special_char_unescape(token.content);
-				token.text = md.md_special_char_unescape(token.text);
+				token.content     = md.md_special_char_unescape(token.content);
+				token.text        = md.md_special_char_unescape(token.text);
 				//token.start++;
 				//token.end++;
 				token.htmlContent = md.md_special_char_unescape(token.htmlContent);
 			}
+
 			return tokens;
 		}
 
 		md.render = function(text) {
-			var tokens = this.parse(text);
-
-			console.log(tokens);
-
+			var tokens      = this.parse(text);
 			var htmlContent = "";
+			
 			for (var i = 0; i < tokens.length; i++) {
 				htmlContent += tokens[i].htmlContent;	
 			}

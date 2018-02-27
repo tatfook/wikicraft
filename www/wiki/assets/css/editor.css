@@ -32,8 +32,11 @@ body,
     padding: 2px;
 }
 .result-html {
-    overflow: visible;
+    overflow-x: hidden;
+    overflow-y: auto;
     padding: 19px 0;
+    word-wrap:break-word; 
+    word-break:break-all; 
 }
 .result-src,
 .result-debug {
@@ -504,7 +507,7 @@ select.resize-view {
     line-height: 34px;
     font-size: 30px;
     position: absolute;
-    left: 271px;
+    left: 50%;
     z-index: 11;
     cursor: pointer;
 }

@@ -10,17 +10,32 @@ define([
     // 加载mod
     function loadMod(block, cb, errcb) {
         var defaultModPath = "wikimod/";
+<<<<<<< HEAD
         var requireUrl = block.cmdName;
 		var cmdName = block.cmdName;
 
         if (block.cmdName == block.modName) {
+=======
+        var requireUrl     = block.cmdName;
+		var cmdName        = block.cmdName;
+		
+		if (block.modName == 'adi') {
+			let cmdName = block.cmdName.replace('adi/', '');
+        	let modPath = defaultModPath + block.cmdName + '/' + cmdName;
+
+			requireUrl = modPath;
+		} else if (block.cmdName == block.modName) {
+>>>>>>> 63a59e76fe4787884a5ced92549757f424f80e9e
             requireUrl = defaultModPath + block.modName + "/index";
 		} else {
 			requireUrl = defaultModPath + block.cmdName;
 		}
 
 		//console.log("加载mod:", requireUrl);
+<<<<<<< HEAD
 
+=======
+>>>>>>> 63a59e76fe4787884a5ced92549757f424f80e9e
 		//block.blockUrl = requireUrl;  // 暂时以cmdName标识唯一模块
         require([requireUrl], function (mod) {
             cb && cb(mod, cmdName);
@@ -33,16 +48,27 @@ define([
 	// md.bind
 	function parseBlock(block) {
 		// 进来表明该模块发生变化 应重置所有状态
+<<<<<<< HEAD
 		var token = block.token;
 		var content = token.content;
 		var text = token.text;
 		var line = text.split("\n")[0];
 		var isWikiBlock = token.tag == "pre"  && /^```@([\w_\/]+)/.test(line);
+=======
+		var token       = block.token;
+		var content     = token.content;
+		var text        = token.text;
+		var multiline   = text.split("\n");
+		var firstline   = multiline[0];
+		var lastline    = multiline[multiline.length - 1];
+		var isWikiBlock = token.tag == "pre"  && /^```@([\w_\/]+)/.test(firstline) && lastline == '```';
+>>>>>>> 63a59e76fe4787884a5ced92549757f424f80e9e
 
 		block.isWikiBlock = isWikiBlock;
 		if (!isWikiBlock) {
 			//block.blockUrl = undefined;
 			block.isTemplate = false;
+<<<<<<< HEAD
 			block.modName = undefined;
 			block.cmdName = undefined;
 			block.modParams = undefined;
@@ -53,6 +79,19 @@ define([
 			var cmdName = line.match(wikiCmdRE)[1];
 			var modName = cmdName.match(wikiModNameRE)[1];
 			var modParams = undefined;
+=======
+			block.modName    = undefined;
+			block.cmdName    = undefined;
+			block.modParams  = undefined;
+			block.wikimod    = undefined;
+		} else {
+			var wikiCmdRE     = /^```@([\w_\/]+)/;
+			var wikiModNameRE = /^([\w_]+)/;
+			var cmdName       = firstline.match(wikiCmdRE)[1];
+			var modName       = cmdName.match(wikiModNameRE)[1];
+			var modParams     = undefined;
+
+>>>>>>> 63a59e76fe4787884a5ced92549757f424f80e9e
 			try {
 				modParams = angular.fromJson(content.trim())
 			}
@@ -65,9 +104,15 @@ define([
 				block.wikimod = undefined;
 			}
 
+<<<<<<< HEAD
 			block.modName = modName;
 			block.cmdName = cmdName;
 			block.modParams = modParams;
+=======
+			block.modName    = modName;
+			block.cmdName    = cmdName;
+			block.modParams  = modParams;
+>>>>>>> 63a59e76fe4787884a5ced92549757f424f80e9e
 			block.isTemplate = modName == "template";
 
 			if (typeof(block.modParams) == "string" && !block.modParams.trim()) {
@@ -80,15 +125,24 @@ define([
 	app.mixin(_block, toolbase);
 
 	_block.applyModParams = function(modParams) {
+<<<<<<< HEAD
 		var self = this;
+=======
+		var self   = this;
+>>>>>>> 63a59e76fe4787884a5ced92549757f424f80e9e
 		var editor = self.md.editor || {};
 
 		if (!editor || !self.isWikiBlock) {
 			return;
 		}
 
+<<<<<<< HEAD
 		var from = self.token.start;
 		var to = self.token.end;
+=======
+		var from  = self.token.start;
+		var to    = self.token.end;
+>>>>>>> 63a59e76fe4787884a5ced92549757f424f80e9e
 		modParams = modParams || self.modParams;
 
 		//console.log(modParams);
@@ -171,9 +225,16 @@ define([
 				}
 
 				self.wikimod = {cmdName: cmdName, mod: mod};
+<<<<<<< HEAD
 				_render(self.wikimod.mod);
 			}, function () {
 				console.log("加载模块" + block.cmdName + "失败");
+=======
+
+				_render(self.wikimod.mod);
+			}, function () {
+				console.log("加载模块" + self.cmdName + "失败");
+>>>>>>> 63a59e76fe4787884a5ced92549757f424f80e9e
 				error && error();
 			});
 		}

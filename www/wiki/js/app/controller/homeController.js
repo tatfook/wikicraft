@@ -8,8 +8,20 @@ define([
     'helper/storage',
     'helper/dataSource',
     'text!html/home.html',
+<<<<<<< HEAD
     'text!html/articles/featurelist.md',
 ], function (app, util, storage, dataSource, htmlContent, featureListContent) {
+=======
+    'text!html/articles/featurelist.md'
+], function (
+    app,
+    util,
+    storage,
+    dataSource,
+    htmlContent,
+    featureListContent
+) {
+>>>>>>> 63a59e76fe4787884a5ced92549757f424f80e9e
     // 动态加载
     app.controller('homeController', ['$scope', '$rootScope', '$auth', '$sce', 'Account', 'Message', function ($scope, $rootScope, $auth, $sce, Account, Message) {
 		$scope.keepPassword = storage.localStorageGetItem("keepPassword");
