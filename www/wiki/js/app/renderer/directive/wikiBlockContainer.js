@@ -40,23 +40,23 @@ define([
 			//template: '<div><wiki-block data-params="$kp_block"></wiki-block></div>',
 			template: wikiBlockContainerHtml,
 			controller:['$scope', '$attrs', '$element', function($scope, $attrs, $element) {
-				var index = $scope.$eval("$index");
-				var mdName = decodeURI($attrs.params);
+				var index      = $scope.$eval("$index");
+				var mdName     = decodeURI($attrs.params);
 				var isTemplate = $attrs.template;
 				var $rootScope = app.ng_objects.$rootScope;
-				var block = extendBlock($scope, mdName, index);
-				var md = getMd(mdName);
+				var block      = extendBlock($scope, mdName, index);
+				var md         = getMd(mdName);
 				
 				if (block) {
 					block.$element = $element; // 双向滚动时会用到
 				}
-				//console.log(block.isTemplate, mdName, index);
+
 				if (!block || !md || md.mode != "editor") {
 					return;
 				}
 
 				$element.addClass("mod-container");
-				$scope.insertMod = $rootScope.insertMod;
+				$scope.insertMod     = $rootScope.insertMod;
 				$scope.isShowAddIcon = true;
 
 				$scope.clickContainer = function($event) {
@@ -68,6 +68,7 @@ define([
 					}
 
 					var moduleEditorParams = config.shareMap.moduleEditorParams;
+
 					if (!moduleEditorParams) {
 						return;
 					}
@@ -76,6 +77,7 @@ define([
 						$(".mod-container.active").removeClass("active");
 						$element.addClass("active");
 					}
+
 					moduleEditorParams.setBlock(block);
 					//$rootScope.$broadcast("moduleEditor", block);
 				}
