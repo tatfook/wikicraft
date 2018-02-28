@@ -337,7 +337,7 @@
                         <p class="location">
                             <i class="iconfont icon-shiliangzhinengduixiang"></i>{{item.location || translate("未知地点")}}</p>
                     </div>
-                    <div class="btn btn-primary" ng-click="favoriteUser(item)">{{item.concerned?translate("取消关注"):translate("关 注")}}</div>
+                    <div class="btn btn-primary" ng-click="favoriteUser(item)" ng-disabled="item.username == user.username">{{item.following ? translate("取消关注"):translate("关 注")}}</div>
                 </div>
             </div>
             <div role="tabpanel" class="tab-pane works clearfix" ng-class="{true:'active'}[searchType == 'siteinfo']" id="siteinfo">

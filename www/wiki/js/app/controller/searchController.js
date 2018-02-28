@@ -187,7 +187,7 @@ define([
         // 关注用户
         $scope.favoriteUser = function (fansUser) {
             if (!fansUser) {
-                $scope.concerned = !$scope.concerned;
+                $scope.following  = !$scope.following ;
                 return;
             }
 
@@ -198,32 +198,24 @@ define([
                     size: 'lg',
                     backdrop: true
                 }, function (result) {
-                    // console.log(result);
-                    // nowPage.replaceSelection(login.content);
                 }, function (result) {
-                    // console.log(result);
                 });
                 return; // 登录后才能关注
             }
-
-            if (!Account.isAuthenticated() || !$scope.user || $scope.user._id == fansUser._id) {
-                Message.info("自己不关注自己");
+            if (!Account.isAuthenticated() || !$scope.user || $scope.user.username == fansUser.username) {
+                Message.danger("自己不关注自己");
                 return; // 自己不关注自己
             }
 
-            if(fansUser.concerned){//取消关注
-                util.post(config.apiUrlPrefix + 'user_fans/unattent', {userId:fansUser._id, fansUserId:$scope.user._id}, function () {
-                    // console.log("取消关注成功");
+            if(fansUser.following){//取消关注
+                util.post(config.apiUrlPrefix + 'user_fans/unattent', {username:fansUser.username, fansUsername:$scope.user.username}, function () {
                     Message.info("取消关注成功");
-                    fansUser.concerned=false;
+                    fansUser.following =false;
                 });
             }else{
-                // console.log(fansUser);
-                // console.log($scope.user);
-                util.post(config.apiUrlPrefix + 'user_fans/attent', {userId:fansUser._id, fansUserId:$scope.user._id}, function () {
-                    // console.log("关注成功");
+                util.post(config.apiUrlPrefix + 'user_fans/attent', {username:fansUser.username, fansUsername:$scope.user.username}, function () {
                     Message.info("关注成功");
-                    fansUser.concerned=true;
+                    fansUser.following =true;
                 });
             }
         }
