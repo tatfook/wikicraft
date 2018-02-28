@@ -222,6 +222,36 @@ define([
 		return proto;
 	}
 
+	app.createModCommand = function(params, styles, component){
+		return {
+			render : function(wikiblock){
+				wikiblock.$scope.params = getEditorParams(params);
+				wikiblock.$scope.mode   = wikiblock.mode;
+
+				return component;
+			},
+			getEditorParams : params,
+			getStyleLists   : styles
+		}
+	}
+
+	app.getEditorParams = function(modParams, params_template) {
+		modParams = modParams || {};
+
+		for (var key in params_template) {
+			if (key == "design") {
+				modParams.design      = modParams.design || {};
+				modParams.design.text = modParams.design.text || params_template[key].text;
+			} else {
+				modParams[key] = modParams[key] || {};
+				modParams[key]["$data"] = params_template[key];
+				modParams[key]["text"]  = modParams[key]["text"] || params_template[key]["text"];
+			}
+		}
+
+		return modParams;
+	}
+
 	window.app = app;
 	return app;
 });

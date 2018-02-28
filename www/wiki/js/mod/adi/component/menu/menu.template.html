@@ -1,40 +1,16 @@
-<style ng-bind="$ctrl.css"></style>
-
-<div class="menu">
-    <div>
-        <ul class="color-8">
-            <li class="color-1">Home</li>
-            <li class="color-2">Testimonials</li>
-            <li class="color-3">Welcome</li>
-            <li class="color-4">Welcome</li>
-            <li class="color-5">From The Blog</li>
-            <li class="color-2">More</li>
-            <!-- <li ng-repeat="item in $ctrl.menu.text">
-                <a ng-if="!$ctrl.editorMode" 
-                   ng-href="{{item.url}}" 
-                   target="_blank">
-                   {{item.name}}
+<edit-selector isEditMode="$ctrl.editorMode" params="{{$ctrl.menu}}">
+    <li ng-repeat="item in menu.text">
+        <a ng-href="{{item.url}}" 
+            target="_blank">
+            {{item.name}}
+        </a>
+        <ul class="sub-menu">
+            <li ng-repeat="subItem in item.children">
+                <a class="font-0" ng-href="{{subItem.url}}" 
+                    target="_blank">
+                    {{subItem.name}}
                 </a>
-                <a ng-if="$ctrl.editorMode" 
-                   ng-click="$ctrl.viewEditorClick($ctrl.menu, $event)" 
-                   class="edit" 
-                   href="javascript:void(0)">{{item.name}}
-                </a>
-                <ul class="sub-menu">
-                    <li ng-repeat="subItem in item.children">
-                        <a ng-if="!$ctrl.editorMode" 
-                           ng-href="{{subItem.url}}" 
-                           target="_blank">
-                           {{subItem.name}}
-                        </a>
-                        <a ng-if="$ctrl.editorMode" 
-                           ng-click="$ctrl.viewEditorClick($ctrl.menu, $event)" 
-                           href="javascript:void(0)">
-                           {{subItem.name}}
-                        </a>
-                    </li>
-                </ul>
-            </li> -->
+            </li>
         </ul>
-    </div>
-</div>
+    </li>
+</edit-selector>

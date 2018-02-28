@@ -3,12 +3,9 @@
  */
 define([
 	'app',
-	'text!wikimod/adi/html/header.html',
-	'wikimod/adi/component/menu/menu',
-	'wikimod/adi/component/logo/logo',
+	'../section/header/header.js',
 ], function (app, htmlContent) {
-	var initObj = {
-		styles:[
+	let desgin = [
 		{
 			design:{
 				text:'left',
@@ -21,71 +18,37 @@ define([
 				cover: 'http://git.keepwork.com/gitlab_rls_official/keepworkimages/raw/master/official_images/img_1515414083068.jpeg'
 			}
 		}
-		],
-		params_template:{
-			design:{
-				is_leaf: true,
-				require: true,
-				text:"left", // 默认值
-			},
-			menu_menu:{
-				is_leaf: true,
-				type: "menu",
-				editable: true,
-				is_mod_hide: false,
-				name: "菜单",
-				require: true,
-				text: [
-					{
-						name : '菜单1',
-						url  : '',
-						children: [
-							{
-								name : '菜单1.1',
-								url  : ''
-							}
-						]
-					}
-				]
-			},
-		}
-	};
+	];
 
-	function getEditorParams(modParams) {
-		modParams = modParams || {};
-
-		var params_template = initObj.params_template;
-		for (var key in params_template) {
-			if (key == "design") {
-				modParams.design = modParams.design || {};
-				modParams.design.text = modParams.design.text || params_template[key].text;
-			} else {
-				modParams[key] = modParams[key] || {};
-				modParams[key]["$data"] = params_template[key];
-				modParams[key]["text"] = modParams[key]["text"] || params_template[key]["text"];
-			}
-		}
-
-
-		return modParams;
+	let	params = {
+		design    : {
+			is_leaf: true,
+			require: true,
+			text:"left", // 默认值
+		},
+		menu_menu : {
+			is_leaf: true,
+			type: "menu",
+			editable: true,
+			is_mod_hide: false,
+			name: "菜单",
+			require: true,
+			text: [
+				{
+					name : '菜单1',
+					url  : '',
+					children: [
+						{
+							name : '菜单1.1',
+							url  : ''
+						}
+					]
+				}
+			]
+		},
 	}
 
-	function getStyleList() {
-		return initObj.styles;
-	}
+	let component = "<adi-header></adi-header>";
 
-    function render(wikiblock) {
-		var $scope = wikiblock.$scope;
-		$scope.params = getEditorParams(wikiblock.modParams);
-		$scope.mode = wikiblock.mode;
-
-		return "<adi-header params={{pra}}  theme>";
-
-    }
-
-    return {
-		render: render,
-		getEditorParams: getEditorParams,
-		getStyleList: getStyleList,
-    }
+    return app.createModCommand(params, desgin, component);
 });
