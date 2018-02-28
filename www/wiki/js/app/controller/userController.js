@@ -149,8 +149,8 @@ define([
                 // // 关注的用户
                 $rootScope.followUserList = data.followObj.followUserObj.userList;
                 $rootScope.followUserTotal = data.followObj.followUserObj.total;
-                // // 关注的站点
-                $rootScope.followSiteList = data.followObj.followSiteObj.siteList;
+                // // 关注的网页
+                $rootScope.starredPages = data.starred_pages;
                 // $scope.followSiteTotal = data.followObj.followSiteObj.total;
                 // // 用户动态
                 // $scope.trendsList = data.trendsObj.trendsList;
