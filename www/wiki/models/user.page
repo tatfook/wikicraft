@@ -1137,8 +1137,8 @@ function user:wrap_search_result(result, visitor)
 			userFansDB:db():findOne({["+userId+fansUserId"]={user._id, visitor_info._id}},
 				function(err, data)
 					finished_count = finished_count + 1
-					user.followed = 0
-					if (data) then user.followed = 1 end
+					user.following = 0
+					if (data) then user.following = 1 end
 					if (finished_count == #hits) then resume() end
 				end
 			)
