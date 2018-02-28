@@ -235,9 +235,7 @@ function elasticsearch:sendToES(params, callback)
     
     if (not callback) then
         System.os.GetUrl(info, resume)
-        local err, result = yield()
-        -- self:errors_logger(err, result, info)
-        return errors:wrap(err, result)
+        return yield()
     else
         System.os.GetUrl(info, callback)
     end

@@ -414,15 +414,15 @@ function skills:api_search(params)
     if (is_params_error) then
         return response:status(400):send({error={message=message,status=400}})
     end
-    local search_result = es:search(clean_params)
-    local rcode = search_result.data.rcode
+    local err, search_result = es:search(clean_params)
+    local rcode = search_result.rcode
     local wrapped_result = {}
     if (rcode == 200) then
         wrapped_result = self:wrap_search_result(search_result)
     else
-        wrapped_result = search_result.data.data
+        wrapped_result = search_result.data
     end
-    return wrapped_result
+    return errors:wrap(err, wrapped_result)
 end
 
 
@@ -454,17 +454,17 @@ end
 
 function skills:wrap_search_result(result)
     local wrapped_result = {}
-    local rcode = result.data.rcode
+    local rcode = result.rcode
 
     -- 封装返回数据
     wrapped_result = {
-        timed_out = result.data.data.timed_out,
-        took = result.data.data.took,
+        timed_out = result.data.timed_out,
+        took = result.data.took,
         status = rcode
     }
 
     local hits = {}
-    for i, hit in ipairs(result.data.data.hits.hits) do
+    for i, hit in ipairs(result.data.hits.hits) do
         local work = {}
         for j, work_link in ipairs(hit._source.works) do
             work = {

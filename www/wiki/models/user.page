@@ -1072,15 +1072,15 @@ function user:api_search(params)
 	if (is_params_error) then
 		return response:status(400):send({error={message=message,status=400}})
 	end
-	local search_result = es:search(clean_params)
-	local rcode = search_result.data.rcode
+	local err, search_result = es:search(clean_params)
+	local rcode = search_result.rcode
 	local wrapped_result = {}
 	if (rcode == 200) then
 		wrapped_result = self:wrap_search_result(search_result, params.visitor)
 	else
-		wrapped_result = search_result.data.data
+		wrapped_result = search_result.data
 	end
-	return wrapped_result
+	return errors:wrap(err, wrapped_result)
 end
 
 
@@ -1109,17 +1109,17 @@ end
 function user:wrap_search_result(result, visitor)
 	local wrapped_result = {}
 	local err, visitor_info
-	local rcode = result.data.rcode
+	local rcode = result.rcode
 
 	wrapped_result = {
-		timed_out = result.data.data.timed_out,
-		took = result.data.data.took,
-		total = result.data.data.hits.total,
+		timed_out = result.data.timed_out,
+		took = result.data.took,
+		total = result.data.hits.total,
 		status = rcode
 	}
 
 	local hits = {}
-	for i, hit in ipairs(result.data.data.hits.hits) do
+	for i, hit in ipairs(result.data.hits.hits) do
 		hit._source._id = tonumber(hit._id)
 		hits[#hits + 1] = hit._source
 	end
