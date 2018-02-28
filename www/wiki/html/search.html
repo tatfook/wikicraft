@@ -1,158 +1,204 @@
 <style>
-    body{
+    body {
         /*background-color: #F1F1F1;*/
     }
-    .works{
+
+    .works {
         padding-top: 10px;
     }
+
     .works .text {
         background-color: #FAFAFA;
         padding: 20px;
-        box-shadow: 0px 1px 3px 0px rgba(44,62,80,.35);
+        box-shadow: 0px 1px 3px 0px rgba(44, 62, 80, .35);
     }
-    .hover-slide:hover .text{
-        box-shadow: 0 2px 5px 0 rgba(44,62,80,.35);
+
+    .hover-slide:hover .text {
+        box-shadow: 0 2px 5px 0 rgba(44, 62, 80, .35);
     }
+
     .pagination-box {
         text-align: center;
     }
-    h3.title{
+
+    h3.title {
         border-bottom: 1px solid #f1f1f1;
         padding-bottom: 16px;
     }
+
     h4 a.title {
         font-size: 16px;
         color: #333;
         font-weight: bold;
     }
-    h4 a.title:focus, h4 a.title:hover {
+
+    h4 a.title:focus,
+    h4 a.title:hover {
         color: #3977AD;
         text-decoration: none;
     }
-    .works a{
+
+    .works a {
         color: #333;
     }
-    .works a:hover{
+
+    .works a:hover {
         color: #3977AD;
     }
-    .works img{
+
+    .works img {
         width: 100%;
-        height:196.88px;
+        height: 196.88px;
         object-fit: cover;
         object-position: top;
     }
+
     .hover-slide:hover {
         transform: translate3d(0, -3px, 0);
         transition: all .2s linear;
     }
-    .works .pull-right.info{
+
+    .works .pull-right.info {
         cursor: pointer;
     }
 
-    .search-result{
+    .search-result {
         padding-top: 40px;
     }
-    .search-result .nav-container{
+
+    .search-result .nav-container {
         position: relative;
     }
-    .search-result .nav-container > .input-group{
+
+    .search-result .nav-container>.input-group {
         position: absolute;
         right: 0;
         width: 220px;
         top: 0;
     }
-    .search-result .nav-container > .input-group > .form-control {
+
+    .search-result .nav-container>.input-group>.form-control {
         border-right: 0;
         box-shadow: none;
         border-left: 0;
     }
-    .search-result .nav-container > .input-group > .form-control:focus{
+
+    .search-result .nav-container>.input-group>.form-control:focus {
         border-color: #CCC;
     }
-    .search-result .nav-container .glyphicon-search{
-        top:0;
+
+    .search-result .nav-container .glyphicon-search {
+        top: 0;
         background-color: transparent;
         cursor: pointer;
     }
-    .search-result .nav-container .dropdown-menu{
+
+    .search-result .nav-container .dropdown-menu {
         min-width: 95px;
     }
-    .search-result .nav-container .dropdown-menu > li > a{
+
+    .search-result .nav-container .dropdown-menu>li>a {
         padding: 5px 12px;
     }
-    .search-result .works .col-md-3{
+
+    .search-result .works .col-md-3 {
         margin-top: 30px;
     }
-    .search-result h4.title{
+
+    .search-result h4.title {
         color: #666;
         margin-bottom: 0;
     }
-    .search-result .nav-tabs{
+
+    .search-result .nav-tabs {
         padding-left: 40px;
         font-size: 16px;
     }
-    .search-result .nav-tabs > li > a{
+
+    .search-result .nav-tabs>li>a {
         color: #999;
         padding: 0 15px 20px;
     }
-    .search-result .nav-tabs>li.active>a, .search-result .nav-tabs>li.active>a:hover, .search-result .nav-tabs>li.active>a:focus{
+
+    .search-result .nav-tabs>li.active>a,
+    .search-result .nav-tabs>li.active>a:hover,
+    .search-result .nav-tabs>li.active>a:focus {
         border: none;
         border-bottom: 2px solid #656565;
         color: #666;
     }
 
-    .search-result .fans-row{
+    .search-result .fans-row {
         padding: 40px 85px 20px;
         display: flex;
         align-items: center;
         border-bottom: 1px solid #DCDCDC;
     }
-    .search-result .fans-row a.text-muted{
+
+    .search-result .fans-row a.text-muted {
         color: #333;
     }
-    .search-result .fans-row a.text-muted:hover{
+
+    .search-result .fans-row a.text-muted:hover {
         color: #3977AD;
     }
-    .search-result .fans-row > img{
+
+    .search-result .fans-row>img {
         width: 60px;
         height: 60px;
         object-fit: cover;
         margin-right: 13px;
     }
-    .search-result .fans-row .intro{
+
+    .search-result .fans-row .intro {
         flex: 1;
     }
-    .search-result .fans-row .btn{
+
+    .search-result .fans-row .btn {
         font-size: 16px;
         padding: 6px 21px;
     }
-    .search-result .fans-row img.icon{
+
+    .search-result .fans-row img.icon {
         width: 13px;
     }
 
-    .search-result .content{
+    .search-result .fans-row p.location {
+        color: #999;
+        font-weight: lighter;
+    }
+
+    .search-result .content {
         padding: 0 85px;
     }
-    .search-result .content p.info, .search-result .content p.info > a{
+
+    .search-result .content p.info,
+    .search-result .content p.info>a {
         font-size: 12px;
         color: #999;
         margin: 8px 0 10px;
     }
-    .search-result .content-item{
-        border-bottom: 1px solid #DDD;
+
+    .search-result .content-item {
+        border-bottom: 1px solid #F2F2F2;
         padding: 40px 0 20px;
     }
-    .search-result .content-item h3, .search-result .content-item p{
+
+    .search-result .content-item h3,
+    .search-result .content-item p {
         margin: 0;
         padding: 0;
     }
-    .search-result .search-result-content > span{
+
+    .search-result .search-result-content>span {
         color: #FE3266;
     }
-    .search-result .content-item .tags{
+
+    .search-result .content-item .tags {
         margin-top: 20px;
     }
-    .search-result .tags > span{
+
+    .search-result .tags>span {
         font-size: 14px;
         background-color: #DAF4FF;
         color: #3977AD;
@@ -161,15 +207,60 @@
         cursor: pointer;
     }
 
+    .search-result .site-item {
+        display: flex;
+        position: relative;
+    }
+
+    .search-result .site-detail {
+        margin-left: 7px;
+        flex: 1;
+    }
+
+    .search-result .site-item .site-profile {
+        width: 120px;
+        height: 100px;
+        object-fit: cover;
+    }
+
+    .search-result .site-other-msg {
+        position: absolute;
+        right: 0;
+        top: 23px;
+        color: #999;
+    }
+
+    .search-result .site-other-msg>span {
+        margin-left: 10px;
+    }
+
+    .search-result .site-other-msg .iconfont {
+        font-size: 22px;
+        display: inline-block;
+        width: auto;
+        margin-right: 6px;
+        vertical-align: sub;
+        line-height: 1;
+    }
+
+    .search-result .site-item p.link{
+        margin: 8px 0;
+    }
+
+    .search-result .site-item p.link a{
+        color: #3977AD;
+    }
+
     @media (min-width: 992px) and (max-width: 1200px) {
-        .works img{
-            height:159.38px;
+        .works img {
+            height: 159.38px;
             object-fit: contain;
         }
     }
+
     @media (min-width: 768px) and (max-width: 992px) {
-        .works img{
-            height:165px;
+        .works img {
+            height: 165px;
             object-fit: contain;
         }
     }
@@ -191,19 +282,25 @@
             </ul>
             <div class="input-group">
                 <div class="input-group-btn">
-                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{nowSearchRange || searchRange[0]}} <span class="caret"></span></button>
+                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{nowSearchRange || searchRange[0]}}
+                        <span class="caret"></span>
+                    </button>
                     <ul class="dropdown-menu">
-                        <li ng-repeat="item in searchRange" ng-click="changeSearchRange(item)"><a>{{item}}</a></li>
+                        <li ng-repeat="item in searchRange" ng-click="changeSearchRange(item)">
+                            <a>{{item}}</a>
+                        </li>
                     </ul>
-                </div><!-- /btn-group -->
-                <input id="searchpage-search" type="text" class="form-control" aria-label="search..." placeholder="{{searchText || ''}}" ng-model="searchText">
+                </div>
+                <!-- /btn-group -->
+                <input id="searchpage-search" type="text" class="form-control" aria-label="search..." placeholder="{{searchText || ''}}"
+                    ng-model="searchText">
                 <span class="input-group-addon glyphicon glyphicon-search" ng-click="changeSearch(searchType, searchText)"></span>
             </div>
         </div>
         <div class="tab-content">
             <div role="tabpanel" class="tab-pane clearfix" ng-class="{true:'active'}[searchType == 'pageinfo']" id="pageinfo">
                 <h4 class="title">{{ "共" | translate }}{{pageResult.total || 0}}条页面：</h4>
-                <div class="empty-box" ng-hide="pageResult.total > 0">
+                <div class="empty-box" ng-hide="searchResult.total > 0">
                     <span class="iconfont icon-sousuo"></span>
                     <p>{{ "抱歉！ ~没有搜索到" | translate }}
                         <span title="{{searchKeyword}}">{{searchKeyword.length > 10 ? (searchKeyword | limitTo: 10) + '...' : searchKeyword}}</span>
@@ -211,51 +308,73 @@
                     </p>
                 </div>
                 <div class="content">
-                    <div class="content-item" ng-repeat="item in pageResult.hits">
-                        <h3><a href="{{item.url}}">{{item.sitename || translate("站点名")}}——{{item.pagename || translate("页面名")}}</a></h3>
-                        <p class="info"><a href="{{item.url}}">{{item.url}}</a></p>
+                    <div class="content-item" ng-repeat="item in searchResult.hits">
+                        <h3>
+                            <a href="{{item.url}}">{{item.sitename || translate("站点名")}}——{{item.pagename || translate("页面名")}}</a>
+                        </h3>
+                        <p class="info">
+                            <a href="{{item.url}}">{{item.url}}</a>
+                        </p>
                         <p class="search-result-content" ng-repeat="content in item.highlight.content" ng-bind-html="content"></p>
                     </div>
                 </div>
             </div>
             <div role="tabpanel" class="tab-pane clearfix" ng-class="{true:'active'}[searchType == 'userinfo']" id="userinfo">
                 <h4 class="title">{{ "共" | translate }}{{totalItems || 0}}名用户：</h4>
-                <div class="empty-box" ng-hide="searchList.length > 0">
+                <div class="empty-box" ng-hide="searchResult.total > 0">
                     <span class="iconfont icon-sousuo"></span>
                     <p>{{ "抱歉！ ~没有搜索到" | translate }}
                         <span title="{{searchKeyword}}">{{searchKeyword.length > 10 ? (searchKeyword | limitTo: 10) + '...' : searchKeyword}}</span>
                         {{ "相关的用户" | translate }}
                     </p>
                 </div>
-                <div class="col-md-12 fans-row" ng-repeat="item in searchList">
+                <div class="col-md-12 fans-row" ng-repeat="item in searchResult.hits">
                     <img ng-src="{{item.portrait || getImageUrl('default_portrait.png',imgsPath)}}" alt="">
                     <div class="intro">
-                        <h4><a class="text-muted" ng-href="{{'/'+item.username}}">{{item.username || item.displayName}}</a></h4>
-                        <p>{{item.introduce || translate("暂无简介")}}</p>
+                        <h4>
+                            <a class="text-muted" ng-href="{{'/'+item.username}}">{{item.username || item.displayName}}</a>
+                        </h4>
+                        <p class="location">
+                            <i class="iconfont icon-shiliangzhinengduixiang"></i>{{item.location || translate("未知地点")}}</p>
                     </div>
                     <div class="btn btn-primary" ng-click="favoriteUser(item)">{{item.concerned?translate("取消关注"):translate("关 注")}}</div>
                 </div>
             </div>
             <div role="tabpanel" class="tab-pane works clearfix" ng-class="{true:'active'}[searchType == 'siteinfo']" id="siteinfo">
                 <h4 class="title">{{ "共" | translate }}{{totalItems || 0}}个站点：</h4>
-                <div class="empty-box" ng-hide="searchList.length > 0">
+                <div class="empty-box" ng-hide="searchResult.total > 0">
                     <span class="iconfont icon-sousuo"></span>
-                    <p>抱歉！ ~没有搜索到 {{searchKeyword.length > 10 ? (searchKeyword | limitTo: 10 + '...') : searchKeyword}}{{ "相关的站点" | translate }}</p>
+                    <p>抱歉！ ~没有搜索到 {{searchKeyword.length > 10 ? (searchKeyword | limitTo: 10 + '...') : searchKeyword}}{{ "相关的站点"
+                        | translate }}</p>
                 </div>
                 <div class="content">
-                    <div class="content-item" ng-repeat="item in searchList">
-                        <h3><a ng-href="{{'/' + item.username + '/' + item.name + '/index'}}">{{item.displayName || item.sitename || site.name}}</a></h3>
-                        <p class="info"><a ng-href="{{'/' + item.username + '/' + item.name + '/index'}}">{{"/"+item.username+"/"+item.name+"/index"}}</a></p>
-                        <p class="search-result-content" ng-bind-html="item.highlight_ext"></p>
-                        <p class="tags"><span ng-repeat="tag in item.tagsArr track by $index" ng-show="tag" ng-click="seachTag(tag)">{{tag}}</span></p>
+                    <div class="content-item site-item" ng-repeat="item in searchResult.hits">
+                        <img class="site-profile" ng-src="{{item.logoUrl || getImageUrl('wiki_cover.jpg', imgsPath)}}" alt="">
+                        <div class="site-detail">
+                            <h4>
+                                <a ng-href="{{'/' + item.username + '/' + item.name + '/index'}}">{{item.display_name || item.sitename || site.name}}</a>
+                            </h4>
+                            <p class="link">
+                                <a ng-href="{{'/' + item.username + '/' + item.sitename + '/index'}}">{{"/"+item.username+"/"+item.sitename+"/index"}}</a>
+                            </p>
+                            <p class="search-result-content">{{item.desc || "暂无简介"}}</p>
+                            <p class="tags">
+                                <span ng-repeat="tag in item.tagsArr track by $index" ng-show="tag" ng-click="seachTag(tag)">{{tag}}</span>
+                            </p>
+                        </div>
+                        <div class="site-other-msg">
+                            <span>
+                                <i class="iconfont icon-browse"></i>{{item.visitCount || "0"}}</span>
+                            <span>
+                                <i class="iconfont icon-collection"></i>{{item.favoriteCount || "0"}}</span>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="pagination-box" ng-show="searchList.length > 0 || pageResult.total > 0">
-            <ul uib-pagination ng-change="sitePageChanged()" items-per-page='pageSize' previous-text="上一页"
-                next-text="下一页" total-items="totalItems" ng-model="currentPage" max-size="5"
-                class="pagination-sm" boundary-link-numbers="true"></ul>
+        <div class="pagination-box" ng-show="totalItems > 0">
+            <ul uib-pagination ng-change="sitePageChanged()" items-per-page='pageSize' previous-text="上一页" next-text="下一页" total-items="totalItems"
+                ng-model="currentPage" max-size="5" class="pagination-sm" boundary-link-numbers="true"></ul>
         </div>
     </div>
 </div>
