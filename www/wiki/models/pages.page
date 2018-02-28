@@ -93,6 +93,8 @@ function pages:get_site_url(params)
     local username, sitename
     if (not params.username) and (params.url) then
         username, sitename = self:get_username_and_sitename(params.url)
+    else
+        username, sitename = params.username, params.sitename
     end
     site_url = "/" .. username
     if (sitename) then site_url = site_url .. "/" .. sitename end
