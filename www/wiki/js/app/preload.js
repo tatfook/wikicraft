@@ -16,37 +16,11 @@ define([
     'helper/siteStyle',
     'helper/storage',
     'helper/util',
-<<<<<<< HEAD
-	"helper/md/mdconf",
-	//"helper/mdwiki",
-	"helper/toolbase",
-	
-	// controller
-    //'controller/notfoundController',
-    //'controller/appsController',
-    //'controller/contactController',
-    //'controller/crosController',
-    //'controller/dataSourceController',
-    //'controller/editWebsiteController',
-	//'controller/fansController',
-	//'controller/findPwdController',
-    'controller/footerController',
-	//'controller/gitVersionController',
-    'controller/headerController',
-	'controller/homeController',
-	//'controller/iframeAgentController',
-	//'controller/inviteController',
-	//'controller/joinController',
-	//'controller/knowledgeController',
-	//'controller/licenseController',
-	//'controller/loginController',
-=======
 	'helper/md/mdconf',
 	// 'helper/mdwiki',
 	'helper/toolbase',
     
     // controller
->>>>>>> 63a59e76fe4787884a5ced92549757f424f80e9e
     'controller/mainController',
 
     // directives

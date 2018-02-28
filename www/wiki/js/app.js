@@ -222,11 +222,6 @@ define([
 		return proto;
 	}
 
-<<<<<<< HEAD
-	window.app = app;//{{{
-	return app;//}}}
-=======
 	window.app = app;
 	return app;
->>>>>>> 63a59e76fe4787884a5ced92549757f424f80e9e
 });

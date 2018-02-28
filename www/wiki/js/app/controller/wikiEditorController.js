@@ -7,13 +7,7 @@ define([
     'markdown-it',
     'to-markdown',
     'codemirror',
-<<<<<<< HEAD
-	//'helper/mdwiki',
-	'renderer/page',
-    'helper/markdownwiki',
-=======
     'renderer/page',
->>>>>>> 63a59e76fe4787884a5ced92549757f424f80e9e
     'helper/util',
     'helper/storage',
     'helper/dataSource',

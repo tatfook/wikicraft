@@ -8,14 +8,10 @@ define([
 	'directive/wikipage',
 	'directive/wikiImage',
 	'directive/wikiLink',
-<<<<<<< HEAD
-], function(app, mdconf, markdown){
-=======
 ], function(app, util, mdconf, markdown){
->>>>>>> 63a59e76fe4787884a5ced92549757f424f80e9e
     app.objects.mds = {};
-    var instCount = 0;
-	var mds       = app.objects.mds;
+    var instCount   = 0;
+	var mds         = app.objects.mds;
 
     // 获取md
     function getMd(mdName) {

@@ -21,10 +21,12 @@ define([
     app.registerComponent("adiHeader", {
         template: template,
         bindings: {
-            menu: "<",
+            params: "<",
             theme: "<",
         },
         controller: function(){
+            app.someparams
+
             this.classes = classes;
             this.editorMode = app.isEditMode(); 
         }

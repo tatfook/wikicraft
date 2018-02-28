@@ -54,7 +54,9 @@ define([
 	var styles = {
 
 	}
-	
+
+	// return app.createModCommand({menu=... }, "<adi-header");
+
     return {
         render : function (block) {
 			menuComponent(block, styles);

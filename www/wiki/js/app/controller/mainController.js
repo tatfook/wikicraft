@@ -18,12 +18,6 @@ define([
     'controller/footerController',
     'controller/userController',
     'controller/notfoundController',
-<<<<<<< HEAD
-    'controller/crosController',
-], function (app, markdownit, toolbase, storage, util, dataSource, loading, mdwiki, mdconf, markdown, homeHtmlContent, headerHtmlContent, footerHtmlContent, userHtmlContent, notfoundHtmlContent, crosHtmlContent) {
-	//var md = markdownwiki({breaks: true, isMainMd:true});
-	var md = mdwiki({use_template:true});
-=======
     'controller/crosController'
 ], function (
     app,
@@ -44,7 +38,6 @@ define([
     crosHtmlContent
 ) {
 	let md = mdwiki({use_template : true}); //var md = markdownwiki({breaks: true, isMainMd:true});
->>>>>>> 63a59e76fe4787884a5ced92549757f424f80e9e
 
     app.controller('mainController', [
         '$scope',
@@ -140,16 +133,6 @@ define([
                     realnameVerifyModal : realnameVerifyModal
                 });
 
-<<<<<<< HEAD
-				app.objects.Account = Account;
-				app.objects.Message = Message;
-				app.objects.modal = modal;
-				app.objects.config = config;
-				app.objects.util = util;
-				app.objects.mdwiki = mdwiki;
-				app.objects.mdconf = mdconf;
-				app.objects.md = markdown;
-=======
 				app.objects.Account    = Account;
 				app.objects.Message    = Message;
 				app.objects.modal      = modal;
@@ -158,7 +141,6 @@ define([
 				app.objects.mdwiki     = mdwiki;
 				app.objects.mdconf     = mdconf;
 				app.objects.md         = markdown;
->>>>>>> 63a59e76fe4787884a5ced92549757f424f80e9e
 				app.objects.dataSource = dataSource;
 				app.objects.mainMdwiki = app.objects.mainMdwiki || md;
 				app.objects.toolbase   = toolbase;

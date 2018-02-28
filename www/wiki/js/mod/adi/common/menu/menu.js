@@ -21,8 +21,8 @@ define([
     app.registerComponent("adiMenu", {
         template: template,
         bindings: {
-            menu: "<",
-            theme: "<",
+            params: "<",
+            main_color: "<",
         },
         controller: function(){
             this.classes = classes;

@@ -79,7 +79,7 @@ define([
 		$scope.params = getEditorParams(wikiblock.modParams);
 		$scope.mode = wikiblock.mode;
 
-		return htmlContent;
+		return "<adi-header params={{pra}}  theme>";
 
     }
 
