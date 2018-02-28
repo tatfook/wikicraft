@@ -19,6 +19,7 @@ include_once("./user_active.page")
 include_once("./data_source.page")
 include_once("./site_data_source.page")
 include_once("./user_three_service.page")
+include_once("./pages_stars.page")
 
 local user = inherit(models.abstract.base, gettable("models.user"))
 user.db_name = "user"
@@ -270,8 +271,8 @@ end
 function user:api_verifyCellphoneOne(params)
 	if not params.cellphone then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
-    end
-    
+	end
+	
 	if params.bind then
 		self:db():find({["+cellphone"]={params.cellphone}}, resume)
 		local _, data = yield()
@@ -279,7 +280,7 @@ function user:api_verifyCellphoneOne(params)
 		if data and #data > 0 then
 			return errors:new("手机号已绑定:" .. data[1].username)
 		end
-    end
+	end
 
 	math.randomseed(os.time())
 	local smsCode = tostring(math.random(1000,9999))
@@ -311,30 +312,30 @@ function user:api_verifyCellphoneTwo(params)
 	end
 	mem_cache:set(params.smsId, nil)
 	
-    local cellphone = value.cellphone
+	local cellphone = value.cellphone
 
-    -- if params.bind is true, it's for binding
-    -- if params.bind is false, it's for unbinding
-    if params.bind ~= nil then
-        -- set cellphone to '' if it's unbinding 
-        if not params.bind then
-            cellphone = '' 
-        end
-        self:db():updateOne({["+username"]={username}}, {cellphone=cellphone}, resume)
-        return errors:wrap(yield())
-    end
+	-- if params.bind is true, it's for binding
+	-- if params.bind is false, it's for unbinding
+	if params.bind ~= nil then
+		-- set cellphone to '' if it's unbinding 
+		if not params.bind then
+			cellphone = '' 
+		end
+		self:db():updateOne({["+username"]={username}}, {cellphone=cellphone}, resume)
+		return errors:wrap(yield())
+	end
 
-    -- for realname verification
-    if params.setRealNameInfo ~= nil then 
-        local realNameInfo = {
-            cellphone = cellphone,
-            verified = true
-        }
-        self:db():updateOne({["+username"]={username}}, {realNameInfo=realNameInfo}, resume)
-        return errors:wrap(yield())
-    end
+	-- for realname verification
+	if params.setRealNameInfo ~= nil then 
+		local realNameInfo = {
+			cellphone = cellphone,
+			verified = true
+		}
+		self:db():updateOne({["+username"]={username}}, {realNameInfo=realNameInfo}, resume)
+		return errors:wrap(yield())
+	end
 
-    return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 end
 
 
@@ -937,10 +938,15 @@ function user:api_getDetailByName(params)
 
 	-- 获得用户关注
 	local followUserObj = userFansDB:api_getByFansUserId({fansUserId=userinfo._id}).data
+	
 	-- 获取用户收藏的站点
 	local userFavoriteDB = models.user_favorite:new()
 	local followSiteObj = userFavoriteDB:api_getByUserId({userId=userinfo._id}).data
 	local followObj = {followUserObj=followUserObj, followSiteObj=followSiteObj}
+
+	-- 获取用户收藏的网页
+	local pages_stars = models.pages_stars:new()
+	local starred_pages = pages_stars:get_starred_pages_of_a_user({username=userinfo.username})
 
 	-- 获取用户动态
 	local userTrendsDB = models.user_trends:new()
@@ -950,7 +956,18 @@ function user:api_getDetailByName(params)
 	local userActiveDB = models.user_active:new()
 	local activeObj = userActiveDB:api_getByUsername({username=userinfo.username}).data
 
-	return errors:wrap(nil,{userinfo=userinfo, activeObj=activeObj, selfOrganizationObj=selfOrganizationObj, joinOrganizationObj=joinOrganizationObj, hotSiteObj=hotSiteObj, allSiteList=allSiteList, followObj=followObj, fansObj=fansObj, trendsObj=trendsObj})
+	return errors:wrap(nil,{
+		userinfo = userinfo,
+		activeObj = activeObj,
+		selfOrganizationObj = selfOrganizationObj,
+		joinOrganizationObj = joinOrganizationObj,
+		hotSiteObj = hotSiteObj,
+		allSiteList = allSiteList,
+		followObj = followObj,
+		fansObj = fansObj,
+		trendsObj = trendsObj,
+		starred_pages = starred_pages,
+	})
 end
 
 -- 获取gitlab账号
