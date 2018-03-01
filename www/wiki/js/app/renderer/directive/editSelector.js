@@ -17,10 +17,10 @@ define([
                 let childNodes = $element.context.childNodes;
                 let wrapNodes  = $compile(template)($scope);
 
-                $scope.editMode = app.isEditMode();
+                $scope.isEditMode = app.isEditMode();
 
                 while(childNodes.length > 0){
-                    wrapNodes[2].appendChild(childNodes[0])
+                    wrapNodes[0].children[1].appendChild(childNodes[0])
                 }
 
                 $element.html(wrapNodes);

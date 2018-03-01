@@ -33,6 +33,12 @@ define([
 
         return sheet;
 	}
+
+	app.generateClassStyle = function(className, data){
+		let sheet = app.generateClassSheet(className, data);
+
+		return sheet.toString().replace(/\\/g, "");
+	};
 	
 	app.generateSectionClassName = function(className){
 		return this.params.desgin.id + '-' + className;
@@ -45,7 +51,9 @@ define([
 	app.createModCommand = function(params, styles, component){
 		return {
 			render : function(wikiblock){
-				wikiblock.$scope.params = params;//app.getEditorParams({}, params);
+				let combine = util.mixin(params, wikiblock.modParams);
+
+				wikiblock.$scope.params = combine;//app.getEditorParams({}, params);
 				wikiblock.$scope.mode   = wikiblock.mode;
 
 				return component;

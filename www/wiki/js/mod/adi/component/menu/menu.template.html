@@ -1,17 +1,23 @@
 <style ng-bind="$ctrl.css"></style>
 <edit-selector>
-    <li ng-repeat="item in $ctrl.menu.list" ng-class="$ctrl.generateComponentClassName('list')">
-        <a ng-href="{{item.url}}" 
-            target="_blank">
-            {{item.name}}
-        </a>
-        <ul class="sub-menu">
-            <li ng-repeat="subItem in item.children">
-                <a class="font-0" ng-href="{{subItem.url}}" 
-                    target="_blank">
-                    {{subItem.name}}
-                </a>
-            </li>
-        </ul>
-    </li>
+    <ul class="bgcolor-0" ng-class="$ctrl.generateComponentClassName('list')">
+        <li ng-repeat="item in $ctrl.menu.list">
+            <a ng-href="{{item.url}}" 
+                target="_blank">
+                {{item.name}}
+            </a>
+            <ul class="sub-menu" ng-class="$ctrl.generateComponentClassName('list')">
+                <li ng-repeat="subItem in item.children">
+                    <a class="font-0" ng-href="{{subItem.url}}" 
+                        target="_blank">
+                        {{subItem.name}}
+                    </a>
+                </li>
+            </ul>
+        </li>
+        <li>11111</li>
+        <li>11111</li>
+        <li>11111</li>
+        <li>11111</li>
+    </ul>
 </edit-selector>

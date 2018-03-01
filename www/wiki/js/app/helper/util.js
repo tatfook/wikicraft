@@ -653,7 +653,9 @@ define([
      * Mixins for ES5
      */
     util.mixin = (function(){
-        function mixin(source, target) {  
+        let combine = {};
+
+        function mixin(source, target) {
             for (var prop in source) {
                 if (source.hasOwnProperty(prop)) {
                     target[prop] = source[prop];
@@ -662,7 +664,12 @@ define([
         }
 
         return function(source, target){
-            mixin(source, target);
+            combine = {};
+
+            mixin(source, combine);
+            mixin(target, combine);
+
+            return combine;
         }
     })();
 

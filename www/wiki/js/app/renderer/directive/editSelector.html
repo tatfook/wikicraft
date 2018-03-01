@@ -1,5 +1,14 @@
-<div>
-    <div>属性</div>
-    <div>样式</div>
+<div style="position:relative">
+    <div style="position:absolute;top:0;z-index:2">
+        <div ng-if="isEditMode">
+            <div ng-if="$ctrl.componentMode == 'section'">
+                <button>属性</button>
+                <button>样式</button>
+            </div>
+            <div ng-if="$ctrl.componentMode == 'component'">
+                <!-- <button>设置这个元素</button> -->
+            </div>
+        </div>
+    </div>
+    <div></div>
 </div>
-<div></div>

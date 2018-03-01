@@ -17,20 +17,34 @@ define([
             menu: "<"
         },
         controller: function(){
+            this.componentMode              = 'component';
             this.generateComponentClassName = app.generateComponentClassName.bind(this);
             this.componentStyleName         = "component-menu-style";
             this.menuStyle                  = {
-                'list': {
-                    'padding' : '10px',
+                "list" : {
+                    "list-style-type"  : "none",
+                    "width"            : "100%",
+                    "height"           : "50px",
                 },
-                'div':{
+                "list > li" : {
+                    "float"                 : "left",
+                    "height"                : "50px",
+                    "color"                 : "white",
+                    "text-align"            : "center",
+                    "line-height"           : "50px",
+                    "padding"               : "0 30px",
+                    "background-image"      : 'url("/wiki/js/mod/adi/assets/imgs/menu-button-bg.png")',
+                    "background-repeat"     : "no-repeat",
+                    "background-position-x" : "100%",
+                    "position"              : "relative",
+                    "font-size"             : "17px"
+                },
+                "div" : {
                     'font-size' : '20px'
                 }
             };
 
-            let componentMenuStyle = app.generateClassSheet(this.componentStyleName, this.menuStyle);
-            
-            this.css = componentMenuStyle.toString();
+            this.css = app.generateClassStyle(this.componentStyleName, this.menuStyle);
         }
     });
 });

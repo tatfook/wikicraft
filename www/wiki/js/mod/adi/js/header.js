@@ -3,9 +3,9 @@
  */
 define([
 	'app',
-	'./mod_factory',
 	'wikimod/adi/section/header/header',
-], function (app, htmlContent) {
+	'./adi_factory',
+], function (app, header) {
 	let desgin = [
 		{
 			id:'left',

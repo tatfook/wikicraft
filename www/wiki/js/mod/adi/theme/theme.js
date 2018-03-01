@@ -3,15 +3,12 @@ define([
     'jquery',
     'jss',
     'jss-preset-default',
-    'text!wikimod/adi/theme/theme.template.html'
-], function(app, $, jss, preset, htmlContent) {
+    'text!wikimod/adi/theme/theme.template.html',
+], function(app, $, jss, preset, template) {
     'use strict';
 
     let styles = {
         'classic' : {
-            'default':{
-                
-            },
             'font' : [
                 [
                     {'font-size' : '10px'},
@@ -31,7 +28,9 @@ define([
                 {'color' : 'yellow'},
                 {'color' : 'cyan'},
             ],
-
+            'bgcolor' : [
+                {'background-color' : '#327abf'}
+            ]
         }
     }
 
@@ -54,44 +53,20 @@ define([
         return sheet.toString();
     }
     
-    let font  = genrerateClass('font', styles[styleName].font);
-    let color = genrerateClass('color', styles[styleName].color);
+    // let font  = genrerateClass('font', styles[styleName].font);
+    // let color = genrerateClass('color', styles[styleName].color);
     
-    console.log(font);
-    console.log(color);
+    // console.log(font);
+    // console.log(color);
 
-    console.log($('[data-jss]'));
+    // console.log($('[data-jss]'));
 
-    return {
-        render: function(){
-            return htmlContent;
+    app.registerComponent("adiTheme", {
+        template : template,
+        bindings : {
+            theme  : "<",
         },
-        getEditorParams: {
-            design    : {
-                is_leaf: true,
-                require: true,
-                text:"left", // 默认值
-            },
-            menu_menu : {
-                is_leaf: true,
-                type: "menu",
-                editable: true,
-                is_mod_hide: false,
-                name: "菜单",
-                require: true,
-                text: [
-                    {
-                        name : '菜单1',
-                        url  : '',
-                        children: [
-                            {
-                                name : '菜单1.1',
-                                url  : ''
-                            }
-                        ]
-                    }
-                ]
-            },
+        controller : function($scope){
         }
-    }
+    });
 });

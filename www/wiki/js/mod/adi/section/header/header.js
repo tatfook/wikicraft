@@ -11,7 +11,7 @@ define([
     'wikimod/adi/component/logo/logo'
 ], function (app, template) {
   
-    let headerPosStyle = {
+    let headerStyle = {
         "header-style-0" : {
             container : {
                 padding: '10px'
@@ -37,10 +37,12 @@ define([
             console.log(this)
             console.log($scope);
             
+            this.componentMode     = "section";
             this.generateClassName = app.generateSectionClassName.bind(this);
             
-            let sheet = app.generateClassSheet(this.params.desgin.id, headerPosStyle[this.params.desgin.id]);
-            this.css  = sheet.toString();
+            this.css = app.generateClassStyle(this.params.desgin.id, headerStyle[this.params.desgin.id]);
         }
     });
+
+    return headerStyle;
 });
