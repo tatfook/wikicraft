@@ -9,24 +9,29 @@ define([
     'text!wikimod/adi/component/menu/menu.template.html',
 ], function (app, template) {
 
-    var classes = app.createStyleSheet({
+    let menuStyle = {
         "menu-item-style0": {
             padding: '10px'
         },
         "menu-item-style1": {
             padding: '20px'
         },
-    });
+    };
 
     app.registerComponent("adiMenu", {
-        template: template,
-        bindings: {
-            params: "<",
-            main_color: "<",
+        template : template,
+        // require  : {
+        //     'adiHeader' : '^adiHeader'
+        // },
+        bindings : {
+            params: "<"
         },
         controller: function(){
-            this.classes = classes;
-            this.editorMode = app.isEditMode(); 
+            // console.log(11122334445566)
+            console.log(this);
+            
+            // this.classes = classes;
+            // this.editorMode = app.isEditMode(); 
         }
     });
 });

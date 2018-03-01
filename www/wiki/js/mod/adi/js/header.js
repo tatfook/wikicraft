@@ -3,37 +3,33 @@
  */
 define([
 	'app',
-	'../section/header/header.js',
+	'wikimod/adi/section/header/header',
 ], function (app, htmlContent) {
 	let desgin = [
 		{
-			design:{
-				text:'left',
-				cover: 'http://git.keepwork.com/gitlab_rls_official/keepworkimages/raw/master/official_images/img_1515414062976.jpeg'
-			}
+			id:'left',
+			// cover: 'http://git.keepwork.com/gitlab_rls_official/keepworkimages/raw/master/official_images/img_1515414062976.jpeg'
 		},
 		{
-			design:{
-				text:'right',
-				cover: 'http://git.keepwork.com/gitlab_rls_official/keepworkimages/raw/master/official_images/img_1515414083068.jpeg'
-			}
+			id:'right',
+			// cover: 'http://git.keepwork.com/gitlab_rls_official/keepworkimages/raw/master/official_images/img_1515414083068.jpeg'
 		}
 	];
 
 	let	params = {
-		design    : {
-			is_leaf: true,
-			require: true,
-			text:"left", // 默认值
+		desgin    : {
+			is_leaf : true,
+			require : true,
+			id      : 'header-pos-style-0',
 		},
-		menu_menu : {
-			is_leaf: true,
-			type: "menu",
-			editable: true,
-			is_mod_hide: false,
-			name: "菜单",
-			require: true,
-			text: [
+		menu : {
+			is_leaf     : true,
+			type        : "menu",
+			editable    : true,
+			is_mod_hide : false,
+			name        : "菜单",
+			require     : true,
+			text        : [
 				{
 					name : '菜单1',
 					url  : '',
@@ -48,7 +44,7 @@ define([
 		},
 	}
 
-	let component = "<adi-header></adi-header>";
+	let component = "<adi-header params='params'></adi-header>";
 
     return app.createModCommand(params, desgin, component);
 });

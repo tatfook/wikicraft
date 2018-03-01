@@ -38,7 +38,7 @@ define([
 		var multiline   = text.split("\n");
 		var firstline   = multiline[0];
 		var lastline    = multiline[multiline.length - 1];
-		var isWikiBlock = token.tag == "pre"  && /^```@([\w_\/]+)/.test(firstline) && lastline == '```';
+		var isWikiBlock = token.tag == "pre"  && /^```@([\w_\/]+)/.test(firstline) && lastline.replace(/[\ \r\n]+/g, "")== '```';
 
 		block.isWikiBlock = isWikiBlock;
 		if (!isWikiBlock) {
@@ -149,18 +149,18 @@ define([
 			}
 			
 			var htmlContent = _getModHtml();
-			var md = getMd(self.mdName);
+			var md          = getMd(self.mdName);
 
 			// text 改变不一定重新渲染  htmlContent改变则重新渲染
 			if (self.htmlContent != htmlContent) {
 				self.htmlContent = htmlContent;
 				// 预览模式渲染魔板块 此外排除魔板块
 				if (self.mode == "preview" || !self.isTemplate || self.blockList != undefined) { // template 与 template_block 唯一区别是blockList
-					//self.$render(_getModHtml);
+					// self.$render(_getModHtml);
 					self.dispatchEvent("render", _getModHtml);
 				}
-			} else {
-			}
+			} else {}
+
 			success && success();
 		}
 

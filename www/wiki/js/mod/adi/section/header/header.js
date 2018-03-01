@@ -6,29 +6,46 @@
  */
 define([
     'app', 
-    'text!wikimod/adi/component/menu/menu.template.html',
+    'text!wikimod/adi/section/header/header.template.html',
+    'wikimod/adi/component/menu/menu',
+    'wikimod/adi/component/logo/logo'
 ], function (app, template) {
   
-    var classes = app.createStyleSheet({
-        "header-menu-pos-style0": {
-            padding: '10px'
+    let headerPosStyle = {
+        "header-pos-style-0" : {
+            container : {
+                padding: '10px'
+            },
+            card : {
+                padding: '30px'
+            }
         },
-        "header-menu-pos-style1": {
-            padding: '20px'
-        },
-    });
+        "header-pos-style-1" : {
+            button : {
+                padding: '20px'
+            }
+        }
+    };
 
     app.registerComponent("adiHeader", {
-        template: template,
-        bindings: {
-            params: "<",
-            theme: "<",
+        template : template,
+        bindings : {
+            params : "<",
+            theme  : "<",
         },
-        controller: function(){
-            app.someparams
+        controller : function($scope){
+            $scope.tttt = 66666644445655;
 
-            this.classes = classes;
-            this.editorMode = app.isEditMode(); 
+            this.generateClassName = app.generateClassName.bind(this);
+            // this.editorMode        = app.isEditMode();
+            console.log();
+            let sheet = app.generateClassSheet(this.params.desgin.id, headerPosStyle[this.params.desgin.id]);
+            this.css  = sheet.toString();
+
+            this.test = 666666;
+
+            // this.classes = classes;
+            // console.log(this.editorMode);
         }
     });
 });

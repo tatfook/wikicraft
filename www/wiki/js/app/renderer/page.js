@@ -10,6 +10,7 @@ define([
 	'renderer/directive/wikiBlockContainer',
 	'renderer/directive/wikiImage',
 	'renderer/directive/wikiLink',
+	'renderer/directive/editSelector',
 ], function(
 	app,
 	util,

@@ -169,9 +169,9 @@ define([
                 var block     = moduleEditorParams.block;
                 var modParams = moduleEditorParams.params;
                 
-                if (block.wikimod && block.wikimod.mod.getModuleParams) {
-                    modParams = block.wikimod.mod.getModuleParams(modParams);
-                }
+                // if (block.wikimod && block.wikimod.mod.getModuleParams) {
+                //     modParams = block.wikimod.mod.getModuleParams(modParams);
+                // }
 
                 block.applyModParams(modParams);
             }
@@ -294,7 +294,7 @@ define([
 
                     if (block && typeof(block.wikimod) == "object" && typeof(block.wikimod.mod) == "object") {
                         if (typeof(block.wikimod.mod.getEditorParams) == "object") {
-                            this.params = app.objects.mainMdwiki.getEditorParams(block.modParams, block.wikimod.mod.getEditorParams);
+                            this.params = app.getEditorParams(block.modParams);
                             this.datas  = getOrderDatas(this.params);
                         } else {
                             this.params = undefined;
