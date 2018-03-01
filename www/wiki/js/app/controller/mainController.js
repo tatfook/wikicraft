@@ -305,6 +305,7 @@ define([
 							}
 							userDataSource.registerInitFinishCallback(function () {
 								var currentDataSource = dataSource.getDataSource($rootScope.pageinfo.username, $rootScope.pageinfo.sitename);
+                                $scope.user && Account.setDataSourceToken(currentDataSource);
 								var renderContent = function (content) {
 									$rootScope.$broadcast('userpageLoaded',{});
                                     if (content && (data.siteinfo.sensitiveWordLevel & 1) <= 0){
@@ -323,7 +324,7 @@ define([
 								}
 
 								//console.log(currentDataSource);
-								currentDataSource.getRawContent({path:urlObj.pagepath + config.pageSuffixName}, function (data) {
+								currentDataSource.getRawContent({path:urlObj.pagepath + config.pageSuffixName, token: currentDataSource.dataSourceToken}, function (data) {
 									//console.log(data);
 									//console.log("otherUsername:", urlObj.username);
 									storage.sessionStorageSetItem("otherUsername", urlObj.username);
@@ -434,7 +435,8 @@ define([
             $scope.$on("onUserProfile", function (event, user) {
                 //console.log('onUserProfile -- mainController');
                 $scope.user = user;
-                //init();
+                // init();
+                config.loadMainContent(initContentInfo);
             });
         }]);
 
