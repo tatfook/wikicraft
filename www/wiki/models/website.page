@@ -868,6 +868,15 @@ function website:search_validator(params)
 			highlight = 0,
 			fuzziness = "AUTO",
 		}
+		
+		if (params.username) then
+			clean_data.post_filter = {
+				term = {
+					username = params.username
+				}
+			}
+		end
+		
 		if (clean_data.size > 500) then clean_data.size = 500 end
 	end
 	return clean_data, is_params_error, message

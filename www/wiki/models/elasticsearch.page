@@ -161,12 +161,10 @@ function elasticsearch:add_extra_search_conditions(params, body)
             body.highlight.pre_tags = params.pre_tags
             body.highlight.post_tags = params.post_tags
         end
-    
-        -- sort
-        if params.sort then
-            body.sort = params.sort      -- array
-        end
-    
+
+        body.sort = params.sort      -- array
+        body.post_filter = params.post_filter
+
         -- pagination
         if (params.size) and ((params.page) or (params.from)) then
             body.size = params.size
@@ -175,6 +173,7 @@ function elasticsearch:add_extra_search_conditions(params, body)
             end
             body.from = params.from or ((params.page - 1) * body.size)
         end
+
 
         body.timeout = "50ms"
     return body
