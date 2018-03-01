@@ -3,6 +3,7 @@
  */
 define([
 	'app',
+	'./mod_factory',
 	'wikimod/adi/section/header/header',
 ], function (app, htmlContent) {
 	let desgin = [
@@ -20,7 +21,7 @@ define([
 		desgin    : {
 			is_leaf : true,
 			require : true,
-			id      : 'header-pos-style-0',
+			id      : 'header-style-0',
 		},
 		menu : {
 			is_leaf     : true,
@@ -29,7 +30,7 @@ define([
 			is_mod_hide : false,
 			name        : "菜单",
 			require     : true,
-			text        : [
+			list        : [
 				{
 					name : '菜单1',
 					url  : '',

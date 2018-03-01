@@ -1,5 +1,6 @@
-<edit-selector isEditMode="$ctrl.editorMode" params="{{$ctrl.menu}}">
-    <li ng-repeat="item in menu.text">
+<style ng-bind="$ctrl.css"></style>
+<edit-selector>
+    <li ng-repeat="item in $ctrl.menu.list" ng-class="$ctrl.generateComponentClassName('list')">
         <a ng-href="{{item.url}}" 
             target="_blank">
             {{item.name}}

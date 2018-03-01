@@ -8,30 +8,29 @@ define([
     'app', 
     'text!wikimod/adi/component/menu/menu.template.html',
 ], function (app, template) {
-
-    let menuStyle = {
-        "menu-item-style0": {
-            padding: '10px'
-        },
-        "menu-item-style1": {
-            padding: '20px'
-        },
-    };
-
     app.registerComponent("adiMenu", {
         template : template,
         // require  : {
         //     'adiHeader' : '^adiHeader'
         // },
         bindings : {
-            params: "<"
+            menu: "<"
         },
         controller: function(){
-            // console.log(11122334445566)
-            console.log(this);
+            this.generateComponentClassName = app.generateComponentClassName.bind(this);
+            this.componentStyleName         = "component-menu-style";
+            this.menuStyle                  = {
+                'list': {
+                    'padding' : '10px',
+                },
+                'div':{
+                    'font-size' : '20px'
+                }
+            };
+
+            let componentMenuStyle = app.generateClassSheet(this.componentStyleName, this.menuStyle);
             
-            // this.classes = classes;
-            // this.editorMode = app.isEditMode(); 
+            this.css = componentMenuStyle.toString();
         }
     });
 });

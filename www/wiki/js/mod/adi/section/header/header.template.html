@@ -1,28 +1,11 @@
-<!-- <div ng-if="$ctrl.params.design.text == 'style1'">
-    
-</div> -->
-<!-- <div ng-if="$ctrl.params.design.text == 'style2'">
-    <div class="app-wikiblock-fullwidth" ng-class="{{$ctrl.theme.pos}}">
-        <div class="app-wikiblock-text">
-            <div style="padding:5px;float:left;"><adi-img params="{{$ctrl.params.icon}}" theme="{{$ctrl.theme}}"></adi-img></div>
-            <div style="padding:5px;float:left;"><adi-label params="{{$ctrl.params.label}}" theme="{{$ctrl.theme}}"></adi-label></div>
-            <div style="float:right;padding:5px">
-                <adi-menu></adi-menu>
-            </div>
-        </div>
-    </div>
-</div> -->
 <style ng-bind="$ctrl.css"></style>
 
-22222222
 <edit-selector>
-    123123123
-    {{$ctrl.test}}
     <div class="app-wikiblock-fullwidth">
-        <!-- <div class="app-wikiblock-text" ng-class="$ctrl.generateClassName('container')">
-            <div style="padding:5px;float:left;"><adi-img params="{{$ctrl.params.icon}}" theme="{{$ctrl.theme}}"></adi-img></div>
-            <div style="padding:5px;float:left;"><adi-label params="{{$ctrl.params.label}}" theme="{{$ctrl.theme}}"></adi-label></div>
-            <adi-menu ng-class="$ctrl.generateClassName('menu')" params="{{$ctrl.params.menu}}"></adi-menu>
-        </div> -->
+        <div class="app-wikiblock-text" ng-class="$ctrl.generateClassName('container')">
+            <!-- <div style="padding:5px;float:left;"><adi-img params="{{$ctrl.params.icon}}" theme="{{$ctrl.theme}}"></adi-img></div>
+            <div style="padding:5px;float:left;"><adi-label params="{{$ctrl.params.label}}" theme="{{$ctrl.theme}}"></adi-label></div> -->
+            <adi-menu ng-class="$ctrl.generateClassName('menu')" menu="$ctrl.params.menu"></adi-menu>
+        </div>
     </div>
 </edit-selector>

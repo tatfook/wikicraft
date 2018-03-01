@@ -12,7 +12,7 @@ define([
 ], function (app, template) {
   
     let headerPosStyle = {
-        "header-pos-style-0" : {
+        "header-style-0" : {
             container : {
                 padding: '10px'
             },
@@ -20,7 +20,7 @@ define([
                 padding: '30px'
             }
         },
-        "header-pos-style-1" : {
+        "header-style-1" : {
             button : {
                 padding: '20px'
             }
@@ -34,18 +34,13 @@ define([
             theme  : "<",
         },
         controller : function($scope){
-            $scope.tttt = 66666644445655;
-
-            this.generateClassName = app.generateClassName.bind(this);
-            // this.editorMode        = app.isEditMode();
-            console.log();
+            console.log(this)
+            console.log($scope);
+            
+            this.generateClassName = app.generateSectionClassName.bind(this);
+            
             let sheet = app.generateClassSheet(this.params.desgin.id, headerPosStyle[this.params.desgin.id]);
             this.css  = sheet.toString();
-
-            this.test = 666666;
-
-            // this.classes = classes;
-            // console.log(this.editorMode);
         }
     });
 });

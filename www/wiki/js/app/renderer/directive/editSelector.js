@@ -17,6 +17,8 @@ define([
                 let childNodes = $element.context.childNodes;
                 let wrapNodes  = $compile(template)($scope);
 
+                $scope.editMode = app.isEditMode();
+
                 while(childNodes.length > 0){
                     wrapNodes[2].appendChild(childNodes[0])
                 }
