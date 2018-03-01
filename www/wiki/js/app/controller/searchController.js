@@ -46,11 +46,13 @@ define([
 			var searchType = query.searchType || "pageinfo";
 			var page = query.currentPage || $scope.currentPage;
             var size = query.pageSize || $scope.pageSize;
+            var username = query.username || undefined;
 
             var queryParams = {
                 "q": query.keyword,
                 "page": page,
-                "size": size
+                "size": size,
+                "username": username
             };
 
             switch (searchType) {
@@ -85,6 +87,7 @@ define([
             searchParams = util.getQueryObject() || searchParams;
             $scope.searchType = searchParams.searchType || "pageinfo";
             $scope.searchText = searchParams.keyword;
+            $scope.nowSearchRange = searchParams.username ? SearchRangeText[2] : undefined;
             getSiteList();
             initSearchRange();
         }
