@@ -354,9 +354,9 @@ function pages:insert_to_es(params)
 
     if (page.sitename) then
         page.pagename = string.gsub(page.url, format("/%s/%s/", page.username, page.sitename), "")
-        page.pagetype = "normal"
+        page.page_type = "normal"
     else
-        page.pagetype = "profile"
+        page.page_type = "profile"
     end
 
     es:insertOne(page, function(err, data) end)
