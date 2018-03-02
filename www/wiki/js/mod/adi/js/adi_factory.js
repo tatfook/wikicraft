@@ -71,7 +71,7 @@ define([
 	};
 	
 	app.generateSectionClassName = function(className){
-		return this.design.setting.id + '-' + className;
+		return this.params.design.id + '-' + className;
 	}
 
 	app.generateComponentClassName = function(className){
@@ -84,7 +84,6 @@ define([
 				let combine = util.mixin(params, wikiblock.modParams);
 
 				wikiblock.$scope.params = combine;//app.getEditorParams({}, params);
-				wikiblock.$scope.design = design;
 				wikiblock.$scope.mode   = wikiblock.mode;
 
 				// checkThemeExist();
@@ -92,7 +91,7 @@ define([
 				return component;
 			},
 			params : params,
-			desgin : design
+			design : design
 		}
 	}
 

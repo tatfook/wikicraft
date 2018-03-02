@@ -30,14 +30,13 @@ define([
     app.registerComponent("adiHeader", {
         template : template,
         bindings : {
-            params : "<",
-            design : "<",
+            params : "<"
         },
         controller : function($scope){          
             this.componentMode     = "section";
             this.generateClassName = app.generateSectionClassName.bind(this);
             
-            let designId = this.design.setting.id;
+            let designId = this.params.design.id;
 
             this.css = app.generateClassStyle(designId, styles[designId]);
         }

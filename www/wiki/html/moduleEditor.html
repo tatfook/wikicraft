@@ -617,7 +617,7 @@
         <div role="tabpanel" class="tab-pane" ng-class="{true: 'active'}[show_type == 'editor']" id="Attr">
             <div id="editorSwiper" class="editor-swiper swiper-container swiper-container-horizontal">
                 <div class="swiper-wrapper">
-                    <div class="swiper-slide attr-item swiper-no-swiping" ng-repeat="data in params.params">
+                    <div class="swiper-slide attr-item swiper-no-swiping" ng-if="data.type != 'style'" ng-repeat="data in params.params">
                         <div class="header" ng-class="{false: 'mod-hide'}[!data.is_mod_hide]">
                             <span class="attr-name">{{data.name}}</span>
                             <div class="switch" ng-click="click_hide(data)" ng-class="{true: 'active'}[!data.is_mod_hide]">

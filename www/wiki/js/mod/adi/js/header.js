@@ -6,25 +6,12 @@ define([
 	'wikimod/adi/section/header/header',
 	'./adi_factory',
 ], function (app, header) {
-	let design = {
-		setting : {
-			is_leaf : true,
-			require : true,
-			id      : 'header-style-0',
-		},
-		styles : [
-			{
-				id:'left',
-				// cover: 'http://git.keepwork.com/gitlab_rls_official/keepworkimages/raw/master/official_images/img_1515414062976.jpeg'
-			},
-			{
-				id:'right',
-				// cover: 'http://git.keepwork.com/gitlab_rls_official/keepworkimages/raw/master/official_images/img_1515414083068.jpeg'
-			}
-		]
-	}
 
 	let	params = {
+		design : {
+			type : 'style',
+			id   : 'header-style-0',
+		},
 		menu : {
 			type        : "menu",
 			editable    : true,
@@ -54,7 +41,7 @@ define([
 		}
 	}
 
-	let component = "<adi-header params='params' design='design'></adi-header>";
+	let component = "<adi-header params='params'></adi-header>";
 
-    return app.createModCommand(params, design, component);
+    return app.createModCommand(params, header, component);
 });

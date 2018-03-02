@@ -293,7 +293,6 @@ define([
                     var block = this.block;
                     if (block && typeof(block.wikimod) == "object" && typeof(block.wikimod.mod) == "object") {
                         if (typeof(block.wikimod.mod.params) == "object") {
-                            console.log(block.modParams);
                             this.params = util.mixin(block.wikimod.mod.params, block.modParams);
                             // this.datas  = getOrderDatas(this.params);
                         } else {
@@ -302,7 +301,7 @@ define([
                         }
 
                         if (typeof(block.wikimod.mod.design) == "object") {
-                            this.styles = block.wikimod.mod.design.styles;
+                            this.styles = block.wikimod.mod.design;
                         } else {
                             this.styles = undefined;
                         }
@@ -385,7 +384,7 @@ define([
                     //}
                 }
 
-                moduleEditorParams.setDesignList = function(list) {
+                moduleEditorParams.setDesignList = function() {
                     var self      = this;
                     var styles    = self.styles || [];
                     var modParams = self.params;
@@ -393,10 +392,17 @@ define([
                     self.setShowType("design");
 
                     $scope.designDatas    = [];
-                    $scope.selectedDesign = modParams.design.text;
+                    $scope.selectedDesign = modParams.design.id;
+
+                    for (var key in styles) {
+                        if (styles.hasOwnProperty(key)) {
+                            
+                        }
+                    }
 
                     for (var i = 0; i < styles.length; i++) {
                         var style  = styles[i];
+
                         var design = {
                             "text": style.design.text,
                             "cover": style.design.cover || ""
@@ -405,6 +411,8 @@ define([
                         $scope.designDatas.push(design);
                         // setDesignViewWidth();
                     }
+
+                    console.log($scope.designDatas);
 
                     initSwiper("design");
                 }
@@ -649,7 +657,9 @@ define([
 
             $scope.tabTo = function (tabname) {
                 var moduleEditorParams = config.shareMap.moduleEditorParams || {};
+
                 $scope.show_type = tabname;
+
                 if (tabname == "design") {
                     moduleEditorParams.setDesignList();
                 }
