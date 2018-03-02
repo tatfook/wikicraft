@@ -12,6 +12,7 @@ local elasticsearch = inherit(models.abstract.base, gettable("models.elasticsear
 
 
 -- set host,port and index
+-- it must be called at first
 function elasticsearch:connect(params)
     local params = params or {}
     local es_setting = KEEPWORK["config"][CURRENT_ENV]["wiki"]["es_setting"] or {}
@@ -23,7 +24,7 @@ function elasticsearch:connect(params)
 end
 
 
--- locate indices，types and generate url
+-- locate indices, types and generate url
 function elasticsearch:locator(params)
     local _type = ""
     local _id = ""
@@ -59,7 +60,6 @@ function elasticsearch:insertOne(params, callback)
     local insert_to = location
     params.type = nil
 
-    -- 发送请求
     return self:sendToES({send_to=insert_to, method="POST", form=params}, callback)
 end
 
@@ -132,14 +132,14 @@ end
 function elasticsearch:query_generator(params)
     local query = {}
 
-    -- 单字段搜索
+    -- search in one field
     if (#params.fields == 1) then
         local match = {}
         match[params.fields[1]] = params.q
         match.fuzziness = params.fuzziness
         query = {match = match}
 
-    -- 多字段搜索
+    -- search in multi-fields
     elseif (#params.fields > 1) then
         query = {
         multi_match = {
@@ -150,7 +150,7 @@ function elasticsearch:query_generator(params)
         }
     end
 
-    return {query=query}
+    return {query = query}
 end
 
 
@@ -173,7 +173,6 @@ function elasticsearch:add_extra_search_conditions(params, body)
             end
             body.from = params.from or ((params.page - 1) * body.size)
         end
-
 
         body.timeout = "50ms"
     return body
@@ -259,7 +258,6 @@ function elasticsearch:errors_logger(err, result, info)
 
         log(error_info, true)
     end
-
 
     if (#items > 0) then
         local error_list = {}
