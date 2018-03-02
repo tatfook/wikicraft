@@ -57,6 +57,32 @@
         width: 18%;
         text-align: right;
     }
+
+    @media(max-width: 768px) {
+        .user-certification {
+            border-top: 6px solid #f2f2f2;
+            padding-top: 20px;
+        }
+
+        .user-certification table{
+            table-layout: fixed;
+        }
+
+        .user-certification .certifications-list {
+            margin: 10px 0 20px;
+            border: none;
+            padding: 0 15px;
+        }
+
+        .user-certification td.title{
+            width: 100%;
+        }
+
+        .user-certification td.time{
+            font-size: 12px;
+            width: 75px;
+        }
+    }
 </style>
 <div class="user-certification" ng-controller="certificationCtrl" ng-hide="certifications.length <=0 && !isSelf">
     <h4 class="title">
@@ -76,7 +102,7 @@
         <table ng-show="certifications.length>0" ng-class="{true:'editing-certifications'}[editing]">
             <tr class="certification-item" ng-repeat="certification in certifications track by $index" ng-show="certification">
                 <td class="title ellipsis-1">{{certification.title}}</td>
-                <td class="link ellipsis-1">{{certification.link}}</td>
+                <td class="link ellipsis-1 hidden-xs">{{certification.link}}</td>
                 <td class="time ellipsis-1">{{certification.getDate}}</td>
                 <td class="editing-toolbar" ng-show="editing">
                     <span class="iconfont icon-shezhi" title="{{'设置' | translate}}" ng-click="setCertification($index)"></span>
