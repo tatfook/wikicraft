@@ -109,11 +109,22 @@ define([
 					util.$apply();	
 				}
 
-				$scope.setTheme = function(){
-					for(var item in template.blockList){
-						if(template.blockList[item].cmdName == 'adi/theme'){
-							moduleEditorParams.setBlock(template.blockList[item]);
+				$scope.setTheme = function() {
+					let hasTheme = false;
+
+					for (let item in template.blockList) {
+						if (template.blockList[item].cmdName == 'adi/js/theme') {
+							hasTheme = true;
+							break;
 						}
+					}
+
+					if (hasTheme) {
+						alert(11111)
+						moduleEditorParams.setBlock(template.blockList[item]);
+					} else {
+						alert(22222)
+						app.addThemeBlock();
 					}
 				}
 			}],

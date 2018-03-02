@@ -2756,7 +2756,7 @@ define([
                     });
                 }
 
-                $scope.openGitFile = function () {//{{{
+                $scope.openGitFile = function () {
                     if (!currentPage || !currentPage.url) {
                         return;
                     }
@@ -2774,7 +2774,7 @@ define([
                     }
                 }
 
-                $scope.cmd_newpage = function (hidePageTree, url, event) {//{{{
+                $scope.cmd_newpage = function (hidePageTree, url, event) {
                     if (hidePageTree && !treeNodeMap[url]) {
                         return;
                     }
@@ -3774,6 +3774,8 @@ define([
                     Account.getUser(function(userinfo){
                         $scope.user = userinfo;
                         init();
+
+                        app.objects.editor = editor;
                     }, function(){
                         console.error("loaded error");
                     });

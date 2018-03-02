@@ -33,10 +33,7 @@ define([
             params : "<",
             theme  : "<",
         },
-        controller : function($scope){
-            console.log(this)
-            console.log($scope);
-            
+        controller : function($scope){          
             this.componentMode     = "section";
             this.generateClassName = app.generateSectionClassName.bind(this);
             

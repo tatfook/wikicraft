@@ -336,23 +336,63 @@ define([
 
         // 写文件
         gitlab.writeFile = function (params, cb, errcb) {
-            var self = this;
-            params.path = self.getLongPath(params).substring(1);
-            var url = self.getFileUrlPrefix() + _encodeURIComponent(params.path);
+			var self  = this;
+			
+			params.path           = self.getLongPath(params).substring(1);
             params.commit_message = self.getCommitMessagePrefix() + params.path;
-            params.branch = params.branch || "master";
+			params.branch         = params.branch || "master";
+			
+			var url   = self.getFileUrlPrefix() + _encodeURIComponent(params.path);
+			
+			function updateCommitId (callback){
+				self.getLastCommitId(function(lastCommitId){
+					var params = {
+						username     : self.dataSource.username,
+						sitename     : self.dataSource.sitename,
+						lastCommitId : lastCommitId
+					}
+
+					util.post(config.apiUrlPrefix + 'site_data_source/updateLastCommitIdByName', params, function (data) {
+						if(typeof(callback) == 'function'){
+							callback();
+						}
+					}, function(data){
+						if(typeof(callback) == 'function'){
+							callback();
+						}
+					})
+				});
+			}
+
+			function successCallback (data){
+				updateCommitId(function(){
+					if(typeof(cb) == 'function'){
+						cb(data);
+					}
+				});
+			}
+
+			function errorCallback (data){
+				updateCommitId(function(){
+					if(typeof(cb) == 'function'){
+						errcb(data);
+					}
+				});
+			}
+
             self.httpRequest("GET", url, {path: params.path, ref: params.branch, isShowLoading:params.isShowLoading}, function (data) {
                 // 已存在
 				if (data && data.blob_id) {
 					self.httpRequest("PUT", url, params, function (data) {
-						//console.log(data);
-						cb && cb(data);
-					}, errcb)
+						if(typeof(successCallback) == 'function') {
+							successCallback && successCallback(data);
+						}
+					}, errorCallback)
 				} else {
-					self.httpRequest("POST", url, params, cb, errcb)
+					self.httpRequest("POST", url, params, successCallback, errorCallback)
 				}
             }, function () {
-                self.httpRequest("POST", url, params, cb, errcb)
+                self.httpRequest("POST", url, params, successCallback, errorCallback)
             });
         }
 
@@ -384,7 +424,7 @@ define([
         gitlab.getRawContent = function (params, cb, errcb) {
             var self = this;
 			var apiurl = self.getRawContentUrlPrefix(params);
-			//console.log(apiurl);
+
             var _getRawContent = function () {
 				if (self.apiBaseUrl.indexOf("git.keepwork.com") > 0 || self.apiBaseUrl.indexOf("git.stage.keepwork.com") > 0 || self.apiBaseUrl.indexOf("git.release.keepwork.com") > 0) {
 					$http({

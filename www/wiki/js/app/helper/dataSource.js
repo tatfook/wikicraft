@@ -16,6 +16,7 @@ define([
         },
         getRawContent: function (params, cb, errcb) {
             util.post(config.apiUrlPrefix + 'website_page/getByUrl', {url: '/' + params.url}, function (data) {
+                console.log(data);
                 cb && cb(data && (data.content || ''));
             }, errcb);
         },
@@ -82,6 +83,7 @@ define([
             }
 
             for (var i = 0; i < dataSourceCfgList.length; i++) {
+
                 isInited.push(false);
                 var dataSourceCfg = dataSourceCfgList[i];
                 var dataSourceInstance = dataSource.dataSourceFactory[dataSourceCfg.type];

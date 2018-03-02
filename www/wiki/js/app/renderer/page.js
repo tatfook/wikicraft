@@ -204,7 +204,6 @@ define([
 
 			if (pageinfo && pageinfo.pagename && pageinfo.pagename[0] != "_" ) {
 				var currentDataSource = app.objects.dataSource.getDataSource(pageinfo.username, pageinfo.sitename);
-
 				if (currentDataSource) {
 					// get theme content
 					var themePath = '/' + pageinfo.username + '/' + pageinfo.sitename + '/_theme' + config.pageSuffixName;

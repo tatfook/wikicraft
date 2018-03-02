@@ -9,6 +9,36 @@ define([
 	jss,
 	jssPresetDefault
 ) {
+	let beThemeAddStarted = false;
+
+	function checkThemeExist() {
+		let editor        = app.objects.editor;
+		let mainMdwiki    = app.objects.mainMdwiki;
+		let blockList     = mainMdwiki.getBlockList();
+		let hasTheme      = false;
+		let filePath      = config.hash();
+		let filePathArray = filePath.split("/");
+		let isThemeFile   = filePathArray[3] == '_theme' ? true : false;
+
+		if (!isThemeFile) {
+			for(let item in blockList) {
+				if(blockList[item].cmdName == 'adi/js/theme') {
+					hasTheme = true;
+					break;
+				}
+			}
+		
+			if(!hasTheme && !beThemeAddStarted) {
+				beThemeAddStarted = true;
+
+				app.addThemeBlock(function(){
+					mainMdwiki.render(editor.getValue(), undefined, true);
+					beThemeAddStarted = false;
+				});
+			}
+		}
+	}
+	
 	app.isEditMode = function(){
 		if(app.objects.mainMdwiki && app.objects.mainMdwiki.mode == 'editor'){
 			return true;
@@ -55,6 +85,8 @@ define([
 
 				wikiblock.$scope.params = combine;//app.getEditorParams({}, params);
 				wikiblock.$scope.mode   = wikiblock.mode;
+
+				checkThemeExist();
 
 				return component;
 			},

@@ -144,7 +144,7 @@ define([
 				app.objects.dataSource = dataSource;
 				app.objects.mainMdwiki = app.objects.mainMdwiki || md;
 				app.objects.toolbase   = toolbase;
-
+                
 				app.ng_objects.$rootScope = $rootScope;
 				app.ng_objects.$compile   = $compile;
 				app.ng_objects.$http      = $http;
@@ -217,7 +217,42 @@ define([
 				//$anchorScroll.yOffset = 100;
 				//md.registerRenderAfterCallback("$anchorScroll", function(){
 					//$anchorScroll();
-				//});
+                //});
+                
+                app.addThemeBlock = function(callback){
+                    let themeTemplate     = "```@adi/js/theme\n```\n";
+                    let pageinfo          = app.ng_objects.$rootScope.pageinfo;
+                    let currentDataSource = app.objects.dataSource.getDataSource(pageinfo.username, pageinfo.sitename);
+                    
+                    function generateTheme(content){
+                        let newContent;
+
+                        if (content) {
+                            newContent = themeTemplate + content;
+                        } else {
+                            newContent = themeTemplate;
+                        }
+                            
+                        currentDataSource.writeFile({path: themePath, content: newContent}, function(){
+                            if(typeof(callback) == 'function'){
+                                callback();
+                            }
+                        }, function(){});
+                    }
+
+                    if (currentDataSource) {
+                        var themePath = '/' + pageinfo.username + '/' + pageinfo.sitename + '/_theme' + config.pageSuffixName;
+                        
+                        currentDataSource.getRawContent({
+                            path          : themePath,
+                            isShowLoading : false
+                        }, function (content) {
+                            generateTheme(content);
+                        }, function () {
+                            generateTheme(content);
+                        })
+                    }
+                }
             }
 
             // 底部高度自适应
