@@ -82,32 +82,32 @@ define([
                 }
             }
 
-            function getOrderDatas(editorParams) {
-                var datas = [];
+            // function getOrderDatas(editorParams) {
+            //     var datas = [];
 
-                editorParams = editorParams || {};
+            //     editorParams = editorParams || {};
 
-                for (var key in editorParams) {
-                    if (editorParams[key].$data) {
-                        datas.push(editorParams[key]);
-                    }
-                }
+            //     for (var key in editorParams) {
+            //         if (editorParams[key].$data) {
+            //             datas.push(editorParams[key]);
+            //         }
+            //     }
 
-                for (var i = 0; i < datas.length; i++) {
-                    for (var j = i + 1; j < datas.length; j++) {
-                        datas[i].$data.order = datas[i].$data.order || 0;
-                        datas[j].$data.order = datas[j].$data.order || 0;
+            //     for (var i = 0; i < datas.length; i++) {
+            //         for (var j = i + 1; j < datas.length; j++) {
+            //             datas[i].$data.order = datas[i].$data.order || 0;
+            //             datas[j].$data.order = datas[j].$data.order || 0;
                         
-                        if (datas[i].$data.order < datas[j].$data.order) {
-                            var tmp = datas[i];
-                            datas[i] = datas[j];
-                            datas[j] = tmp;
-                        }
-                    }
-                }
+            //             if (datas[i].$data.order < datas[j].$data.order) {
+            //                 var tmp = datas[i];
+            //                 datas[i] = datas[j];
+            //                 datas[j] = tmp;
+            //             }
+            //         }
+            //     }
 
-                return datas;
-            }
+            //     return datas;
+            // }
 
             // 转换数据格式
             function get_order_list(obj){
@@ -293,16 +293,22 @@ define([
                     var block = this.block;
 
                     if (block && typeof(block.wikimod) == "object" && typeof(block.wikimod.mod) == "object") {
-                        if (typeof(block.wikimod.mod.getEditorParams) == "object") {
-                            this.params = app.getEditorParams(block.modParams);
-                            this.datas  = getOrderDatas(this.params);
+                        if (typeof(block.wikimod.mod.params) == "object") {
+                            this.params = block.wikimod.mod.params;
+                            console.log(this.params);
+                            console.log(1111111)
+
+                            for(let item in this.params){
+                                console.log(item);
+                            }
+                            // this.datas  = getOrderDatas(this.params);
                         } else {
                             this.params = undefined;
                             this.datas  = undefined;
                         }
 
-                        if (typeof(block.wikimod.mod.getStyleList) == "object") {
-                            this.styles = block.wikimod.mod.getStyleList;
+                        if (typeof(block.wikimod.mod.styles) == "object") {
+                            this.styles = block.wikimod.mod.styles;
                         } else {
                             this.styles = undefined;
                         }
@@ -314,6 +320,7 @@ define([
                 }
 
                 moduleEditorParams.setBlock = function(block) {
+                    console.log(block);
                     if (!block.token) {
                         return;
                     }

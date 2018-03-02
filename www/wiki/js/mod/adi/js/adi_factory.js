@@ -90,8 +90,8 @@ define([
 
 				return component;
 			},
-			getEditorParams : params,
-			getStyleLists   : styles
+			params : params,
+			styles : styles
 		}
 	}
 

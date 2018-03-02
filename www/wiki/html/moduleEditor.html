@@ -617,7 +617,7 @@
         <div role="tabpanel" class="tab-pane" ng-class="{true: 'active'}[show_type == 'editor']" id="Attr">
             <div id="editorSwiper" class="editor-swiper swiper-container swiper-container-horizontal">
                 <div class="swiper-wrapper">
-                    <div id="{{data.$data.id}}" class="swiper-slide attr-item swiper-no-swiping" ng-repeat="data in params.datas">
+                    <div id="{{data.$data.id}}" class="swiper-slide attr-item swiper-no-swiping" ng-repeat="data in []">
                         <div class="header" ng-class="{false: 'mod-hide'}[!data.is_mod_hide]">
                             <span class="attr-name">{{data.$data.name}}</span>
                             <div class="switch" ng-click="click_hide(data)" ng-class="{true: 'active'}[!data.is_mod_hide]">
@@ -683,7 +683,7 @@
                                 </div>
                             </div>
                             <!-- 菜单编辑 -->
-                            <div ng-if="data.$data.type == 'menu'" class="center-center">
+                            <div ng-if="data.type == 'menu'" class="center-center">
                                 <button class="btn menu-btn" ng-click="openMenuEditor(data)" translate="打开菜单编辑器"></button>
                             </div>
                             <!-- 绘图板编辑 -->

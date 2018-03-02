@@ -168,6 +168,7 @@ define([
 					break;
 				}
 			}
+			
 			if (!block || !block.isWikiBlock) {
 				moduleEditorParams.setShowType("knowledge");
 				return;
