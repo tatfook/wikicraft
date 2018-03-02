@@ -223,6 +223,10 @@ define([
             }
         }
 
+        $scope.isTagSearched = function(tag, highlightTags) {
+            return (highlightTags.indexOf("<span>" + tag + "</span>") < 0) ? false : true;
+        }
+
         $scope.$watch('$viewContentLoaded', init);
 
         $(document).keyup(function (event) {

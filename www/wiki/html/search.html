@@ -207,6 +207,10 @@
         cursor: pointer;
     }
 
+    .search-result .tags>span.text-danger{
+        color: #FE3266;
+    }
+
     .search-result .site-item {
         display: flex;
         position: relative;
@@ -310,12 +314,19 @@
                 <div class="content">
                     <div class="content-item" ng-repeat="item in searchResult.hits">
                         <h3>
-                            <a href="{{item.url}}">{{item.sitename || translate("站点名")}}——{{item.pagename || translate("页面名")}}</a>
+                            <a href="{{item.url}}">
+                                <span ng-class="{true: 'text-danger'}[item.highlight.sitename.length > 0]">{{item.sitename || translate("站点名")}}</span> 
+                                ——
+                                <span ng-class="{true: 'text-danger'}[item.highlight.pagename.length > 0]">{{item.pagename || translate("页面名")}}</span>
+                            </a>
                         </h3>
                         <p class="info">
                             <a href="{{item.url}}">{{item.url}}</a>
                         </p>
                         <p class="search-result-content" ng-repeat="content in item.highlight.content" ng-bind-html="content"></p>
+                        <p class="tags" ng-show="item.tags.length > 0">
+                            <span ng-repeat="tag in item.tags track by $index" ng-class="{true: 'text-danger'}[item.highlight.tags.length > 0 && isTagSearched(tag, item.highlight.tags)]">{{tag}}</span>
+                        </p>
                     </div>
                 </div>
             </div>
