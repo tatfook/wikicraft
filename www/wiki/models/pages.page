@@ -345,7 +345,7 @@ function pages:insert_to_es(params)
         id = params.id,
         username = username,
         sitename = sitename,
-        pagename = string.gsub(page.url, format("/%s/%s/", username, sitename), ""),
+        pagename = string.gsub(params.url, format("/%s/%s/", username, sitename), ""),
         url = params.url,
         tags = params.tags or {},
         content = self:md_to_string(params.content) or "",
@@ -476,3 +476,17 @@ function pages:wrap_search_result(result)
     return wrapped_result
 end
 
+
+function pages:update_visibility_to_es(params)
+    local site_url = self:get_site_url(params)
+    self:db():find({siteUrl=site_url, _id={gt=0,limit=99999}}, resume)
+    local err, pages = yield()
+    if (not pages) then return nil end
+
+    local bulk_data = ""
+    for i, page in ipairs(pages) do
+        bulk_data = bulk_data .. format('{"update":{"_id":"%d"}}', page._id) .. "\n"
+        bulk_data = bulk_data .. format('{"doc":{"visibility":"%s"}}', params.visibility) .. "\n"
+    end
+    es:bulk({data=bulk_data,type="pages"}, function(err, data) end)
+end

@@ -218,6 +218,10 @@ function website:api_setVisibility(params)
 	local siteDataSourceDB = models.site_data_source:new()
 	siteDataSourceDB:db():updateOne({["+username+sitename"]={params.username, params.sitename}}, {visibility=params.visibility}, resume)	
 	yield()
+
+	local pages = models.pages:new()
+	pages:update_visibility_to_es(params)
+
 	self:db():updateOne({["+username+name"]={params.username, params.sitename}}, {visibility=params.visibility}, resume)
 	return errors:wrap(yield())
 end
