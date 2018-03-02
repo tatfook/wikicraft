@@ -444,16 +444,25 @@ define([
 						var callback = function() {
 							if (!$scope.user || $scope.user.username != data.userinfo.username) {
 								userDataSource.init(data.userinfo.dataSource, data.userinfo.defaultDataSourceSitename);
-							}
+                            }
+                            
 							userDataSource.registerInitFinishCallback(function () {
 								var currentDataSource = dataSource.getDataSource($rootScope.pageinfo.username, $rootScope.pageinfo.sitename);
 								var renderContent = function (content) {
-									$rootScope.$broadcast('userpageLoaded',{});
+                                    $rootScope.$broadcast('userpageLoaded',{});
+                                    
                                     if (content && (data.siteinfo.sensitiveWordLevel & 1) <= 0){
                                         //content = filterSensitive(content) || content;
                                     }
-									content = (content!=undefined) ? md.render(content) : notfoundHtmlContent;
-									util.html('#__UserSitePageContent__', content, $scope);
+
+                                    if (content) {
+                                        md.render(content, undefined, true, function (htmlContent) {
+                                            util.html('#__UserSitePageContent__', htmlContent, $scope);
+                                        }) 
+                                    } else {
+                                        util.html('#__UserSitePageContent__', notfoundHtmlContent, $scope);
+                                    }
+                                    
 									//config.loading.hideLoading();
 								};
 								//if (config.isLocal()) {

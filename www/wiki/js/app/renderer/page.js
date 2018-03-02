@@ -178,7 +178,7 @@ define([
 		}
 
 		// 渲染
-		md.render = function (text, theme, isLoadTheme) {
+		md.render = function (text, theme, isLoadTheme, callback) {
 			function _render(text, theme) {
 				md.parse(text, theme);
 
@@ -194,7 +194,13 @@ define([
 
 				md.bindContainer();
 
-				return '<wiki-block-container data-template="true" data-params="' + encodeMdName + '"></wiki-block-container>';
+				var wikiBlockContainer = '<wiki-block-container data-template="true" data-params="' + encodeMdName + '"></wiki-block-container>';
+
+				if (typeof(callback) == "function") {
+					callback(wikiBlockContainer);
+				}
+
+				return wikiBlockContainer;
 			}
 
 			if (!isLoadTheme) {

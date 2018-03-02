@@ -206,7 +206,7 @@
 			if (this.routeMap[rawPathname]) {
 				pageurl = this.routeMap[rawPathname];  // 优先配置路由
 			}
-			
+
 			if (pageurl) {
 				require([pageurl], function (mainContent) {
 					if (typeof(mainContent) == "object") {

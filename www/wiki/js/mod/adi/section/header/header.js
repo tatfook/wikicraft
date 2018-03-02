@@ -31,13 +31,15 @@ define([
         template : template,
         bindings : {
             params : "<",
-            theme  : "<",
+            design : "<",
         },
         controller : function($scope){          
             this.componentMode     = "section";
             this.generateClassName = app.generateSectionClassName.bind(this);
             
-            this.css = app.generateClassStyle(this.params.desgin.id, styles[this.params.desgin.id]);
+            let designId = this.design.setting.id;
+
+            this.css = app.generateClassStyle(designId, styles[designId]);
         }
     });
 

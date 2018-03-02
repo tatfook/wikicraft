@@ -111,20 +111,25 @@ define([
 
 				$scope.setTheme = function() {
 					let hasTheme = false;
+					let themeBlock;
 
 					for (let item in template.blockList) {
 						if (template.blockList[item].cmdName == 'adi/js/theme') {
-							hasTheme = true;
+							hasTheme   = true;
+							themeBlock = template.blockList[item]; 
 							break;
 						}
 					}
 
 					if (hasTheme) {
-						alert(11111)
-						moduleEditorParams.setBlock(template.blockList[item]);
-					} else {
-						alert(22222)
-						app.addThemeBlock();
+						moduleEditorParams.setBlock(themeBlock);
+					}else{
+						app.addThemeBlock(function(){
+							let editor        = app.objects.editor;
+							let mainMdwiki    = app.objects.mainMdwiki;
+
+							$scope.setTheme();
+						});
 					}
 				}
 			}],

@@ -2442,7 +2442,7 @@ define([
                             //}
                             
                             mdwikiObj.render(text, undefined, true);
-
+                            
                             //var toLineInfo = changeObj && editor.lineInfo(changeObj.to.line);
                             //moduleEditorParams.show_type = "knowledge";
                             //moduleEditorParams.setKnowledge(toLineInfo ? toLineInfo.text:"");

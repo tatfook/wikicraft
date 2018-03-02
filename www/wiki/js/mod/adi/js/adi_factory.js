@@ -27,7 +27,7 @@ define([
 					break;
 				}
 			}
-		
+
 			if(!hasTheme && !beThemeAddStarted) {
 				beThemeAddStarted = true;
 
@@ -71,45 +71,46 @@ define([
 	};
 	
 	app.generateSectionClassName = function(className){
-		return this.params.desgin.id + '-' + className;
+		return this.design.setting.id + '-' + className;
 	}
 
 	app.generateComponentClassName = function(className){
 		return this.componentStyleName + '-' + className;
 	}
 	
-	app.createModCommand = function(params, styles, component){
+	app.createModCommand = function(params, design, component){
 		return {
 			render : function(wikiblock){
 				let combine = util.mixin(params, wikiblock.modParams);
 
 				wikiblock.$scope.params = combine;//app.getEditorParams({}, params);
+				wikiblock.$scope.design = design;
 				wikiblock.$scope.mode   = wikiblock.mode;
 
-				checkThemeExist();
+				// checkThemeExist();
 
 				return component;
 			},
 			params : params,
-			styles : styles
+			desgin : design
 		}
 	}
 
-	app.getEditorParams = function(modParams, params_template) {
-		modParams = modParams || {};
+	// app.getEditorParams = function(modParams, params_template) {
+	// 	modParams = modParams || {};
 
-		for (var key in params_template) {
-			if (key == "design") {
-				modParams.design      = modParams.design || {};
-				modParams.design.text = modParams.design.text || params_template[key].text;
-			} else {
-				modParams[key]          = modParams[key] || {};
-				modParams[key]["$data"] = params_template[key];
-				modParams[key]["text"]  = modParams[key]["text"] || params_template[key]["text"];
-			}
-		}
+	// 	for (var key in params_template) {
+	// 		if (key == "design") {
+	// 			modParams.design      = modParams.design || {};
+	// 			modParams.design.text = modParams.design.text || params_template[key].text;
+	// 		} else {
+	// 			modParams[key]          = modParams[key] || {};
+	// 			modParams[key]["$data"] = params_template[key];
+	// 			modParams[key]["text"]  = modParams[key]["text"] || params_template[key]["text"];
+	// 		}
+	// 	}
 		
-		return modParams;
-	}
+	// 	return modParams;
+	// }
 });
 

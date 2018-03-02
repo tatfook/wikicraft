@@ -6,25 +6,26 @@ define([
 	'wikimod/adi/section/header/header',
 	'./adi_factory',
 ], function (app, header) {
-	let desgin = [
-		{
-			id:'left',
-			// cover: 'http://git.keepwork.com/gitlab_rls_official/keepworkimages/raw/master/official_images/img_1515414062976.jpeg'
-		},
-		{
-			id:'right',
-			// cover: 'http://git.keepwork.com/gitlab_rls_official/keepworkimages/raw/master/official_images/img_1515414083068.jpeg'
-		}
-	];
-
-	let	params = {
-		desgin    : {
+	let design = {
+		setting : {
 			is_leaf : true,
 			require : true,
 			id      : 'header-style-0',
 		},
+		styles : [
+			{
+				id:'left',
+				// cover: 'http://git.keepwork.com/gitlab_rls_official/keepworkimages/raw/master/official_images/img_1515414062976.jpeg'
+			},
+			{
+				id:'right',
+				// cover: 'http://git.keepwork.com/gitlab_rls_official/keepworkimages/raw/master/official_images/img_1515414083068.jpeg'
+			}
+		]
+	}
+
+	let	params = {
 		menu : {
-			is_leaf     : true,
 			type        : "menu",
 			editable    : true,
 			is_mod_hide : false,
@@ -43,9 +44,17 @@ define([
 				}
 			]
 		},
+		text : {
+			type        : "text",
+			editable    : true,
+			is_mod_hide : false,
+			name        : "文本",
+			require     : true,
+			text        : "这个测试的文字"
+		}
 	}
 
-	let component = "<adi-header params='params'></adi-header>";
+	let component = "<adi-header params='params' design='design'></adi-header>";
 
-    return app.createModCommand(params, desgin, component);
+    return app.createModCommand(params, design, component);
 });

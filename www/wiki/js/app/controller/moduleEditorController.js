@@ -110,52 +110,52 @@ define([
             // }
 
             // 转换数据格式
-            function get_order_list(obj){
-                var list = [];
+            // function get_order_list(obj){
+            //     var list = [];
 
-                for (var key in obj) {
-                    if (typeof(obj[key]) == "object" && obj[key].is_leaf && obj[key].editable) {
-                        list.push(obj[key]);
-                    }
-                }
+            //     for (var key in obj) {
+            //         if (typeof(obj[key]) == "object" && obj[key].is_leaf && obj[key].editable) {
+            //             list.push(obj[key]);
+            //         }
+            //     }
 
-                for (var i = 0; i < list.length; i++) {
-                    for (var j = i+1; j < list.length; j++) {
-                        var io = list[i].order || 9999;
-                        var jo = list[j].order || 9999;
+            //     for (var i = 0; i < list.length; i++) {
+            //         for (var j = i+1; j < list.length; j++) {
+            //             var io = list[i].order || 9999;
+            //             var jo = list[j].order || 9999;
 
-                        if (io > jo) {
-                            var temp = list[j];
+            //             if (io > jo) {
+            //                 var temp = list[j];
 
-                            list[j] = list[i];
-                            list[i] = temp;
-                        }
-                    }
-                }
+            //                 list[j] = list[i];
+            //                 list[i] = temp;
+            //             }
+            //         }
+            //     }
 
-                var newList = [];
+            //     var newList = [];
 
-                for (var i = 0; i < list.length; i++) {
-                    var obj = list[i];
+            //     for (var i = 0; i < list.length; i++) {
+            //         var obj = list[i];
 
-                    if (obj.type == "simple_list") {
-                        for (var j = 0; j < obj.list.length; j++) {
-                            if (obj.list[j].is_leaf && obj.list[j].editable){
-                                newList.push(obj.list[j]);
-                            }
-                        }
-                    } else if(obj.type == "list"){
-                        for (var j = 0; j < obj.list.length; j++) {
-                            var temp = obj.list[j];
-                            newList = newList.concat(get_order_list(temp));
-                        }
-                    } else {
-                        newList.push(obj);
-                    }
-                }
+            //         if (obj.type == "simple_list") {
+            //             for (var j = 0; j < obj.list.length; j++) {
+            //                 if (obj.list[j].is_leaf && obj.list[j].editable){
+            //                     newList.push(obj.list[j]);
+            //                 }
+            //             }
+            //         } else if(obj.type == "list"){
+            //             for (var j = 0; j < obj.list.length; j++) {
+            //                 var temp = obj.list[j];
+            //                 newList = newList.concat(get_order_list(temp));
+            //             }
+            //         } else {
+            //             newList.push(obj);
+            //         }
+            //     }
 
-                return newList;
-            }
+            //     return newList;
+            // }
 
             function applyModParams (block, modParams) {
                 block.applyModParams(modParams);
@@ -291,24 +291,18 @@ define([
                     }
 
                     var block = this.block;
-
                     if (block && typeof(block.wikimod) == "object" && typeof(block.wikimod.mod) == "object") {
                         if (typeof(block.wikimod.mod.params) == "object") {
-                            this.params = block.wikimod.mod.params;
-                            console.log(this.params);
-                            console.log(1111111)
-
-                            for(let item in this.params){
-                                console.log(item);
-                            }
+                            console.log(block.modParams);
+                            this.params = util.mixin(block.wikimod.mod.params, block.modParams);
                             // this.datas  = getOrderDatas(this.params);
                         } else {
                             this.params = undefined;
                             this.datas  = undefined;
                         }
 
-                        if (typeof(block.wikimod.mod.styles) == "object") {
-                            this.styles = block.wikimod.mod.styles;
+                        if (typeof(block.wikimod.mod.design) == "object") {
+                            this.styles = block.wikimod.mod.design.styles;
                         } else {
                             this.styles = undefined;
                         }
@@ -320,8 +314,7 @@ define([
                 }
 
                 moduleEditorParams.setBlock = function(block) {
-                    console.log(block);
-                    if (!block.token) {
+                    if (!block.token || !block.wikimod) {
                         return;
                     }
 
@@ -341,12 +334,6 @@ define([
                     var blockLineNumTo   = self.block.token.to;
 
                     setCodePosition(blockLineNumFrom, blockLineNumTo);
-
-                    if(self.styles && self.styles.length > 0){
-                        $scope.hasStyle = true;
-                    }else{
-                        $scope.hasStyle = false;
-                    }
 
                     self.setShowType("editor");
 
@@ -455,21 +442,18 @@ define([
 
             // 点击菜单
             $scope.openMenuEditor = function(data) {
-                // console.log(data);
                 config.services.datatreeEditorModal({
                     title: '菜单编辑器',
                     keys: [
                         {key:'url', name: '链接', placeholder:"请输入链接"},
                     ],
                     showLocation: true,
-                    datatree: data.text
+                    datatree: data.list
                 }, function(result){
-                    data.text = result;
+                    data.list = result;
                     //applyAttrChange();
                     util.throttle(applyAttrChange);
-                    // console.log(result);
                 }, function(err){
-                    // console.log(err);
                 });
             }
 
@@ -610,19 +594,21 @@ define([
             }
 
             $scope.getLinkTarget = function(data){
-                if (!data.target) {
-                    data.target = "_blank";
-                }
-                var linkTarget;
-                switch (data.target) {
-                    case "_self":
-                        linkTarget = "本窗口打开";
-                        break;
-                    default:
-                        linkTarget = "新窗口打开";
-                        break;
-                }
-                return linkTarget;
+                // if (!data.target) {
+                //     data.target = "_blank";
+                // }
+
+                // var linkTarget;
+
+                // switch (data.target) {
+                //     case "_self":
+                //         linkTarget = "本窗口打开";
+                //         break;
+                //     default:
+                //         linkTarget = "新窗口打开";
+                //         break;
+                // }
+                // return linkTarget;
             }
 
             $scope.setLinkTarget = function(data, value){
