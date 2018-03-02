@@ -331,20 +331,21 @@ end
 
 function pages:insert_to_es(params)
     local username, sitename = self:get_username_and_sitename(params.url)
+    if (not sitename) then return nil end
+
     local website_model = models.website:new()
     params.visibility = "public"
 
-    if (sitename) then
-        website_model:db():findOne({["+username+sitename"] = {username, sitename}}, resume)
-        local err, site = yield()
-        if (site) then params.visibility = site.visibility or "public" end
-    end
+    website_model:db():findOne({["+username+sitename"] = {username, sitename}}, resume)
+    local err, site = yield()
+    if (site) then params.visibility = site.visibility or "public" end
 
     local page = {
         type = "pages",
         id = params.id,
         username = username,
         sitename = sitename,
+        pagename = string.gsub(page.url, format("/%s/%s/", username, sitename), ""),
         url = params.url,
         tags = params.tags or {},
         content = self:md_to_string(params.content) or "",
@@ -352,27 +353,20 @@ function pages:insert_to_es(params)
         visibility = params.visibility,
     }
 
-    if (page.sitename) then
-        page.pagename = string.gsub(page.url, format("/%s/%s/", page.username, page.sitename), "")
-        page.page_type = "normal"
-    else
-        page.page_type = "profile"
-    end
-
     es:insertOne(page, function(err, data) end)
 end
 
 
 function pages:update_to_es(params)
     local username, sitename = self:get_username_and_sitename(params.url)
+    if (not sitename) then return nil end
+
     local website_model = models.website:new()
     params.visibility = "public"
 
-    if (sitename) then
-        website_model:db():findOne({["+username+sitename"] = {username, sitename}}, resume)
-        local err, site = yield()
-        if (site) then params.visibility = site.visibility or "public" end
-    end
+    website_model:db():findOne({["+username+sitename"] = {username, sitename}}, resume)
+    local err, site = yield()
+    if (site) then params.visibility = site.visibility or "public" end
 
     local page = {
         type = "pages",
@@ -445,13 +439,12 @@ function pages:search_validator(params)
             fuzziness = "AUTO",
         }
 
-        if (params.username) then
-            clean_data.post_filter = {
-                term = {
-                    username = params.username
-                }
+        clean_data.post_filter = {
+            term = {
+                username = params.username,
+                visibility = "public",
             }
-        end
+        }
 
         if (clean_data.size > 500) then clean_data.size = 500 end
     end
@@ -472,12 +465,10 @@ function pages:wrap_search_result(result)
 
     local hits = {}
     for i, hit in ipairs(result.data.hits.hits) do
-        if (hit._source.visibility ~= "private") then
-            hit._source.highlight = hit.highlight
-        else
-            hit._source.tags = {}
-        end
+        hit._source.highlight = hit.highlight
         hit._source.content = nil
+        hit._source.update_time = nil
+        hit._source.visibility = nil
         hits[#hits + 1] = hit._source
     end
 
