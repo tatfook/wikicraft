@@ -105,6 +105,7 @@
         'html': '../html',
 		'css': '../assets/css',
 		"renderer": "app/renderer",
+		"modeditor": "app/modeditor",
 
 		'helper/sensitiveWord':"empty:"
     },

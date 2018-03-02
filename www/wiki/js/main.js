@@ -89,6 +89,7 @@
 			'css': config.cssPath,
 			'wikimod': config.wikiModPath,
 			"renderer": renderPathPrefix,
+			"modeditor": jsPathPrefix + "app/modeditor",
 
 			// mod dir
 			'mod': config.modPath
