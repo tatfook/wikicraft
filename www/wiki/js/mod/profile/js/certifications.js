@@ -134,6 +134,7 @@ define([
 
         app.registerController("addCertificationModalCtrl", ['$rootScope', '$scope', '$uibModalInstance', '$translate', 'Account', 'modal', function ($rootScope, $scope, $uibModalInstance, $translate, Account, modal) {
             $scope.addingCertification = $scope.addingCertification || {};
+            $scope.isGetDatePickerShow = false;
             $scope.cancel = function(){
                 $uibModalInstance.dismiss("cancel");
             }
@@ -163,6 +164,9 @@ define([
                     return;
                 }
                 $scope.errMsg = "";
+                var result = $scope.addingCertification,
+                    getDateTemp = result.getDate;
+                result.getDate = getDateTemp ? util.formatDate(getDateTemp) : "";
                 var requiredAttrs = [{
                     'key': 'title',
                     'value': $translate.instant('简介')
@@ -174,9 +178,14 @@ define([
                 var requiredResult = isRequiredEmptyAttr(requiredAttrs); 
                 if (requiredResult.boolResult) {
                     $scope.errMsg = requiredResult.attr + $translate.instant("不可为空");
+                    result.getDate = getDateTemp;
                     return;
                 }
                 $uibModalInstance.close($scope.addingCertification);
+            }
+
+            $scope.setDatePickVissibility = function(key) {
+                $scope.isGetDatePickerShow = true;
             }
         }]);
     }
