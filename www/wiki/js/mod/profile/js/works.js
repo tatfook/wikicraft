@@ -2,7 +2,7 @@
  * @Author: ZhangKaitlyn 
  * @Date: 2018-01-19
  * @Last Modified by: none
- * @Last Modified time: 2018-02-08 15:39:12
+ * @Last Modified time: 2018-02-27 17:44:58
  */
 define([
     'app', 
@@ -13,7 +13,7 @@ define([
     'cropper'
 ], function (app, util, mdconf, htmlContent, addWorkModalHtmlContent) {
     function registerController(wikiBlock) {
-        app.registerController("worksCtrl", ['$rootScope', '$scope','$uibModal', '$translate', function ($rootScope, $scope, $uibModal, $translate) {
+        app.registerController("worksCtrl", ['$rootScope', '$scope','$uibModal', '$translate', 'Account', 'modal', function ($rootScope, $scope, $uibModal, $translate, Account, modal) {
             const modCmd = "```@profile/js/works";
             const kepeworkLink = "keepwork.com";
             const keepworkReg = new RegExp(kepeworkLink);
@@ -104,11 +104,20 @@ define([
             }
 
             $scope.showModal = function(index){
+                if (!Account.isAuthenticated()) {
+                    $rootScope.$broadcast("onLogout", "");
+                    modal('controller/loginController', {
+                        controller: 'loginController',
+                        size: 'lg',
+                        backdrop: true
+                    });
+                    return;
+                }
                 $scope.addingWork = angular.copy($scope.works[index]);
                 $uibModal.open({
                     template: addWorkModalHtmlContent,
                     controller: "addWorkModalCtrl",
-                    appendTo: $(".user-works .modal-parent"),
+                    openedClass: "add-modal",
                     scope: $scope
                 }).result.then(function(result){
                     console.log(index);
@@ -162,7 +171,7 @@ define([
             };
         }]);
 
-        app.registerController("addWorkModalCtrl", ['$scope','$uibModal', '$uibModalInstance', '$translate', function ($scope, $uibModal, $uibModalInstance, $translate) {
+        app.registerController("addWorkModalCtrl", ['$rootScope', '$scope','$uibModal', '$uibModalInstance', '$translate', 'Account', 'modal', function ($rootScope, $scope, $uibModal, $uibModalInstance, $translate, Account, modal) {
             $scope.addingWork = $scope.addingWork || {};
             $scope.cancel = function(){
                 $scope.addingWork = {};
@@ -203,6 +212,15 @@ define([
             }
 
             $scope.submitAddingWork = function(){
+                if (!Account.isAuthenticated()) {
+                    $rootScope.$broadcast("onLogout", "");
+                    modal('controller/loginController', {
+                        controller: 'loginController',
+                        size: 'lg',
+                        backdrop: true
+                    });
+                    return;
+                }
                 $scope.errMsg = "";
                 var requiredAttrs = [{
                     'key': 'title',

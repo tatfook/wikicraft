@@ -117,6 +117,14 @@ define([
                 getUserProfileData();
             });
         }
+
+        var initState = function() {
+            // isSelf: 自己
+            $rootScope.isSelf = ($scope.user && $scope.userinfo && ($scope.user._id == $scope.userinfo._id));
+            // isOthers: 他人(不包括自己和未登录)
+            $rootScope.isOthers = ($scope.user && $scope.userinfo && ($scope.user._id != $scope.userinfo._id));
+        }
+
         function init(userinfo) {
             var username = $scope.urlObj.username.toLowerCase();;
             if (!username && userinfo && userinfo.username) {
@@ -157,12 +165,7 @@ define([
                 // $scope.trendsCount = data.trendsObj.total;
                 // $scope.active = data.activeObj;
                 // contributionCalendar("contributeCalendar",$scope.active);
-
-                // isSelf: 自己
-                $rootScope.isSelf = ($scope.user && $scope.userinfo && ($scope.user._id == $scope.userinfo._id));
-                // isOthers: 他人(不包括自己和未登录)
-                $rootScope.isOthers = ($scope.user && $scope.userinfo && ($scope.user._id != $scope.userinfo._id));
-
+                initState();
                 if ($scope.user && $scope.user._id) {
                     util.post(config.apiUrlPrefix + "user_fans/isAttented", {userId:$scope.userinfo._id, fansUserId:$scope.user._id}, function (data) {
                         $scope.userinfo.concerned=data;
@@ -171,6 +174,7 @@ define([
             });
         }
 
+        var errorCount = 0;
         var saveNewProfileToGit = function(){
             var content = "";
             var subPartContent = "";
@@ -187,8 +191,14 @@ define([
                 path: profileDataPath,
                 content: content
             }, function(){
+                errorCount = 0;
                 Message.info("修改成功");
             }, function(){
+                errorCount ++;
+                if (errorCount > 3) {
+                    Message.danger("修改失败");
+                    return;
+                }
                 saveNewProfileToGit();
                 console.log("修改失败");
             });
@@ -209,6 +219,15 @@ define([
             }
             saveNewProfileToGit();
         });
+
+        $scope.$on("onLogout", function(e) {
+            $rootScope.isSelf = false;
+            $rootScope.isOthers = false;
+        });
+
+        $scope.$on("onUserProfile", function(e) {
+            initState();
+        })
 
         $scope.$watch('$viewContentLoaded', function () {
             //console.log("------------------init user controller----------------------");

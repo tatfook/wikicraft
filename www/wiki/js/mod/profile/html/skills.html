@@ -203,7 +203,7 @@
             <i class="iconfont icon-tianjia" ng-click="showSkillModal()"></i>
         </p>
     </div>
-    <div class="main-skill clearfix" ng-show="skills.length>0 && !editing">
+    <div class="main-skill clearfix" ng-show="skills.length>0 && !editing || !isSelf">
         <ul class="col-sm-6 v-skill-ul">
             <li class="clearfix v-li" ng-repeat="skill in skills | limitTo: 5 track by $index">
                 <span class="title">{{skill.title}}</span>
@@ -215,7 +215,7 @@
         <div class="col-sm-6 skill-radar hidden-xs" id="skillRadar">
         </div>
     </div>
-    <div class="other-skill" ng-show="skills.length > 5 && !editing">
+    <div class="other-skill" ng-show="skills.length > 5 && !editing || !isSelf">
         <ul class="h-skill-ul clearfix">
             <li class="clearfix h-li" ng-repeat="skill in skills | limitTo: (5 - skills.length) track by $index">
                 <span class="title">{{skill.title}}</span>
@@ -230,7 +230,7 @@
             </div>
         </div>
     </div>
-    <div class="editing-skill" ng-show="editing">
+    <div class="editing-skill" ng-show="editing && isSelf">
         <ul class="v-skill-ul editing-v-skill-ul">
             <li class="clearfix v-li" ng-class="{true:'sub-skill'}[$index >4]" ng-repeat="skill in skills track by $index">
                 <span class="title">{{skill.title}}</span>
