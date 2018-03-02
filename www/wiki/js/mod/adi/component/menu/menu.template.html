@@ -2,9 +2,10 @@
 <edit-selector>
     <ul class="bgcolor-0" ng-class="$ctrl.generateComponentClassName('list')">
         <li ng-repeat="item in $ctrl.menu.list">
-            <a ng-href="{{item.url}}" 
-                target="_blank">
-                {{item.name}}
+            <a class="color-0"
+               ng-href="{{item.url}}" 
+               target="_blank">
+               {{item.name}}
             </a>
             <ul class="sub-menu" ng-class="$ctrl.generateComponentClassName('list')">
                 <li ng-repeat="subItem in item.children">

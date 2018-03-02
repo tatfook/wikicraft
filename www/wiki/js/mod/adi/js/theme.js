@@ -12,7 +12,7 @@ define([
         }
     }
 
-    let component = "<adi-theme theme='params'></adi-theme>";
+    let component = "<adi-theme params='params'></adi-theme>";
 
     return app.createModCommand(params, {}, component);
 });

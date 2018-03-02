@@ -29,7 +29,6 @@ define([
                 "list > li" : {
                     "float"                 : "left",
                     "height"                : "50px",
-                    "color"                 : "white",
                     "text-align"            : "center",
                     "line-height"           : "50px",
                     "padding"               : "0 30px",
