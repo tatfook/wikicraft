@@ -30,7 +30,7 @@ define([
     //'directive/wikiImage',
     //'directive/wikiLink',
 	'directive/wikiUISelect',
-	'directive/wikiHtml',
+	'directive/previewHtml',
     'directive/ngOn',
     //'directive/wikipage',
     //'directive/wikiBlock',

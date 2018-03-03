@@ -617,7 +617,7 @@
         <div role="tabpanel" class="tab-pane" ng-class="{true: 'active'}[show_type == 'editor']" id="Attr">
             <div id="editorSwiper" class="editor-swiper swiper-container swiper-container-horizontal">
                 <div class="swiper-wrapper">
-                    <div class="swiper-slide attr-item swiper-no-swiping" ng-if="data.type != 'style'" ng-repeat="data in params.params">
+                    <div class="swiper-slide attr-item swiper-no-swiping" ng-if="data && data.type && data.type != 'style'" ng-repeat="data in params.params">
                         <div class="header" ng-class="{false: 'mod-hide'}[!data.is_mod_hide]">
                             <span class="attr-name">{{data.name}}</span>
                             <div class="switch" ng-click="click_hide(data)" ng-class="{true: 'active'}[!data.is_mod_hide]">
@@ -785,11 +785,10 @@
         <div role="tabpanel" class="tab-pane" id="StyleSetting" ng-class="{true: 'active'}[show_type == 'design']">
             <div id="designSwiper" class="swiper-container swiper-container-horizontal">
                 <div class="swiper-wrapper">
-                    <div class="swiper-slide attr-item design-item" ng-class="{true: 'active'}[design_view.text == selectedDesign]" ng-repeat="design_view in designDatas track by $index"
-                        ng-click="click_apply_design($index)">
-                        <div class="design-view" wiki-html="design_view.view" ng-hide="design_view.cover"></div>
-                        <img class="design-view" ng-src="{{design_view.cover}}" ng-show="design_view.cover" alt="">
-                        <!-- <div class="design-view" wiki-html="design_view.view" ng-hide="design_view.cover"></div> -->
+                    <div class="swiper-slide attr-item design-item" ng-class="{true: 'active'}[design_view.text == selectedDesign]" ng-repeat="design_view in designDatas"
+                        ng-click="click_apply_design(design_view)">
+                        <div class="design-view" wiki-html="design_view.view"></div>
+                        <!-- <img class="design-view" ng-src="{{design_view.cover}}" ng-show="design_view.cover" alt=""> -->
                     </div>
                 </div>
                 <div class="swiper-scrollbar"></div>

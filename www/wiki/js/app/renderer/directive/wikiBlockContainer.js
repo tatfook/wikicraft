@@ -46,7 +46,7 @@ define([
 				var $rootScope = app.ng_objects.$rootScope;
 				var block      = extendBlock($scope, mdName, index);
 				var md         = getMd(mdName);
-				
+
 				if (block) {
 					block.$element = $element; // 双向滚动时会用到
 				}
@@ -56,6 +56,7 @@ define([
 				}
 
 				$element.addClass("mod-container");
+				
 				$scope.insertMod     = $rootScope.insertMod;
 				$scope.isShowAddIcon = true;
 
@@ -72,7 +73,7 @@ define([
 					if (!moduleEditorParams) {
 						return;
 					}
-					
+
 					if (block.isWikiBlock && !block.isTemplate) {
 						$(".mod-container.active").removeClass("active");
 						$element.addClass("active");

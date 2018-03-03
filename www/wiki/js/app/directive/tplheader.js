@@ -8,15 +8,15 @@ define([
 ], function (app, util) {
     app.directive('tplheader', ['$compile', function ($compile) {
 		return {
-			restrict: 'E',
-			scope: true,
-			template:'<div ng-show="isShow" class="tpl-header" ng-click="click()">\
-			            <button ng-click="setTheme()">设置主题</button>\
-						{{templateSrc}}\
-						<i ng-show="isShowEdit" class="iconfont icon-bianji"></i>\
-						<i ng-show="isShowNew" ng-click="clickNewTemplate($event)" class="iconfont icon-tianjia"></i>\
-                        <span class="pull-right" ng-click="showVersions()">上次保存：{{committer_name}}于{{committed_date}}</span>\
-                      </div>',
+			restrict  : 'E',
+			scope     : true,
+			template  : '<div ng-show="isShow" class="tpl-header">\
+			        		 <button ng-click="setTheme()">设置主题</button>\
+							 {{templateSrc}}\
+							 <i ng-show="isShowEdit" class="iconfont icon-bianji"></i>\
+							 <i ng-show="isShowNew" ng-click="clickNewTemplate($event)" class="iconfont icon-tianjia"></i>\
+                        	 <span class="pull-right" ng-click="showVersions()">上次保存：{{committer_name}}于{{committed_date}}</span>\
+                    	</div>',
 			controller: ["$rootScope", "$scope", "$attrs", "modal", function($rootScope, $scope, $attrs, modal){
 				var clickEventType     = undefined;
 				var mdwiki             = app.objects.editormd;
@@ -27,7 +27,7 @@ define([
 				$scope.$rootScope = $rootScope;
 				$scope.isShow     = mdwiki.mode == "editor" && $rootScope.pageinfo;
 				$scope.mdwiki     = mdwiki;
-				
+
 				$scope.$watch("mdwiki.template.token" ,function(){
 					template = mdwiki.template;
 
@@ -85,7 +85,7 @@ define([
 					if ($event) {
 						$event.stopPropagation();
 					}
-					
+
 					var defaultTemplate = "```@template/js/layout\n# urlmatch\n- text:\n```\n";
 					mdwiki.editor.replaceRange(defaultTemplate, {line: 0, ch: 0}, {line:0,ch: 0});
 				}
@@ -106,6 +106,7 @@ define([
 					}
 					
 					moduleEditorParams.setBlock(template);
+					
 					util.$apply();	
 				}
 
@@ -116,7 +117,7 @@ define([
 					for (let item in template.blockList) {
 						if (template.blockList[item].cmdName == 'adi/js/theme') {
 							hasTheme   = true;
-							themeBlock = template.blockList[item]; 
+							themeBlock = template.blockList[item];
 							break;
 						}
 					}

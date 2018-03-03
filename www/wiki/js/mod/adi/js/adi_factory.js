@@ -12,6 +12,10 @@ define([
 	let beThemeAddStarted = false;
 
 	function checkThemeExist() {
+		if(!app.isEditMode()){
+			return;
+		}
+
 		let editor        = app.objects.editor;
 		let mainMdwiki    = app.objects.mainMdwiki;
 		let blockList     = mainMdwiki.getBlockList();
@@ -86,7 +90,7 @@ define([
 				wikiblock.$scope.params = combine;//app.getEditorParams({}, params);
 				wikiblock.$scope.mode   = wikiblock.mode;
 
-				// checkThemeExist();
+				checkThemeExist();
 
 				return component;
 			},

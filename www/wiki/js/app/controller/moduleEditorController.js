@@ -291,9 +291,22 @@ define([
                     }
 
                     var block = this.block;
+
                     if (block && typeof(block.wikimod) == "object" && typeof(block.wikimod.mod) == "object") {
                         if (typeof(block.wikimod.mod.params) == "object") {
                             this.params = util.mixin(block.wikimod.mod.params, block.modParams);
+
+                            // 删除无效元素
+                            for (var item in this.params) {
+                                if (/^[0-9]+.?[0-9]*$/.test(item)) {
+                                    delete this.params[item];
+                                }
+
+                                if(typeof(this.params[item]) == 'object' && JSON.stringify(this.params[item]) == '{}'){
+                                    delete this.params[item];
+                                }
+                            }
+
                             // this.datas  = getOrderDatas(this.params);
                         } else {
                             this.params = undefined;
@@ -313,6 +326,9 @@ define([
                 }
 
                 moduleEditorParams.setBlock = function(block) {
+                    $scope.params.params = [];
+                    moduleEditorParams.setShowType('knowledge');
+
                     if (!block.token || !block.wikimod) {
                         return;
                     }
@@ -347,7 +363,11 @@ define([
 
                     if (show_type == "knowledge") {
                         this.setKnowledge("");
-                        this.params = this.datas = this.styles = this.block = undefined;
+
+                        this.params = undefined;
+                        this.styles = undefined;
+                        this.block  = undefined;
+                        // this.datas  = undefined;
                     } else {
                         initSwiper(show_type);
                     }
@@ -396,23 +416,19 @@ define([
 
                     for (var key in styles) {
                         if (styles.hasOwnProperty(key)) {
-                            
+                            console.log(key)
+                            console.log(styles[key])
+
+                            var design = {
+                                "view" : "<div>123123123123</div>"
+                                // "text": style.design.text,
+                                // "cover": style.design.cover || ""
+                            }
+    
+                            $scope.designDatas.push(design);
+                            // setDesignViewWidth();
                         }
                     }
-
-                    for (var i = 0; i < styles.length; i++) {
-                        var style  = styles[i];
-
-                        var design = {
-                            "text": style.design.text,
-                            "cover": style.design.cover || ""
-                        }
-
-                        $scope.designDatas.push(design);
-                        // setDesignViewWidth();
-                    }
-
-                    console.log($scope.designDatas);
 
                     initSwiper("design");
                 }
@@ -591,6 +607,7 @@ define([
             $scope.showAllLink = function(){
                 $scope.linkFilter = $scope.user.username;
                 $scope.showResult = true;
+
                 setTimeout(function(){
                     $(document).bind("click.allLink", function(e){
                         $scope.showResult = false;
@@ -638,20 +655,23 @@ define([
             }
 
             $scope.click_apply_design = function(index) {
-                var block = moduleEditorParams.block;
-                var style = moduleEditorParams.styles[index];
+                var block     = moduleEditorParams.block;
                 var modParams = moduleEditorParams.params;
-                $scope.selectedDesign = style.design.text;
-                if (block.wikimod && block.wikimod.mod.getStyleParams) {
-                    modParams = block.wikimod.mod.getStyleParams(modParams, style);
-                    block.applyModParams(modParams);
-                } else {
-                    angular.extend(modParams, style);
-                    applyAttrChange();
-                }
+                // var style     = moduleEditorParams.styles[index];
 
-                block.modParams = modParams;
-                moduleEditorParams.reload();
+                // $scope.selectedDesign = style.design.id;
+
+                // if (block.wikimod && block.wikimod.mod.styles) {
+                //     modParams = block.wikimod.mod.getStyleParams(modParams, style);
+
+                //     block.applyModParams(modParams);
+                // } else {
+                //     angular.extend(modParams, style);
+                //     applyAttrChange();
+                // }
+
+                // block.modParams = modParams;
+                // moduleEditorParams.reload();
                 //util.$apply();
             }
 

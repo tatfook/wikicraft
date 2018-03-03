@@ -689,6 +689,7 @@ define([
                 var isBigfileModalShow  = false;
                 var isConfirmDialogShow = false;
                 var confirmFilesQue     = [];
+                var moduleEditorParams  = config.shareMap.moduleEditorParams || {};
 
                 // 格式化html文本
                 function formatHtmlView(cmd, value) {
@@ -2332,9 +2333,12 @@ define([
                     });
 
                     editor.on("beforeChange", function (cm, changeObj) {
+                        moduleEditorParams.block = undefined;
+
                         if (currentPage && currentPage.isFirstEditor) {
                             return;
                         }
+
                         for (var i = changeObj.from.line; i < changeObj.to.line + 1; i++) {
                             if (!/^```[@\/]/.test(editor.getLine(i))) {
                                 cm.getDoc().removeLineClass(i, 'wrap', 'CodeMirrorFold');
@@ -2419,8 +2423,7 @@ define([
                     });
 
                     editor.on("change", function (cm, changeObj) {
-                        var moduleEditorParams = config.shareMap.moduleEditorParams || {};
-                        var isStopRender       = moduleEditorParams.renderMod == "editorToCode";
+                        var isStopRender = moduleEditorParams.renderMod == "editorToCode";
 
                         changeCallback(cm, changeObj);
 
