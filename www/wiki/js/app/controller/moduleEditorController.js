@@ -204,11 +204,13 @@ define([
                 if (type == "knowledge"){
                     return;
                 }
+
                 var swiperContainerId = type + "Swiper";
                 var slides = $("#" + swiperContainerId + " .swiper-slide");
                 var renderedSlidesLen = slides.length;
                 var dataName = type + "Datas";
                 var totalRenderLen = 0;
+
                 if (type == "editor") {
                     totalRenderLen = $scope.params.data ? $scope.params.datas.length : 0;
                 } else if (type == "styles") {
@@ -407,6 +409,7 @@ define([
                 moduleEditorParams.setDesignList = function() {
                     var self      = this;
                     var styles    = self.styles || [];
+                    var block     = self.block;
                     var modParams = self.params;
 
                     self.setShowType("design");
@@ -416,13 +419,10 @@ define([
 
                     for (var key in styles) {
                         if (styles.hasOwnProperty(key)) {
-                            console.log(key)
-                            console.log(styles[key])
-
                             var design = {
-                                "view" : "<div>123123123123</div>"
-                                // "text": style.design.text,
-                                // "cover": style.design.cover || ""
+                                "cmdName"    : block.cmdName,
+                                "stylesName" : key,
+                                "params"     : modParams,
                             }
     
                             $scope.designDatas.push(design);
@@ -654,7 +654,9 @@ define([
                 util.$apply();
             }
 
-            $scope.click_apply_design = function(index) {
+            $scope.click_apply_design = function(item) {
+                console.log(item);
+
                 var block     = moduleEditorParams.block;
                 var modParams = moduleEditorParams.params;
                 // var style     = moduleEditorParams.styles[index];
