@@ -57,6 +57,12 @@ define([
 					block.$element = $element; // 双向滚动时会用到
 				}
 
+				if (md.mode == "preview") {
+					$scope.isShowAddIcon = false;
+				} else {
+					$scope.isShowAddIcon = true;
+				}
+
 				if (!block || !md || md.mode != "editor") {
 					return;
 				}
@@ -64,7 +70,6 @@ define([
 				$element.addClass("mod-container");
 				
 				$scope.insertMod     = $rootScope.insertMod;
-				$scope.isShowAddIcon = true;
 
 				$scope.clickContainer = function($event) {
 					if ($event) {

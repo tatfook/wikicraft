@@ -17,7 +17,12 @@ define([
                 let childNodes = $element.context.childNodes;
                 let wrapNodes  = $compile(template)($scope);
 
-                $scope.isEditMode = app.isEditMode();
+                $scope.isEditMode            = app.isEditMode();
+                $scope.isShowComponentButton = false;
+                
+                if ($scope.$ctrl.componentMode == 'section' && $scope.$parent.mode == 'editor') {
+                    $scope.isShowComponentButton = true;
+                }
 
                 while(childNodes.length > 0){
                     wrapNodes[0].children[1].appendChild(childNodes[0])
