@@ -785,8 +785,11 @@
         <div role="tabpanel" class="tab-pane" id="StyleSetting" ng-class="{true: 'active'}[show_type == 'design']">
             <div id="designSwiper" class="swiper-container swiper-container-horizontal">
                 <div class="swiper-wrapper">
-                    <div class="swiper-slide attr-item design-item" ng-class="{true: 'active'}[item.stylesName == selectedDesign]" ng-repeat="item in designDatas"
-                        ng-click="click_apply_design(item)">
+                    <div class="swiper-slide attr-item design-item"
+                         ng-class="{true: 'active'}[item.styleName == selectedDesign]"
+                         ng-repeat="item in designDatas"
+                         ng-click="click_apply_design(item)">
+                         
                         <div class="design-view" preview-html="item"></div>
                         <!-- <img class="design-view" ng-src="{{design_view.cover}}" ng-show="design_view.cover" alt=""> -->
                     </div>

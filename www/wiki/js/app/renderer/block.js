@@ -41,6 +41,7 @@ define([
 		var isWikiBlock = token.tag == "pre"  && /^```@([\w_\/]+)/.test(firstline) && lastline.replace(/[\ \r\n]+/g, "")== '```';
 
 		block.isWikiBlock = isWikiBlock;
+
 		if (!isWikiBlock) {
 			//block.blockUrl = undefined;
 			block.isTemplate = false;
@@ -100,6 +101,9 @@ define([
 		}
 
 		editor.replaceRange(modParams + '\n', {line: from + 1, ch: 0}, {line: to - 1, ch: 0});
+
+		editor.setCursor(from + 1, 0);
+		editor.focus();
 	}
 
 	// 渲染block
@@ -118,8 +122,12 @@ define([
 		}
 
 		// 强制渲染
-		if (self.$render && self.cmdName && self.wikimod && self.cmdName == self.wikimod.cmdName && 
-				self.wikimod.mod && self.wikimod.mod.forceRender) {
+		if (self.$render &&
+			self.cmdName &&
+			self.wikimod &&
+			self.cmdName == self.wikimod.cmdName && 
+			self.wikimod.mod && self.wikimod.mod.forceRender) {
+
 			self.wikimod.mod.forceRender(self);
 		}
 
@@ -128,7 +136,6 @@ define([
 			return;
 		}
 
-		//console.log(self);
 		function _render(mod) {
 			if (!self.$render) {
 				return;
@@ -163,7 +170,7 @@ define([
 
 			success && success();
 		}
-
+		
 		if (self.cmdName && self.wikimod && self.cmdName == self.wikimod.cmdName) {
 			_render(self.wikimod.mod);
 		} else {
@@ -189,8 +196,9 @@ define([
 		self.token = token;
 
 		if (self.text != token.text) {
-			self.text = token.text;
+			self.textcc   = token.text;
 			self.isChange = true;
+			
 			parseBlock(self);
 		} else {
 			self.isChange = false;
@@ -200,9 +208,9 @@ define([
 	function blockFactory(block, md) {
 		block = block || angular.copy(_block);
 
-		block.md = md;
+		block.md     = md;
 		block.mdName = md.mdName;
-		block.mode = md.mode;
+		block.mode   = md.mode;
 
 		return block;
 	}

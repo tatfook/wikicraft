@@ -2431,7 +2431,6 @@ define([
                             allWebstePageContent[currentPage.url] = editor.getValue();
                         }
 
-                        renderTimer && clearTimeout(renderTimer);
                         renderTimer = setTimeout((function (isStopRender) {
                             renderAutoSave();
                             //if (isStopRender){
@@ -2452,6 +2451,8 @@ define([
 
                             timer = undefined;
                         })(isStopRender));
+
+                        renderTimer && clearTimeout(renderTimer);
                     });
 
                     editor.focus();

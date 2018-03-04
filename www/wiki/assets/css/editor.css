@@ -825,3 +825,10 @@ p.file-large-info > .filename{
         width: 275px;
     }
 }
+
+.kp_wiki_block_container {
+	position: relative;
+}
+
+.kp_wiki_block_container:hover {
+}

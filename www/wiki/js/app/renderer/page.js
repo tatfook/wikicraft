@@ -138,7 +138,7 @@ define([
 					template = block;
 				}
 			}
-
+			
 			var size = blockList.length;
 
 			for (var i = tokenList.length; i < size; i++) {

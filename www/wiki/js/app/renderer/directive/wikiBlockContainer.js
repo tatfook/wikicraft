@@ -16,13 +16,17 @@ define([
 		if (!md) {
 			return;
 		}
+		
+		if (md.mode == 'preview') {
+			index = 0;
+		}
 
 		if (index == undefined) {
 			block = md.template;
 		} else {
 			block = md.template.blockList[index];
 		}
-
+		
 		if(!block) {
             return;
 		}
@@ -40,12 +44,14 @@ define([
 			//template: '<div><wiki-block data-params="$kp_block"></wiki-block></div>',
 			template: wikiBlockContainerHtml,
 			controller:['$scope', '$attrs', '$element', function($scope, $attrs, $element) {
+
 				var index      = $scope.$eval("$index");
 				var mdName     = decodeURI($attrs.params);
 				var isTemplate = $attrs.template;
 				var $rootScope = app.ng_objects.$rootScope;
 				var block      = extendBlock($scope, mdName, index);
 				var md         = getMd(mdName);
+
 
 				if (block) {
 					block.$element = $element; // 双向滚动时会用到

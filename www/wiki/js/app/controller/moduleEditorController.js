@@ -1,13 +1,23 @@
 
 define([
     'app',
+    'angular',
     'jquery',
 	'helper/util',
     'helper/markdownwiki',
     'text!html/moduleEditor.html',
     'swiper',
     'helper/knowledgeAgent'
-], function(app, $, util, markdownwiki, htmlContent, swiper, agent){
+], function(
+    app,
+    angular,
+    $,
+    util,
+    markdownwiki,
+    htmlContent,
+    swiper,
+    agent
+){
 	var moduleEditorParams = config.shareMap.moduleEditorParams || {};
 	config.shareMap.moduleEditorParams = moduleEditorParams;
 
@@ -421,7 +431,7 @@ define([
                         if (styles.hasOwnProperty(key)) {
                             var design = {
                                 "cmdName"    : block.cmdName,
-                                "stylesName" : key,
+                                "styleName"  : key,
                                 "params"     : modParams,
                             }
     
@@ -430,7 +440,7 @@ define([
                         }
                     }
 
-                    initSwiper("design");
+                    // initSwiper("design");
                 }
 
                 moduleEditorParams.setKnowledge = function(lineContent){
@@ -656,12 +666,24 @@ define([
 
             $scope.click_apply_design = function(item) {
                 console.log(item);
-
+                
                 var block     = moduleEditorParams.block;
                 var modParams = moduleEditorParams.params;
-                // var style     = moduleEditorParams.styles[index];
+                var styleName = item.styleName;
 
-                // $scope.selectedDesign = style.design.id;
+                $scope.selectedDesign = styleName;
+                modParams.design.id   = styleName;
+
+                console.log(moduleEditorParams);
+                console.log(modParams);
+
+                block.applyModParams(modParams);
+                moduleEditorParams.setDesignList();
+
+                // setTimeout(function(){
+                //     moduleEditorParams.reload();
+                //     console.log(moduleEditorParams.block);
+                // }, 4000)
 
                 // if (block.wikimod && block.wikimod.mod.styles) {
                 //     modParams = block.wikimod.mod.getStyleParams(modParams, style);

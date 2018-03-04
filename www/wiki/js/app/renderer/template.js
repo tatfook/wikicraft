@@ -67,6 +67,12 @@ define([
 
 	_template.defaultRender = function(success){
 		var self = this;
+		
+		try {
+			b
+		} catch (error) {
+			console.log(error);
+		}
 
 		if (self.htmlContent != self.blankTemplateContent && self.$render) {
 			self.htmlContent = self.blankTemplateContent;

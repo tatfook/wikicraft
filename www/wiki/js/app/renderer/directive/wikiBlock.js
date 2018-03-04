@@ -36,7 +36,7 @@ define([
 					var self = this;
 
 					self.$getNewScope();
-
+					
 					if (typeof(htmlContent) == "function") {
 						htmlContent = htmlContent();
 					}
