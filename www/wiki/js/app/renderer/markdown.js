@@ -516,7 +516,7 @@ define([
 			token.htmlContent = paragraph_render({md:obj.md, content: text, text:text, is_sub_tag:env.is_sub_tag})  || token.htmlContent;
 		}
 
-		token.htmlContent = _escape(token.htmlContent);
+		//token.htmlContent = _escape(token.htmlContent);
 		return token;
 	}
 
