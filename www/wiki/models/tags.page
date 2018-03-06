@@ -176,6 +176,8 @@ function tags:insert_many_to_es(tags)
         if (tag.id) then
             data = data .. format('{"index":{"_id":%s}}', tag.id) .. "\n"
             tag.id = nil
+            tag.create_date = tag.createDate
+            tag.createDate = nil
             data = data .. commonlib.Json.Encode(tag, true) .. "\n"
         end
     end
@@ -191,7 +193,7 @@ function tags:insert_to_es(params)
         id = params._id,
         title = params.title,
         creator = params.creator,
-        create_time = params.createDate
+        create_date = params.createDate
     }
     return es:insertOne(tag)
 end

@@ -924,16 +924,3 @@ function website:wrap_search_result(result)
 	wrapped_result.hits = hits
 	return wrapped_result
 end
-
-
-
-
-
-
-
-
-
-
-
-
-
