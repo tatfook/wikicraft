@@ -19,9 +19,16 @@ include_once("./user_active.page")
 include_once("./data_source.page")
 include_once("./site_data_source.page")
 include_once("./user_three_service.page")
+include_once("./elasticsearch.page")
+include_once("./validators.page")
 
 local user = inherit(models.abstract.base, gettable("models.user"))
 user.db_name = "user"
+
+
+local es = models.elasticsearch:new()
+local index = CURRENT_ENV .. "_kw_users"
+es:connect({index=index})
 
 
 function user:ctor()
@@ -194,8 +201,10 @@ function user:update(params)
 	end
 
 	self:db():updateOne({_id=query._id}, query, resume)
+	local err, user = yield()
+	self:update_to_es(user)
 
-	return errors:wrap(yield())
+	return errors:wrap(err, user)
 end
 
 -- 用户注销账号
@@ -218,6 +227,8 @@ function user:api_deleteByName(params)
 	if not userinfo then
 		return errors:wrap()
 	end
+
+	self:delete_in_es(userinfo)
 
 	-- 删除用户所有站点
 	local websiteDB = models.website:new()
@@ -244,8 +255,10 @@ function user:api_updateByName(params)
 	params.dataSource = nil
 
 	self:db():updateOne({["+username"]={username}}, params, resume)
+	local err, user = yield()
+	self:update_to_es(user)
 
-	return errors:wrap(yield())
+	return errors:wrap(err, user)
 end
 
 -- 更新用户信息
@@ -262,16 +275,18 @@ function user:api_updateUserInfo(params)
 	params.dataSource = nil
 
 	self:db():updateOne({["+username"]={username}}, params, resume)
+	local err, user = yield()
+	self:update_to_es(user)
 
-	return errors:wrap(yield())
+	return errors:wrap(err, user)
 end
 
 -- 手机验证
 function user:api_verifyCellphoneOne(params)
 	if not params.cellphone then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
-    end
-    
+	end
+	
 	if params.bind then
 		self:db():find({["+cellphone"]={params.cellphone}}, resume)
 		local _, data = yield()
@@ -279,7 +294,7 @@ function user:api_verifyCellphoneOne(params)
 		if data and #data > 0 then
 			return errors:new("手机号已绑定:" .. data[1].username)
 		end
-    end
+	end
 
 	math.randomseed(os.time())
 	local smsCode = tostring(math.random(1000,9999))
@@ -311,30 +326,30 @@ function user:api_verifyCellphoneTwo(params)
 	end
 	mem_cache:set(params.smsId, nil)
 	
-    local cellphone = value.cellphone
+	local cellphone = value.cellphone
 
-    -- if params.bind is true, it's for binding
-    -- if params.bind is false, it's for unbinding
-    if params.bind ~= nil then
-        -- set cellphone to '' if it's unbinding 
-        if not params.bind then
-            cellphone = '' 
-        end
-        self:db():updateOne({["+username"]={username}}, {cellphone=cellphone}, resume)
-        return errors:wrap(yield())
-    end
+	-- if params.bind is true, it's for binding
+	-- if params.bind is false, it's for unbinding
+	if params.bind ~= nil then
+		-- set cellphone to '' if it's unbinding 
+		if not params.bind then
+			cellphone = '' 
+		end
+		self:db():updateOne({["+username"]={username}}, {cellphone=cellphone}, resume)
+		return errors:wrap(yield())
+	end
 
-    -- for realname verification
-    if params.setRealNameInfo ~= nil then 
-        local realNameInfo = {
-            cellphone = cellphone,
-            verified = true
-        }
-        self:db():updateOne({["+username"]={username}}, {realNameInfo=realNameInfo}, resume)
-        return errors:wrap(yield())
-    end
+	-- for realname verification
+	if params.setRealNameInfo ~= nil then 
+		local realNameInfo = {
+			cellphone = cellphone,
+			verified = true
+		}
+		self:db():updateOne({["+username"]={username}}, {realNameInfo=realNameInfo}, resume)
+		return errors:wrap(yield())
+	end
 
-    return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 end
 
 
@@ -628,6 +643,8 @@ function user:api_register(params)
 	if not userinfo then
 		return errors:wrap(errors.SERVER_INNER_ERROR)
 	end
+
+	self:insert_to_es(userinfo)
 
 	request.username = userinfo.username
 	request.userid = userinfo._id
@@ -1014,3 +1031,122 @@ function user:api_isLogin(params)
 	return errors:wrap(nil, {isLogin=isLogin, token=cookie_token})
 end
 
+
+
+function user:insert_to_es(params)
+	local user = {
+		type = "users",
+		id = params._id,
+		username = params.username,
+		display_name = params.displayName,
+		portrait = params.portrait,
+		location = params.location,
+	}
+	es:insertOne(user, function(err, data) end)
+end
+
+
+function user:update_to_es(params)
+	local user = {
+		type = "users",
+		id = params._id,
+		display_name = params.displayName,
+		portrait = params.portrait,
+		location = params.location,
+	}
+	es:updateOne(user, function(err, data) end)
+end
+
+
+function user:delete_in_es(params)
+	local user = {
+		type = "users",
+		id = params._id,
+	}
+	es:deleteOne(user, function(err, data) end)
+end
+
+
+function user:api_search(params)
+	local clean_params, is_params_error, message = self:search_validator(params)
+	if (is_params_error) then
+		return response:status(400):send({error={message=message,status=400}})
+	end
+	local err, search_result = es:search(clean_params)
+	local rcode = search_result.rcode
+	local wrapped_result = {}
+	if (rcode == 200) then
+		wrapped_result = self:wrap_search_result(search_result, params.visitor)
+	else
+		wrapped_result = search_result.data
+	end
+	return errors:wrap(err, wrapped_result)
+end
+
+
+function user:search_validator(params)
+	local validators = models.validators:new()
+	local clean_data = {}
+	local required_fields = {"q"}
+	local is_params_error, message = validators.required_fields_validator(params, required_fields)
+	if (not is_params_error) then
+		clean_data = {
+			type = "users",
+			q = params.q,
+			fields = {'username', 'display_name'},
+			page = tonumber(params.page) or 1,
+			size = tonumber(params.size) or 500,
+			sort = params.sort,
+			highlight = 0,
+			fuzziness = "AUTO",
+		}
+		if (clean_data.size > 500) then clean_data.size = 500 end
+	end
+	return clean_data, is_params_error, message
+end
+
+
+function user:wrap_search_result(result, visitor)
+	local wrapped_result = {}
+	local err, visitor_info
+	local rcode = result.rcode
+
+	wrapped_result = {
+		timed_out = result.data.timed_out,
+		took = result.data.took,
+		total = result.data.hits.total,
+		status = rcode
+	}
+
+	local hits = {}
+	for i, hit in ipairs(result.data.hits.hits) do
+		hit._source._id = tonumber(hit._id)
+		hits[#hits + 1] = hit._source
+	end
+
+	if (visitor) then
+		self:db():findOne({["+username"] = {visitor}}, resume)
+		err, visitor_info = yield()
+	end
+
+	local finished_count = 0
+	local userFansDB = models.user_fans:new()
+
+	for i, user in ipairs(hits) do
+		if (visitor_info) then
+			userFansDB:db():findOne({["+userId+fansUserId"]={user._id, visitor_info._id}},
+				function(err, data)
+					finished_count = finished_count + 1
+					user.following = 0
+					if (data) then user.following = 1 end
+					if (finished_count == #hits) then resume() end
+				end
+			)
+			if (i == #hits) then yield() end
+		end
+		user._id = nil
+	end
+
+	wrapped_result.hits = hits
+	return wrapped_result
+end

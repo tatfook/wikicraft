@@ -42,6 +42,7 @@ function init_env()
 		CURRENT_ENV = "www"
 	end
 end
+
 init_env()
 
 include_once(WIKI_ROOT .. "helpers/aho_corasick.page")
