@@ -101,12 +101,3 @@ function pages_stars:delete_website(params)
     return yield()
 end
 
-
-function pages_stars:api_test()
-    page = {
-        url = "/user1/site1/page999999",
-    }
-    -- self:db():find({url = page.url}, resume)
-    -- return errors:wrap(yield())
-    return errors:wrap(self:delete_page(page))
-end
