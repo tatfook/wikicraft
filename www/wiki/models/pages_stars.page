@@ -75,18 +75,18 @@ function pages_stars:get_starred_pages_of_a_user(params)
     if (is_params_error) then
         return response:status(404):send({error={message=message,status=404}})
     end
-    self:db():find({starredUser = params.username}, resume)
+    self:db():find({starredUser = params.username, _id={gt=0, limit=9999}}, resume)
     local err, result = yield()
+    local pages = {}
     if (result) then
-        local pages = {}
         local limit = 50
         if (#result < 50) then limit = #result end
         for i = 1, limit do
             pages[(#pages) + 1] = result[(#result) - (limit - i)].url
         end
-        result = pages
     end
-    return errors:wrap(err, result)
+
+    return pages
 end
 
 

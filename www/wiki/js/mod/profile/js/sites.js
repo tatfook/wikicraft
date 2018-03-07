@@ -2,7 +2,7 @@
  * @Author: ZhangKaitlyn 
  * @Date: 2018-01-19
  * @Last Modified by: none
- * @Last Modified time: 2018-02-01 15:45:31
+ * @Last Modified time: 2018-02-28 18:09:26
  */
 define([
     'app', 
@@ -33,7 +33,7 @@ define([
                         title = "参与的网站";
                         break;
                     case "concerned":
-                        title = "关注的网站";
+                        title = "关注的网页";
                         break;
                     default:
                         break;
@@ -44,7 +44,8 @@ define([
 			$scope.sites = {
                 "stick":[],
                 "created":[],
-                "joined":[]
+                "joined":[],
+                "concerned": []
             }
 
             $scope.toggleStickSite = function(site){
@@ -85,7 +86,20 @@ define([
             }
 
             var getConcernedSites = function(type){
-                $scope.sites[type] = $scope.followSiteList;
+                $scope.starredPages.map(function(pageUrl, index) {
+                    var visitor = ($scope.user && $scope.user.username) || "";
+                    util.get(config.apiUrlPrefix + 'pages/getDetail', {
+                        url: pageUrl,
+                        visitor: visitor
+                    }, function(data){
+                        if (!data) {
+                            return;
+                        }
+                        $scope.sites[type].push(data);
+                    }, function(err){
+                        console.log(err);
+                    });
+                });
             }
 
             var initSites = function(type){

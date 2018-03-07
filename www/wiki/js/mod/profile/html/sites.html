@@ -134,6 +134,33 @@
     .user-sites .cancel-stick-btn {
         transform: rotate(180deg);
     }
+
+    .user-sites .page-item {
+        position: relative;
+        border-bottom: 1px solid #F2F2F2;
+        padding: 15px 0;
+    }
+
+    .user-sites .page-item:last-child {
+        border-bottom: none;
+    }
+
+    .user-sites .page-item .site-other-msg {
+    }
+
+    .user-sites .page-item .p-tags>span {
+        padding: 1.5px 10px;
+        background-color: #E0F1FF;
+        margin-right: 12px;
+    }
+
+    .user-sites .page-item a{
+        color: #333;
+    }
+
+    .user-sites .page-item a:hover{
+        color: #3977AD;
+    }
 </style>
 <div class="user-sites" ng-controller="sitesCtrl" ng-hide="sites[params.type].length <=0 && !isSelf">
     <h4 class="title">
@@ -185,29 +212,20 @@
             </div>
         </div>
 
-        <!-- 关注网站 -->
-        <div class="sites-item" ng-show="params.type == 'concerned' && sites[params.type].length > 0" ng-repeat="site in sites[params.type] track by $index">
-            <div class="site-profile">
-                <img ng-src="{{site.siteinfo.logoUrl}}">
-            </div>
-            <div class="site-detail">
-                <h4 class="ellipsis">
-                    <a ng-href="{{'/'+ site.siteinfo.username+'/'+site.siteinfo.name}}" target="_blank">{{site.siteinfo.name}}</a>
+        <!-- 关注的网页 -->
+        <div class="page-item" ng-show="params.type == 'concerned' && sites[params.type].length > 0" ng-repeat="page in sites[params.type] track by $index">
+            <h4>
+                <a ng-href="{{page.url}}" target="_blank">{{page.url}}</a>
                 </h4>
-                <p class="p-link ellipsis">
-                    <a ng-href="{{'/'+ site.siteinfo.username+'/'+site.siteinfo.name}}" target="_blank">{{'/'+ site.siteinfo.username+'/'+site.siteinfo.name}}</a>
+            <p class="p-tags ellipsis">
+                <span ng-repeat="tag in page.tags track by $index">{{tag}}</span>
                 </p>
-                <p class="p-desc ellipsis">{{site.siteinfo.desc || "暂无简介"}}</p>
-                <p class="p-tags ellipsis">
-                    <span ng-repeat="tag in site.siteinfo.tags track by $index">{{tag}}</span>
-                </p>
-            </div>
             <div class="site-other-msg">
                 <span>
-                    <i class="iconfont icon-browse"></i>{{site.visitCount || 0}}
+                    <i class="iconfont icon-browse"></i>{{page.visitCount || 0}}
                 </span>
                 <span>
-                    <i class="iconfont icon-collection"></i>{{site.favoriteCount || 0}}
+                    <i class="iconfont icon-collection"></i>{{page.starredCount || 0}}
                 </span>
             </div>
         </div>

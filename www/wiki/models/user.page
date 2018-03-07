@@ -19,6 +19,7 @@ include_once("./user_active.page")
 include_once("./data_source.page")
 include_once("./site_data_source.page")
 include_once("./user_three_service.page")
+include_once("./pages_stars.page")
 include_once("./elasticsearch.page")
 include_once("./validators.page")
 
@@ -954,10 +955,15 @@ function user:api_getDetailByName(params)
 
 	-- 获得用户关注
 	local followUserObj = userFansDB:api_getByFansUserId({fansUserId=userinfo._id}).data
+	
 	-- 获取用户收藏的站点
 	local userFavoriteDB = models.user_favorite:new()
 	local followSiteObj = userFavoriteDB:api_getByUserId({userId=userinfo._id}).data
 	local followObj = {followUserObj=followUserObj, followSiteObj=followSiteObj}
+
+	-- 获取用户收藏的网页
+	local pages_stars = models.pages_stars:new()
+	local starred_pages = pages_stars:get_starred_pages_of_a_user({username=userinfo.username})
 
 	-- 获取用户动态
 	local userTrendsDB = models.user_trends:new()
@@ -967,7 +973,18 @@ function user:api_getDetailByName(params)
 	local userActiveDB = models.user_active:new()
 	local activeObj = userActiveDB:api_getByUsername({username=userinfo.username}).data
 
-	return errors:wrap(nil,{userinfo=userinfo, activeObj=activeObj, selfOrganizationObj=selfOrganizationObj, joinOrganizationObj=joinOrganizationObj, hotSiteObj=hotSiteObj, allSiteList=allSiteList, followObj=followObj, fansObj=fansObj, trendsObj=trendsObj})
+	return errors:wrap(nil,{
+		userinfo = userinfo,
+		activeObj = activeObj,
+		selfOrganizationObj = selfOrganizationObj,
+		joinOrganizationObj = joinOrganizationObj,
+		hotSiteObj = hotSiteObj,
+		allSiteList = allSiteList,
+		followObj = followObj,
+		fansObj = fansObj,
+		trendsObj = trendsObj,
+		starred_pages = starred_pages,
+	})
 end
 
 -- 获取gitlab账号
