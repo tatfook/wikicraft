@@ -119,6 +119,19 @@
             margin: 20px 0;
         }
     }
+
+    .verify-code-container {
+        display: flex;
+    }
+    .verify-code-container .verify-code-input-container {
+        flex: 1;
+    }
+    .verify-code-container .verify-code-btn {
+        padding-left: 15px;
+    }
+    .verify-code-container .verify-code-btn .btn {
+        margin: 0 !important;
+    }
 </style>
 
 <div ng-controller="joinController" class="container-fluid">
@@ -144,6 +157,34 @@
                 <input type="password" style="display: none;" name="password">
                 <input type="password" class="form-control" name="password" placeholder="密码" ng-model="password" ng-blur="checkInput({'password': true})">
             </div>
+
+            <div class="form-group text-danger">
+                {{cellphoneErrMsg}}
+            </div>
+            <div class="form-group">
+                <label class="sr-only" translate="手机号"></label>
+                <input class="form-control" ng-model="cellphone" placeholder="{{ '输入手机号' | translate }}">
+            </div>
+
+            <div class="form-group text-danger">
+                {{smsCodeErrMsg}}
+            </div>
+            <div class="form-group clearfix verify-code-container">
+                <label class="sr-only" translate="验证码"></label>
+                <div class="verify-code-input-container">
+                    <input type="text" class="form-control" ng-model="smsCode" placeholder="{{'验证码' | translate}}">
+                </div>
+                <div class="verify-code-btn">
+                    <div class="btn btn-block" ng-class="{
+                                    true: 'btn-default',
+                                    false: 'btn-primary'
+                                }[registerCellPhoneSMSCodeWait>0]" ng-disabled="registerCellPhoneSMSCodeWait > 0"
+                        ng-click="sendSMSCode()">
+                        {{(registerCellPhoneSMSCodeWait == 0) ? translate("发送验证码") : "重新发送(" + registerCellPhoneSMSCodeWait + "s)"}}
+                    </div>
+                </div>
+            </div>
+
             <div class="checkbox clearfix">
                 <label>
                     <input class="pull-right" type="checkbox" checked="{{agree}}" ng-model="agree">{{ "申请即视为同意" | translate }} <a ng-click="goLicense()" translate="《KeepWork用户协议》"></a>

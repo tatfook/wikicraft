@@ -1745,9 +1745,29 @@ define([], function () {
             "en": "Enter the cell phone number:"
         },
         {
+            "_key": "输入手机号",
+            "zh-cn": "输入手机号",
+            "en": "Enter the cell phone number"
+        },
+        {
+            "_key": "手机号",
+            "zh-cn": "手机号",
+            "en": "Cellphone"
+        },
+        {
             "_key": "短信验证码：",
             "zh-cn": "短信验证码：",
             "en": "SMS authentication code:"
+        },
+        {
+            "_key": "短信验证码",
+            "zh-cn": "短信验证码",
+            "en": "SMS authentication code"
+        },
+        {
+            "_key": "验证码",
+            "zh-cn": "验证码",
+            "en": "Code"
         },
         {
             "_key": "确认",
