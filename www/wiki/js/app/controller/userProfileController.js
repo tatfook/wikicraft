@@ -592,6 +592,7 @@ define(['app',
         $scope.clickMyFans = function () {
             $scope.showItem = 'myFans';
             $scope.currentPage = 1;
+            var userFansList = {};
 
             util.post(config.apiUrlPrefix + "website/getAllByUserId", {userId: $scope.user._id}, function (data) {
                 $scope.siteList = data;
@@ -599,10 +600,7 @@ define(['app',
                 for (var i = 0; i < $scope.siteList.length; i++) {
                     $scope.totalFavoriteCount += ($scope.siteList[i].favoriteCount || 0);
                 }
-                if ($scope.siteList.length > 0) {
-                    $scope.currentFansSite = $scope.siteList[0];
-                    getFansList();
-                }
+                $scope.selectUserFans();
             });
 
             function getFansList() {
@@ -619,11 +617,33 @@ define(['app',
 
             $scope.selectFansSite = function (site) {
                 $scope.currentFansSite = site;
+                $scope.isCurrentUserFans = false;
                 getFansList();
             }
 
             $scope.fansPageChanged = function () {
                 getFansList();
+            }
+
+            var getUserFansList = function() {
+                util.http("POST", config.apiUrlPrefix + "user_fans/getByUserId", {userId:$scope.user._id}, function (data) {
+                    userFansList.userList = data.userList || [];
+                    userFansList.totalItems = data.total || 0;
+                    $scope.fansUserCount = userFansList.totalItems;
+                    $scope.totalItems = userFansList.totalItems;
+                    $scope.fansUserList = userFansList.userList;
+                });
+            }
+
+            $scope.selectUserFans = function() {
+                $scope.currentFansSite = {};
+                $scope.isCurrentUserFans = true;
+                if (userFansList && userFansList.totalItems >= 0) {
+                    $scope.totalItems = userFansList.totalItems;
+                    $scope.fansUserList = userFansList.userList;
+                    return;
+                }
+                getUserFansList();
             }
         }
 

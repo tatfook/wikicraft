@@ -853,7 +853,11 @@
         <div role="tabpanel col-md-12">
             <!-- Nav tabs -->
             <ul class="nav nav-tabs" role="tablist">
-                <li role="presentation" ng-repeat="site in siteList" ng-class="currentFansSite._id == site._id ? 'active' : ''">
+                <li role="presentation" ng-class="isCurrentUserFans ? 'active' : ''">
+                    <a href="#wiki_works_fans" ng-click="selectUserFans(user)" aria-controls="wiki_works_fans"
+                        role="tab" data-toggle="tab">{{user.displayName || user.username}}<span class="subscribe">({{fansUserCount || 0}})</span></a>
+                </li>
+                <li role="presentation" ng-repeat="site in siteList" ng-class="!isCurrentUserFans && currentFansSite._id == site._id ? 'active' : ''">
                     <a href="#wiki_works_fans" ng-click="selectFansSite(site)" aria-controls="wiki_works_fans"
                        role="tab" data-toggle="tab">{{site.name}}<span class="subscribe">({{site.favoriteCount || 0}})</span></a>
                 </li>
