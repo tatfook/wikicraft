@@ -2,7 +2,7 @@
  * @Author: ZhangKaitlyn 
  * @Date: 2018-01-19
  * @Last Modified by: none
- * @Last Modified time: 2018-02-08 15:39:12
+ * @Last Modified time: 2018-02-27 17:44:58
  */
 define([
     'app', 
@@ -13,10 +13,10 @@ define([
     'cropper'
 ], function (app, util, mdconf, htmlContent, addWorkModalHtmlContent) {
     function registerController(wikiBlock) {
-        app.registerController("worksCtrl", ['$rootScope', '$scope','$uibModal', '$translate', function ($rootScope, $scope, $uibModal, $translate) {
+        app.registerController("worksCtrl", ['$rootScope', '$scope','$uibModal', '$translate', 'Account', 'modal', function ($rootScope, $scope, $uibModal, $translate, Account, modal) {
             const modCmd = "```@profile/js/works";
-            const kepeworkLink = "keepwork.com";
-            const keepworkReg = new RegExp(kepeworkLink);
+            const LocationOrigin = window.location.origin;
+            const LocationReg = new RegExp(LocationOrigin);
             var thisInBlockIndex;
             var thisContainerId;
 			wikiBlock.init({
@@ -46,9 +46,9 @@ define([
                     }
                     var link = work.workLink;
                     var linkParams = link.split("/");
-                    var startIndex = link.search(keepworkReg);
-                    if (index >= 0 && linkParams.length >= 3) {
-                        var urlStartIndex = startIndex + kepeworkLink.length;
+                    var startIndex = link.search(LocationReg);
+                    if (startIndex >= 0 && linkParams.length >= 3) {
+                        var urlStartIndex = startIndex + LocationOrigin.length;
                         var backUrl = link.substring(urlStartIndex);
                         var visitor = ($scope.user && $scope.user.username) || "";
                         util.get(config.apiUrlPrefix + 'pages/getDetail', {
@@ -68,7 +68,6 @@ define([
                 });
             }
             
-
             $scope.works = util.arrayFrom($scope.params.works);
             $scope.userinfo.worksCount = $scope.works.length;
             $scope.editing = false;
@@ -104,11 +103,20 @@ define([
             }
 
             $scope.showModal = function(index){
+                if (!Account.isAuthenticated()) {
+                    $rootScope.$broadcast("onLogout", "");
+                    modal('controller/loginController', {
+                        controller: 'loginController',
+                        size: 'lg',
+                        backdrop: true
+                    });
+                    return;
+                }
                 $scope.addingWork = angular.copy($scope.works[index]);
                 $uibModal.open({
                     template: addWorkModalHtmlContent,
                     controller: "addWorkModalCtrl",
-                    appendTo: $(".user-works .modal-parent"),
+                    openedClass: "add-modal",
                     scope: $scope
                 }).result.then(function(result){
                     console.log(index);
@@ -162,8 +170,11 @@ define([
             };
         }]);
 
-        app.registerController("addWorkModalCtrl", ['$scope','$uibModal', '$uibModalInstance', '$translate', function ($scope, $uibModal, $uibModalInstance, $translate) {
+        app.registerController("addWorkModalCtrl", ['$rootScope', '$scope','$uibModal', '$uibModalInstance', '$translate', 'Account', 'modal', function ($rootScope, $scope, $uibModal, $uibModalInstance, $translate, Account, modal) {
+            const LocationOrigin = window.location.origin;
+            const UserInputFlag = -1;
             $scope.addingWork = $scope.addingWork || {};
+            $scope.linkList = [];
             $scope.cancel = function(){
                 $scope.addingWork = {};
                 $uibModalInstance.dismiss("cancel");
@@ -203,6 +214,15 @@ define([
             }
 
             $scope.submitAddingWork = function(){
+                if (!Account.isAuthenticated()) {
+                    $rootScope.$broadcast("onLogout", "");
+                    modal('controller/loginController', {
+                        controller: 'loginController',
+                        size: 'lg',
+                        backdrop: true
+                    });
+                    return;
+                }
                 $scope.errMsg = "";
                 var requiredAttrs = [{
                     'key': 'title',
@@ -284,6 +304,51 @@ define([
                     util.$apply();
                 });
             }
+
+            $scope.userInputLink = function($select){
+                var search = $select.search,
+                   list = angular.copy($select.items);
+               //remove last user input
+               list = list.filter(function(item) {
+                   return item.id !== UserInputFlag;
+               });
+               if (!search) {
+                   $select.items = list;
+               }
+               else {
+                   //manually add user input and set selection
+                   var userInputItem = {
+                       id: UserInputFlag,
+                       url: search
+                   };
+                   $select.items = [userInputItem].concat(list);
+                   $select.selected = userInputItem.url;
+                   $scope.addingWork.workLink = userInputItem.url;
+               }
+           }
+
+            $scope.urlSelected = function(item, uiSelectModal){
+                $scope.addingWork.workLink = (item.id === UserInputFlag) ? item.url : (LocationOrigin + item.url);
+                $scope.addingWork.isThirdLink = (item.id === UserInputFlag) ? true : false;
+            }
+
+            var getFileList = function(){
+                var username = $scope.user.username;
+                var dataSourceList = dataSource.getDataSourceList(username);
+                for (var i = 0; i < (dataSourceList || []).length; i++) {
+                    var siteDataSource = dataSourceList[i];
+                    siteDataSource.getTree({path:'/'+ username}, function (data) {
+                        for (var i = 0; i < (data || []).length; i++) {
+                            if (data[i].pagename.indexOf(".gitignore") >= 0) {
+                                continue;
+                            }
+                            $scope.linkList.push(data[i]);
+                        }
+                    });
+                }
+            }
+
+            $scope.$watch("$viewContentLoaded", getFileList);
         }]);
     }
 

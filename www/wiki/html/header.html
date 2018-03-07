@@ -817,7 +817,7 @@
                 </ol>
             </li>
         </ul>
-        <ul class="nav navbar-right">
+        <ul class="nav navbar-right" ng-class="{true: 'hidden-xs'}[!isLogin]">
             <li class="icon" ng-hide="isUserPage">
                 <img ng-src="{{imgsPath+'icon/wiki_edit.png'}}" alt="" ng-click="goWikiEditorPage()">
             </li>

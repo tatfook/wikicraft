@@ -32,7 +32,7 @@ function user_fans:api_isAttented(params)
 	if (not params.userId) or (not params.fansUserId) then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
-	
+
 	self:db():findOne({["+userId+fansUserId"]={params.userId, params.fansUserId}}, resume)
 	local _, data = yield()
 	
@@ -45,6 +45,21 @@ end
 
 -- 关注用户
 function user_fans:api_attent(params)
+	ensureAuthenticated()
+	local userDB = models.user:new()
+	
+	if (params.username) then
+		userDB:db():findOne({["+username"]={params.username}}, resume)
+		local err, user = yield()
+		if (user) then params.userId = user._id end
+	end
+
+	if (params.fansUsername) then
+		userDB:db():findOne({["+username"]={params.fansUsername}}, resume)
+		local err, fansUser = yield()
+		if (fansUser) then params.fansUserId = fansUser._id end
+	end
+
 	if (not params.userId) or (not params.fansUserId) then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)		
 	end
@@ -68,8 +83,23 @@ end
 
 -- 取消关注
 function user_fans:api_unattent(params)
+	ensureAuthenticated()
+	local userDB = models.user:new()
+	
+	if (params.username) then
+		userDB:db():findOne({["+username"]={params.username}}, resume)
+		local err, user = yield()
+		if (user) then params.userId = user._id end
+	end
+
+	if (params.fansUsername) then
+		userDB:db():findOne({["+username"]={params.fansUsername}}, resume)
+		local err, fansUser = yield()
+		if (fansUser) then params.fansUserId = fansUser._id end
+	end
+
 	if (not params.userId) or (not params.fansUserId) then
-		return errors:wrap(errors.REQUEST_PARAMS_ERROR)		
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
 
 	self:db():deleteOne({["+userId+fansUserId"]={params.userId, params.fansUserId}}, resume)

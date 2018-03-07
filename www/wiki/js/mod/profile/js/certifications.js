@@ -2,7 +2,7 @@
  * @Author: ZhangKaitlyn 
  * @Date: 2018-01-19
  * @Last Modified by: none
- * @Last Modified time: 2018-02-08 15:44:43
+ * @Last Modified time: 2018-02-27 17:40:45
  */
 define([
     'app',
@@ -12,7 +12,7 @@ define([
     'helper/util',
 ], function (app, mdconf, htmlContent, addCertificationModalHtmlContent, util) {
     function registerController(wikiBlock) {
-        app.registerController("certificationCtrl", ['$rootScope', '$scope', '$uibModal', '$translate', function ($rootScope, $scope, $uibModal, $translate) {
+        app.registerController("certificationCtrl", ['$rootScope', '$scope', '$uibModal', '$translate', 'Account', 'modal', function ($rootScope, $scope, $uibModal, $translate, Account, modal) {
             const modCmd = "```@profile/js/certifications";
             var thisInBlockIndex;
             var thisContainerId;
@@ -65,11 +65,20 @@ define([
             }
 
             $scope.showCertificationModal = function(index){
+                if (!Account.isAuthenticated()) {
+                    $rootScope.$broadcast("onLogout", "");
+                    modal('controller/loginController', {
+                        controller: 'loginController',
+                        size: 'lg',
+                        backdrop: true
+                    });
+                    return;
+                }
                 $scope.addingCertification = angular.copy($scope.certifications[index]);
                 $uibModal.open({
                     template: addCertificationModalHtmlContent,
                     controller: "addCertificationModalCtrl",
-                    appendTo: $(".user-certification .modal-parent"),
+                    openedClass: "add-certification-modal",
                     scope: $scope,
                     backdrop:'static'
                 }).result.then(function(result){
@@ -123,8 +132,9 @@ define([
             };
         }]);
 
-        app.registerController("addCertificationModalCtrl", ['$scope', '$uibModalInstance', '$translate', function ($scope, $uibModalInstance, $translate) {
+        app.registerController("addCertificationModalCtrl", ['$rootScope', '$scope', '$uibModalInstance', '$translate', 'Account', 'modal', function ($rootScope, $scope, $uibModalInstance, $translate, Account, modal) {
             $scope.addingCertification = $scope.addingCertification || {};
+            $scope.isGetDatePickerShow = false;
             $scope.cancel = function(){
                 $uibModalInstance.dismiss("cancel");
             }
@@ -144,7 +154,19 @@ define([
             }
 
             $scope.submitaddingCertification = function(){
+                if (!Account.isAuthenticated()) {
+                    $rootScope.$broadcast("onLogout", "");
+                    modal('controller/loginController', {
+                        controller: 'loginController',
+                        size: 'lg',
+                        backdrop: true
+                    });
+                    return;
+                }
                 $scope.errMsg = "";
+                var result = $scope.addingCertification,
+                    getDateTemp = result.getDate;
+                result.getDate = getDateTemp ? util.formatDate(getDateTemp) : "";
                 var requiredAttrs = [{
                     'key': 'title',
                     'value': $translate.instant('简介')
@@ -156,9 +178,14 @@ define([
                 var requiredResult = isRequiredEmptyAttr(requiredAttrs); 
                 if (requiredResult.boolResult) {
                     $scope.errMsg = requiredResult.attr + $translate.instant("不可为空");
+                    result.getDate = getDateTemp;
                     return;
                 }
                 $uibModalInstance.close($scope.addingCertification);
+            }
+
+            $scope.setDatePickVissibility = function(key) {
+                $scope.isGetDatePickerShow = true;
             }
         }]);
     }

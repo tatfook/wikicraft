@@ -2,7 +2,7 @@
  * @Author: ZhangKaitlyn 
  * @Date: 2018-01-19
  * @Last Modified by: none
- * @Last Modified time: 2018-02-08 15:41:51
+ * @Last Modified time: 2018-02-27 17:45:44
  */
 define([
     'app', 
@@ -12,7 +12,7 @@ define([
     'helper/util',
 ], function (app, htmlContent, addExperienceModalHtmlContent, mdconf, util) {
     function registerController(wikiBlock) {
-        app.registerController("experienceCtrl", ['$rootScope', '$scope', '$uibModal', '$translate', function ($rootScope, $scope, $uibModal, $translate) {
+        app.registerController("experienceCtrl", ['$rootScope', '$scope', '$uibModal', '$translate', 'Account', 'modal', function ($rootScope, $scope, $uibModal, $translate, Account, modal) {
             const modCmd = "```@profile/js/experiences";
             var thisInBlockIndex;
             var thisContainerId;
@@ -67,11 +67,20 @@ define([
             }
 
             $scope.showExperienceModal = function(index){
+                if (!Account.isAuthenticated()) {
+                    $rootScope.$broadcast("onLogout", "");
+                    modal('controller/loginController', {
+                        controller: 'loginController',
+                        size: 'lg',
+                        backdrop: true
+                    });
+                    return;
+                }
                 $scope.addingExperience = angular.copy($scope.experiences[index]);
                 $uibModal.open({
                     template: addExperienceModalHtmlContent,
                     controller: "addExperiencelModalCtrl",
-                    appendTo: $(".user-experience .modal-parent"),
+                    openedClass: "add-experience-modal",
                     scope: $scope,
                     backdrop:'static'
                 }).result.then(function(result){
@@ -125,11 +134,12 @@ define([
             };
         }]);
 
-        app.registerController("addExperiencelModalCtrl", ['$scope', '$uibModalInstance', '$translate', function ($scope, $uibModalInstance, $translate) {
+        app.registerController("addExperiencelModalCtrl", ['$rootScope', '$scope', '$uibModalInstance', '$translate', 'Account', 'modal', function ($rootScope, $scope, $uibModalInstance, $translate, Account, modal) {
             $scope.addingExperience = $scope.addingExperience || {};
             $scope.cancel = function(){
                 $uibModalInstance.dismiss("cancel");
             }
+            
             var isRequiredEmptyAttr = function(attrNames){
                 attrNames = attrNames || [];
                 for(var i = 0;i < attrNames.length;i++){
@@ -146,7 +156,21 @@ define([
             }
 
             $scope.submitaddingExperience = function(){
+                if (!Account.isAuthenticated()) {
+                    $rootScope.$broadcast("onLogout", "");
+                    modal('controller/loginController', {
+                        controller: 'loginController',
+                        size: 'lg',
+                        backdrop: true
+                    });
+                    return;
+                }
                 $scope.errMsg = "";
+                var result = $scope.addingExperience,
+                    startTemp = result.startDate,
+                    endTemp = result.endDate;
+                result.startDate = startTemp ? util.formatDate(startTemp) : "";
+                result.endDate = endTemp ? util.formatDate(endTemp) : "";
                 var requiredAttrs = [{
                     'key': 'title',
                     'value': $translate.instant('简介')
@@ -158,9 +182,19 @@ define([
                 var requiredResult = isRequiredEmptyAttr(requiredAttrs); 
                 if (requiredResult.boolResult) {
                     $scope.errMsg = requiredResult.attr + $translate.instant("不可为空");
+                    result.startDate = startTemp;
+                    result.endDate = endTemp;
                     return;
                 }
                 $uibModalInstance.close($scope.addingExperience);
+            }
+
+            $scope.setDatePickVissibility = function(key) {
+                $scope.dateOptions = {
+                    "minDate": $scope.addingExperience.startDate,
+                    "maxDate": $scope.addingExperience.endDate
+                }
+                $scope[key] = true;
             }
         }]);
     }

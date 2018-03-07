@@ -38,6 +38,20 @@
     .add-experience-modal .modal-footer .btn-default {
         color: #666;
     }
+
+    .add-experience-modal .datapicker-starter {
+        display: block;
+        position: absolute;
+        height: 100%;
+        left: 15px;
+        right: 15px;
+        cursor: pointer;
+    }
+
+    .add-experience-modal .uib-datepicker-popup.dropdown-menu{
+        left: 15px;
+        right: 15px;
+    }
 </style>
 <div id="addExperienceModal">
     <div class="modal-header">
@@ -63,13 +77,27 @@
             <div class="form-group form-group-md">
                 <label for="inputStartDate" class="col-sm-3 control-label">{{'开始时间' | translate}}：</label>
                 <div class="col-sm-9">
-                    <input type="text" class="form-control" ng-model="addingExperience.startDate" id="inputStartDate">
+                    <span class="datapicker-starter" ng-click="setDatePickVissibility('isStartPickerShow')"></span>
+                    <input type="text" class="form-control" 
+                        uib-datepicker-popup is-open="isStartPickerShow" 
+                        popup-placement="bottom-left" 
+                        show-button-bar="false" 
+                        datepicker-options= "dateOptions"
+                        ng-model="addingExperience.startDate"
+                    >
                 </div>
             </div>
             <div class="form-group form-group-md">
                 <label for="inputEndtDate" class="col-sm-3 control-label">{{'结束时间' | translate}}：</label>
                 <div class="col-sm-9">
-                    <input type="text" class="form-control" ng-model="addingExperience.endDate" id="inputEndtDate">
+                    <span class="datapicker-starter" ng-click="setDatePickVissibility('isEndPickerShow')"></span>
+                    <input type="text" class="form-control" 
+                        uib-datepicker-popup 
+                        is-open="isEndPickerShow" 
+                        popup-placement="bottom-left" 
+                        show-button-bar="false" 
+                        datepicker-options= "dateOptions"
+                        ng-model="addingExperience.endDate">
                 </div>
             </div>
         </form>
