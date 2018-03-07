@@ -219,7 +219,7 @@ function site_data_source:api_getByUsername(params)
 	local dataSourceDB = models.data_source:new()
 	local dataSourceList = dataSourceDB:api_getByUsername(params).data
 	
-	self:db():find({["+username"]={params.username}}, resume)
+	self:db():find({["+username"]={params.username, limit=1000}}, resume)
 	local _, siteDataSourceList = yield()
 
 	for _, siteDataSource in ipairs(siteDataSourceList or {}) do
