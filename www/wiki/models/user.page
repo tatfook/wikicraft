@@ -595,7 +595,47 @@ end
 
 -- 注册
 function user:api_register(params)
-	-- 用户名 密码 为必填项
+    -- 用户名 密码 为必填项
+
+    -- register with cellphone logic
+    -- if params.cellphone
+    --   check the cellphone usage info
+    --   verify smsId && smsCode
+    --   set username as kw5a9f9c16x90bcdef0 if params.username is Nil
+    --   set realnameInfo
+
+    local realnameInfo = {}
+
+    if (params.cellphone) then
+        if self:api_checkCellphone({cellphone=params.cellphone}).data == 0 then
+            return errors:wrap(errors:new("手机号已存在"))
+        end
+
+        if (not params.smsId) or (not params.smsCode) then
+            return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+        end
+        local value = mem_cache:get(params.smsId)
+        value = commonlib.Json.Decode(value or "{}")
+        if (value.smsCode ~= params.smsCode) or (value.cellphone ~= params.cellphone) then
+            return errors:wrap(errors:new("验证码错误"))
+        end
+        mem_cache:set(params.smsId, nil)
+
+        -- generate uuid as kw5a9f9c16x90bcdef0 for cellphone user
+        if (not params.username) then
+            params.username = string.format(
+                'kw%sx%s',
+                string.format('%x', os.time()),
+                string.format('%x', cellphone)
+            )
+        end
+
+        realNameInfo = {
+			cellphone = params.cellphone,
+			verified = true
+		}
+    end
+
 	if (not params.username) or (not params.password) then
 		return errors:wrap(err)
 	end
@@ -628,7 +668,8 @@ function user:api_register(params)
 		displayName = params.username,
 		password = self:encodePassword(params.password),
 		email = params.email,
-		cellphone = params.cellphone,
+        cellphone = params.cellphone,
+        realNameInfo = realNameInfo,
 		portrait = params.portrait,
 		joindate = ParaGlobal.GetDateFormat("yyyy-MM-dd"),
 		defaultDataSourceName=const.DEFAULT_DATA_SOURCE_NAME,
@@ -911,6 +952,21 @@ function user:api_checkUsername(params)
 	local websiteDomainDB = models.website_domain:new()
 
 	return websiteDomainDB:api_checkDomain({domain=params.username})
+end
+
+-- 检测电话号码是否有效
+function user:api_checkCellphone(params)
+	if not params.cellphone then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+
+	self:db():findOne({["+cellphone"]={params.cellphone}}, resume)
+	local err, data = yield()
+	if data then
+		return errors:wrap(nil, 0) -- 无效
+	end
+
+	return errors:wrap(nil, 1)
 end
 
 -- 获取用户详细相关信息通过用户名

@@ -10,12 +10,57 @@ define([
     'helper/sensitiveWord',
     'text!html/join.html',
 ], function (app, util, storage, dataSource, sensitiveWord, htmlContent) {
-    app.registerController('joinController', ['$scope', '$auth', 'Account','modal', 'Message', function ($scope, $auth, Account, modal, Message) {
+    app.registerController('joinController', ['$scope', '$auth', '$interval', 'Account','modal', 'Message', function ($scope, $auth, $interval, Account, modal, Message) {
         //$scope.errMsg = "用户名或密码错误";
         var userThreeService = undefined;
         $scope.isModal=false;
         $scope.step=1;
         $scope.agree=true;
+        
+        $scope.registerInfo = {};
+        $scope.smsId = '';
+        $scope.registerCellPhoneSMSCodeWait = 0;
+        $scope.registerCellPhoneSMSCodeIsSending = false;
+        $scope.registerCellPhoneSMSCodeTimePromise && $interval.cancel($scope.registerCellPhoneSMSCodeTimePromise);
+
+        //安全验证
+        $scope.sendSMSCode = function () {
+            var cellphone = ($scope.cellphone || '').replace(/\s/g,'');
+            $scope.cellphone = cellphone;
+            $scope.cellphoneErrMsg = "";
+            $scope.smsCodeErrMsg = "";
+
+            if ( !/^[0-9]{11}$/.test($scope.cellphone) ) {
+                $scope.cellphoneErrMsg = "请先填写正确的手机号码";
+                return;
+            }
+            if ($scope.registerCellPhoneSMSCodeWait > 0){
+                return;
+            }
+            $scope.registerCellPhoneSMSCodeIsSending = true;
+            util.post(config.apiUrlPrefix + 'user/verifyCellphoneOne', {
+                cellphone: $scope.cellphone
+            },function(data){
+                $scope.registerCellPhoneSMSCodeIsSending = false;
+                $scope.smsId = data.smsId;
+
+                $scope.registerCellPhoneSMSCodeWait = 60;
+                $scope.registerCellPhoneSMSCodeTimePromise = $interval(function () {
+                    if($scope.registerCellPhoneSMSCodeWait <= 0){
+                        $interval.cancel($scope.registerCellPhoneSMSCodeTimePromise);
+                        $scope.registerCellPhoneSMSCodeTimePromise = null;
+                    }else{
+                        $scope.registerCellPhoneSMSCodeWait --;
+                    }
+                }, 1000, 100);
+                $scope.smsCode = "";
+                $scope.cellphoneErrMsg = "";
+            }, function (err) {
+                $scope.registerCellPhoneSMSCodeIsSending = false;
+                $scope.smsCodeErrMsg = err.message;
+                $scope.cellphoneErrMsg = "";
+            });
+        };
 
         function init() {
             userThreeService = storage.sessionStorageGetItem('userThreeService');
@@ -135,10 +180,15 @@ define([
             $scope.errMsg = "";
             $scope.nameErrMsg = "";
             $scope.pwdErrMsg = "";
+            $scope.cellphoneErrMsg = "";
+            $scope.smsCodeErrMsg = "";
 
             var params = {
                 username: $scope.username? $scope.username.trim():"",
                 password: $scope.password? $scope.password.trim():"",
+                smsCode: $scope.smsCode,
+                smsId: $scope.smsId,
+                cellphone: $scope.cellphone
             };
 
             if(type=="other"){
@@ -149,8 +199,20 @@ define([
                 };
             }
 
+            if(!params.cellphone){
+                $scope.cellphoneErrMsg="*手机号不能为空"
+            }
+
+            if(!params.smsId){
+                $scope.smsCodeErrMsg="*请先发送验证码验证"
+            }
+
+            if(!params.smsCode){
+                $scope.smsCodeErrMsg="*验证码不能为空"
+            }
+
             if(!params.username){
-                $scope.nameErrMsg="*账户名为必填项";
+                $scope.nameErrMsg="*账户名不能为空";
                 $scope.$apply();
                 return;
             }
