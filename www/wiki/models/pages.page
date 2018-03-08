@@ -301,13 +301,20 @@ function pages:delete_website(params)
     if (is_params_error) then
         return response:status(400):send({error={message=message,status=400}})
     end
-    local siteUrl = self:get_site_url(params)
+    local site_url = self:get_site_url(params)
     local stars = models.pages_stars:new()
-    local err, result = stars:delete_website({siteUrl = siteUrl})
-    self:db():find({_id={gt=0, limit=100000}, siteUrl= siteUrl}, resume)
-    local err, pages = yield()
+    local err, result = stars:delete_website({siteUrl = site_url})
+    local pages = {}
+
+    self:db():count({siteUrl= site_url}, resume)
+    local err, count = yield()
+    if (count > 0) then
+        self:db():find({_id={gt=0, limit=100000}, siteUrl= site_url}, resume)
+        err, pages = yield()
+    end
+
     if (not err) then
-        self:db():delete({siteUrl = siteUrl}, resume)
+        self:db():delete({siteUrl = site_url}, resume)
         err, result = yield()
         self:delet_website_in_es(pages)
     end
@@ -479,9 +486,13 @@ end
 
 function pages:update_visibility_to_es(params)
     local site_url = self:get_site_url(params)
-    self:db():find({siteUrl=site_url, _id={gt=0,limit=99999}}, resume)
-    local err, pages = yield()
-    if (not pages) then return nil end
+    local pages = {}
+    self:db():count({siteUrl= site_url}, resume)
+    local err, count = yield()
+    if (count > 0) then
+        self:db():find({siteUrl=site_url, _id={gt=0,limit=99999}}, resume)
+        err, pages = yield()
+    end
 
     local bulk_data = ""
     for i, page in ipairs(pages) do
