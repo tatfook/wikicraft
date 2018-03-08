@@ -2,7 +2,7 @@
  * @Author: ZhangKaitlyn 
  * @Date: 2018-01-19
  * @Last Modified by: none
- * @Last Modified time: 2018-02-01 15:54:09
+ * @Last Modified time: 2018-03-08 16:14:52
  */
 define([
     'app', 
@@ -13,6 +13,8 @@ define([
     function registerController(wikiBlock) {
         app.registerController("pageTagsCtrl", ['$rootScope', '$scope', 'Message', 'Account', function ($rootScope, $scope, Message, Account) {
             const modCmd = "```@page/js/tags";
+            const MaxTagsCount = 5;
+            $scope.maxTagsCount = MaxTagsCount;
             var thisInBlockIndex;
             var thisContainerId;
 			wikiBlock.init({

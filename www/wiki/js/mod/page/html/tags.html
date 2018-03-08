@@ -75,8 +75,8 @@
         </div>
 
         <div class="editing-tag" ng-show="tagEditing">
-            <ui-select multiple tagging tagging-label="false" ng-model="pageTags.tags" theme="bootstrap" title="请输入标签..." on-select="tagSelect($item, $model)">
-                <ui-select-match placeholder="请输入标签...">{{$item}}</ui-select-match>
+            <ui-select multiple limit="{{maxTagsCount}}" tagging tagging-label="false" ng-model="pageTags.tags" theme="bootstrap" title="请输入标签...">
+                <ui-select-match placeholder="请输入标签(最多支持5个)...">{{$item}}</ui-select-match>
                 <ui-select-choices repeat="tag in pageTags.tags | filter:$select.search">
                     {{tag}}
                 </ui-select-choices>

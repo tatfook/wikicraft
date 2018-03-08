@@ -2,7 +2,7 @@
  * @Author: ZhangKaitlyn 
  * @Date: 2018-01-19
  * @Last Modified by: none
- * @Last Modified time: 2018-02-27 17:45:30
+ * @Last Modified time: 2018-03-08 16:49:13
  */
 define([
     'app', 
@@ -261,7 +261,9 @@ define([
 
             $rootScope.$on("onLogout", function(e) {
                 if ($scope.editing) {
-                    initRadar();
+                    setTimeout(function(){
+                        initRadar();
+                    });
                 }
             })
     
