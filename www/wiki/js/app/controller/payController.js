@@ -362,23 +362,12 @@ define([
                 $http.post(config.apiUrlPrefix + "pay/getTradeOne", { username: $scope.otherUserinfo.username, trade_no: charge.order_no }, { isShowLoading: false }).then(function (response) {
                     if(response && response.status){
                         if (response.status == 200 && response.data && response.data.data && response.data.data.status == "Finish") {
-                            Account.reloadUser(); // 充值完成 用户信息需要更新, 本应只更新相关信息即可, 但此处可能无法识别更新那块，可提供完成回调机制
                             $scope.page = "success";
                             if ($scope.returnUrl) {
-                                var sec = 5;
-                                function returnUrl(i) {
-                                    if (i == 5) {
-                                        window.location.href = $scope.returnUrl;
-                                    } else {
-                                        i++;
-    
-                                        setTimeout(function () {
-                                            returnUrl(i);
-                                        }, 1000);
-                                    }
-                                }
-    
-                                returnUrl(0);
+                                setTimeout(function () {
+                                    Account.reloadUser(); // 充值完成 用户信息需要更新, 本应只更新相关信息即可, 但此处可能无法识别更新那块，可提供完成回调机制
+                                    window.location.href = $scope.returnUrl;
+                                }, 5000);
                             }
                         } else if (response.status == 404
                                    || response.status == 503
