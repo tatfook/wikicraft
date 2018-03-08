@@ -181,7 +181,7 @@ function pages:api_updateContent(params)
         end
     end
 
-    -- ensureAuthenticated()
+    ensureAuthenticated()
     local page, is_params_error, message = self:update_content_validator(params)
     if (is_params_error) then
         return response:status(400):send({error={message=message,status=400}})
