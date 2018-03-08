@@ -626,7 +626,7 @@ function user:api_register(params)
             params.username = string.format(
                 'kw%sx%s',
                 string.format('%x', os.time()),
-                string.format('%x', cellphone)
+                string.format('%x', params.cellphone)
             )
         end
 
