@@ -215,7 +215,7 @@
         <div class="col-sm-6 skill-radar hidden-xs" id="skillRadar">
         </div>
     </div>
-    <div class="other-skill" ng-show="skills.length > 5 && !editing || !isSelf">
+    <div class="other-skill" ng-show="skills.length > 5 && !editing">
         <ul class="h-skill-ul clearfix">
             <li class="clearfix h-li" ng-repeat="skill in skills | limitTo: (5 - skills.length) track by $index">
                 <span class="title">{{skill.title}}</span>
