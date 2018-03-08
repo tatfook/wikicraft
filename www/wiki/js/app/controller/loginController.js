@@ -55,7 +55,7 @@ define([
                 Account.setUser(data.userinfo);
                 // console.log("登录成功");
                 if ($scope.isModal) {
-                    $scope.$close(data.userinfo);
+                    window.location.reload();
                 } else {
                     util.go('/' + data.userinfo.username);
                 }

@@ -435,8 +435,7 @@ define([
             $scope.$on("onUserProfile", function (event, user) {
                 //console.log('onUserProfile -- mainController');
                 $scope.user = user;
-                // init();
-                config.loadMainContent(initContentInfo);
+                //init();
             });
         }]);
 
