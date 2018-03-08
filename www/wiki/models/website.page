@@ -662,7 +662,7 @@ function website:api_visitWebsite(params)
 
 	-- 增加网页访问量
 	local pages = models.pages:new()
-	pages:updateVisitCount({url = params.url})
+	pages:api_updateVisitCount({url = params.url})
 
 	-- 添加访问记录
 	local userVisitHistoryDB = models.user_visit_history:new()

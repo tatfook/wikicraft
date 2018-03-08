@@ -213,7 +213,7 @@ function pages:api_star(params)
 end
 
 
-function pages:updateVisitCount(params)
+function pages:api_updateVisitCount(params)
     local required_fields = {"url"}
     local is_params_error, message = validators.required_fields_validator(params, required_fields)
     if (is_params_error) then
