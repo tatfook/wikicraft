@@ -172,6 +172,10 @@ define([
                     });
                 }
             });
+
+            util.get(config.apiUrlPrefix + 'pages/updateVisitCount', {
+                url: '/' + username
+            });
         }
 
         var errorCount = 0;
