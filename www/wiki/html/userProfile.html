@@ -329,11 +329,6 @@
     }
 
     /*我的粉丝*/
-    .fans-box {
-        width: 95%;
-        margin: 20px auto;
-    }
-
     .fans-profile {
         width: 14.285714%;
         float: left;
@@ -850,35 +845,17 @@
 
     <!--我的粉丝-->
     <div ng-show="showItem == 'myFans'" class="col-xs-12 main-content">
-        <div role="tabpanel col-md-12">
-            <!-- Nav tabs -->
-            <ul class="nav nav-tabs" role="tablist">
-                <li role="presentation" ng-repeat="site in siteList" ng-class="currentFansSite._id == site._id ? 'active' : ''">
-                    <a href="#wiki_works_fans" ng-click="selectFansSite(site)" aria-controls="wiki_works_fans"
-                       role="tab" data-toggle="tab">{{site.name}}<span class="subscribe">({{site.favoriteCount || 0}})</span></a>
-                </li>
-                <li class="pull-right"><a>总数：{{totalFavoriteCount}}</a></li>
-            </ul>
-
-            <!-- Tab panes -->
-            <div class="tab-content">
-                <div role="tabpanel" class="tab-pane active fans-box" id="wiki_works_fans">
-                    <div class="clearfix">
-                        <div class="fans-profile" ng-repeat="x in fansUserList">
-                            <img ng-src="{{x.userinfo.portrait || imgsPath + 'wiki_default_profile.jpg'}}" alt="">
-                            <p>{{x.userinfo.username}}</p>
-                        </div>
-                    </div>
-                    <div class="pagination-box" ng-show="site.favoriteCount && site.favoriteCount>0">
-                        <ul uib-pagination ng-change="fansPageChanged()" items-per-page='pageSize' previous-text="上一页"
-                            next-text="下一页" total-items="totalItems" ng-model="currentPage" max-size="5"
-                            class="pagination-sm" boundary-link-numbers="true"></ul>
-                    </div>
-                    <div class="empty-box" ng-hide="fansUserList && fansUserList.length>0">
-                        <span class="iconfont icon-kongbaiyemian"></span>
-                        <p translate="暂无粉丝..."></p>
-                    </div>
+        <div class="panel-heading" translate="我的粉丝"></div>
+        <div class="clearfix panel-body">
+            <div>
+                <div class="fans-profile" ng-repeat="x in fansUserList">
+                    <img ng-src="{{x.userinfo.portrait || imgsPath + 'wiki_default_profile.jpg'}}" alt="">
+                    <p>{{x.userinfo.username}}</p>
                 </div>
+            </div>
+            <div class="empty-box" ng-hide="fansUserList && fansUserList.length>0">
+                <span class="iconfont icon-kongbaiyemian"></span>
+                <p translate="暂无粉丝..."></p>
             </div>
         </div>
     </div>

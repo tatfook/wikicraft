@@ -592,39 +592,17 @@ define(['app',
         $scope.clickMyFans = function () {
             $scope.showItem = 'myFans';
             $scope.currentPage = 1;
+            var userFansList = {};
 
-            util.post(config.apiUrlPrefix + "website/getAllByUserId", {userId: $scope.user._id}, function (data) {
-                $scope.siteList = data;
-                $scope.totalFavoriteCount = 0;
-                for (var i = 0; i < $scope.siteList.length; i++) {
-                    $scope.totalFavoriteCount += ($scope.siteList[i].favoriteCount || 0);
-                }
-                if ($scope.siteList.length > 0) {
-                    $scope.currentFansSite = $scope.siteList[0];
-                    getFansList();
-                }
-            });
-
-            function getFansList() {
-                var params = {
-                    siteId: $scope.currentFansSite._id,
-                    page: $scope.currentPage,
-                    pageSize: $scope.pageSize
-                };
-                util.http("POST", config.apiUrlPrefix + "user_favorite/getBySiteId", params, function (data) {
-                    $scope.totalItems = data.total || 0;
-                    $scope.fansUserList = data.userList || [];
+            var getUserFansList = function() {
+                util.http("POST", config.apiUrlPrefix + "user_fans/getByUserId", {userId:$scope.user._id}, function (data) {
+                    userFansList.userList = data.userList || [];
+                    userFansList.totalItems = data.total || 0;
+                    $scope.fansUserList = userFansList.userList;
                 });
             }
 
-            $scope.selectFansSite = function (site) {
-                $scope.currentFansSite = site;
-                getFansList();
-            }
-
-            $scope.fansPageChanged = function () {
-                getFansList();
-            }
+            getUserFansList();
         }
 
         // 实名认证
