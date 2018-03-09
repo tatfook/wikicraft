@@ -124,7 +124,7 @@ function elasticsearch:search(params, callback)
     local location = self:locator(params)
     local search_in = location .. "_search"
     local body = params.body or self:query_generator(params)
-    if (not params.body) then body = self:add_extra_search_conditions(params, body) end
+    body = self:add_extra_search_conditions(params, body)
     return self:sendToES({send_to=search_in, method="GET", form=body}, callback)
 end
 

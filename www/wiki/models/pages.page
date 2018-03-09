@@ -433,25 +433,39 @@ function pages:search_validator(params)
     local required_fields = {"q"}
     local is_params_error, message = validators.required_fields_validator(params, required_fields)
     if (not is_params_error) then
+        local fields = {'tags', 'content', 'username', 'sitename', 'pagename'}
+
         clean_data = {
             type = "pages",
-            q = params.q,
-            fields = {'tags', 'content', 'username', 'sitename', 'pagename'},
+            fields = fields,
             page = tonumber(params.page) or 1,
             size = tonumber(params.size) or 500,
             sort = params.sort,
             highlight = tonumber(params.highlight) or 1,
             pre_tags = {"<span>"},
             post_tags = {"</span>"},
-            fuzziness = "AUTO",
         }
 
-        clean_data.post_filter = {
-            term = {
-                username = params.username,
-                visibility = "public",
+        clean_data.body = {
+            query = {
+                bool = {
+                    should = {
+                        {
+                            multi_match = {
+                                query = params.q,
+                                fields = fields,
+                                fuzziness = "AUTO",
+                            }
+                        }
+                    },
+                    must_not = {
+                        {match = {visibility = "private"}}
+                    }
+                }
             }
         }
+
+        if (params.username) then clean_data.post_filter =  {term={username=params.username}} end
 
         if (clean_data.size > 500) then clean_data.size = 500 end
     end
