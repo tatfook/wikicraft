@@ -103,7 +103,7 @@ end
 function user:api_sendSms(params)
 	local ip = getpeername()
 
-	if ip ~= "121.14.117.239" then
+	if ip ~= "120.132.120.184" and ip ~= "120.132.120.166" then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
 
