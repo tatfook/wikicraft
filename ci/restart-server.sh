@@ -44,6 +44,7 @@ docker run -d --restart=always --name=$name \
   --add-host "git.stage.keepwork.com:10.28.18.6" \
   --add-host "git.release.keepwork.com:10.28.18.6" \
   --add-host "git.keepwork.com:10.28.18.6" \
+  --add-host "daofeng-school.com:10.28.14.2" \
   -v "${ENV_TYPE}-database:/project/wikicraft/database" \
   -v "${ENV_TYPE}-log:/project/wikicraft/log" \
   -p "${outside_port}:${inside_port}" \
