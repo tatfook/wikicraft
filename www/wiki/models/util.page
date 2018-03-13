@@ -33,6 +33,24 @@ function util:getPageCount(total, pageSize)
 end
 
 
+function util:generateSmsCode(cellphone)
+	local sms_setting = KEEPWORK["config"][CURRENT_ENV]["threeService"]["sms"]
+	local test_sms_code = sms_setting.test_sms_code or "1234"
+	local test_phone_numbers = sms_setting.test_phone_numbers or {}
+	local is_testing = false
+	math.randomseed(os.time())
+	local smsCode = tostring(math.random(1000,9999))
+	for i, number in ipairs(test_phone_numbers) do
+		if (tonumber(cellphone) == tonumber(number)) then
+			 smsCode = test_sms_code
+			 is_testing = true
+			 break
+		end
+	end
+	return smsCode, is_testing
+end
+
+
 -- 获取查询对象
 function util:getQueryObj(params)
 	local skip, limit = self:pagination(params)
@@ -99,20 +117,20 @@ end
 -- Determine with a Lua table can be treated as an array.
 -- Explicitly returns "not an array" for very sparse arrays.
 function util:isArray(table)
-    local max = 0
-    local count = 0
-    for k, v in pairs(table) do
-        if type(k) == "number" then
-            if k > max then max = k end
-            count = count + 1
-        else
-            return false -- not a array
-        end
-    end
-    if max > count * 2 then
-        return false -- not a array
-    end
-    return max -- return highest index in the table
+	local max = 0
+	local count = 0
+	for k, v in pairs(table) do
+		if type(k) == "number" then
+			if k > max then max = k end
+			count = count + 1
+		else
+			return false -- not a array
+		end
+	end
+	if max > count * 2 then
+		return false -- not a array
+	end
+	return max -- return highest index in the table
 end
 
 -- 自定义常量

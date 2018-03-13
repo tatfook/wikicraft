@@ -284,6 +284,7 @@ end
 
 -- 手机验证
 function user:api_verifyCellphoneOne(params)
+
 	if not params.cellphone then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
@@ -297,19 +298,22 @@ function user:api_verifyCellphoneOne(params)
 		end
 	end
 
-	math.randomseed(os.time())
-	local smsCode = tostring(math.random(1000,9999))
+	local smsCode, is_testing = util:generateSmsCode(params.cellphone)
 	local smsParams = {to=params.cellphone, datas={smsCode,"3分钟"}, templateId="194013"}
 	local data = sendTemplateSms(smsParams)
-	if not data or  data.statusCode ~= "000000" then
+	if not data or  data.statusCode ~= "000000" and not is_testing then
 		return errors:wrap(errors:new(data.statusMsg))
 	end
 
 	local value = {cellphone=params.cellphone, smsCode=smsCode}
 	value = commonlib.Json.Encode(value)
-	mem_cache:set(data.templateSMS.smsMessageSid, value, nil, 180)
+	local smsMessageSid = params.cellphone
+	if not is_testing then
+		smsMessageSid = data.templateSMS.smsMessageSid
+	end
+	mem_cache:set(smsMessageSid, value, nil, 180)
 
-	return errors:wrap(nil, {smsId=data.templateSMS.smsMessageSid})
+	return errors:wrap(nil, {smsId=smsMessageSid})
 end
 
 -- 手机验证
@@ -595,46 +599,46 @@ end
 
 -- 注册
 function user:api_register(params)
-    -- 用户名 密码 为必填项
+	-- 用户名 密码 为必填项
 
-    -- register with cellphone logic
-    -- if params.cellphone
-    --   check the cellphone usage info
-    --   verify smsId && smsCode
-    --   set username as kw5a9f9c16x90bcdef0 if params.username is Nil
-    --   set realnameInfo
+	-- register with cellphone logic
+	-- if params.cellphone
+	--   check the cellphone usage info
+	--   verify smsId && smsCode
+	--   set username as kw5a9f9c16x90bcdef0 if params.username is Nil
+	--   set realnameInfo
 
-    local realnameInfo = {}
+	local realnameInfo = {}
 
-    if (params.cellphone) then
-        if self:api_checkCellphone({cellphone=params.cellphone}).data == 0 then
-            return errors:wrap(errors:new("手机号已存在"))
-        end
+	if (params.cellphone) then
+		if self:api_checkCellphone({cellphone=params.cellphone}).data == 0 then
+			return errors:wrap(errors:new("手机号已存在"))
+		end
 
-        if (not params.smsId) or (not params.smsCode) then
-            return errors:wrap(errors.REQUEST_PARAMS_ERROR)
-        end
-        local value = mem_cache:get(params.smsId)
-        value = commonlib.Json.Decode(value or "{}")
-        if (value.smsCode ~= params.smsCode) or (value.cellphone ~= params.cellphone) then
-            return errors:wrap(errors:new("验证码错误"))
-        end
-        mem_cache:set(params.smsId, nil)
+		if (not params.smsId) or (not params.smsCode) then
+			return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+		end
+		local value = mem_cache:get(params.smsId)
+		value = commonlib.Json.Decode(value or "{}")
+		if (value.smsCode ~= params.smsCode) or (value.cellphone ~= params.cellphone) then
+			return errors:wrap(errors:new("验证码错误"))
+		end
+		mem_cache:set(params.smsId, nil)
 
-        -- generate uuid as kw5a9f9c16x90bcdef0 for cellphone user
-        if (not params.username) then
-            params.username = string.format(
-                'kw%sx%s',
-                string.format('%x', os.time()),
-                string.format('%x', params.cellphone)
-            )
-        end
+		-- generate uuid as kw5a9f9c16x90bcdef0 for cellphone user
+		if (not params.username) then
+			params.username = string.format(
+				'kw%sx%s',
+				string.format('%x', os.time()),
+				string.format('%x', params.cellphone)
+			)
+		end
 
-        realNameInfo = {
+		realNameInfo = {
 			cellphone = params.cellphone,
 			verified = true
 		}
-    end
+	end
 
 	if (not params.username) or (not params.password) then
 		return errors:wrap(err)
@@ -668,8 +672,8 @@ function user:api_register(params)
 		displayName = params.username,
 		password = self:encodePassword(params.password),
 		email = params.email,
-        cellphone = params.cellphone,
-        realNameInfo = realNameInfo,
+		cellphone = params.cellphone,
+		realNameInfo = realNameInfo,
 		portrait = params.portrait,
 		joindate = ParaGlobal.GetDateFormat("yyyy-MM-dd"),
 		defaultDataSourceName=const.DEFAULT_DATA_SOURCE_NAME,
