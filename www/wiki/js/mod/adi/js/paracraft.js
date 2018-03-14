@@ -132,9 +132,7 @@ define([
 						is_card_show  : true,
 						is_mod_hide   : false, 
 						name          : "描述",
-						text          : "从来都记忆模糊，记不得都去了哪些地方，看了哪些风景，遇到哪些人。尽管同学说，去\n\
-旅行不在于记忆，而在于当时餐，午餐，晚餐。或许吃得不好，可是却依旧为对方擦去嘴角\n\
-的油渍。风景如何，其实并不重要。",
+						text          : "从来都记忆模糊，记不得都去了哪些地方，看了哪些风景，遇到哪些人。尽管同学说，去旅行不在于记忆，而在于当时餐，午餐，晚餐。或许吃得不好，可是却依旧为对方擦去嘴角的油渍。风景如何，其实并不重要。",
 						require       : true,
 						href		  : "",
 					},
@@ -198,7 +196,15 @@ define([
 
 			wikiblock.init(initObj);
 
-			if($scope.params.media_logo.is_mod_hide && $scope.params.link_version.is_mod_hide && $scope.params.link_opus_id.is_mod_hide && $scope.params.multiText_desc.is_mod_hide && $scope.params.link_world_url.is_mod_hide && $scope.params.link_files_totals.is_mod_hide && $scope.params.link_username.is_mod_hide && $scope.params.link_update_date.is_mod_hide && $scope.params.link_world_name.is_mod_hide){
+			if($scope.params.media_logo.is_mod_hide &&
+			   $scope.params.link_version.is_mod_hide &&
+			   $scope.params.link_opus_id.is_mod_hide &&
+			   $scope.params.multiText_desc.is_mod_hide &&
+			   $scope.params.link_world_url.is_mod_hide &&
+			   $scope.params.link_files_totals.is_mod_hide &&
+			   $scope.params.link_username.is_mod_hide &&
+			   $scope.params.link_update_date.is_mod_hide &&
+			   $scope.params.link_world_name.is_mod_hide){
 				$scope.params.viewTimes.is_mod_hide = true;
 			}
 
@@ -209,8 +215,11 @@ define([
 			}
 			
 			$scope.clickDownload = function() {
-                $scope.showModal = false;
-                window.open("http://www.paracraft.cn");
+				$scope.showModal = false;
+				var url = $scope.params.paracraft_info && $scope.params.paracraft_info.client_url ?
+				          $scope.params.paracraft_info.client_url : "http://www.paracraft.cn";
+
+                window.open(url);
 			}
 
 			$scope.closeModal = function () {
