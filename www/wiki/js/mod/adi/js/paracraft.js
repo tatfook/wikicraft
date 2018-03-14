@@ -215,8 +215,11 @@ define([
 			}
 			
 			$scope.clickDownload = function() {
-                $scope.showModal = false;
-                window.open("http://www.paracraft.cn");
+				$scope.showModal = false;
+				var url = $scope.params.paracraft_info && $scope.params.paracraft_info.client_url ?
+				          $scope.params.paracraft_info.client_url : "http://www.paracraft.cn";
+
+                window.open(url);
 			}
 
 			$scope.closeModal = function () {
