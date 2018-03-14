@@ -133,6 +133,15 @@ function util:isArray(table)
 	return max -- return highest index in the table
 end
 
+
+function util:check_identity(params)
+	local err = true
+	local username = getUsername()
+	if params.username ~= username then err = false end
+	return err
+end
+
+
 -- 自定义常量
 const={}
 

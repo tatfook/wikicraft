@@ -517,25 +517,25 @@ function pages:update_visibility_to_es(params)
 end
 
 
-function pages:api_fixSiteUrl(params)
-    local passwd = KEEPWORK["config"][CURRENT_ENV]["wiki"]["scripts"]["passwd"]
-    if (not passwd) then return "please set your script password" end
-    if (not params.passwd) then return "please input your password" end
-    if (params.passwd ~= passwd) then return "incorrect password" end
+-- function pages:api_fixSiteUrl(params)
+--     local passwd = KEEPWORK["config"][CURRENT_ENV]["wiki"]["scripts"]["passwd"]
+--     if (not passwd) then return "please set your script password" end
+--     if (not params.passwd) then return "please input your password" end
+--     if (params.passwd ~= passwd) then return "incorrect password" end
 
-    self:db():find({_id={gt=0, limit=999999}}, resume)
-    local err, pages = yield()
-    local data_to_insert = {}
-    local username, sitename
-    if (pages) then
-        for i, page in ipairs(pages) do
-            username, sitename = self:get_username_and_sitename(page.url)
-            if (sitename) and (not page.siteUrl) then
-                local siteUrl = self:get_site_url(page)
-                self:db():updateOne({["+url"]={page.url}}, {siteUrl=siteUrl}, resume)
-                yield()
-            end
-        end
-    end
-    return errors:wrap(nil)
-end
+--     self:db():find({_id={gt=0, limit=999999}}, resume)
+--     local err, pages = yield()
+--     local data_to_insert = {}
+--     local username, sitename
+--     if (pages) then
+--         for i, page in ipairs(pages) do
+--             username, sitename = self:get_username_and_sitename(page.url)
+--             if (sitename) and (not page.siteUrl) then
+--                 local siteUrl = self:get_site_url(page)
+--                 self:db():updateOne({["+url"]={page.url}}, {siteUrl=siteUrl}, resume)
+--                 yield()
+--             end
+--         end
+--     end
+--     return errors:wrap(nil)
+-- end
