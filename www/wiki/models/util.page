@@ -142,14 +142,8 @@ end
 
 function util:check_identity(params)
 	local allowed = false
-    local token = getTokenInfo() or {}
-    if not getTokenInfo() then
-        log("===================================================")
-        log("i can only be seen when the token doesnot exist")
-        log(request)
-        log("===================================================")
-    end
-    local username_must_be = token.username
+	local token = getTokenInfo() or {}
+	local username_must_be = token.username
 	if not username_must_be then return allowed end
 	local username_to_check = params.username
 
