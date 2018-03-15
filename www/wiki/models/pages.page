@@ -44,7 +44,7 @@ end
 function pages:api_insert(params)
     self:ensureAuthenticated()
     local page = self:insert_validator(params)
-    self:check_identity(params)
+    self:check_identity(page)
 
     self:db():insertOne({["+url"] = {page.url}}, page, resume)
     local err, result = yield()
@@ -62,6 +62,7 @@ function pages:insert_validator(params)
     local clean_data = {}
     local validate_tasks = {
             required_fields = {"url"},
+            fields_not_empty = {"url"},
             fields_length = {tags = 5},
             sensitive_fields = {"tags"},
             fields_and_model = {
@@ -112,7 +113,7 @@ function pages:api_updateTags(params)
 
     self:ensureAuthenticated()
     local page = self:update_tags_validator(params)
-    self:check_identity(params)
+    self:check_identity(page)
 
     self:db():updateOne({["+url"] = {page.url}}, {tags = page.tags}, resume)
     local err, result = yield()
@@ -167,7 +168,7 @@ function pages:api_updateContent(params)
 
     self:ensureAuthenticated()
     local page = self:update_content_validator(params)
-    self:check_identity(params)
+    self:check_identity(page)
     self:update_to_es(page)
     return errors:wrap(nil)
 end
@@ -189,7 +190,6 @@ end
 
 
 function pages:api_star(params)
-    self:ensureAuthenticated()
     local stars = models.pages_stars:new()
     return stars:star(params)
 end
@@ -247,7 +247,7 @@ end
 function pages:api_delete(params)
     self:ensureAuthenticated()
     local page = self:delete_validator(params)
-    self:check_identity(params)
+    self:check_identity(page)
 
     self:db():findOne({["+url"] = {page.url}}, resume)
     local err, result = yield()

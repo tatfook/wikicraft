@@ -150,7 +150,7 @@ function validators.sensitive_words_validator(params, sensitive_fields)
     local not_sensitive = sensitiveWordFilter(params_to_check)
     if (not not_sensitive) then
         params_error = true
-        msg = "sensitive words included"
+        message = "sensitive words included"
     end
     return params_error, message
 end
@@ -194,6 +194,20 @@ function validators.existence_validator(params, fields_and_model)
     elseif (not result) and (mode == 0) then
         params_error = true
         message = model_instance.db_name .. " not exist"
+    end
+    return params_error, message
+end
+
+
+function validators.ensure_not_empty(params, fields_not_empty)
+    local params_error = false
+    local message
+    for i, field_name in ipairs(fields_not_empty) do
+        if (params[field_name] == "") then
+            params_error = true
+            message = field_name .. " cannot be empty"
+            break
+        end
     end
     return params_error, message
 end
@@ -243,4 +257,5 @@ validators.condition_to_validator = {
     sensitive_fields = validators.sensitive_words_validator,
     fields_and_model = validators.existence_validator,
     user_model_instance = validators.users_existence_validator,
+    fields_not_empty = validators.ensure_not_empty,
 }
