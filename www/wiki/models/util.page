@@ -133,6 +133,26 @@ function util:isArray(table)
 	return max -- return highest index in the table
 end
 
+
+function util:get_username_and_sitename(url)
+	local splited_url = commonlib.split(url, "/")
+	return splited_url[1], splited_url[2]
+end
+
+
+function util:check_identity(params)
+	local allowed = false
+	local username_must_be = getUsername()
+	local username_to_check = params.username
+
+	if params.url then
+		username_to_check = self:get_username_and_sitename(params.url)
+	end
+	if username_to_check == username_must_be then allowed = true end
+	return allowed
+end
+
+
 -- 自定义常量
 const={}
 

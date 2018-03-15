@@ -23,12 +23,22 @@ function pages_stars:ctor()
 end
 
 
-function pages_stars:star(params)
-    local required_fields = {"url", "visitor"}
-    local is_params_error, message = validators.required_fields_validator(params, required_fields)
-    if (is_params_error) then
-        return response:status(404):send({error={message=message,status=404}})
+function pages_stars:check_identity(params)
+    local allowed = util:check_identity({username=params.visitor})
+    if (not allowed) then
+        local message = "You are not allowed to do it"
+        errors:raise(403, message)
     end
+end
+
+
+function pages_stars:star(params)
+    self:ensureAuthenticated()
+    local required_fields = {"url", "visitor"}
+    local params_error, message = validators.required_fields_validator(params, required_fields)
+    if (params_error) then errors:raise(400, message) end
+    self:check_identity(params)
+
     local splited_url = commonlib.split(params.url, "/")
     local username = splited_url[1] or ""
     local sitename = splited_url[2] or ""
@@ -71,10 +81,8 @@ end
 
 function pages_stars:get_starred_pages_of_a_user(params)
     local required_fields = {"username"}
-    local is_params_error, message = validators.required_fields_validator(params, required_fields)
-    if (is_params_error) then
-        return response:status(404):send({error={message=message,status=404}})
-    end
+    local params_error, message = validators.required_fields_validator(params, required_fields)
+    if (params_error) then errors:raise(400, message) end
 
     self:db():count({starredUser = params.username}, resume)
     local err, count = yield()
