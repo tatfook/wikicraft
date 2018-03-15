@@ -402,7 +402,7 @@ function pages:delete_in_es(params)
 end
 
 
-function pages:delet_website_in_es(pages)
+function pages:delete_website_in_es(pages)
     local bulk_data = ""
     for i, page in ipairs(pages) do
         bulk_data = bulk_data .. format('{"delete":{"_id":"%d"}}', page._id) .. "\n"
