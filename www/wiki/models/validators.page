@@ -157,13 +157,18 @@ end
 
 
 -- errors if user does not exist
-function validators.users_existence_validator(params, user_model_instance)
-    if (not params.username) or (not user_model_instance) then
-        error("users_existence_validator errors : username and user_model_instance required!")
+function validators.users_existence_validator(params, user_model)
+    if (not user_model) then
+        error("users_existence_validator errors : user_model required")
     end
     local params_error = false
     local message
-    user_model_instance:db():findOne({["+username"]={params.username}}, resume)
+    if (not params.username) then
+        params_error = true
+        message = "username is required!"
+        return params_error, message
+    end
+    user_model:db():findOne({["+username"]={params.username}}, resume)
     local _, exist_user = yield()
     if (not exist_user) then
         params_error = true
@@ -256,6 +261,6 @@ validators.condition_to_validator = {
     fields_range = validators.number_range_validator,
     sensitive_fields = validators.sensitive_words_validator,
     fields_and_model = validators.existence_validator,
-    user_model_instance = validators.users_existence_validator,
+    user_model = validators.users_existence_validator,
     fields_not_empty = validators.ensure_not_empty,
 }
