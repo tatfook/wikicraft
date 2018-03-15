@@ -316,7 +316,7 @@ function pages:delete_website(params)
     if (not err) then
         self:db():delete({siteUrl = site_url}, resume)
         err, result = yield()
-        self:delet_website_in_es(pages)
+        self:delete_website_in_es(pages)
     end
     return err, result
 end
