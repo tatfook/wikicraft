@@ -140,13 +140,13 @@
         font-size: 32px;
         margin-top: 200px;
         margin-bottom: 10px;
-        height: 33px;
+        min-height: 33px;
     }
     .mix-layer .style4 .mix-div > h3{
         font-size: 24px;
         margin-top: 0;
         margin-bottom: 0;
-        height: 25px;
+        min-height: 25px;
     }
     .mix-layer .style4 .mix-div > span{
         display: block;
@@ -157,6 +157,25 @@
     .mix-layer .style4 .mix-div > span a{
         font-size: 16px;
     } 
+
+    @media (max-width: 768px) {
+        .mix-layer .style4 .mix-div{
+            margin-left: 20px;
+            margin-right: 20px;
+        }
+        .mix-layer .style4 .mix-div > span{
+            white-space: normal;
+        }
+        .mix-layer .style4 .mix-div > span a{
+            font-size: 13px;
+        }
+
+        .mix-layer .style4 .mix-div > h2{
+            margin-top: 50px;
+            margin-bottom: 10px;
+            font-size: 22px;
+        }
+    }
 
     /* style5 css */
      .mix-layer .style5 a{
@@ -566,7 +585,7 @@
     </div>
 
     <!-- style4 html -->
-    <div ng-if='params.design.text=="style4"' ng-class="{true:'container'}[!editorMode]" class="style4 clearfix">
+    <div ng-if='params.design.text=="style4"' class="style4 clearfix">
         <div class="mix-div" id="{{divHeight}}">
             <h2 ng-class="{true:'mix-a-color'}[params.media_img.is_mod_hide]">
                 <a ng-if="editorMode"
