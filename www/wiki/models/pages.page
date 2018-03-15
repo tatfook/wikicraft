@@ -32,12 +32,20 @@ function pages:ctor()
 end
 
 
-function pages:api_insert(params)
-    ensureAuthenticated()
-    local page, is_params_error, message = self:insert_validator(params)
-    if (is_params_error) then
-        return response:status(400):send({error={message=message,status=400}})
+function pages:check_identity(params)
+    local allowed = util:check_identity(params)
+    if (not allowed) then
+        local message = "You are not allowed to do it"
+        errors:raise(403, message)
     end
+end
+
+
+function pages:api_insert(params)
+    self:ensureAuthenticated()
+    local page = self:insert_validator(params)
+    self:check_identity(params)
+
     self:db():insertOne({["+url"] = {page.url}}, page, resume)
     local err, result = yield()
     if (result) then
@@ -52,39 +60,26 @@ end
 
 function pages:insert_validator(params)
     local clean_data = {}
-    local required_fields = {"url"}
-    local fields_length = {tags = 5}
-    local are_they_sensitive_fields = {"tags"}
-    local index_fields_and_model_instance = {
-        index_fields = {"url"},
-        model_instance = self
-    }
     local validate_tasks = {
-        {
-            validator = validators.required_fields_validator,
-            condition = required_fields
-        }, {
-            validator = validators.fields_length_validator,
-            condition = fields_length
-        }, {
-            validator = validators.sensitive_words_validator,
-            condition = are_they_sensitive_fields
-        }, {
-            validator = validators.existence_validator,
-            condition = index_fields_and_model_instance
-        },
-    }
-    validators:add_validate_tasks(validate_tasks, params)
-    local is_params_error, message = validators:get_validate_result()
+            required_fields = {"url"},
+            fields_length = {tags = 5},
+            sensitive_fields = {"tags"},
+            fields_and_model = {
+                index_fields = {"url"},
+                model_instance = self
+            },
+         }
 
-    if (not is_params_error) then
-        clean_data = {
-            url = params.url,
-            tags = params.tags,
-            siteUrl = self:get_site_url(params),
-        }
-    end
-    return clean_data, is_params_error, message
+    validators:add_validate_tasks(validate_tasks, params)
+    local params_error, message = validators:get_validate_result()
+    if (params_error) then errors:raise(400, message) end
+
+    clean_data = {
+        url = params.url,
+        tags = params.tags,
+        siteUrl = self:get_site_url(params),
+    }
+    return clean_data
 end
 
 
@@ -115,11 +110,10 @@ function pages:api_updateTags(params)
         if (not result) then return self:api_insert(params) end
     end
 
-    ensureAuthenticated()
-    local page, is_params_error, message = self:update_tags_validator(params)
-    if (is_params_error) then
-        return response:status(400):send({error={message=message,status=400}})
-    end
+    self:ensureAuthenticated()
+    local page = self:update_tags_validator(params)
+    self:check_identity(params)
+
     self:db():updateOne({["+url"] = {page.url}}, {tags = page.tags}, resume)
     local err, result = yield()
     if (result) then
@@ -134,31 +128,21 @@ end
 
 function pages:update_tags_validator(params)
     local clean_data = {}
-    local required_fields = {"url", "tags"}
-    local are_they_sensitive_fields = {"tags"}
-    local fields_length = {tags = 5}
+
     local validate_tasks = {
-        {
-            validator = validators.required_fields_validator,
-            condition = required_fields
-        }, {
-            validator = validators.sensitive_words_validator,
-            condition = are_they_sensitive_fields
-        }, {
-            validator = validators.fields_length_validator,
-            condition = fields_length
-        },
+        required_fields = {"url", "tags"},
+        sensitive_fields = {"tags"},
+        fields_length = {tags = 5},
     }
     validators:add_validate_tasks(validate_tasks, params)
-    local is_params_error, message = validators:get_validate_result()
+    local params_error, message = validators:get_validate_result()
+    if (params_error) then errors:raise(400, message) end
 
-    if (not is_params_error) then
-        clean_data = {
-            url = params.url,
-            tags = params.tags,
-        }
-    end
-    return clean_data, is_params_error, message
+    clean_data = {
+        url = params.url,
+        tags = params.tags,
+    }
+    return clean_data
 end
 
 
@@ -181,11 +165,9 @@ function pages:api_updateContent(params)
         end
     end
 
-    ensureAuthenticated()
-    local page, is_params_error, message = self:update_content_validator(params)
-    if (is_params_error) then
-        return response:status(400):send({error={message=message,status=400}})
-    end
+    self:ensureAuthenticated()
+    local page = self:update_content_validator(params)
+    self:check_identity(params)
     self:update_to_es(page)
     return errors:wrap(nil)
 end
@@ -194,20 +176,20 @@ end
 function pages:update_content_validator(params)
     local clean_data = {}
     local required_fields = {"url", "content"}
-    local is_params_error, message = validators.required_fields_validator(params, required_fields)
-    if (not is_params_error) then
-        clean_data = {
-            id = params.id,
-            url = params.url,
-            content = params.content,
-        }
-    end
-    return clean_data, is_params_error, message
+    local params_error, message = validators.required_fields_validator(params, required_fields)
+    if (params_error) then errors:raise(400, message) end
+
+    clean_data = {
+        id = params.id,
+        url = params.url,
+        content = params.content,
+    }
+    return clean_data
 end
 
 
 function pages:api_star(params)
-    ensureAuthenticated()
+    self:ensureAuthenticated()
     local stars = models.pages_stars:new()
     return stars:star(params)
 end
@@ -215,10 +197,9 @@ end
 
 function pages:api_updateVisitCount(params)
     local required_fields = {"url"}
-    local is_params_error, message = validators.required_fields_validator(params, required_fields)
-    if (is_params_error) then
-        return response:status(400):send({error={message=message,status=400}})
-    end
+    local params_error, message = validators.required_fields_validator(params, required_fields)
+    if (params_error) then errors:raise(400, message) end
+
     local page = {url = params.url}
     self:db():findOne({["+url"]={page.url}}, resume)
     local err, result = yield()
@@ -243,10 +224,9 @@ end
 
 function pages:api_getDetail(params)
     local required_fields = {"url", "visitor"}
-    local is_params_error, message = validators.required_fields_validator(params, required_fields)
-    if (is_params_error) then
-        return response:status(400):send({error={message=message,status=400}})
-    end
+    local params_error, message = validators.required_fields_validator(params, required_fields)
+    if (params_error) then errors:raise(400, message) end
+
     local page = {url = params.url, visitor = params.visitor}
     self:db():findOne({["+url"] = {page.url}}, resume)
     local err, result = yield()
@@ -265,11 +245,10 @@ end
 
 
 function pages:api_delete(params)
-    ensureAuthenticated()
-    local page, is_params_error, message = self:delete_validator(params)
-    if (is_params_error) then
-        return response:status(400):send({error={message=message,status=400}})
-    end
+    self:ensureAuthenticated()
+    local page = self:delete_validator(params)
+    self:check_identity(params)
+
     self:db():findOne({["+url"] = {page.url}}, resume)
     local err, result = yield()
     if (result) then
@@ -289,18 +268,16 @@ end
 function pages:delete_validator(params)
     local clean_data = {}
     local required_fields = {"url"}
-    local is_params_error, message = validators.required_fields_validator(params, required_fields)
-    if (not is_params_error) then clean_data = {url = params.url} end
-    return clean_data, is_params_error, message
+    local params_error, message = validators.required_fields_validator(params, required_fields)
+    if (params_error) then errors:raise(400, message) end
+    clean_data = {url = params.url}
+    return clean_data
 end
 
 
 function pages:delete_website(params)
     -- ensureAuthenticated()
-    local site, is_params_error, message = self:delete_website_validator(params)
-    if (is_params_error) then
-        return response:status(400):send({error={message=message,status=400}})
-    end
+    local site = self:delete_website_validator(params)
     local site_url = self:get_site_url(params)
     local stars = models.pages_stars:new()
     local err, result = stars:delete_website({siteUrl = site_url})
@@ -325,14 +302,14 @@ end
 function pages:delete_website_validator(params)
     local clean_data = {}
     local required_fields = {"username", "sitename"}
-    local is_params_error, message = validators.required_fields_validator(params, required_fields)
-    if (not is_params_error) then
-        clean_data = {
-            username = params.username,
-            sitename = params.sitename,
-        }
-    end
-    return clean_data, is_params_error, message
+    local params_error, message = validators.required_fields_validator(params, required_fields)
+    if (params_error) then errors:raise(400, message) end
+
+    clean_data = {
+        username = params.username,
+        sitename = params.sitename,
+    }
+    return clean_data, params_error, message
 end
 
 
@@ -412,10 +389,7 @@ end
 
 
 function pages:api_search(params)
-    local clean_params, is_params_error, message = self:search_validator(params)
-    if (is_params_error) then
-        return response:status(400):send({error={message=message,status=400}})
-    end
+    local clean_params = self:search_validator(params)
     local err, search_result = es:search(clean_params)
     local rcode = search_result.rcode
     local wrapped_result = {}
@@ -431,45 +405,43 @@ end
 function pages:search_validator(params)
     local clean_data = {}
     local required_fields = {"q"}
-    local is_params_error, message = validators.required_fields_validator(params, required_fields)
-    if (not is_params_error) then
-        local fields = {'tags', 'content', 'username', 'sitename', 'pagename'}
+    local params_error, message = validators.required_fields_validator(params, required_fields)
+    if (params_error) then errors:raise(400, message) end
+    local fields = {'tags', 'content', 'username', 'sitename', 'pagename'}
 
-        clean_data = {
-            type = "pages",
-            fields = fields,
-            page = tonumber(params.page) or 1,
-            size = tonumber(params.size) or 500,
-            sort = params.sort,
-            highlight = tonumber(params.highlight) or 1,
-            pre_tags = {"<span>"},
-            post_tags = {"</span>"},
-        }
+    clean_data = {
+        type = "pages",
+        fields = fields,
+        page = tonumber(params.page) or 1,
+        size = tonumber(params.size) or 500,
+        sort = params.sort,
+        highlight = tonumber(params.highlight) or 1,
+        pre_tags = {"<span>"},
+        post_tags = {"</span>"},
+    }
 
-        clean_data.body = {
-            query = {
-                bool = {
-                    should = {
-                        {
-                            multi_match = {
-                                query = params.q,
-                                fields = fields,
-                                fuzziness = "AUTO",
-                            }
+    clean_data.body = {
+        query = {
+            bool = {
+                should = {
+                    {
+                        multi_match = {
+                            query = params.q,
+                            fields = fields,
+                            fuzziness = "AUTO",
                         }
-                    },
-                    must_not = {
-                        {match = {visibility = "private"}}
                     }
+                },
+                must_not = {
+                    {match = {visibility = "private"}}
                 }
             }
         }
+    }
 
-        if (params.username) then clean_data.post_filter =  {term={username=params.username}} end
-
-        if (clean_data.size > 500) then clean_data.size = 500 end
-    end
-    return clean_data, is_params_error, message
+    if (params.username) then clean_data.post_filter =  {term={username=params.username}} end
+    if (clean_data.size > 500) then clean_data.size = 500 end
+    return clean_data
 end
 
 

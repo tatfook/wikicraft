@@ -135,15 +135,15 @@ function validators.number_range_validator(params, fields_range)
 end
 
 
-function validators.sensitive_words_validator(params, fields_to_check)
-    if (not params) or (not fields_to_check) then
-        error("sensitive_words_validator errors : params to be validated and fields_to_check required!")
+function validators.sensitive_words_validator(params, sensitive_fields)
+    if (not params) or (not sensitive_fields) then
+        error("sensitive_words_validator errors : params to be validated and sensitive_fields required!")
     end
     local params_error = false
     local message
 
     local params_to_check = {}
-    for i, field_name in ipairs(fields_to_check) do
+    for i, field_name in ipairs(sensitive_fields) do
         params_to_check[field_name] = params[field_name]
     end
 
@@ -240,7 +240,7 @@ validators.condition_to_validator = {
     required_fields = validators.required_fields_validator,
     fields_length = validators.fields_length_validator,
     fields_range = validators.number_range_validator,
-    fields_to_check = validators.sensitive_words_validator,
+    sensitive_fields = validators.sensitive_words_validator,
     fields_and_model = validators.existence_validator,
     user_model_instance = validators.users_existence_validator,
 }
