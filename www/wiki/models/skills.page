@@ -40,7 +40,7 @@ end
 
 
 function skills:api_insert(params)
-    self:ensureAuthenticated()
+    ensureAuthenticated()
     local skill = self:insert_validator(params)
     self:check_identity(skill)
 

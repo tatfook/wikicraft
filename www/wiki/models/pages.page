@@ -42,7 +42,7 @@ end
 
 
 function pages:api_insert(params)
-    self:ensureAuthenticated()
+    ensureAuthenticated()
     local page = self:insert_validator(params)
     self:check_identity(page)
 
@@ -111,7 +111,7 @@ function pages:api_updateTags(params)
         if (not result) then return self:api_insert(params) end
     end
 
-    self:ensureAuthenticated()
+    ensureAuthenticated()
     local page = self:update_tags_validator(params)
     self:check_identity(page)
 
@@ -166,7 +166,7 @@ function pages:api_updateContent(params)
         end
     end
 
-    self:ensureAuthenticated()
+    ensureAuthenticated()
     local page = self:update_content_validator(params)
     self:check_identity(page)
     self:update_to_es(page)
@@ -245,7 +245,7 @@ end
 
 
 function pages:api_delete(params)
-    self:ensureAuthenticated()
+    ensureAuthenticated()
     local page = self:delete_validator(params)
     self:check_identity(page)
 

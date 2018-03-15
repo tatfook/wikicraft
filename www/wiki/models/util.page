@@ -142,7 +142,9 @@ end
 
 function util:check_identity(params)
 	local allowed = false
-	local username_must_be = getUsername()
+	local token = getTokenInfo()
+	local username_must_be = token.username
+	if (not token.username) or (not token) then return allowed end
 	local username_to_check = params.username
 
 	if params.url then
