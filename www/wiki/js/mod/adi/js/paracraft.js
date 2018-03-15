@@ -16,47 +16,6 @@ define([
 
 			var token = localStorage.getItem("satellizer_token");
 
-			var params_text = wikiblock.blockCache.block.content.replace(/```@paracraft/, "");
-			params_text = params_text.replace(/```/, "");
-
-			var isJSON = true;
-
-			try {
-				JSON.parse(params_text);
-			} catch (error) {
-				isJSON = false;
-			}
-
-			if(isJSON){
-				var oldParams = JSON.parse(params_text);
-				var newParams = {};
-
-				newParams["design"] = {"text" : "style1"};
-
-				for(key in oldParams){
-
-					if(key == "logoUrl"){
-						var logoUrl = JSON.parse(oldParams.logoUrl);
-						
-						for(x in logoUrl){
-							newParams[key] = {"text" : {}};
-
-							for(y in logoUrl[x]){
-								newParams[key].text[x]= {
-									id    : Date.now(),
-									name  : y,
-									url   : logoUrl[x][y],   
-								};
-							}
-						}
-					}else{
-						newParams[key] = {"text" : oldParams[key]};
-					}
-				}
-
-				wikiblock.applyModParams(mdconf.jsonToMd(newParams));
-			}
-
 			initObj = {
 				scope  : $scope,
 				styles : [
@@ -195,6 +154,7 @@ define([
             }
 
 			wikiblock.init(initObj);
+			convert();
 
 			if($scope.params.media_logo.is_mod_hide &&
 			   $scope.params.link_version.is_mod_hide &&
@@ -242,7 +202,52 @@ define([
 				}
 			}
 
-            $scope.subMarkdownRender = util.subMarkdownRender;
+			$scope.subMarkdownRender = util.subMarkdownRender;
+			
+			function convert(){
+				var params_text = wikiblock.blockCache.block.content.replace(/```@paracraft/, "");
+				params_text = params_text.replace(/```/, "");
+
+				var isJSON = true;
+
+				try {
+					JSON.parse(params_text);
+				} catch (error) {
+					isJSON = false;
+				}
+
+				
+				if(isJSON){
+					var oldParams = JSON.parse(params_text);
+					var newParams = {};
+
+					newParams["design"] = {"text" : "style1"};
+
+					for(key in oldParams){
+
+						if(key == "logoUrl"){
+							var logoUrl = JSON.parse(oldParams.logoUrl);
+							
+							for(x in logoUrl){
+								newParams[key] = {"text" : {}};
+
+								for(y in logoUrl[x]){
+									newParams[key].text[x]= {
+										id    : Date.now(),
+										name  : y,
+										url   : logoUrl[x][y],   
+									};
+								}
+							}
+						}else{
+							newParams[key] = {"text" : oldParams[key]};
+						}
+					}
+
+					$scope.params = newParams
+					wikiblock.applyModParams(mdconf.jsonToMd(newParams));
+				}
+			}
 		}]);
     }
 
