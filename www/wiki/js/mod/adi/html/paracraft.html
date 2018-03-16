@@ -23,13 +23,23 @@
 
     .paracraft-mod .style1 h4{
         margin-top:0;
-        height: 20px;
+        min-height: 20px;
+        overflow: hidden;
+    }
+
+    .paracraft-mod .style1 h4 > a{
+        display: block;
+        float: left;
+    }
+
+    .paracraft-mod .style1 h4 > div{
+        float: right;
     }
 
     @media (min-width:769px) {
         .paracraft-mod .style1 .img{
             width: 300px;
-            height: 200px;
+            height: auto;
             overflow: hidden;
         }
 
@@ -40,7 +50,7 @@
     }
 
     .paracraft-mod .style1 .text{
-        max-height: 200px;
+        min-height: 200px;
         padding: 20px;
     }
 
@@ -133,8 +143,19 @@
         .paracraft-mod .style1{
             display: block;
         }
+        
         .paracraft-mod .style1 .img{
             text-align: center;
+        }
+
+        .paracraft-mod .style1 h4 > a{
+            display: block;
+            float: none;
+        }
+
+        .paracraft-mod .style1 h4 > div{
+            float: none;
+            margin-top: 30px;
         }
     }
 
@@ -344,23 +365,24 @@
                 <a ng-if="!editorMode" ng-hide="params.link_world_name.is_mod_hide" ng-class="{true:'world-clear-pointer'}[params.link_world_name.href.length == 0]"
                     target="{{params.link_world_name.target ? params.link_world_name.target : '_blank'}}" ng-href="{{params.link_world_name.href}}">
                     {{params.link_world_name.text}}</a>
-                <p ng-hide="params.link_version.is_mod_hide" class="info pull-right">
-                    <a ng-if="editorMode" href="javascript:void(0)">
-                        {{params.link_version.desc ? params.link_version.desc : "版本"}}：{{params.link_version.text}}
-                    </a>
-                    <a ng-if="!editorMode" ng-class="{true:'world-clear-pointer'}">
-                        {{params.link_version.desc ? params.link_version.desc : "版本"}}：{{params.link_version.text}}
-                    </a>
-                <p></p>
-                <p ng-hide="params.link_update_date.is_mod_hide" class="info pull-right">
-                    <a ng-if="editorMode" ng-click="viewEditorClick(params.link_update_date, $event)" href="javascript:void(0)">
-                        {{params.link_update_date.text}}</a>
-                    <a ng-if="!editorMode" ng-class="{true:'world-clear-pointer'}[params.link_update_date.href.length == 0]" target="{{params.link_update_date.target ? params.link_update_date.target : '_blank'}}"
-                        ng-href="{{params.link_update_date.href}}">
-                        {{params.link_update_date.text}}
-                    </a>
-                </p>
-                
+                <div>
+                    <p ng-hide="params.link_version.is_mod_hide" class="info">
+                        <a ng-if="editorMode" href="javascript:void(0)">
+                            {{params.link_version.desc ? params.link_version.desc : "版本"}}：{{params.link_version.text}}
+                        </a>
+                        <a ng-if="!editorMode" ng-class="{true:'world-clear-pointer'}">
+                            {{params.link_version.desc ? params.link_version.desc : "版本"}}：{{params.link_version.text}}
+                        </a>
+                    <p></p>
+                    <p ng-hide="params.link_update_date.is_mod_hide" class="info">
+                        <a ng-if="editorMode" ng-click="viewEditorClick(params.link_update_date, $event)" href="javascript:void(0)">
+                            {{params.link_update_date.text}}</a>
+                        <a ng-if="!editorMode" ng-class="{true:'world-clear-pointer'}[params.link_update_date.href.length == 0]" target="{{params.link_update_date.target ? params.link_update_date.target : '_blank'}}"
+                            ng-href="{{params.link_update_date.href}}">
+                            {{params.link_update_date.text}}
+                        </a>
+                    </p>
+                </div>
             </h4>
             <div class="inner clearfix">
                 <p>
