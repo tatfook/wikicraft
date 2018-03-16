@@ -42,9 +42,9 @@ end
 
 
 function pages:api_insert(params)
-    ensureAuthenticated()
+    self:ensureAuthenticated()
+    self:check_identity(params)
     local page = self:insert_validator(params)
-    self:check_identity(page)
 
     self:db():insertOne({["+url"] = {page.url}}, page, resume)
     local err, result = yield()
@@ -111,9 +111,9 @@ function pages:api_updateTags(params)
         if (not result) then return self:api_insert(params) end
     end
 
-    ensureAuthenticated()
+    self:ensureAuthenticated()
+    self:check_identity(params)
     local page = self:update_tags_validator(params)
-    self:check_identity(page)
 
     self:db():updateOne({["+url"] = {page.url}}, {tags = page.tags}, resume)
     local err, result = yield()
@@ -166,9 +166,9 @@ function pages:api_updateContent(params)
         end
     end
 
-    ensureAuthenticated()
+    self:ensureAuthenticated()
+    self:check_identity(params)
     local page = self:update_content_validator(params)
-    self:check_identity(page)
     self:update_to_es(page)
     return errors:wrap(nil)
 end
@@ -245,9 +245,9 @@ end
 
 
 function pages:api_delete(params)
-    ensureAuthenticated()
+    self:ensureAuthenticated()
+    self:check_identity(params)
     local page = self:delete_validator(params)
-    self:check_identity(page)
 
     self:db():findOne({["+url"] = {page.url}}, resume)
     local err, result = yield()

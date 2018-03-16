@@ -34,10 +34,10 @@ end
 
 function pages_stars:star(params)
     self:ensureAuthenticated()
+    self:check_identity(params)
     local required_fields = {"url", "visitor"}
     local params_error, message = validators.required_fields_validator(params, required_fields)
     if (params_error) then errors:raise(400, message) end
-    self:check_identity(params)
 
     local splited_url = commonlib.split(params.url, "/")
     local username = splited_url[1] or ""
