@@ -40,9 +40,9 @@ end
 
 
 function skills:api_insert(params)
-    ensureAuthenticated()
+    self:ensureAuthenticated()
+    self:check_identity(params)
     local skill = self:insert_validator(params)
-    self:check_identity(skill)
 
     self:db():insertOne({["+username+title"] = {skill.username, skill.title}}, skill, resume)
     local err, result = yield()
@@ -87,9 +87,9 @@ end
 
 
 function skills:api_update(params)
-    ensureAuthenticated()
+    self:ensureAuthenticated()
+    self:check_identity(params)
     local skill = self:update_validator(params)
-    self:check_identity(skill)
 
     self:db():updateOne({["+username+title"]={skill.username, skill.title}}, {level=skill.level}, resume)
     local err, result = yield()
@@ -123,9 +123,9 @@ end
 
 
 function skills:api_like(params)
-    ensureAuthenticated()
+    self:ensureAuthenticated()
+    self:check_identity({username = params.visitor})
     local skill = self:like_validator(params)
-    self:check_identity({username = skill.visitor})
 
     self:db():findOne({["+username+title"]={skill.username, skill.title}}, resume)
     local err, result = yield()
@@ -294,11 +294,12 @@ end
 
 
 function skills:api_delete(params)
-    ensureAuthenticated()
+    self:ensureAuthenticated()
+    self:check_identity(params)
     local required_fields = {"username", "title"}
     local params_error, message = validators.required_fields_validator(params, required_fields)
     if (params_error) then errors:raise(400, message) end
-    self:check_identity(params)
+
 
     self:db():findOne({["+username+title"]={params.username, params.title}}, resume)
     local _, skill = yield()
