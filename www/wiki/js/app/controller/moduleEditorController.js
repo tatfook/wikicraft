@@ -37,7 +37,7 @@ define([
         $scope.linkFilter = "";
         $scope.hasStyle = false;
         $scope.agentEnable = false;
-        $scope.viewIsOpen = true;
+        $scope.viewIsOpen = false;
 
         $scope.$watch('viewIsOpen', function() {
             $(window).trigger('resize');

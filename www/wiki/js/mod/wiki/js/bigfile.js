@@ -65,6 +65,15 @@ define([
             }
 
             init();
+
+			wikiBlock.init({
+				scope:$scope,
+			});
+
+			$scope.onParamsChange = function() {
+				init();
+				util.$apply();
+			}
         }]);
     }
 

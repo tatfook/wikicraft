@@ -509,7 +509,9 @@ define([
 				self.styles = obj.styles || [];
 
 				self.format_params_template = angular.copy(self.params_template);
-				self.modParams = self.formatModParams("", self.format_params_template, self.modParams);
+				if (obj.params_template) {
+					self.modParams = self.formatModParams("", self.format_params_template, self.modParams);
+				}
 				self.setEditorObj = moduleEditorParams.setEditorObj;
 				self.setDesignList = moduleEditorParams.setDesignList;
 
@@ -1088,6 +1090,7 @@ define([
             // if find any cached block, use it and return;
             if (blockCache) {
                 if (isWikiBlock && blockCache.text != text) {
+					blockCache.text = text;
                     blockCache.newWikiBlock = mdwiki.parseWikiBlock(token);
                 }
                 return (blockCache.isUsing = true, blockCache);

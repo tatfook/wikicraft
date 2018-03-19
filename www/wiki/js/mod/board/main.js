@@ -92,16 +92,24 @@
 
     function registerController(wikiBlock) {
         app.registerController("boardController", ['$scope', '$uibModal', '$sce', function ($scope, $uibModal, $sce) {
-            if (wikiBlock.editorMode) {
-                $scope.mxClientEdit = true;
-                
-                initEditMode();
-            } else {
-                initPreview(wikiBlock, function (svg) {
-                    $scope.preview = $sce.trustAsHtml(svg);
-                    util.$apply();
-                });
-            }
+			function init() {
+				if (wikiBlock.editorMode) {
+					$scope.mxClientEdit = true;
+					
+					initEditMode();
+				} else {
+					initPreview(wikiBlock, function (svg) {
+						$scope.preview = $sce.trustAsHtml(svg);
+						util.$apply();
+					});
+				}
+			}
+			init();
+			wikiBlock.init({scope:$scope});
+			$scope.onParamsChange = function() {
+				init();
+				util.$apply();
+			}
 
             $scope.edit = function () {
                 if (!wikiBlock.editorMode) {
@@ -140,6 +148,9 @@
             };
 
             function initEditMode(){
+				if (typeof(wikiBlock.modParams) != "string") {
+					wikiBlock.modParams = "";
+				}
                 var modParams = wikiBlock.modParams.replace(/[\ \r\n]+/g, "");
                 
                 if (typeof(modParams) == "string" && modParams.length == 0 || modParams == "blank") {
@@ -164,6 +175,9 @@
 
             $scope.$watch('$viewContentLoaded', function(){
                 setTimeout(function () {
+					if (typeof(wikiBlock.modParams) != "string") {
+						wikiBlock.modParams = "";
+					}
                     initEditor(wikiBlock.modParams, function (ui) {
                         $scope.ui = ui;
                         $scope.$apply();

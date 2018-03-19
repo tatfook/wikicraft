@@ -202,6 +202,15 @@ define([
 				$scope.params.viewTimes.is_mod_hide = true;
 			}
 
+
+			$scope.viewTimes = 0;
+            var viewTimesUrl = "/api/mod/worldshare/models/worlds/getOneOpus";
+            var params       = {link_opus_id: $scope.params.link_opus_id.text};
+
+            util.http("POST", viewTimesUrl, params, function (response) {
+                $scope.viewTimes = response.viewTimes;
+            }, function (response) { });
+
 			$scope.checkEngine = function () {
                 $scope.showModal=true;
 
@@ -216,14 +225,6 @@ define([
 			$scope.closeModal = function () {
                 $scope.showModal=false;
             }
-
-			$scope.viewTimes = 0;
-            var viewTimesUrl = "/api/mod/worldshare/models/worlds/getOneOpus";
-            var params       = {link_opus_id: $scope.params.link_opus_id.text};
-
-            util.http("POST", viewTimesUrl, params, function (response) {
-                $scope.viewTimes = response.viewTimes;
-            }, function (response) { });
 			
 			$scope.getSize = function(size){
 				if (size <= 1048576) {
@@ -231,6 +232,11 @@ define([
 				} else {
 					return parseInt(size / 1024 / 1024) + "M";
 				}
+			}
+
+			$scope.onParamsChange = function() {
+				wikiblock.init(initObj);
+				util.$apply();
 			}
 
             $scope.subMarkdownRender = util.subMarkdownRender;
