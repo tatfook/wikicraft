@@ -37,28 +37,28 @@ Desc: validators to validate parameters
 --     }
 -- }
 -- validators:add_validate_tasks(validate_tasks, params)
--- local is_params_error, error_msg = validators:get_validate_result()
+-- local params_error, error_msg = validators:get_validate_result()
 ---------------------------------------------------------------
 
-local validators = inherit(nil, gettable("models.validators"));
+local validators = inherit(nil, gettable("models.validators"))
 
 
 function validators.required_fields_validator(params, required_fields)
     if (not params) or (not required_fields) then
         error("required_fields_validator errors : params to be validated and required_fields required!")
     end
-    local is_params_error = false
+    local params_error = false
     local message
 
     for i, field_name in ipairs(required_fields) do
         if (not params[field_name]) then
-            is_params_error = true
+            params_error = true
             message = format('%s is required', field_name) 
             break
         end
     end
 
-    return is_params_error, message
+    return params_error, message
 end
 
 
@@ -66,7 +66,7 @@ function validators.fields_length_validator(params, fields_length)
     if (not params) or (not fields_length) then
         error("fields_length_validator errors : params to be validated and fields_length required!")
     end
-    local is_params_error = false
+    local params_error = false
     local message
     local length = 0
 
@@ -78,13 +78,13 @@ function validators.fields_length_validator(params, fields_length)
         end
 
         if (length > limit) then
-            is_params_error = true
+            params_error = true
             message = format('%s is too long', field_name) 
             break
         end
     end
 
-    return is_params_error, message
+    return params_error, message
 end
 
 
@@ -92,116 +92,143 @@ function validators.number_range_validator(params, fields_range)
     if (not params) or (not fields_range) then
         error("number_range_validator errors : params to be validated and fields_range required!")
     end
-    local is_params_error = false
+    local params_error = false
     local message
 
     for field_name, range in pairs(fields_range) do
         params[field_name] = tonumber(params[field_name])
         if (not params[field_name]) then
-            is_params_error = true
+            params_error = true
             message = format("%s must be a number", field_name)
             break
         end
         if (range.gt) then
             if (not (params[field_name] > range.gt)) then
-                is_params_error = true
+                params_error = true
                 message = format("%s must be greater than %d", field_name, range.gt)
                 break
             end
         end
         if (range.lt) then
             if (not (params[field_name] < range.lt)) then
-                is_params_error = true
+                params_error = true
                 message = format("%s must be less than %d", field_name, range.lt)
                 break
             end
         end
         if (range.gte) then
             if (not (params[field_name] >= range.gte)) then
-                is_params_error = true
+                params_error = true
                 message = format("%s must be greater than or equal to %d", field_name, range.gte)
                 break
             end
         end
         if (range.lte) then
             if (not (params[field_name] <= range.lte)) then
-                is_params_error = true
+                params_error = true
                 message = format("%s must be less than or equal to %d", field_name, range.lte)
                 break
             end
         end
     end
-    return is_params_error, message
+    return params_error, message
 end
 
 
-function validators.sensitive_words_validator(params, fields_to_check)
-    if (not params) or (not fields_to_check) then
-        error("sensitive_words_validator errors : params to be validated and fields_to_check required!")
+function validators.sensitive_words_validator(params, sensitive_fields)
+    if (not params) or (not sensitive_fields) then
+        error("sensitive_words_validator errors : params to be validated and sensitive_fields required!")
     end
-    local is_params_error = false
+    local params_error = false
     local message
 
     local params_to_check = {}
-    for i, field_name in ipairs(fields_to_check) do
+    for i, field_name in ipairs(sensitive_fields) do
         params_to_check[field_name] = params[field_name]
     end
 
     local not_sensitive = sensitiveWordFilter(params_to_check)
     if (not not_sensitive) then
-        is_params_error = true
-        msg = "sensitive words included"
+        params_error = true
+        message = "sensitive words included"
     end
-    return is_params_error, message
+    return params_error, message
 end
 
 
 -- errors if user does not exist
-function validators.users_existence_validator(params, user_model_instance)
-    if (not params.username) or (not user_model_instance) then
-        error("users_existence_validator errors : username and user_model_instance required!")
+function validators.users_existence_validator(params, user_model)
+    if (not user_model) then
+        error("users_existence_validator errors : user_model required")
     end
-    local is_params_error = false
+    local params_error = false
     local message
-    user_model_instance:db():findOne({["+username"]={params.username}}, resume)
+    if (not params.username) then
+        params_error = true
+        message = "username is required!"
+        return params_error, message
+    end
+    user_model:db():findOne({["+username"]={params.username}}, resume)
     local _, exist_user = yield()
     if (not exist_user) then
-        is_params_error = true
+        params_error = true
         message = "user not exist"
     end
-    return is_params_error, message
+    return params_error, message
 end
 
 
 -- return errors message while object exists and mode == 1 (default)
 -- return errors message while object not exist and mode == 0
-function validators.existence_validator(params, index_fields_and_model_instance)
-    local is_params_error = false
-    local mode = index_fields_and_model_instance.mode or 1
+function validators.existence_validator(params, fields_and_model)
+    local params_error = false
+    local mode = fields_and_model.mode or 1
     local message
     local unique_index = ""
     local index_fields = {}
-    local model_instance = index_fields_and_model_instance.model_instance
-    for i, field_name in ipairs(index_fields_and_model_instance.index_fields) do
+    local model_instance = fields_and_model.model_instance
+    for i, field_name in ipairs(fields_and_model.index_fields) do
         unique_index = unique_index .. "+" .. field_name
         index_fields[(#index_fields) + 1] = params[field_name]
     end
     model_instance:db():findOne({[unique_index] = index_fields}, resume)
     local err, result = yield()
     if (result) and (mode == 1) then
-        is_params_error = true
+        params_error = true
         message = model_instance.db_name .. " exist"
     elseif (not result) and (mode == 0) then
-        is_params_error = true
+        params_error = true
         message = model_instance.db_name .. " not exist"
     end
-    return is_params_error, message
+    return params_error, message
+end
+
+
+function validators.ensure_not_empty(params, fields_not_empty)
+    local params_error = false
+    local message
+    for i, field_name in ipairs(fields_not_empty) do
+        if (params[field_name] == "") then
+            params_error = true
+            message = field_name .. " cannot be empty"
+            break
+        end
+    end
+    return params_error, message
 end
 
 
 function validators:add_validate_tasks(validate_tasks, params)
-    for i, task in ipairs(validate_tasks) do
-        self:add_one_validate_task(task.validator, params, task.condition)
+    if (#validate_tasks == 0) then
+        for condition_name, condition in pairs(validate_tasks) do
+            local validator = validators.condition_to_validator[condition_name]
+            if not validator then error(format("%s does not match any valdiator", condition_name)) end
+            self:add_one_validate_task(validator, params, condition)
+        end
+    else
+        for i, task in ipairs(validate_tasks) do
+            self:add_one_validate_task(task.validator, params, task.condition)
+        end
     end
 end
 
@@ -217,12 +244,23 @@ end
 
 
 function validators:get_validate_result()
-    local is_params_error = false
+    local params_error = false
     local message
     for i, v in ipairs(self.validators_to_run) do
-        is_params_error, message = v.validator(v.params, v.condition)
-        if (is_params_error) then break end
+        params_error, message = v.validator(v.params, v.condition)
+        if (params_error) then break end
     end
     self.validators_to_run = {}
-    return is_params_error, message
+    return params_error, message
 end
+
+
+validators.condition_to_validator = {
+    required_fields = validators.required_fields_validator,
+    fields_length = validators.fields_length_validator,
+    fields_range = validators.number_range_validator,
+    sensitive_fields = validators.sensitive_words_validator,
+    fields_and_model = validators.existence_validator,
+    user_model = validators.users_existence_validator,
+    fields_not_empty = validators.ensure_not_empty,
+}

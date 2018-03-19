@@ -53,3 +53,8 @@ function errors:wrap(err, data)
 	return {error=errors.SUCCESS, data=data}
 end
 
+
+function errors:raise(code, message)
+	response:status(code):send({error={id=-1, message=message, status=code}})
+	exit()
+end

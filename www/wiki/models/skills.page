@@ -30,12 +30,20 @@ function skills:ctor()
 end
 
 
-function skills:api_insert(params)
-    ensureAuthenticated()
-    local skill, is_params_error, message = self:insert_validator(params)
-    if (is_params_error) then
-        return response:status(400):send({error={message=message,status=400}})
+function skills:check_identity(params)
+    local allowed = util:check_identity(params)
+    if (not allowed) then
+        local message = "You are not allowed to do it"
+        errors:raise(403, message)
     end
+end
+
+
+function skills:api_insert(params)
+    self:ensureAuthenticated()
+    self:check_identity(params)
+    local skill = self:insert_validator(params)
+
     self:db():insertOne({["+username+title"] = {skill.username, skill.title}}, skill, resume)
     local err, result = yield()
     if (result) then
@@ -45,67 +53,44 @@ function skills:api_insert(params)
         result.usersLiked = nil
         result._id = nil
     end
-    
     return errors:wrap(err, result)
 end
 
 
 function skills:insert_validator(params)
     local clean_data = {}
-    local required_fields = {"username", "title", "level"}
-    local are_they_sensitive_fields = {"title"}
-    local fields_length = {username = 30, title = 30}
-    local fields_range = {level = {gte = 1, lte = 5}}
-    local index_fields_and_model_instance = {
-        index_fields = {"username", "title"},
-        model_instance = self
-    }
-    local user_model_instance = models.user:new()
     local validate_tasks = {
-        {
-            validator = validators.required_fields_validator,
-            condition = required_fields
-        }, {
-            validator = validators.sensitive_words_validator,
-            condition = are_they_sensitive_fields
-        }, {
-            validator = validators.fields_length_validator,
-            condition = fields_length
-        }, {
-            validator = validators.users_existence_validator,
-            condition = user_model_instance
-        }, {
-            validator = validators.number_range_validator,
-            condition = fields_range
-        }, {
-            validator = validators.existence_validator,
-            condition = index_fields_and_model_instance
-        }
+        required_fields = {"username", "title", "level"},
+        sensitive_fields = {"title"},
+        fields_length = {username = 30, title = 30},
+        fields_range = {level = {gte = 1, lte = 5}},
+        fields_and_model = {
+            index_fields = {"username", "title"},
+            model_instance = self
+        },
+        user_model = models.user:new(),
     }
+
     validators:add_validate_tasks(validate_tasks, params)
-    local is_params_error, message = validators:get_validate_result()
+    local params_error, message = validators:get_validate_result()
+    if (params_error) then errors:raise(400, message) end
 
-    -- parameters filter
-    if (not is_params_error) then
-        clean_data = {
-            title = params.title,
-            username = params.username,
-            level = params.level,
-            usersLiked = {},
-            likedCount = 0,
-        }
-    end
-
-    return clean_data, is_params_error, message
+    clean_data = {
+        title = params.title,
+        username = params.username,
+        level = params.level,
+        usersLiked = {},
+        likedCount = 0,
+    }
+    return clean_data
 end
 
 
 function skills:api_update(params)
-    ensureAuthenticated()
-    local skill, is_params_error, message = self:update_validator(params)
-    if (is_params_error) then
-        return response:status(400):send({error={message=message,status=400}})
-    end
+    self:ensureAuthenticated()
+    self:check_identity(params)
+    local skill = self:update_validator(params)
+
     self:db():updateOne({["+username+title"]={skill.username, skill.title}}, {level=skill.level}, resume)
     local err, result = yield()
     if (result) then
@@ -119,38 +104,29 @@ end
 
 function skills:update_validator(params)
     local clean_data = {}
-    local required_fields = {"username", "title", "level"}
-    local fields_range = {level = {gte = 1, lte = 5}}
     local validate_tasks = {
-        {
-            validator = validators.required_fields_validator,
-            condition = required_fields
-        }, {
-            validator = validators.number_range_validator,
-            condition = fields_range
-        }
+        required_fields = {"username", "title", "level"},
+        fields_range = {level = {gte = 1, lte = 5}},
     }
+
     validators:add_validate_tasks(validate_tasks, params)
-    local is_params_error, message = validators:get_validate_result()
+    local params_error, message = validators:get_validate_result()
+    if (params_error) then errors:raise(400, message) end
 
-    if (not is_params_error) then
-        clean_data = {
-            title = params.title,
-            username = params.username,
-            level = params.level
-        }
-    end
-
-    return clean_data, is_params_error, message
+    clean_data = {
+        title = params.title,
+        username = params.username,
+        level = params.level
+    }
+    return clean_data
 end
 
 
 function skills:api_like(params)
-    ensureAuthenticated()
-    local skill, is_params_error, message = self:like_validator(params)
-    if (is_params_error) then
-        return response:status(404):send({error={message=message,status=404}})
-    end
+    self:ensureAuthenticated()
+    self:check_identity({username = params.visitor})
+    local skill = self:like_validator(params)
+
     self:db():findOne({["+username+title"]={skill.username, skill.title}}, resume)
     local err, result = yield()
     if (result) then
@@ -210,24 +186,22 @@ function skills:like_validator(params)
         }
     }
     validators:add_validate_tasks(validate_tasks, params)
-    local is_params_error, message = validators:get_validate_result()
-    if (not is_params_error) then
-        clean_data = {
-            title = params.title,
-            username = params.username,
-            visitor = params.visitor
-        }
-    end
-    return clean_data, is_params_error, message
+    local params_error, message = validators:get_validate_result()
+    if (params_error) then errors:raise(400, message) end
+
+    clean_data = {
+        title = params.title,
+        username = params.username,
+        visitor = params.visitor
+    }
+    return clean_data
 end
 
 
 function skills:api_getLikedStatus(params)
     local required_fields = {"username", "visitor"}
-    local is_params_error, message = validators.required_fields_validator(params, required_fields)
-    if (is_params_error) then
-        return response:status(404):send({error={message=message,status=404}})
-    end
+    local params_error, message = validators.required_fields_validator(params, required_fields)
+    if (params_error) then errors:raise(400, message) end
 
     self:db():find({["+username"] = {params.username}},resume)
     local err, skills = yield()
@@ -248,10 +222,8 @@ end
 
 function skills:api_getDetail(params)
     local required_fields = {"username", "title", "visitor"}
-    local is_params_error, message = validators.required_fields_validator(params, required_fields)
-    if (is_params_error) then
-        return response:status(404):send({error={message=message,status=404}})
-    end
+    local params_error, message = validators.required_fields_validator(params, required_fields)
+    if (params_error) then errors:raise(400, message) end
 
     self:db():findOne({["+username+title"]={params.username, params.title}}, resume)
     local err, result = yield()
@@ -259,7 +231,7 @@ function skills:api_getDetail(params)
     if (result) then
         local _, user_detail
         local usersLiked = {}
-        local user_model_instance = models.user:new()
+        local user_model = models.user:new()
         local limit = 50
         local liked, position = self:is_visitor_in_usersLiked(params.visitor, result.usersLiked)
         if (liked) then
@@ -274,7 +246,7 @@ function skills:api_getDetail(params)
         local finished_count = 0
         for i, user in ipairs(usersLiked) do
             -- get portrait of users
-            user_model_instance:db():findOne({["username"] = {user.username}},
+            user_model:db():findOne({["username"] = {user.username}},
                 function(err, user_detail)
                     if (user_detail) then user.portrait = user_detail.portrait end
                     finished_count = finished_count + 1
@@ -298,45 +270,36 @@ end
 -- return 400 if skill exists
 function skills:api_checkExistence(params)
     ensureAuthenticated()
-    local skill, is_params_error, message = self:check_existence_validator(params)
-    if (is_params_error) then
-        return response:status(400):send({error={message=message,status=400}})
-    end
+    self:check_existence_validator(params)
     return response:status(200):send({error={status=200}})
 end
 
 
 function skills:check_existence_validator(params)
     local clean_data = {}
-    local required_fields = {"username", "title"}
-    local index_fields_and_model_instance = {
-        index_fields = {"username", "title"},
-        model_instance = self
-    }
-    local user_model_instance = models.user:new()
     local validate_tasks = {
-        {
-            validator = validators.required_fields_validator,
-            condition = required_fields
-        }, {
-            validator = validators.existence_validator,
-            condition = index_fields_and_model_instance
-        }
+        required_fields = {"username", "title"},
+        fields_and_model = {
+            index_fields = {"username", "title"},
+            model_instance = self
+        },
     }
+
     validators:add_validate_tasks(validate_tasks, params)
-    local is_params_error, message = validators:get_validate_result()
-    return clean_data, is_params_error, message
+    local params_error, message = validators:get_validate_result()
+    if (params_error) then errors:raise(400, message) end
+    return clean_data
 end
 
 
 
 function skills:api_delete(params)
-    ensureAuthenticated()
+    self:ensureAuthenticated()
+    self:check_identity(params)
     local required_fields = {"username", "title"}
-    local is_params_error, message = validators.required_fields_validator(params, required_fields)
-    if (is_params_error) then
-        return response:status(404):send({error={message=message,status=404}})
-    end
+    local params_error, message = validators.required_fields_validator(params, required_fields)
+    if (params_error) then errors:raise(400, message) end
+
 
     self:db():findOne({["+username+title"]={params.username, params.title}}, resume)
     local _, skill = yield()
@@ -410,10 +373,7 @@ end
 
 
 function skills:api_search(params)
-    local clean_params, is_params_error, message = self:search_validator(params)
-    if (is_params_error) then
-        return response:status(400):send({error={message=message,status=400}})
-    end
+    local clean_params = self:search_validator(params)
     local err, search_result = es:search(clean_params)
     local rcode = search_result.rcode
     local wrapped_result = {}
@@ -428,27 +388,24 @@ end
 
 function skills:search_validator(params)
     local clean_data = {}
-    local required_fields = {"q"}
     local validate_tasks = {
-        {
-            validator = validators.required_fields_validator,
-            condition = required_fields
-        }
+        required_fields = {"q"},
     }
+
     validators:add_validate_tasks(validate_tasks, params)
-    local is_params_error, message = validators:get_validate_result()
-    if (not is_params_error) then
-        clean_data = {
-            q = params.q,
-            fields = {"title"},
-            page = tonumber(params.page) or 1,
-            size = tonumber(params.size) or 500,
-            sort = params.sort,
-            highlight = tonumber(params.highlight) or 1,
-        }
-        if (clean_data.size > 500) then clean_data.size = 500 end
-    end
-    return clean_data, is_params_error, message
+    local params_error, message = validators:get_validate_result()
+    if (params_error) then errors:raise(400, message) end
+
+    clean_data = {
+        q = params.q,
+        fields = {"title"},
+        page = tonumber(params.page) or 1,
+        size = tonumber(params.size) or 500,
+        sort = params.sort,
+        highlight = tonumber(params.highlight) or 1,
+    }
+    if (clean_data.size > 500) then clean_data.size = 500 end
+    return clean_data
 end
 
 
@@ -456,7 +413,7 @@ function skills:wrap_search_result(result)
     local wrapped_result = {}
     local rcode = result.rcode
 
-    -- 封装返回数据
+    -- wrap the search result
     wrapped_result = {
         timed_out = result.data.timed_out,
         took = result.data.took,
