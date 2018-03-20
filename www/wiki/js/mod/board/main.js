@@ -93,6 +93,8 @@
     function registerController(wikiBlock) {
         app.registerController("boardController", ['$scope', '$uibModal', '$sce', function ($scope, $uibModal, $sce) {
 			function init() {
+                wikiBlock.modParams = wikiBlock.blockCache.wikiBlock.modParams;
+
 				if (wikiBlock.editorMode) {
 					$scope.mxClientEdit = true;
 					
@@ -103,8 +105,10 @@
 						util.$apply();
 					});
 				}
-			}
-			init();
+            }
+            
+            init();
+
 			wikiBlock.init({scope:$scope});
 			$scope.onParamsChange = function() {
 				init();
