@@ -20,6 +20,7 @@ function qiniu_files:ctor()
 	self:addfield("hash", "string")         -- hash
 	self:addfield("type", "string")         -- hash
 	self:addfield("size", "number")         -- file size
+	self:addfield("checked", "number")      -- 审核状态    1 - 通过  2 - 审核不通过   0 - 未审核
 
 	self:addfield("usedCount", "number")      -- 使用次数
 	self:addfield("updateDate", "string")     -- 最近使用时间
@@ -28,7 +29,13 @@ end
 
 -- 添加记录
 function qiniu_files:api_upsert(params)
-	local username = getUsername()
+	ensureAuthenticated()
+
+	params.checked = 0
+	local user = getUser()
+	local username = user.username
+	if user.roleId >= const.USER_ROLE_SPECIAL then params.checked = 1 end
+
 	if not params.username or not params.domain or not params.key or params.size < 0 or params.username ~= username then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
@@ -51,8 +58,14 @@ function qiniu_files:api_getById(params)
 	end
 
 	self:db():findOne({_id=params._id}, resume)
+	local err, file = yield()
 
-	return errors:wrap(yield())
+	if tonumber(file.checked) ~= 1 then
+		file.download_url = nil
+		file.key = nil
+	end
+
+	return errors:wrap(err, file)
 end
 
 -- 通过id删除文件
@@ -82,7 +95,6 @@ function qiniu_files:api_getByUsername(params)
 
 	self:db():find({["+username"]={username, skip=skip, limit=limit}}, resume)
 	local _, list = yield()
-
 
 	return errors:wrap(nil, {total=total or 0, list=list});
 end

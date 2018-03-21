@@ -719,7 +719,7 @@ define([
             files.map(function (file) {
                 util.get(config.apiUrlPrefix + "bigfile/getDownloadUrlById", {
                     _id:file._id,
-                }, function(data){
+                }, function(data) {
                     if (data) {
                         var a = document.createElement('a');
                         var url = data;
@@ -730,6 +730,12 @@ define([
                         a.click();
                         file.isSelected = false;
                     }
+                }, function(err) {
+                    config.services.confirmDialog({
+                        "title": "文件获取失败",
+                        "content": "该资源未经审核或审核不通过",
+                        "cancelBtn": false
+                    }, function () {});
                 });
             });
             $scope.isSelectAll = false;
@@ -824,6 +830,13 @@ define([
                 "url": url
             });
         };
+
+        var file_status = ["未审核", "已通过", "不通过"]
+
+        $scope.getFileStatus = function (file) {
+            file.status = file_status[file.checked]
+        };
+
 
         $scope.getIconClass = function (file) {
             const ImgReg = /^image\/+/;
