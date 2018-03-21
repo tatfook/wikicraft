@@ -25,12 +25,12 @@
     }
     @media (min-width: 992px) {
         .iframe-container{
-            height: 490px;
+            height: auto;
         }
     }
     @media (min-width: 1200px) {
         .iframe-container{
-            height: 600px;
+            height: auto;
         }
     }
 </style>
@@ -38,7 +38,7 @@
 <div ng-controller="bigFileController">
     <img ng-show="imgUrl" ng-src="{{imgUrl}}" alt="{{modParams.extraMsg}}">
     <a ng-show="linkUrl" ng-href="{{linkUrl}}">{{modParams.extraMsg || linkUrl}}</a>
-    <div ng-show="videoUrl" class="container iframe-container">
+    <div ng-show="videoUrl" class="iframe-container">
 		<!--<iframe ng-src="{{videoUrl}}"></iframe>-->
 		<video ng-src="{{videoUrl}}" controls>
 		    <source src="movie.mp4" type="video/mp4">
