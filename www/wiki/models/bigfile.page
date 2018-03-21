@@ -19,6 +19,7 @@ function bigfile:ctor()
 	self:addfield("source_url", "string") -- channel=none 网络视屏地址
 	self:addfield("file_id", "number") -- channel ~= none 文件id
 	self:addfield("size", "number")  -- 文件大小
+	self:addfield("checked", "number")  -- 审核状态    1 - 通过  2 - 审核不通过   0 - 未审核
 
 	self:addfield("updateDate", "string")     -- 最近使用时间
 	self:addfield("createDate", "string")     -- 创建时间
@@ -30,9 +31,16 @@ function bigfile:api_test()
 end
 
 function bigfile:api_upsert(params)
+	ensureAuthenticated()
+
 	if not params.channel then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
+
+	-- files of special users are not necessary to be checked
+	params.checked = 0
+	local user = getUser()
+	if user.roleId >= const.USER_ROLE_SPECIAL then params.checked = 1 end
 
 	params.updateDate = ParaGlobal.GetDateFormat("yyyy-MM-dd") .. " " .. ParaGlobal.GetTimeFormat("HH:mm:ss")
 	params.createDate = params.createDate or (ParaGlobal.GetDateFormat("yyyy-MM-dd") .. " " .. ParaGlobal.GetTimeFormat("HH:mm:ss"))
@@ -87,6 +95,10 @@ function bigfile:api_getDownloadUrlById(params)
 		return errors:wrap(errors.NOT_FOUND)
 	end
 
+	if tonumber(bf.checked) ~= 1 then
+		return errors:wrap("该文件未通过审核")
+	end
+
 	local download_url = ""
 	if bf.channel == const.BIGFILE_QINIU then
 		local qiniuFileDB = models.qiniu_files:new()
@@ -101,10 +113,10 @@ end
 function bigfile:api_getDownloadUrlByKey(params)
 	if not params.key then 
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
-    end
+	end
 
-    local qiniuFileDB = models.qiniu_files:new()
-    download_url = qiniuFileDB:api_getDownloadUrlByKey(params).data
+	local qiniuFileDB = models.qiniu_files:new()
+	download_url = qiniuFileDB:api_getDownloadUrlByKey(params).data
 
 	return errors:wrap(nil, download_url)
 end
@@ -201,7 +213,8 @@ end
 
  --更新文件
 function bigfile:api_updateById(params)
-	local username = getUsername()
+	local user = getUser()
+	local username = user.username
 	if not params._id or not params.channel or not params.filename then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
@@ -222,6 +235,10 @@ function bigfile:api_updateById(params)
 	new_data.username = username
 	new_data.channel = params.channel
 	new_data.filename = params.filename
+
+	new_data.checked = 0
+	if user.roleId >= const.USER_ROLE_SPECIAL then new_data.checked = 1 end
+
 	if params.channel == const.BIGFILE_QINIU then
 		local qiniuDB = models.qiniu:new()
 		local ret = qiniuDB:api_upload(params)
@@ -275,20 +292,3 @@ function bigfile:api_getUserStoreInfo(params)
 
 	return qiniuDB:api_getByUsername({username=username})
 end
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

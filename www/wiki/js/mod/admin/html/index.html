@@ -272,7 +272,7 @@
                             </li>
                             <li>
                                 <div ng-class='getStyleClass("fileCheck")'>
-                                    <div class="panel-heading" ng-click='getFileCheckList()'>文件审核</div>
+                                    <div class="panel-heading" ng-click='get_file_list()'>文件审核</div>
                                 </div>
                             </li>
                             <li>
@@ -1037,8 +1037,96 @@
 
             <!--文件审核-->
             <div ng-show='selectMenuItem=="fileCheck"'>
-                文件审核
+                <div style="margin: 10px;">
+                        <form role="form" class="form-inline">
+                            <div class="dropdown">
+                                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    {{files_checking}}<span class="caret"></span>
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li ng-repeat="type in file_types" ng-click="change_file_type(type)">
+                                        <a>{{type}}</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </form>
+                </div>
+
+                <table class="table table-hover table-bordered">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>文件名</th>
+                            <th>上传用户</th>
+                            <th>文件大小</th>
+                            <th>上传日期</th>
+                            <th>播放/查看</th>
+                            <th>下载</th>
+                            <th>审核状态</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="file in file_list" ng-hide="file.deleted">
+                            <td>{{file._id}}</td>
+                            <td title="{{file.filename}}">{{file_name_filter(file.filename)}}</td>
+                            <td>{{file.username}}</td>
+                            <td>{{size_transfer(file.size)}}</td>
+                            <td>{{file.updateDate}}</td>
+                            <td> 
+                                <span class="glyphicon glyphicon-play" aria-hidden="true" ng-click="playVideo(file)"></span>
+                            </td>
+                            <td>
+                                <a ng-href="{{file.download_url}}" download>
+                                    <span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span>
+                                </a>
+                            </td>
+                            <td>
+                                <div ng-if="file.checked==0">未审核</div>
+                                <div ng-if="file.checked==1">审核通过</div>
+                                <div ng-if="file.checked==2">审核不通过</div>
+                            </td>
+                            <td>
+                                <button class="btn btn-default" ng-click="check_file(file, 1)" ng-disabled="file.checked==1">通过</button>
+                                <button class="btn btn-default" ng-click="check_file(file, 2)" ng-disabled="file.checked==2">不通过</button>
+                                <button class="btn btn-default" ng-click="clickDeleteFile(file)">删除文件</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="pagination-box">
+                    <ul uib-pagination ng-change="get_file_list()"
+                        items-per-page='filePageSize' previous-text="上一页"
+                                next-text="下一页" total-items="fileTotalItems"
+                              ng-model="fileCurrentPage" max-size="5"
+                                class="pagination-sm" boundary-link-numbers="true">
+                    </ul>
+                </div>
             </div>
+
+            <div class="modal video-modal" id="videoModal" tabindex="-1" role="dialog" aria-labelledby="videoModal" aria-hidden="true" keyboard="true">
+                <div class="modal-dialog">
+                    <div class="modal-content" style="width:200%;margin-top:30%;margin-left:-50%;">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" ng-click="stop()"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
+                            <h4 class="modal-title">文件审核</h4>
+                        </div>
+                        <div class="modal-body">
+                            <div class="modal-video-body">
+                                <div class="embed-responsive embed-responsive-16by9">
+                                    <div ng-bind-html="iframe_html"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="check_file_and_stop(file_playing, 1)">通过</button>
+                            <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="check_file_and_stop(file_playing, 2)">不通过</button>
+                            <button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="stop()">关闭</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
 
             <!--VIP管理-->
             <div ng-show='selectMenuItem=="vip"'>
