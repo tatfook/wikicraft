@@ -50,3 +50,4 @@ docker run -d --restart=always --name=$name \
   -p "${outside_port}:${inside_port}" \
   keepwork/$ENV_TYPE:b$BUILD_NUMBER $ENV_TYPE
 
+
