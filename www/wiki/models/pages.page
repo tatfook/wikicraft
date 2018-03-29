@@ -146,7 +146,8 @@ function pages:update_tags_validator(params)
     local clean_data = {}
 
     local validate_tasks = {
-        required_fields = {"url", "tags"},
+        required_fields = {"url"},
+        -- required_fields = {"url", "tags"},
         sensitive_fields = {"tags"},
         fields_length = {tags = 5},
     }
@@ -557,7 +558,6 @@ function pages:api_migrate(params)
         file.passwd = params.passwd
         result[#result + 1] = self:api_updateTags(file)
     end
-    log(result)
 
     return errors:wrap(nil, {result=result})
 end
