@@ -43,15 +43,8 @@ end
 
 
 function pages:api_insert(params)
-    if (params.passwd) then
-        local passwd = KEEPWORK["config"][CURRENT_ENV]["wiki"]["scripts"]["passwd"]
-        if params.passwd ~= passwd then message =  "incorrect password" end
-        if message then errors:raise(403, message) end
-    else
-        self:ensureAuthenticated()
-        self:check_identity(params)
-    end
-
+    self:ensureAuthenticated()
+    self:check_identity(params)
     local page = self:insert_validator(params)
 
     self:db():insertOne({["+url"] = {page.url}}, page, resume)
@@ -119,15 +112,8 @@ function pages:api_updateTags(params)
         if (not result) then return self:api_insert(params) end
     end
 
-    if (params.passwd) then
-        local passwd = KEEPWORK["config"][CURRENT_ENV]["wiki"]["scripts"]["passwd"]
-        if params.passwd ~= passwd then message =  "incorrect password" end
-        if message then errors:raise(403, message) end
-    else
-        self:ensureAuthenticated()
-        self:check_identity(params)
-    end
-
+    self:ensureAuthenticated()
+    self:check_identity(params)
     local page = self:update_tags_validator(params)
 
     self:db():updateOne({["+url"] = {page.url}}, {tags = page.tags}, resume)
@@ -334,32 +320,9 @@ function pages:insert_to_es(params)
     if (not sitename) then return nil end
     local pagename = string.gsub(params.url, format("/%s/%s/", username, sitename), "")
 
-    -- get the visibility of a page
-    local website_model = models.website:new()
-    params.visibility = "public"
-    website_model:db():findOne({["+username+sitename"] = {username, sitename}}, resume)
-    local err, site = yield()
-    if (site) then params.visibility = site.visibility or "public" end
-
-    -- get the source url of a page
-    local git_host = KEEPWORK["config"][CURRENT_ENV]["threeService"]["gitlab"]["host"]
-    local site_data_sourceDB = models.site_data_source:new()
-    site_data_sourceDB:db():findOne({
-        ["+username+sitename"]={
-            username, 
-            sitename
-        }
-    }, resume)
-    local err, data_source = yield()
-    if not data_source then errors:raise(400, "this website does not exist") end
-    local source_url = format(
-        "%s/api/v4/projects/%s/repository/files/%s/%s/%s.md?ref=master",
-        git_host,
-        data_source.projectId,
-        username,
-        sitename,
-        pagename
-    )
+    local visibility, message = self:get_visibility(username, sitename)
+    if message then errors:raise(400, message) end
+    local source_url = self:get_source_url(username, sitename, pagename)
 
     local page = {
         type = "pages",
@@ -371,7 +334,7 @@ function pages:insert_to_es(params)
         tags = params.tags or {},
         content = self:md_to_string(params.content) or "",
         update_time = datetime(),
-        visibility = params.visibility,
+        visibility = visibility,
         source_url = source_url,
     }
 
@@ -384,32 +347,9 @@ function pages:update_to_es(params)
     if (not sitename) then return nil end
     local pagename = string.gsub(params.url, format("/%s/%s/", username, sitename), "")
 
-    -- get the visibility of a page
-    local website_model = models.website:new()
-    params.visibility = "public"
-    website_model:db():findOne({["+username+sitename"]={username, sitename}}, resume)
-    local err, site = yield()
-    if (site) then params.visibility = site.visibility or "public" end
-
-    -- get the source url of a page
-    local git_host = KEEPWORK["config"][CURRENT_ENV]["threeService"]["gitlab"]["host"]
-    local site_data_sourceDB = models.site_data_source:new()
-    site_data_sourceDB:db():findOne({
-        ["+username+sitename"]={
-            username, 
-            sitename
-        }
-    }, resume)
-    local err, data_source = yield()
-    if not data_source then errors:raise(400, "this website does not exist") end
-    local source_url = format(
-        "%s/api/v4/projects/%s/repository/files/%s/%s/%s.md?ref=master",
-        git_host,
-        data_source.projectId,
-        username,
-        sitename,
-        pagename
-    )
+    local visibility, message = self:get_visibility(username, sitename)
+    if message then errors:raise(400, message) end
+    local source_url = self:get_source_url(username, sitename, pagename)
 
     local page = {
         type = "pages",
@@ -417,7 +357,7 @@ function pages:update_to_es(params)
         tags = params.tags,
         content = self:md_to_string(params.content),
         update_time = datetime(),
-        visibility = params.visibility,
+        visibility = visibility,
         source_url = source_url,
     }
     es:updateOne(page, function(err, data) end)
@@ -548,16 +488,71 @@ function pages:update_visibility_to_es(params)
 end
 
 
-function pages:api_migrate(params)
-    local message
-    if not params.passwd then message =  "please input your password" end
-    if message then errors:raise(403, message) end
+function pages:get_source_url(username, sitename, pagename)
+    local source_url, message
+    local git_host = KEEPWORK["config"][CURRENT_ENV]["threeService"]["gitlab"]["host"]
+    local site_data_sourceDB = models.site_data_source:new()
 
-    result = {}
-    for i, file in ipairs(params.files) do
-        file.passwd = params.passwd
-        result[#result + 1] = self:api_updateTags(file)
+    site_data_sourceDB:db():findOne({
+        ["+username+sitename"]={username, sitename}}, resume)
+    local err, data_source = yield()
+
+    if not data_source then
+        message = "this website does not exist"
+    else
+        source_url = format(
+            "%s/api/v4/projects/%s/repository/files/%s/%s/%s.md?ref=master",
+            git_host,
+            data_source.projectId,
+            username,
+            sitename,
+            pagename
+        )
     end
-
-    return errors:wrap(nil, {result=result})
+    return source_url, message
 end
+
+
+function pages:get_visibility(username, sitename)
+    local website_model = models.website:new()
+    local visibility, message
+    website_model:db():findOne({["+username+sitename"]={username, sitename}}, resume)
+    local err, site = yield()
+    if site then
+        visibility = site.visibility or "public"
+    else
+        message = "this website does not exist"
+    end
+    return visibility, message
+end
+
+
+-- function pages:api_migrate(params)
+--     local message
+--     local passwd = KEEPWORK["config"][CURRENT_ENV]["wiki"]["scripts"]["passwd"]
+--     if not params.passwd then message =  "please input your password" end
+--     if params.passwd ~= passwd then message =  "incorrect password" end
+--     if message then errors:raise(403, message) end
+
+--     result = {}
+--     for i, file in ipairs(params.files) do
+--         file.passwd = params.passwd
+--         result[#result + 1] = self:api_updateTags(file)
+--     end
+
+--     return errors:wrap(nil, {result=result})
+-- end
+
+
+-- function pages:insert_or_update(params)
+--     local message
+--     self:db():findOne({["+url"]={params.url}}, resume)
+--     local err, result = yield()
+--     if result then
+--         -- update
+--     else
+--         -- insert
+--     end
+-- end
+
+
