@@ -345,11 +345,6 @@ end
 function pages:update_to_es(params)
     local username, sitename = self:get_username_and_sitename(params.url)
     if (not sitename) then return nil end
-    local pagename = string.gsub(params.url, format("/%s/%s/", username, sitename), "")
-
-    local visibility, message = self:get_visibility(username, sitename)
-    if message then errors:raise(400, message) end
-    local source_url = self:get_source_url(username, sitename, pagename)
 
     local page = {
         type = "pages",
@@ -357,8 +352,6 @@ function pages:update_to_es(params)
         tags = params.tags,
         content = self:md_to_string(params.content),
         update_time = datetime(),
-        visibility = visibility,
-        source_url = source_url,
     }
     es:updateOne(page, function(err, data) end)
 end
@@ -498,7 +491,7 @@ function pages:get_source_url(username, sitename, pagename)
     local err, data_source = yield()
 
     if not data_source then
-        message = "this website does not exist"
+        message = "the data source of this website does not exist"
     else
         source_url = format(
             "%s/api/v4/projects/%s/repository/files/%s/%s/%s.md?ref=master",
@@ -527,32 +520,73 @@ function pages:get_visibility(username, sitename)
 end
 
 
--- function pages:api_migrate(params)
---     local message
---     local passwd = KEEPWORK["config"][CURRENT_ENV]["wiki"]["scripts"]["passwd"]
---     if not params.passwd then message =  "please input your password" end
---     if params.passwd ~= passwd then message =  "incorrect password" end
---     if message then errors:raise(403, message) end
+function pages:api_migrate(params)
+    local message
+    local passwd = KEEPWORK["config"][CURRENT_ENV]["wiki"]["scripts"]["passwd"]
+    if not params.passwd then message =  "please input your password" end
+    if params.passwd ~= passwd then message =  "incorrect password" end
+    if message then errors:raise(401, message) end
 
---     result = {}
---     for i, file in ipairs(params.files) do
---         file.passwd = params.passwd
---         result[#result + 1] = self:api_updateTags(file)
---     end
+    local results = {}
+    local has_errors = false
+    local status_code = 200
+    for i, file in ipairs(params.files) do
+        local status = 200
+        local message= self:migrate_one(file)
+        if message then
+            has_errors = true
+            status = 400
+        end
+        local result = {
+            url = file.url,
+            message = message or "succeeded",
+            status = status,
+        }
+        results[#results + 1] = result
+    end
+    if has_errors then status_code = 400 end
+    return response:status(status_code):send({results=results})
+end
 
---     return errors:wrap(nil, {result=result})
--- end
 
+function pages:migrate_one(params)
+    local source_url, message = self:get_source_url(
+        params.username, params.sitename, params.pagename)
+    if message then return message end
 
--- function pages:insert_or_update(params)
---     local message
---     self:db():findOne({["+url"]={params.url}}, resume)
---     local err, result = yield()
---     if result then
---         -- update
---     else
---         -- insert
---     end
--- end
-
+    self:db():findOne({["+url"]={params.url}}, resume)
+    local err, exist_page = yield()
+    if not exist_page then
+        local site_url = self:get_site_url(params)
+        self:db():insertOne({["+url"] = {page.url}},
+            {url = params.url, siteUrl = site_url},
+            resume)
+        local err, result = yield()
+        if result then
+            local visibility, message = self:get_visibility(
+                params.username, params.sitename)
+            if message then return message end
+            es:insertOne({
+                type = "pages",
+                id = result._id,
+                username = params.username,
+                sitename = params.sitename,
+                pagename = params.pagename,
+                url = params.url,
+                tags = params.tags or {},
+                content = self:md_to_string(params.content) or "",
+                update_time = datetime(),
+                visibility = visibility,
+                source_url = source_url,
+            })
+        end
+    else
+        es:updateOne({
+            type = "pages",
+            id = exist_page._id,
+            source_url = source_url,
+        })
+    end
+    return nil
+end
 
