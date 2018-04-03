@@ -533,7 +533,7 @@ function pages:api_migrate(params)
     for i, file in ipairs(params.files) do
         local status = 200
         local message= self:migrate_one(file)
-        if message then
+        if message ~= "created" and message ~= "updated" then
             has_errors = true
             status = 400
         end
