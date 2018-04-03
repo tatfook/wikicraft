@@ -539,7 +539,7 @@ function pages:api_migrate(params)
         end
         local result = {
             url = file.url,
-            message = message or "succeeded",
+            message = message or "no message",
             status = status,
         }
         results[#results + 1] = result
@@ -558,7 +558,7 @@ function pages:migrate_one(params)
     local err, exist_page = yield()
     if not exist_page then
         local site_url = self:get_site_url(params)
-        self:db():insertOne({["+url"] = {page.url}},
+        self:db():insertOne({["+url"] = {params.url}},
             {url = params.url, siteUrl = site_url},
             resume)
         local err, result = yield()
@@ -580,13 +580,15 @@ function pages:migrate_one(params)
                 source_url = source_url,
             })
         end
+        message = "created"
     else
         es:updateOne({
             type = "pages",
             id = exist_page._id,
             source_url = source_url,
         })
+        message = "updated"
     end
-    return nil
+    return message
 end
 
