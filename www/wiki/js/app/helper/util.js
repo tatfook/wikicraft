@@ -383,7 +383,7 @@ define([
     }
 
     util.goUserSite = function (url, isOpen) {
-        url = "http://" + config.apiHost + url;
+        url = config.httpProto + "://" + config.apiHost + url;
         if (isOpen) {
             window.open(url);
         } else {
@@ -408,7 +408,7 @@ define([
         if (config.islocalWinEnv()) {
             url = config.frontEndRouteUrl + '#' + url;
         } else if (url.indexOf('://') < 0){
-            url = "http://" + config.apiHost + url;
+            url = config.httpProto + "://" + config.apiHost + url;
         }
 
         if (isOpen) {
