@@ -163,7 +163,9 @@
 			config.apiHost = hostname + window.location.host.substring(window.location.hostname.length);
 			//config.apiHost = "dev.keepwork.com"; // debug use
 		}
-		config.apiUrlPrefix = 'http://' + config.apiHost + '/api/wiki/models/';
+
+		config.httpProto = window.location.origin.replace(/:.*$/, "");
+		config.apiUrlPrefix = config.httpProto + '://' + config.apiHost + '/api/wiki/models/';
 	}
 
 	//-----------------------------helper function-----------------------------------
