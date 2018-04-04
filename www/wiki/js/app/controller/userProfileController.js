@@ -335,7 +335,7 @@ define(['app',
 			for (var i = 0; i < 4; i++) {
 				$scope.rightImageCode += Math.floor(Math.random() * 10);
 			}
-			$scope.imageCodeUrl = "http://keepwork.com/captcha/get?" + $scope.rightImageCode;
+			$scope.imageCodeUrl = config.httpProto + "://keepwork.com/captcha/get?" + $scope.rightImageCode;
 		};
 
 		$scope.showBindPhone = function() {

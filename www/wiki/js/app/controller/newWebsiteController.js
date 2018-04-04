@@ -13,7 +13,7 @@ define([
 ], function (app, util, storage, sensitiveWord, markdownit, htmlContent, editWebsiteHtmlContent) {
     var controller = ['$rootScope','$scope', '$sce', 'Account', 'Message', function ($rootScope, $scope, $sce, Account, Message) {
         const GITLAB = {
-            "API_BASE_URL": "http://git.keepwork.com/api/v4",
+            "API_BASE_URL": config.httpProto + "://git.keepwork.com/api/v4",
             "FILE_PATH": "official%2Ftemplate%2FwebTemplateConfig%2Emd",// 网站模板配置保存路径
             "REF": "master",
             "PRIVATE_TOKEN": "Gsx7JYVFxvsDod2MY2x5",
