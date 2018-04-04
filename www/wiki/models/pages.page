@@ -586,6 +586,7 @@ function pages:migrate_one(params)
             type = "pages",
             id = exist_page._id,
             source_url = source_url,
+            content = self:md_to_string(params.content) or "",
         })
         message = "updated"
     end
