@@ -154,7 +154,7 @@ define([
             $scope.alipayClient = function () {
                 var params = {
                     "channel"   : "alipay_wap",
-                    'redirect'  : "http://" + location.host + "/wiki/pay?username=" + $scope.otherUserinfo.username,
+                    'redirect'  : config.httpProto + "://" + location.host + "/wiki/pay?username=" + $scope.otherUserinfo.username,
                 };
 
                 createCharge(params, function (charge) {
@@ -432,7 +432,7 @@ define([
 
             $http({
                 "method"  : 'GET',
-                "url"     : "http://git.keepwork.com/gitlab_rls_official/keepworkhaqi/raw/master/official/haqi/payads.md",
+                "url"     : config.httpProto + "://git.keepwork.com/gitlab_rls_official/keepworkhaqi/raw/master/official/haqi/payads.md",
                 "headers" : {
                     'Authorization': undefined,
                 }, // remove auth header for this request

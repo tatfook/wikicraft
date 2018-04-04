@@ -12,12 +12,12 @@ define([], function () {
                 {
                     name:"空模板",
                     logoUrl:"wiki_blank_template.png",
-					previewUrl:"http://keepwork.com/keepwork/sitetemplate/tpl_blank",
+					previewUrl:config.httpProto+"://keepwork.com/keepwork/sitetemplate/tpl_blank",
                     styles:[
                         {
                             name:"默认样式",
                             logoUrl:"wiki_blank_template.png",
-							previewUrl:"http://keepwork.com/keepwork/sitetemplate/tpl_blank",
+							previewUrl:config.httpProto+"://keepwork.com/keepwork/sitetemplate/tpl_blank",
                             contents:[
                                 {
                                     pagepath:"index",
@@ -34,12 +34,12 @@ define([], function () {
                 {
                     name:"基本模板",
                     logoUrl:"wiki_basic_template.png",
-					previewUrl:"http://keepwork.com/keepwork/sitetemplate/tpl_basic",
+					previewUrl:config.httpProto+"://keepwork.com/keepwork/sitetemplate/tpl_basic",
                     styles:[
                         {
                             name:"默认样式",
                             logoUrl:"wiki_basic_template.png",
-							previewUrl:"http://keepwork.com/keepwork/sitetemplate/tpl_basic",
+							previewUrl:config.httpProto+"://keepwork.com/keepwork/sitetemplate/tpl_basic",
                             contents:[
                                 {
                                     pagepath:"index",
@@ -57,13 +57,13 @@ define([], function () {
                 {
                     name:"简历模板",
                     logoUrl:"wiki_resume_site_template.png",
-					previewUrl:"http://keepwork.com/keepwork/sitetemplate/tpl_wiki",
+					previewUrl:config.httpProto+"://keepwork.com/keepwork/sitetemplate/tpl_wiki",
                     styles:[
                         // 默认样式
                         {
                             name:"默认样式",
                             logoUrl:"wiki_resume_site_template.png",
-							previewUrl:"http://keepwork.com/keepwork/sitetemplate/tpl_wiki",
+							previewUrl:config.httpProto+"://keepwork.com/keepwork/sitetemplate/tpl_wiki",
                             contents:[
                                 {
                                     pagepath:"index",
@@ -109,12 +109,12 @@ define([], function () {
                 {
                     name:"企业模板1",
                     logoUrl:"wiki_company1_template.jpg",
-					previewUrl:"http://keepwork.com/keepwork/sitetemplate/tpl_company1",
+					previewUrl:config.httpProto+"://keepwork.com/keepwork/sitetemplate/tpl_company1",
                     styles:[
                         {
                             name:"默认样式",
                             logoUrl:"wiki_company1_template.jpg",
-							previewUrl:"http://keepwork.com/keepwork/sitetemplate/tpl_company1",
+							previewUrl:config.httpProto+"://keepwork.com/keepwork/sitetemplate/tpl_company1",
                             contents:[
                                 {
                                     pagepath:"index",
@@ -128,12 +128,12 @@ define([], function () {
                 {
                     name:"企业模板2",
                     logoUrl:"wiki_company2_template.png",
-					previewUrl:"http://keepwork.com/keepwork/sitetemplate/tpl_company2",
+					previewUrl:config.httpProto+"://keepwork.com/keepwork/sitetemplate/tpl_company2",
                     styles:[
                         {
                             name:"默认样式",
                             logoUrl:"wiki_company2_template.png",
-							previewUrl:"http://keepwork.com/keepwork/sitetemplate/tpl_company2",
+							previewUrl:config.httpProto+"://keepwork.com/keepwork/sitetemplate/tpl_company2",
                             contents:[
                                 {
                                     pagepath:"index",
@@ -154,12 +154,12 @@ define([], function () {
                 {
                     name:"组织模板",
                     logoUrl:"wiki_organization_template.png",
-					previewUrl:"http://keepwork.com/keepwork/sitetemplate/tpl_organization",
+					previewUrl:config.httpProto+"://keepwork.com/keepwork/sitetemplate/tpl_organization",
                     styles:[
                         {
                             name:"默认样式",
                             logoUrl:"wiki_organization_template.png",
-							previewUrl:"http://keepwork.com/keepwork/sitetemplate/tpl_organization",
+							previewUrl:config.httpProto+"://keepwork.com/keepwork/sitetemplate/tpl_organization",
                             contents:[
                                 {
                                     pagepath:"index",
@@ -184,12 +184,12 @@ define([], function () {
                 {
                     name:"大赛模板",
                     logoUrl:"wiki_game_template.jpg",
-					previewUrl:"http://keepwork.com/keepwork/sitetemplate/tpl_game",
+					previewUrl:config.httpProto+"://keepwork.com/keepwork/sitetemplate/tpl_game",
                     styles:[
                         {
                             name:"默认样式",
                             logoUrl:"wiki_game_template.jpg",
-							previewUrl:"http://keepwork.com/keepwork/sitetemplate/tpl_game",
+							previewUrl:config.httpProto+"://keepwork.com/keepwork/sitetemplate/tpl_game",
                             contents:[
                                 {
                                     pagepath:"index",
