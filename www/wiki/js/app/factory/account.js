@@ -134,12 +134,12 @@ define([
 
                     if ($auth.isAuthenticated()) {
                         var token = $auth.getToken();
-                        $.cookie('token', token, {path: '/', expires: 365, domain: '.' + config.hostname});
+                        $.cookie('token', token, {path: '/', expires: 365, domain: config.hostname});
                     }
                     this.send("onUserProfile", this.user);
                     storage.sessionStorageSetItem("userinfo", this.user);
                 },
-				
+
 				isValidVip: function() {
 					return this.user && this.user.vipInfo && this.user.vipInfo.isValid;
 				},
@@ -182,7 +182,8 @@ define([
 
                 // logout
                 logout: function () {
-					$.removeCookie('token', {path:'/', expires:365, domain: '.' + config.hostname});
+                    $.removeCookie('token', {path:'/', expires:365, domain: config.hostname});
+                    $.removeCookie('token', {path:'/', expires:365, domain: '.' + config.hostname});
                     $auth.logout();
                     this.send("onLogout", "");
                 },
