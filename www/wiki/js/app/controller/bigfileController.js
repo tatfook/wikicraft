@@ -753,6 +753,17 @@ define([
                 }, function () {
                 });
             }else {
+                for (var i=0; i<downloadingArr.length; i++){
+                    var file = downloadingArr[i]
+                    if(!file.checked || file.checked==2) {
+                        config.services.confirmDialog({
+                            "title": "下载文件失败",
+                            "content": "含有未审核或审核不通过的文件",
+                            "cancelBtn": false
+                        }, function () {})
+                        return
+                    }
+                }
                 $scope.downloadFile(downloadingArr);
             }
         };

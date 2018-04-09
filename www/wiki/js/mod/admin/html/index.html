@@ -1074,10 +1074,10 @@
                             <td>{{size_transfer(file.size)}}</td>
                             <td>{{file.updateDate}}</td>
                             <td> 
-                                <span class="glyphicon glyphicon-play" aria-hidden="true" ng-click="playVideo(file)"></span>
+                                <span class="glyphicon glyphicon-play" aria-hidden="true" ng-click="playVideo(file)" ng-show="abledToPlay(file)"></span>
                             </td>
                             <td>
-                                <a ng-href="{{file.download_url}}" download>
+                                <a ng-href="{{file.download_url+';attname='+file.filename}}" download="{{file.filename || ""}}">
                                     <span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span>
                                 </a>
                             </td>

@@ -95,6 +95,14 @@ function qiniu_files:api_getByUsername(params)
 
 	self:db():find({["+username"]={username, skip=skip, limit=limit}}, resume)
 	local _, list = yield()
+	
+	for i, bf in ipairs(list) do
+		bf.checked = tonumber(bf.checked) or 0
+		if bf.checked ~= 1 then
+			bf.source_url = nil
+			bf.key = nil
+		end
+	end
 
 	return errors:wrap(nil, {total=total or 0, list=list});
 end
@@ -107,9 +115,14 @@ function qiniu_files:api_getDownloadUrlById(params)
 
 	self:db():findOne({_id=params._id}, resume)
 	local _, qiniuFiles = yield()
-	
+
 	if not qiniuFiles then
 		return errors:wrap(errors.NOT_FOUND)
+	end
+
+	qiniuFiles.checked = tonumber(qiniuFiles.checked) or 0
+	if qiniuFiles.checked ~= 1 then
+		errors:raise(403, "the file was banned or has not been checked")
 	end
 
 	local qiniuDB = models.qiniu:new()
@@ -132,6 +145,11 @@ function qiniu_files:api_getDownloadUrlByKey(params)
 		return errors:wrap(errors.NOT_FOUND)
 	end
 
+	qiniuFiles.checked = tonumber(qiniuFiles.checked) or 0
+	if qiniuFiles.checked ~= 1 then
+		errors:raise(403, "the file was banned or has not been checked")
+	end
+
 	local qiniuDB = models.qiniu:new()
 	local download_url = qiniuDB:api_getDownloadUrl(qiniuFiles).data
 	download_url = download_url and download_url.download_url
@@ -139,3 +157,7 @@ function qiniu_files:api_getDownloadUrlByKey(params)
 	return errors:wrap(nil, download_url or qiniuFiles.download_url)
 end
 
+function qiniu_files:changeFilename(params)
+	self:db():updateOne({_id=params._id},{filename=params.filename}, resume)
+	return yield()
+end

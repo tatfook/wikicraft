@@ -839,7 +839,6 @@ define([
             $scope.filePageSize = 15;
             $scope.fileTotalItems = 0;
             $scope.file_types = ["未审核", "已通过", "不通过", "全部"]
-            // $scope.file_types = ["未审核", "已通过", "不通过"]
             $scope.files_checking = $scope.file_types[0]
 
             var checked_code = {
@@ -887,7 +886,7 @@ define([
             $scope.size_transfer = function (size) {
                 var sizeIsNumber = size && angular.isNumber(size);
                 if (!sizeIsNumber){
-                    return;
+                    return "0KB";
                 }
                 var filesize = size;
                 if (size/1024/1024/1024 > 0.1){
@@ -918,6 +917,21 @@ define([
                 $scope.iframe_html  = $sce.trustAsHtml(iframe_html)
 
                 $(".video-modal").modal("show");
+            }
+
+            $scope.abledToPlay = function (file) {
+                var file_type = file.filename.split(".").pop()
+                var abled_types = [
+                    'avi','rmvb','rm','asf','divx',
+                    'mpg','mpeg','mpe','wmv','mp4',
+                    'mkv','vob','mp3','wav', "txt",
+                    "pdf",'jpg','png','gif'
+                ]
+                if (abled_types.indexOf(file_type) > -1) {
+                    return true
+                } else {
+                    return false
+                }
             }
 
             $scope.stop = function () {

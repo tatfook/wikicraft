@@ -208,20 +208,15 @@ function admin:api_getFileList(params)
 	local skip, limit = util:pagination(params)
 	local qiniu_filesDB = models.qiniu_files:new()
 
-	qiniu_filesDB:db():count({}, resume)
-	local err,total = yield()
 	local checked = tonumber(params.checked)
+	qiniu_filesDB:db():count({checked=checked}, resume)
+	local _, total = yield()
 
 	if total > 0 then
-		qiniu_filesDB:db():count({checked=checked}, resume)
-		local _, count = yield()
-
-		if count > 0 then
-			skip, limit = util:get_reversed_pagination(count, skip, limit)
-			qiniu_filesDB:db():find({_id={gt=-1, skip=skip, limit=limit}, checked=checked}, resume)
-			err, file_list = yield()
-			reverse_file_list = util:reverse_array(file_list)
-		end
+		skip, limit = util:get_reversed_pagination(total, skip, limit)
+		qiniu_filesDB:db():find({checked=checked,{_id,{gt=0, skip=skip, limit=limit}}}, resume)
+		err, file_list = yield()
+		reverse_file_list = util:reverse_array(file_list)
 	end
 
 	return errors:wrap(err, {total=total, file_list=reverse_file_list})
