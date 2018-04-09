@@ -838,21 +838,28 @@ define([
             $scope.fileCurrentPage = 1;
             $scope.filePageSize = 15;
             $scope.fileTotalItems = 0;
-            $scope.file_types = ["未审核", "已通过", "不通过"]
+            $scope.file_types = ["未审核", "已通过", "不通过", "全部"]
+            // $scope.file_types = ["未审核", "已通过", "不通过"]
             $scope.files_checking = $scope.file_types[0]
 
             var checked_code = {
                 "未审核" : 0,
                 "已通过" : 1,
-                "不通过" : 2
+                "不通过" : 2,
+                "全部"   : 3,
             }
 
             $scope.get_file_list = function () {
                 $scope.selectMenuItem = "fileCheck";
+                var checked = undefined
+                if ($scope.files_checking != "全部") {
+                    checked = checked_code[$scope.files_checking]
+                }
+
                 util.post(config.apiUrlPrefix + "admin/getFileList", {
                     page    :$scope.fileCurrentPage,
                     pageSize:$scope.filePageSize,
-                    checked : checked_code[$scope.files_checking]
+                    checked : checked,
                 }, function (data) {
                     data = data || {};
                     $scope.file_list = data.file_list || [];
