@@ -461,7 +461,7 @@
                         <table class="table" ng-show="filelist.length > 0">
                             <tbody>
                                 <tr ng-repeat="file in filelist | filter:{filename:searchName} | orderBy: order.expression: order.reverse" ng-hide="file.isDelete">
-                                    <td class="checkbox-column"><input type="checkbox" ng-model="file.checkedIndex" ng-true-value="{{$index}}"></td>
+                                    <td class="checkbox-column"><input type="checkbox" ng-model="file.checkedIndex" ng-true-value="{{$index}}" ng-disabled="!file.checked || file.checked==2"></td>
                                     <td class="file-column" title="{{file.filename}}">{{file.filename}}</td>
                                     <td class="type-column" title="{{file.file.type}}">{{file.filename.substring(file.filename.lastIndexOf("."))}}</td>
                                     <td class="size-column hidden-xs" title="{{file.filesize || sizeTransfer(file)}}">

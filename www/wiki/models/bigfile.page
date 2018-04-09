@@ -95,8 +95,9 @@ function bigfile:api_getDownloadUrlById(params)
 		return errors:wrap(errors.NOT_FOUND)
 	end
 
-	if tonumber(bf.checked) ~= 1 then
-		return errors:wrap("该文件未通过审核")
+	bf.checked = tonumber(bf.checked) or 0
+	if bf.checked ~= 1 then
+		errors:raise(403, "the file was banned or has not been checked")
 	end
 
 	local download_url = ""
@@ -136,17 +137,30 @@ end
 
 -- 改变文件名
 function bigfile:api_changeFilename(params)
-	--local username = getUsername()
-	local username = "xiaoyao"
+	local username = getUsername()
 
 	if not username or not params._id or not params.filename then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
 
+	self:db():findOne({_id=params._id}, resume)
+	local err, bf = yield()
+	if not bf then
+		errors:raise(404, "file not found")
+	end
+
+	if bf.username ~= username then
+		errors:raise(403, "you are not allowed to change the name of this file")
+	end
+
+	local qiniuFileDB = models.qiniu_files:new()
+	qiniuFileDB:changeFilename({filename=params.filename, _id=bf.file_id})
+
 	params.updateDate = ParaGlobal.GetDateFormat("yyyy-MM-dd")
 	self:db():updateOne({_id=params._id},{filename=params.filename}, resume)
+	err, bf = yield()
 
-	return errors:wrap(yield())
+	return errors:wrap(err)
 end
 
 -- 上传文件
@@ -202,6 +216,10 @@ function bigfile:api_getByUsername(params)
 
 	local qiniuFilesDB = models.qiniu_files:new()
 	for _, bf in ipairs(bfs or {}) do
+		bf.checked = bf.checked or 0
+		if bf.checked ~= 1 then
+			bf.source_url = nil
+		end
 		if bf.channel == const.BIGFILE_QINIU then
 			bf.file = qiniuFilesDB:api_getById({_id=bf.file_id}).data
 		end
@@ -265,7 +283,14 @@ function bigfile:api_getByFilename(params)
 	end
 
 	self:db():findOne({["+username+filename"]={username, params.filename}}, resume)
-	return errors:wrap(yield())
+	local err, bf = yield()
+	if bf then
+		bf.checked = bf.checked or 0
+		if bf.checked ~= 1 then
+			bf.source_url = nil
+		end
+	end
+	return errors:wrap(err, bf)
 end
 
 
