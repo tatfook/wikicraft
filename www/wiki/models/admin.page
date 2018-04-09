@@ -217,13 +217,14 @@ function admin:api_getFileList(params)
 		local _, count = yield()
 
 		if count > 0 then
+			skip, limit = util:get_reversed_pagination(count, skip, limit)
 			qiniu_filesDB:db():find({_id={gt=-1, skip=skip, limit=limit}, checked=checked}, resume)
 			err, file_list = yield()
+			reverse_file_list = util:reverse_array(file_list)
 		end
 	end
 
-
-	return errors:wrap(err, {total=total, file_list=file_list})
+	return errors:wrap(err, {total=total, file_list=reverse_file_list})
 end
 
 

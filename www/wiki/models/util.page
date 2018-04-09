@@ -155,6 +155,29 @@ function util:check_identity(params)
 end
 
 
+function util:reverse_array(array)
+    local reversed_array = {}
+    if #array > 0 then
+        for i = #array, 1, -1 do
+            reversed_array[#reversed_array + 1] = array[i]
+        end
+    end
+    return reversed_array
+end
+
+
+function util:get_reversed_pagination(total, skip, limit)
+    if limit >= total then return skip, limit end
+
+    skip = total - skip - limit
+    if skip < 0 then
+        limit = skip + limit
+        skip = 0
+    end
+    return skip, limit
+end
+
+
 -- 自定义常量
 const={}
 

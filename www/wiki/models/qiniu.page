@@ -44,8 +44,8 @@ function qiniu:api_deleteByFileId(params)
 	end
 
 	local qiniuFilesDB = models.qiniu_files:new()
-
-	local qiniuFiles = qiniuFilesDB:api_getById({_id=params.file_id}).data
+	qiniuFilesDB:db():findOne({_id=params.file_id}, resume)
+	local err, qiniuFiles = yield()
 
 	if not qiniuFiles then
 		return errors:wrap(nil)

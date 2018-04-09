@@ -767,20 +767,36 @@ define([
         };
 
         $scope.insertBigfileUrl = function (file) {
-            var file_key = file.file && file.file.key;
-            var file_id = file._id;
-            var pasteUrl = location.origin + '/wiki/file_player#?file_key=' + file_key;
-            !file_key && (pasteUrl = location.origin + '/wiki/file_player#?file_id=' + file_id);
+            if (!file.checked || file.checked==2){
+                config.services.confirmDialog({
+                    "title": "文件获取失败",
+                    "content": "该资源未经审核或审核不通过",
+                    "cancelBtn": false
+                }, function () {})
+            } else {
+                var file_key = file.file && file.file.key;
+                var file_id = file._id;
+                var pasteUrl = location.origin + '/wiki/file_player#?file_key=' + file_key;
+                !file_key && (pasteUrl = location.origin + '/wiki/file_player#?file_id=' + file_id);
 
-            $scope.cancel({
-                pasteUrl: pasteUrl
-            })
+                $scope.cancel({
+                    pasteUrl: pasteUrl
+                })
+            }
         }
 
         $scope.insertFile = function (file) {
-            var insertingFiles = [];
-            insertingFiles.push(file);
-            $scope.insertFiles(insertingFiles);
+            if (!file.checked || file.checked==2){
+                config.services.confirmDialog({
+                    "title": "文件获取失败",
+                    "content": "该资源未经审核或审核不通过",
+                    "cancelBtn": false
+                }, function () {})
+            } else {
+                var insertingFiles = [];
+                insertingFiles.push(file);
+                $scope.insertFiles(insertingFiles);
+            }
         };
 
         $scope.insertFiles = function (files) {
