@@ -134,7 +134,7 @@ define([
 
                     if ($auth.isAuthenticated()) {
                         var token = $auth.getToken();
-                        $.cookie('token', token, {path: '/', expires: 365, domain: config.hostname});
+                        $.cookie('token', token, {path: '/', expires: 365});
                     }
                     this.send("onUserProfile", this.user);
                     storage.sessionStorageSetItem("userinfo", this.user);
@@ -182,6 +182,9 @@ define([
 
                 // logout
                 logout: function () {
+                    // remove all token forcely
+                    $.removeCookie('token');
+                    $.removeCookie('token', {path:'/', expires:365});
                     $.removeCookie('token', {path:'/', expires:365, domain: config.hostname});
                     $.removeCookie('token', {path:'/', expires:365, domain: '.' + config.hostname});
                     $auth.logout();
