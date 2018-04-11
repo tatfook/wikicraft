@@ -214,7 +214,11 @@ function admin:api_getFileList(params)
 
 	if total > 0 then
 		skip, limit = util:get_reversed_pagination(total, skip, limit)
-		qiniu_filesDB:db():find({checked=checked,{_id,{gt=0, skip=skip, limit=limit}}}, resume)
+		if checked then
+			qiniu_filesDB:db():find({{"checked",checked}, {_id,{gt=0, offset=skip, limit=limit}}}, resume)
+		else
+			qiniu_filesDB:db():find({_id={gt=0, offset=skip, limit=limit}}, resume)
+		end
 		err, file_list = yield()
 		reverse_file_list = util:reverse_array(file_list)
 	end
