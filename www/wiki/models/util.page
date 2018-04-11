@@ -156,25 +156,35 @@ end
 
 
 function util:reverse_array(array)
-    local reversed_array = {}
-    if #array > 0 then
-        for i = #array, 1, -1 do
-            reversed_array[#reversed_array + 1] = array[i]
-        end
-    end
-    return reversed_array
+	local reversed_array = {}
+	if #array > 0 then
+		for i = #array, 1, -1 do
+			reversed_array[#reversed_array + 1] = array[i]
+		end
+	end
+	return reversed_array
 end
 
 
 function util:get_reversed_pagination(total, skip, limit)
-    if limit >= total then return skip, limit end
+	if limit >= total then return skip, limit end
 
-    skip = total - skip - limit
-    if skip < 0 then
-        limit = skip + limit
-        skip = 0
-    end
-    return skip, limit
+	skip = total - skip - limit
+	if skip < 0 then
+		limit = skip + limit
+		skip = 0
+	end
+	return skip, limit
+end
+
+
+function util:check_script_password(params)
+	local script_config = KEEPWORK["config"][CURRENT_ENV]["wiki"]["scripts"] or {}
+	local password = script_config["passwd"]
+	if not password then return "the password is not be set" end
+	if not params.password then return "please input send you password" end
+	if password ~= params.password then return "incorrect password" end
+	return nil
 end
 
 
