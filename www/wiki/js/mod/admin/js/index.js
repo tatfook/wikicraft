@@ -34,8 +34,8 @@ define([
 
     function registerController(wikiBlock){
         app.registerController('indexController', 
-            ['$scope', '$auth', 'Account', 'modal', 'Message', '$http', 'goodsFactory' , '$uibModal' , 
-                function ($scope, $auth, Account, modal, Message, $http , goodsFactory , $uibModal) {
+            ['$scope', '$auth', '$sce', 'Account', 'modal', 'Message', '$http', 'goodsFactory' , '$uibModal' , 
+                function ($scope, $auth, $sce, Account, modal, Message, $http , goodsFactory , $uibModal) {
 
 /********** Common and Init 开始 **********/
             var urlPrefix = "/wiki/js/mod/admin/js/";
@@ -833,10 +833,132 @@ define([
 
 
 /********** 文件审核开始 **********/
+            const biteToG = 1024*1024*1024
 
-            $scope.getFileCheckList = function () {
-                $scope.selectMenuItem = "fileCheck";
+            $scope.fileCurrentPage = 1;
+            $scope.filePageSize = 15;
+            $scope.fileTotalItems = 0;
+            $scope.file_types = ["未审核", "已通过", "不通过", "全部"]
+            $scope.files_checking = $scope.file_types[0]
+
+            var checked_code = {
+                "未审核" : 0,
+                "已通过" : 1,
+                "不通过" : 2,
+                "全部"   : 3,
             }
+
+            $scope.get_file_list = function () {
+                $scope.selectMenuItem = "fileCheck";
+                var checked = undefined
+                if ($scope.files_checking != "全部") {
+                    checked = checked_code[$scope.files_checking]
+                }
+
+                util.post(config.apiUrlPrefix + "admin/getFileList", {
+                    page    :$scope.fileCurrentPage,
+                    pageSize:$scope.filePageSize,
+                    checked : checked,
+                }, function (data) {
+                    data = data || {};
+                    $scope.file_list = data.file_list || [];
+                    $scope.fileTotalItems = data.total || 0;
+                });
+            }
+
+            $scope.change_file_type = function (type) {
+                $scope.files_checking = type
+                $scope.fileCurrentPage = 1;
+                $scope.filePageSize = 15;
+                $scope.fileTotalItems = 0;
+                $scope.get_file_list()
+            }
+
+            $scope.check_file = function (file, checked) {
+                util.post(config.apiUrlPrefix + "admin/checkFile", {
+                    _id     : file._id,
+                    checked : checked
+                }, function (data) {
+                    file.checked = data.checked
+                })
+            }
+
+            $scope.size_transfer = function (size) {
+                var sizeIsNumber = size && angular.isNumber(size);
+                if (!sizeIsNumber){
+                    return "0KB";
+                }
+                var filesize = size;
+                if (size/1024/1024/1024 > 0.1){
+                    size = (size/biteToG).toFixed(2)+"GB";
+                    return size;
+                }
+                if (size/1024/1024 > 0.1){
+                    size = (size/1024/1024).toFixed(2) + "MB";
+                    return size;
+                }
+                size = (size/1024).toFixed(2) + "KB";
+                return size;
+            }
+
+            $scope.file_name_filter = function (filename) {
+                var len_limit = 30
+                if (filename.length > len_limit) {
+                    filename = filename.slice(0, len_limit) + "......"
+                }
+                return filename
+            }
+
+            $scope.playVideo = function (file) {
+                $scope.file_playing = file
+                var videoUrl = $sce.trustAsResourceUrl(file.download_url);
+
+                var iframe_html = '<iframe src="' + videoUrl + '"></iframe>'
+                $scope.iframe_html  = $sce.trustAsHtml(iframe_html)
+
+                $(".video-modal").modal("show");
+            }
+
+            $scope.abledToPlay = function (file) {
+                var file_type = file.filename.split(".").pop().toLowerCase()
+                var abled_types = [
+                    'avi','rmvb','rm','asf','divx',
+                    'mpg','mpeg','mpe','wmv','mp4',
+                    'mkv','vob','mp3','wav', "txt",
+                    "pdf",'jpg','png','gif'
+                ]
+                if (abled_types.indexOf(file_type) > -1) {
+                    return true
+                } else {
+                    return false
+                }
+            }
+
+            $scope.stop = function () {
+                $scope.iframe_html = ''
+            }
+
+            $scope.check_file_and_stop = function (file, checked) {
+                $scope.check_file(file, checked)
+                $scope.stop()
+            }
+
+            $scope.clickDeleteFile = function(file) {
+                config.services.confirmDialog({
+                    "title":"删除文件",
+                    "confirmBtnClass":"btn-danger",
+                    "theme":"danger",
+                    "content":"确定删除文件吗？"
+                },function() {
+                    util.post(config.apiUrlPrefix + "admin/deleteFile", {
+                        _id     : file._id,
+                    }, function (data) {
+                        file.deleted = true
+                        $scope.fileTotalItems--
+                    })
+                })
+            }
+
 
 /********** 文件审核结束 **********/
 
