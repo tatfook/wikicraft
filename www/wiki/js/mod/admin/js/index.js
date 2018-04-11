@@ -920,7 +920,7 @@ define([
             }
 
             $scope.abledToPlay = function (file) {
-                var file_type = file.filename.split(".").pop()
+                var file_type = file.filename.split(".").pop().toLowerCase()
                 var abled_types = [
                     'avi','rmvb','rm','asf','divx',
                     'mpg','mpeg','mpe','wmv','mp4',
@@ -954,6 +954,7 @@ define([
                         _id     : file._id,
                     }, function (data) {
                         file.deleted = true
+                        $scope.fileTotalItems--
                     })
                 })
             }
