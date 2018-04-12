@@ -984,7 +984,9 @@ function user:api_getDetailByName(params)
 	self:db():findOne({["+username"]={params.username}}, resume)
 	local err, userinfo = yield()
 
-	if not userinfo or userinfo.roleId == const.USER_ROLE_EXCEPTION then
+	if not userinfo then errors:raise(404, "user not exist") end
+
+	if userinfo.roleId == const.USER_ROLE_EXCEPTION then
 		return errors:wrap(nil, nil)
 	end
 	

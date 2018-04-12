@@ -253,7 +253,7 @@ define([
                         return ;
                     }
                     isFirstLocationChange = false;
-                    config.loadMainContent(initContentInfo);
+                    config.loadMainContent(initContentInfo, initErrContent);
                 });
             }
 
@@ -356,7 +356,6 @@ define([
 							callback();
 						}
                     },function (err) {
-                        // console.log(err);
                         var errContent = notfoundHtmlContent;
                         util.html('#__UserSitePageContent__', errContent, $scope);
                     });
@@ -423,6 +422,10 @@ define([
 					getUserPage();
                 }
 
+            }
+
+            function initErrContent() {
+                util.html('#__UserSitePageContent__', notfoundHtmlContent, $scope);
             }
 
             function init() {

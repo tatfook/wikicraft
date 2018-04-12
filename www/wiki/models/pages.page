@@ -205,20 +205,11 @@ function pages:api_updateVisitCount(params)
     local page = {url = params.url}
     self:db():findOne({["+url"]={page.url}}, resume)
     local err, result = yield()
-    if (result) then
-        visitCount = (result.visitCount or 0) + 1
-        self:db():updateOne({["+url"] = {page.url}}, {visitCount = visitCount}, resume)
-        err, result = yield()
-    else
-        page.visitCount = 1
-        page.siteUrl = self:get_site_url(params)
-        self:db():insertOne({["+url"] = {page.url}}, page, resume)
-        err, result = yield()
-        if (result) then
-            page.id = result._id
-            self:insert_to_es(page)
-        end
-    end
+    if (not result) then errors:raise(404, "page not found") end
+
+    visitCount = (result.visitCount or 0) + 1
+    self:db():updateOne({["+url"] = {page.url}}, {visitCount = visitCount}, resume)
+    err, result = yield()
     result = {visitCount = result.visitCount}
     return errors:wrap(err, result)
 end
@@ -232,6 +223,8 @@ function pages:api_getDetail(params)
     local page = {url = params.url, visitor = params.visitor}
     self:db():findOne({["+url"] = {page.url}}, resume)
     local err, result = yield()
+    if (not result) then errors:raise(404, "page not found") end
+
     result = result or {}
     local stars = models.pages_stars:new()
     local starredCount_and_starred = stars:get_starred_count_of_a_page(page)

@@ -69,6 +69,11 @@ function site_data_source:api_getDefaultSiteDataSource(params)
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
 
+	local userDB = models.user:new()
+	self:db():findOne({["+username"]={params.username}},resume)
+	local err, user = yield()
+	if not user then errors:raise(404, "user not found") end
+
 	self:db():findOne({["+username+sitename"]={params.username, defaultSitename}}, resume)
 	local _, siteDataSource = yield()
 

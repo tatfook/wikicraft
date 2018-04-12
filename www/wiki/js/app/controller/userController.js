@@ -175,6 +175,11 @@ define([
 
             util.get(config.apiUrlPrefix + 'pages/updateVisitCount', {
                 url: '/' + username
+            }, function (data) {
+            }, function (err) {
+                if (err.status == 404){
+                    util.html('#__UserSitePageContent__', notFoundHtmlContent);
+                }
             });
         }
 
