@@ -186,13 +186,36 @@ define([
         )
 
         $scope.checkEngine = function() {
+          var protocol = 'paracraft'
+          var paramA = ''
+          var paramB = ''
+          var urlprotocol = $scope.params.urlprotocol
+
+          if(urlprotocol && urlprotocol.protocol) {
+            protocol = urlprotocol.protocol
+          }
+
+          if(urlprotocol && urlprotocol.paramA) {
+            if(typeof(urlprotocol.paramA) == 'object') {
+              paramA = JSON.stringify(urlprotocol.paramA)
+            } else if (typeof(urlprotocol.paramA) == 'string') {
+              paramA = urlprotocol.paramA
+            }
+          }
+
+          if(urlprotocol && urlprotocol.paramB) {
+            if(typeof(urlprotocol.paramB) == 'object') {
+              paramB = JSON.stringify(urlprotocol.paramB)
+            } else if (typeof(urlprotocol.paramB) == 'string') {
+              paramB = urlprotocol.paramB
+            } 
+          }
+
           $scope.showModal = true
 
           window.open(
-            'paracraft:// usertoken="' +
-              token +
-              '" cmd/loadworld ' +
-              $scope.params.link_world_url.text
+            protocol + ':// protocol="' + protocol + '" paramA="' + paramA + '" paramB="' + paramB + '" usertoken="' +
+            token + '" cmd/loadworld ' + $scope.params.link_world_url.text
           )
         }
 

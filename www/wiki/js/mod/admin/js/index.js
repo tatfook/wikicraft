@@ -825,6 +825,9 @@ define([
 
                     /********** 商品管理结束 **********/
 
+            $scope.getFileCheckList = function () {
+                $scope.selectMenuItem = "fileCheck";
+            }
 
 
                     /********** 网站管理开始 **********/
