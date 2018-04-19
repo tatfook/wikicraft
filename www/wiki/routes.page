@@ -29,6 +29,10 @@ include_once(WIKI_ROOT .. 'helpers/index.page')
 local path = pagename() or "";
 local ajax_type, ajax_path = path:match("^/?api/(%w+)/(.+)");
 
+if ajax_type then
+	refuseLockedUser()
+end
+
 if(ajax_type == "mod") then
 	include_once("./mod/routes.page");
 	return;

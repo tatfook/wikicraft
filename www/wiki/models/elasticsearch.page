@@ -135,17 +135,23 @@ function elasticsearch:query_generator(params)
     -- search in one field
     if (#params.fields == 1) then
         local match = {}
-        match[params.fields[1]] = params.q
-        match.fuzziness = params.fuzziness
+        if (not params.fuzziness) then
+            match[params.fields[1]] = params.q
+        else
+            match[params.fields[1]] = {
+                query = params.q,
+                fuzziness = params.fuzziness,
+                operator = "and",
+            }
+        end
         query = {match = match}
-
     -- search in multi-fields
     elseif (#params.fields > 1) then
         query = {
-        multi_match = {
-            query = params.q,   --string
-            fields = params.fields,   --array
-            fuzziness = params.fuzziness,
+            multi_match = {
+                query = params.q,   --string
+                fields = params.fields,   --array
+                fuzziness = params.fuzziness,
             }
         }
     end

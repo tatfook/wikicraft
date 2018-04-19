@@ -210,6 +210,17 @@
         left: 10px;
         top: 20px;
     }
+    .totalUsers {
+        position: absolute;
+        left: 10px;
+        top: 20px;
+    }
+    .table tbody tr td {
+        vertical-align: middle;
+    }
+    .datetime {
+        width: 50%;
+    }
     @media(max-width: 768px){
         .subnav .list-group-item:first-child .list-group-item{
             padding: 10px 5px;
@@ -879,11 +890,15 @@
                             <label>
                                 用户名:
                             </label>
-                            <input ng-model="userSearchByUsername" type="text" class="form-control" placeholder="请输入用户名">
+                            <input type="text" ng-model="userSearchByUsername" placeholder="请输入用户名"
+                                uib-typeahead="user for user in getUsername($viewValue)"
+                                class="form-control">
                         </div>
                         <button class="btn btn-default" ng-click="userSearch()">查询</button>
                     </form>
                 </div>
+
+
                 <table class="table table-hover table-bordered">
                     <thead>
                         <tr>
@@ -891,31 +906,37 @@
                             <th>用户名</th>
                             <th>显示名</th>
                             <th>注册时间</th>
-                            <th>网站数</th>
-                            <th>粉丝数</th>
-                            <th>用户等级</th>
-                            <th>状态</th>
+                            <!-- <th>网站数</th>
+                            <th>粉丝数</th> -->
+                            <th>权限等级</th>
+                            <th>封禁期限</th>
                             <th>操作</th>
                         </tr>
                     </thead>
+
                     <tbody>
-                        <tr ng-repeat="x in userList" ng-hide="x.isDelete">
-                            <td>{{x._id}}</td>
-                            <td>{{x.username}}</td>
-                            <td>{{x.displayName}}</td>
-                            <td>{{x.joindate}}</td>
-                            <td>{{x.websiteCount}}</td>
-                            <td>{{x.fansCount}}</td>
-                            <td>{{x.roleId}}</td>
-                            <td>{{x.state == -1 ? "异常" : "正常"}}</td>
-                            <td>
-                                <button class="btn btn-default" ng-click="clickEnableUser(x)">{{x.roleId == -1 ? "启用" : "禁用"}}</button>
-                                <button class="btn btn-default" ng-click="clickDeleteUser(x)">删除</button>
-                            </td>
-                        </tr>
+                            <tr ng-repeat="user in userList" ng-hide="user.isDelete">
+                                <td>{{user._id}}</td>
+                                <td><a href={{linkToUserPage(user)}} target="_blank">{{user.username}}</a></td>
+                                <td>{{user.displayName}}</td>
+                                <td>{{user.joindate}}</td>
+                                <!-- <td>{{user.websiteCount}}</td>
+                                <td>{{user.fansCount}}</td> -->
+                                <td>{{user.roleId}}</td>
+                                <td class="col-sm-1">
+                                    <pre>{{isUserLocked(user) ? user.locked_deadline : "未被封禁"}}</pre>
+                                </td>
+                                <td>
+                                    <button class="btn btn-default" ng-click="clickLockUser(user)">封禁</button>
+                                    <button class="btn btn-default" ng-click="clickUnLockUser(user)" ng-disabled="!isUserLocked(user)">解封</button>
+                                </td>
+                            </tr>
                     </tbody>
                 </table>
+
+
                 <div class="pagination-box">
+                    <div class="totalUsers"><span>共 {{userTotalItems}} 个用户</span></div>
                     <ul uib-pagination ng-change="getUserList()"
                         items-per-page='userPageSize' previous-text="上一页"
                         next-text="下一页" total-items="userTotalItems"
@@ -924,6 +945,44 @@
                     </ul>
                 </div>
             </div>
+
+
+            <div class="modal lock_user" id="lock_user" tabindex="-1" role="dialog" aria-hidden="true" keyboard="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content" style="width:200%;margin-top:30%;margin-left:-50%;">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
+                                <h4 class="modal-title">封禁用户 {{user_to_lock.username}}</h4>
+                            </div>
+                            <div class="modal-body">
+                                <p class="form-group">
+                                    <div class="datetime">
+                                        <div class="input-group">
+                                            <span class="input-group-addon" id="sizing-addon1">封禁至</span>
+                                            <input type="text" class="form-control" uib-datepicker-popup="{{format}}" ng-model="locked_deadline" ng-value = "locked_deadline"/>
+                                        </div><br>
+                                        <div class="input-group">
+                                            <span class="input-group-addon" id="sizing-addon1"> 操作</span>
+                                            <button class="btn btn-default" ng-click="resetDuration()">now</button>
+                                            <button class="btn btn-default" ng-click="addLockDuration(0,0,1)">加一天</button>
+                                            <button class="btn btn-default" ng-click="addLockDuration(0,0,3)">加三天</button>
+                                            <button class="btn btn-default" ng-click="addLockDuration(0,0,7)">加一周</button>
+                                            <button class="btn btn-default" ng-click="addLockDuration(0,1,0)">加一个月</button>
+                                            <button class="btn btn-default" ng-click="addLockDuration(1,0,0)">加一年</button>
+                                            <button class="btn btn-danger" ng-click="addLockDuration(100,0,0)">永久</button>
+                                        </div>
+                                    </div>
+                                </p>
+                            </div>
+                            <div class="modal-footer">
+                                <button class="btn btn-danger" data-dismiss="modal" ng-click="lockUser(user_to_lock)">确定</button>
+                                <button class="btn btn-primary" data-dismiss="modal" ng-disabled="!isUserLocked(user_to_lock)" ng-click="unlockUser(user_to_lock)">解封</button>
+                                <button class="btn btn-primary" data-dismiss="modal">关闭</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
 
             <!--网站管理-->
             <div ng-show='selectMenuItem=="site"'>

@@ -10,6 +10,7 @@ include_once("./abstract/base.page")
 include_once("./group_user.page")
 include_once("./website.page")
 include_once("./pages.page")
+include_once("./user.page")
 
 local site_user = inherit(models.abstract.base, gettable("models.site_user"))
 site_user.db_name = "site_user"
@@ -93,6 +94,11 @@ function site_user:api_getSiteListByMemberName(params)
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
 
+	local userDB = models.user:new()
+	if userDB:is_locked({username = params.memberName}) then
+		errors:raise(403, "该帐号已被封禁")
+	end
+
 	local limit = 100000
 	self:db():find({["+memberName"]={params.memberName, limit=limit}}, resume)
 	local _, siteUserList = yield()
@@ -135,6 +141,11 @@ end
 function site_user:api_getSiteByName(params)
 	if (not params.username) or (not params.sitename) or (not params.memberName) then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+
+	local userDB = models.user:new()
+	if userDB:is_locked({username = params.username}) then
+		errors:raise(403, "该帐号已被封禁")
 	end
 
 	self:db():findOne({["+username+sitename+memberName"]={params.username, params.sitename, params.memberName}}, resume)

@@ -66,13 +66,15 @@ define([
         var initPageInfo = function(){
             var url = pageDetail.pathname;
             var visitor = $scope.user && $scope.user.username || "";
-            util.get(config.apiUrlPrefix + "pages/getDetail", {
-                url: url,
-                visitor: visitor
-            }, function(data){
-                $scope.isCollect = data.starred;
-                $scope.pageFansCount = data.starredCount;
-            })
+            if (!url.startsWith("/wiki/")) {
+                util.get(config.apiUrlPrefix + "pages/getDetail", {
+                    url: url,
+                    visitor: visitor
+                }, function(data){
+                    $scope.isCollect = data.starred;
+                    $scope.pageFansCount = data.starredCount;
+                })
+            }
         }
 
         var initPagePath = function(){

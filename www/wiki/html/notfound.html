@@ -1,66 +1,74 @@
 <style>
-    body{
+    body {
         background-color: white;
     }
-    .notfound{
+
+    .notfound {
         text-align: center;
         /* padding: 60px 0; */
         color: #3977AD;
     }
-    .notfound h1{
+
+    .notfound h1 {
         font-size: 28px;
         margin: 0 0 30px;
         color: #303133;
-        font-weight: 550;
+        font-weight: bold;
     }
 
-    .notfound .background-image{
+    .notfound .background-image {
         position: absolute;
         width: 100%;
-        /* z-index: -1; */
-        z-index: 99999;
+        z-index: -1;
         left: 0;
         padding-top: 5%;
         /* top: 240px; */
     }
-    .notfound .background-image img{
+
+    .notfound .background-image img {
         width: 20%;
         /* background-color: white; */
         height: auto;
         cursor: pointer;
     }
-    .notfound .btns{
+
+    .notfound .btns {
         display: flex;
         justify-content: center;
     }
-    .notfound .btn-primary-outline{
-        font-size: 16px;
-        width:120px;
-        height: 44px;
-        line-height: 44px;
+
+    .notfound .btn-primary-outline {
+        font-size: 14px;
+        font-weight: 500;
+        width: 110px;
+        height: 40px;
+        line-height: 40px;
         padding: 0;
         border: 1px solid #337ab7;
-        background-color:  #337ab7;
+        background-color: #337ab7;
         margin: 0 10px;
         border-radius: 100px;
         color: #FFF;
     }
-    .notfound .btn-primary-outline:hover{
+
+    .notfound .btn-primary-outline:hover {
         background-color: #4e99d9;
         color: #FFF;
     }
-    .notfound .fa{
+
+    .notfound .fa {
         font-size: 16px;
         -webkit-text-stroke: 1px #F4F9FF;
-    }
-    .notfound .btn-primary-outline:hover .fa{
-        font-size: 16px;
-        -webkit-text-stroke: 1px #F4F9FF;
-    }
-    .text {
-        padding-top: 29%
     }
 
+    .notfound .btn-primary-outline:hover .fa {
+        font-size: 16px;
+        -webkit-text-stroke: 1px #F4F9FF;
+    }
+
+    .text {
+        padding-top: 28.5%
+    }
 </style>
 <div ng-controller="notfoundController" class="notfound">
     <div class="background-image">

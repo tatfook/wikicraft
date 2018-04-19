@@ -8,6 +8,7 @@ Date: 2017/09/11
 include_once("./abstract/base.page")
 include_once("./qiniu.page")
 include_once("./qiniu_files.page")
+include_once("./user.page")
 
 local bigfile = inherit(models.abstract.base, gettable("models.bigfile"))
 bigfile.db_name = "bigfile"
@@ -311,6 +312,11 @@ function bigfile:api_getUserStoreInfo(params)
 
 	if not username then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+
+	local userDB = models.user:new()
+	if userDB:is_locked({username = username}) then
+		errors:raise(403, "该帐号已被封禁")
 	end
 
 	local qiniuDB = models.qiniu:new()

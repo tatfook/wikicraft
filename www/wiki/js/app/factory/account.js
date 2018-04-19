@@ -67,7 +67,7 @@ define([
 					util.post(config.apiUrlPrefix + 'site_data_source/getByUsername', {username: user.username}, function (data) {
 						user.dataSource = data || [];
                         //storage.localStorageSetItem("userinfo", user);
-						console.log(user);
+						// console.log(user);
                         DataSource.init(user.dataSource, user.defaultDataSourceSitename);
 						cb && cb();
                     }, errcb);
@@ -89,7 +89,7 @@ define([
 					var self = this;
 
 					util.post(config.apiUrlPrefix + 'user/getProfile', {}, function(data){
-						self.setUser(data);
+                        self.setUser(data);
 						cb && cb(data);
 					}, errcb);
 				},
@@ -189,6 +189,15 @@ define([
                     $.removeCookie('token', {path:'/', expires:365, domain: '.' + config.hostname});
                     $auth.logout();
                     this.send("onLogout", "");
+                },
+
+                refuseUser: function () {
+                    if ($rootScope.isLogin) {
+                        this.logout();
+                        $rootScope.isLogin = false;
+                        alert("您的帐号已被封禁")
+                        util.go("login")
+                    }
                 },
 
                 // github s授权认证
