@@ -325,10 +325,10 @@ function admin:api_unLockUser(params)
 	local err, user = yield()
 	if not user then errors:raise(404, "user not found") end
 
-	local now = datetime()
+	local locked_deadline = "0000-01-01 00:00:00"
 	userDB:db():updateOne(
 		{["+username"] = {params.username}},
-		{locked_deadline = now},
+		{locked_deadline = locked_deadline},
 		resume
 	)
 	local err, result = yield()
