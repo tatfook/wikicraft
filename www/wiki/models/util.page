@@ -188,6 +188,17 @@ function util:check_script_password(params)
 end
 
 
+-- compare two datetime str
+-- if dt1 is later then dt2, it returns true.
+-- else returns false
+function util:compare_datetime(dt1, dt2)
+	local dt1_ms = commonlib.GetMillisecond_Date(dt1)
+	local dt2_ms = commonlib.GetMillisecond_Date(dt2)
+	if dt1_ms > dt2_ms then return true end
+	return false
+end
+
+
 -- 自定义常量
 const={}
 

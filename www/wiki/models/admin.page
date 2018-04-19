@@ -11,10 +11,13 @@ include_once("./user_log.page")
 include_once("./bigfile.page")
 include_once("./qiniu_files.page")
 include_once("./util.page")
-
+include_once("./validators.page")
+include_once("./elasticsearch.page")
 
 local admin = inherit(models.abstract.base, gettable("models.admin"))
 admin.db_name = "admin"
+
+local validators = models.validators:new()
 
 -- 登录
 function admin:api_login(params)
@@ -92,24 +95,24 @@ end
 function admin:api_managerSearch(params)
 	self:adminAuth()
 
-	local _id = params._id or nil 
-	local username = params.username 
-	
+	local _id = params._id or nil
+	local username = params.username
+
 	local userDB = models.user:new()
 	--userDB:db():count({["+roleId+_id"] = {const.USER_ROLE_ADMINISTRATOR,1}}, resume)
 	--local _, total = yield()
 	local total = 0;
-	
-	if username ~= "" and _id == nil then 
+
+	if username ~= "" and _id == nil then
 		userDB:db():find({["+roleId+username"] = {const.USER_ROLE_ADMINISTRATOR,username}}, resume)
 	end
-	if _id ~= "" and username == "" then 
+	if _id ~= "" and username == "" then
 		userDB:db():find({["+roleId+_id"] = {const.USER_ROLE_ADMINISTRATOR,_id}}, resume)
-	end 
-	if username ~= "" and _id ~= nil then 
+	end
+	if username ~= "" and _id ~= nil then
 		userDB:db():find({["+roleId+_id+username"] = {const.USER_ROLE_ADMINISTRATOR,_id,username}}, resume)
-	end 
-	
+	end
+
 	--userDB:db():find({roleId = const.USER_ROLE_ADMINISTRATOR}, resume)
 	--userDB:db():find({{roleId = const.USER_ROLE_ADMINISTRATOR},{_id={gt=-1, skip=skip, limit=limit}}}, resume)
 	local _, searchManagerList = yield()
@@ -119,8 +122,8 @@ end
 
 function admin:api_newManager(params)
 	self:adminAuth()
-	
-	
+
+
 end
 
 -- 获取站点列表
@@ -140,7 +143,7 @@ end
 
 function admin:api_test()
 	return errors:wrap(nil, {total="total", siteList = "siteList"})
-end 
+end
 
 -- 获取域名列表
 function admin:api_getDomainList(params)
@@ -149,10 +152,10 @@ function admin:api_getDomainList(params)
 	local domainDB = models.website_domain:new()
 	domainDB:db():count({}, resume)
 	local _,total = yield()
-	
+
 	domainDB:db():find({_id={gt=-1, skip=skip, limit=limit}}, resume)
 	local _, domainList = yield()
-	
+
 	return errors:wrap(nil, {total=total, domainList = domainList})
 end
 
@@ -163,11 +166,11 @@ function admin:api_getVIPList(params)
 	local VIPDB = models.vip:new()
 	VIPDB:db():count({}, resume)
 	local _,total = yield()
-	
+
 	VIPDB:db():find({_id={gt=-1, skip=skip, limit=limit}}, resume)
 	--VIPDB:db():find({}, resume)
 	local _, VIPList = yield()
-	
+
 	return errors:wrap(nil, {total=total, VIPList = VIPList})
 end
 
@@ -175,18 +178,18 @@ function admin:api_getUserLogList(params)
 	self:adminAuth()
 	local skip, limit = util:pagination(params)
 	local userLogDB = models.user_log:new()
-	
+
 	--local createAt = ParaGlobal.GetDateFormat("yyyy-MM-dd") .. " " .. ParaGlobal.GetTimeFormat("HH:mm:ss")
 	--userLogDB:db():insertOne(nil, {createAt=createAt, userid=1, username="lizq", userip="0.0.0.0", operation="add", description="init", targetType="user_log", targetId=0}, resume)
-	
+
 	userLogDB:db():count({}, resume)
 	local _,total = yield()
-	
+
 	userLogDB:db():find({_id={gt=-1, skip=skip, limit=limit}}, resume)
 	local _, userLogList = yield()
-	
+
 	return errors:wrap(nil, {total=total, userLogList = userLogList})
-end 
+end
 
 function admin:api_insertUserLog(params)
 	local createAt = ParaGlobal.GetDateFormat("yyyy-MM-dd") .. " " .. ParaGlobal.GetTimeFormat("HH:mm:ss")
@@ -196,10 +199,10 @@ function admin:api_insertUserLog(params)
 		userLogDB:db():insertOne(nil, {createAt=createAt, username=params.username, userip=userip, operation=params.operation, description=params.description, targetType=params.targetType, targetId=params.targetId}, resume)
 		local _, insertedLog = yield()
 		return errors:wrap(nil, {insertedLog = insertedLog})
-	else 
+	else
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
-	
+
 end
 
 
@@ -284,6 +287,115 @@ function admin:api_deleteFile(params)
 end
 
 
+function admin:api_lockUser(params)
+	self:adminAuth()
+	local validate_tasks = {
+		required_fields = {"locked_deadline", "username"}
+	}
+	validators:add_validate_tasks(validate_tasks, params)
+	local err, message = validators:get_validate_result()
+	if err then errors:raise(400, message) end
+
+	local userDB = models.user:new()
+	userDB:db():findOne({["+username"]={params.username}}, resume)
+	local err, user = yield()
+	if not user then errors:raise(404, "user not found") end
+
+	userDB:db():updateOne(
+		{["+username"] = {params.username}},
+		{locked_deadline = params.locked_deadline},
+		resume
+	)
+	local err, result = yield()
+
+	return errors:wrap(nil, {
+		locked = true,
+		username = result.username,
+		locked_deadline = result.locked_deadline,
+	})
+end
+
+
+function admin:api_unLockUser(params)
+	self:adminAuth()
+	if not params.username then errors:raise(400, "username is required") end
+
+	local userDB = models.user:new()
+	userDB:db():findOne({["+username"]={params.username}}, resume)
+	local err, user = yield()
+	if not user then errors:raise(404, "user not found") end
+
+	local now = datetime()
+	userDB:db():updateOne(
+		{["+username"] = {params.username}},
+		{locked_deadline = now},
+		resume
+	)
+	local err, result = yield()
+
+	return errors:wrap(nil, {
+		locked = false,
+		username = result.username,
+		locked_deadline = result.locked_deadline,
+	})
+end
+
+
+function admin:api_searchUsername(params)
+	if not params.q then
+		errors:raise(400, "q required")
+	end
+	local usernames = {}
+	local es = models.elasticsearch:new()
+	local index = CURRENT_ENV .. "_kw_users"
+	es:connect({index=index})
+	local body = { 
+		suggest = {
+			username_sug = {
+				prefix = params.q,
+				completion = {
+					field = "suggestion",
+					size = 100,
+					fuzzy = {
+						fuzziness = 2
+					}
+				}
+			}
+		},
+
+	}
+	local code, search_result = es:search({body=body, type="users"})
+	for i, user in ipairs(search_result.data.suggest.username_sug[1].options) do
+		usernames[#usernames + 1] = user._source.username
+	end
+	return errors:wrap(code, usernames)
+end
+
+
+function admin:api_addUserSug(params)
+	local errMsg = util:check_script_password(params)
+	if errMsg then errors:raise(400, errMsg) end
+
+	local es = models.elasticsearch:new()
+	local index = CURRENT_ENV .. "_kw_users"
+	es:connect({index=index})
+	local userDB = models.user:new()
+	userDB:db():find({_id={gt=-1, limit=9999999}}, resume)
+	local err, users = yield()
+	local bulk_data = ""
+
+	for i, user in ipairs(users) do
+		bulk_data = bulk_data .. commonlib.Json.Encode({update = {_id = user._id}}, true) .. "\n"
+		bulk_data = bulk_data .. commonlib.Json.Encode({doc = {suggestion = user.username}}, true) .. "\n"
+		if (i%200 == 0) or (i == #users) then
+			es:bulk({data=bulk_data, type="users"})
+			bulk_data = ""
+		end
+	end
+	return errors:wrap()
+end
+
+
 -- 获取操作日志列表
 --[[
 function admin:api_getVIPList(params)
@@ -292,17 +404,15 @@ function admin:api_getVIPList(params)
 	local VIPDB = models.vip:new()
 	VIPDB:db():count({}, resume)
 	local _,total = yield()
-	
+
 	VIPDB:db():find({_id={gt=-1, skip=skip, limit=limit}}, resume)
 	--VIPDB:db():find({}, resume)
 	local _, VIPList = yield()
-	
+
 	return errors:wrap(nil, {total=total, VIPList = VIPList})
 end
 
 ]]
-
-
 
 
 

@@ -12,7 +12,11 @@ define([
         $scope.showNewPageBtn = false;
 
         $scope.goBack = function () {
-            history.back(-1);
+            if (history[-1]) {
+                history.back(-1);
+            } else {
+                util.go("/");
+            }
         };
 
         $scope.newPage = function () {
