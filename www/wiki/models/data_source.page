@@ -70,7 +70,7 @@ function data_source:api_getById(params)
 	self:db():findOne({_id=params.id}, resume)
 	local err ,dataSource = yield()
 
-	if dataSource then
+	if dataSource and dataSource.username then
 		local userDB = models.user:new()
 		if userDB:is_locked({username = dataSource.username}) then
 			errors:wrap("该帐号已被封禁")
@@ -405,7 +405,8 @@ function data_source:api_get(params)
 	self:db():find({[key]=value}, resume)
 	local err, dataSource = yield()
 
-	if dataSource then
+	if dataSource and dataSource.username then
+		local visitor = getUsername
 		local userDB = models.user:new()
 		if userDB:is_locked({username = dataSource.username}) then
 			errors:wrap("该帐号已被封禁")
