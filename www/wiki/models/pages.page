@@ -15,6 +15,7 @@ include_once("./website.page")
 include_once("./tags.page")
 include_once("./user_tags.page")
 include_once("./site_data_source.page")
+include_once("./site_user.page")
 
 
 local pages = inherit(models.abstract.base, gettable("models.pages"))
@@ -36,9 +37,28 @@ end
 function pages:check_identity(params)
     local allowed = util:check_identity(params)
     if (not allowed) then
+        if self:check_permission(params) then return end
         local message = "You are not allowed to do it"
         errors:raise(403, message)
     end
+end
+
+
+function pages:check_permission(params)
+    local site_owner, sitename = util:get_username_and_sitename(params.url)
+    local memberName = getUsername()
+    local site_userDB = models.site_user:new()
+    local data = site_userDB:api_getSiteByName({
+        username = site_owner,
+        sitename = sitename,
+        memberName = memberName
+    }).data or {}
+
+    if data.siteUser and data.siteinfo then
+        return true
+    end
+
+    return false
 end
 
 
