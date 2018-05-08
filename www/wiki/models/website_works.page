@@ -7,15 +7,25 @@ Date: 2016/11/07
 
 include_once("./abstract/base.page");
 include_once("./user_works.page");
+include_once("./elasticsearch.page")
+include_once("./website_comment.page");
 
 local cacheKeyPrefix = "website_works_"
 local website_works = inherit(models.abstract.base, gettable("models.website_works"))
 website_works.db_name="website_works"
 
 
+local es = models.elasticsearch:new()
+local commentModel = models.website_comment:new()
+
+local index = CURRENT_ENV .. "_kw_website_works"
+local indexType = "typename"
+es:connect({index=index})
+
 function website_works:ctor()
 	self:addfield("websiteId", "number")      -- 站点ID
 	self:addfield("username", "string")       -- 作品作者
+	self:addfield("realname", "string")       -- 真实姓名
 	self:addfield("worksTitle", "string")     -- 作品标题
 	self:addfield("worksName", "string")      -- 作品名
 	self:addfield("worksUrl", "string")       -- 作品容器页面url
@@ -24,7 +34,7 @@ function website_works:ctor()
 	self:addfield("worksState", "string")     -- 作品状态
 	self:addfield("worksFlag", "number")      -- 热门 入围
 	self:addfield("schoolName", "string")     -- 校名
-	self:addfield("awords", "string")         -- 参与奖项
+	self:addfield("awords", "table")         -- 参与奖项
 	self:addfield("identifyUrl", "string")    -- 身份证照
 	self:addfield("liveUrl", "string")        -- 生活照
 	self:addfield("visitCount", "number")     -- 作品浏览量
@@ -33,6 +43,134 @@ function website_works:ctor()
 	self:addfield("commentCount", "number")   -- 评论量
 	self:addfield("createDate", "string", false, 64)
 	self:addfield("updateDate", "string", false, 64)
+end
+
+-- 添加记录到ES
+function website_works:insert_to_es(params)
+	local data = {
+		id = params._id,
+		type = indexType,
+		websiteId = params.websiteId,
+		username = params.username,
+		worksTitle = params.worksTitle,
+		worksName = params.worksName,
+		worksUrl = params.worksUrl,
+		worksLogo = params.worksLogo,
+		worksDesc = params.worksDesc,
+		worksState = params.worksState,
+		worksFlag = params.worksFlag,
+		schoolName = params.schoolName,
+		awords = params.awords,
+		identifyUrl = params.identifyUrl,
+		liveUrl = params.liveUrl,
+		visitCount = params.visitCount,
+		voteCount = params.voteCount,
+		commentCount = params.commentCount,
+		createDate = params.createDate,
+		updateDate = params.updateDate,
+	}
+
+	es:insertOne(data, function(err, data) log(err); log(data) end)
+end
+
+-- 删除ES记录
+function website_works:delete_to_es(params)
+	params.id = params._id
+	params.type = indexType
+
+	es:deleteOne(params, function(err, data) end)
+end
+
+function website_works:search(params) 
+	if not params.websiteId then
+		return 
+	end
+
+	local order = params.order or {}
+	local keyword = "*" .. (params.keyword or "") .. "*"
+	local must = {
+		{
+			bool = {
+				should = {
+					{
+						wildcard = {
+							username = keyword,
+						}
+					},
+					{
+						wildcard = {
+							worksName = keyword,
+						}
+					},
+					{
+						wildcard = {
+							realname = keyword,
+						}
+					},
+				}
+			}
+		},
+	}
+
+	if params.awords then
+		must[#must+1] = {
+			match = {
+				awords = params.awords,
+			},
+		}
+	end
+
+	local body = {
+		query = {
+			bool = {
+				must = must,
+				filter = {
+					term = {
+						websiteId = tonumber(params.websiteId),
+						worksFlag = params.worksFlag,
+						awords = params.awords,
+					}
+				}
+			} 
+		},
+		sort = {
+			createDate= {
+				order = order.createDate or "desc", -- asc 
+			},
+			visitCount= {
+				order = order.visitCount or "desc",
+			},
+			voteCount = {
+				order = order.voteCount or "desc",
+			},
+		}
+	}
+
+	body.size = params.size;
+	body.from = params.from;
+	
+	es:search({type=indexType, body=body}, resume)
+	local  err, data = yield()
+	return err, data.data
+end
+
+function website_works:api_search(params)
+	local err, data = self:search(params)
+	if not data then
+		return errors:wrap(nil, {total=0, list={}})
+	end
+
+	--log(data)
+	local total = data.hits.total;
+	local items = data.hits.hits;
+	local list = {}
+	local item = nil
+	for _, val in ipairs(items or {}) do
+		item = val._source
+		item.commentCount = commentModel:getCountByUrl(item.worksUrl)
+		list[#list+1] = item
+	end
+	return errors:wrap(nil, {total=total, list=list})
 end
 
 -- 创建站点作品
@@ -50,8 +188,11 @@ function website_works:api_upsert(params)
 	params.createDate = params.createDate or params.updateDate
 	
 	self:db():insertOne({["+websiteId+worksUrl"]={params.websiteId, params.worksUrl}}, params, resume)
+	local err, data = yield()
 	
-	return errors:wrap(yield())
+	self:insert_to_es(data)
+
+	return errors:wrap(err, data)
 end
 
 -- 移除作品
@@ -61,14 +202,35 @@ function website_works:api_deleteById(params)
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
 
+	params._id = tonumber(params._id)
+
 	self:db():findOne({_id=params._id}, resume)
 	local _, data = yield()
 	if not data  or data.username ~= username then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
 
+	self:delete_to_es(params)
+
 	self:db():deleteOne({_id=params._id}, resume)
 
+	return errors:wrap(yield())
+end
+
+-- 更新访问数量
+function website_works:api_updateVisitCount(params) 
+	if not params.worksUrl then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+
+	self:db():findOne({["+worksUrl"]={params.worksUrl}}, resume)
+	local _, data = yield()
+
+	if not data then return errors:wrap("记录未找到") end
+
+	data.visitCount = (data.visitCount or 0) + 1
+
+	self:db():updateOne({["+worksUrl"]={params.worksUrl}}, data, resume)
 	return errors:wrap(yield())
 end
 
@@ -102,6 +264,7 @@ function website_works:api_vote(params)
 
 	works.voteCount = (works.voteCount or 0) + 1
 
+	self:insert_to_es(works)
 	self:db():insertOne({["+websiteId+worksUrl"]={params.websiteId, params.worksUrl}}, works, resume)
 	return errors:wrap(yield())
 end
@@ -119,14 +282,9 @@ end
 
 -- 提交作品申请
 function website_works:api_submitWorksApply(params)
-	if (not params.websiteId) or (not params.worksUrl) then
-		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
-	end
-
 	params.worksState = const.WEBSITE_WORKS_STATE_APPLY
-	self:db():insertOne({["+websiteId+worksUrl"]={params.websiteId, params.worksUrl}}, params, resume)
 
-	return errors:wrap(yield())
+	return self:api_upsert(params)
 end
 
 -- 同意作品申请
