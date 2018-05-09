@@ -1665,6 +1665,21 @@ define([], function () {
             "en": "Security verification form"
         },
         {
+            "_key": "邮箱",
+            "zh-cn": "邮箱",
+            "en": "Email"
+        },
+        {
+            "_key": "输入邮箱：",
+            "zh-cn": "输入邮箱：",
+            "en": "Enter email:"
+        },
+        {
+            "_key": "输入邮箱",
+            "zh-cn": "输入邮箱",
+            "en": "Enter email"
+        },
+        {
             "_key": "邮箱绑定：",
             "zh-cn": "邮箱绑定：",
             "en": "Mailbox binding:"

@@ -158,31 +158,42 @@
                 <input type="password" class="form-control" name="password" placeholder="密码" ng-model="password" ng-blur="checkInput({'password': true})">
             </div>
 
-            <div class="form-group text-danger">
-                {{cellphoneErrMsg}}
+            <div ng-show="isGlobalVersion">
+              <div class="form-group text-danger">
+                {{emailErrMsg}}
+              </div>
+              <div class="form-group">
+                  <label class="sr-only" translate="邮箱"></label>
+                  <input class="form-control" ng-model="email" type="email" placeholder="{{ '输入邮箱' | translate }}">
+              </div>
             </div>
-            <div class="form-group">
-                <label class="sr-only" translate="手机号"></label>
-                <input class="form-control" ng-model="cellphone" placeholder="{{ '输入手机号' | translate }}">
-            </div>
+            <div ng-show="!isGlobalVersion">
+              <div class="form-group text-danger">
+                  {{cellphoneErrMsg}}
+              </div>
+              <div class="form-group">
+                  <label class="sr-only" translate="手机号"></label>
+                  <input class="form-control" ng-model="cellphone" placeholder="{{ '输入手机号' | translate }}">
+              </div>
 
-            <div class="form-group text-danger">
-                {{smsCodeErrMsg}}
-            </div>
-            <div class="form-group clearfix verify-code-container">
-                <label class="sr-only" translate="验证码"></label>
-                <div class="verify-code-input-container">
-                    <input type="text" class="form-control" ng-model="smsCode" placeholder="{{'验证码' | translate}}">
-                </div>
-                <div class="verify-code-btn">
-                    <div class="btn btn-block" ng-class="{
-                                    true: 'btn-default',
-                                    false: 'btn-primary'
-                                }[registerCellPhoneSMSCodeWait>0]" ng-disabled="registerCellPhoneSMSCodeWait > 0"
-                        ng-click="sendSMSCode()">
-                        {{(registerCellPhoneSMSCodeWait == 0) ? translate("发送验证码") : "重新发送(" + registerCellPhoneSMSCodeWait + "s)"}}
-                    </div>
-                </div>
+              <div class="form-group text-danger">
+                  {{smsCodeErrMsg}}
+              </div>
+              <div class="form-group clearfix verify-code-container">
+                  <label class="sr-only" translate="验证码"></label>
+                  <div class="verify-code-input-container">
+                      <input type="text" class="form-control" ng-model="smsCode" placeholder="{{'验证码' | translate}}">
+                  </div>
+                  <div class="verify-code-btn">
+                      <div class="btn btn-block" ng-class="{
+                                      true: 'btn-default',
+                                      false: 'btn-primary'
+                                  }[registerCellPhoneSMSCodeWait>0]" ng-disabled="registerCellPhoneSMSCodeWait > 0"
+                          ng-click="sendSMSCode()">
+                          {{(registerCellPhoneSMSCodeWait == 0) ? translate("发送验证码") : "重新发送(" + registerCellPhoneSMSCodeWait + "s)"}}
+                      </div>
+                  </div>
+              </div>
             </div>
 
             <div class="checkbox clearfix">
