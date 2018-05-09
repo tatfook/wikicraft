@@ -17,6 +17,8 @@ define([
         $scope.step = 1;
         $scope.agree = true;
 
+        $scope.isGlobalVersion = config.isGlobalVersion;
+
         $scope.registerInfo = {};
         $scope.smsId = '';
         $scope.registerCellPhoneSMSCodeWait = 0;
@@ -173,6 +175,11 @@ define([
 
         // 注册
         $scope.register = function (type) {
+            function validateEmail(email) {
+              var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+              return re.test(email);
+            }
+
             // debugger;
             if (!$scope.agree) {
                 return;
@@ -182,14 +189,45 @@ define([
             $scope.pwdErrMsg = "";
             $scope.cellphoneErrMsg = "";
             $scope.smsCodeErrMsg = "";
+            $scope.emailErrMsg = "";
 
-            var params = {
+            var params = {};
+
+            if (config.isGlobalVersion) {
+              params = {
                 username: $scope.username ? $scope.username.trim() : "",
                 password: $scope.password ? $scope.password.trim() : "",
-                smsCode: $scope.smsCode,
-                smsId: $scope.smsId,
-                cellphone: $scope.cellphone
-            };
+                email: $scope.email ? $scope.email.trim() : ""
+              }
+
+              if (!validateEmail(params.email)) {
+                $scope.emailErrMsg = "*请输入正确的邮箱";
+                return;
+              }
+            } else {
+              params = {
+                  username: $scope.username ? $scope.username.trim() : "",
+                  password: $scope.password ? $scope.password.trim() : "",
+                  smsCode: $scope.smsCode,
+                  smsId: $scope.smsId,
+                  cellphone: $scope.cellphone
+              };
+
+              if (!params.cellphone) {
+                  $scope.cellphoneErrMsg = "*手机号不能为空";
+                  return;
+              }
+
+              if (!params.smsId) {
+                  $scope.smsCodeErrMsg = "*请先发送验证码验证";
+                  return;
+              }
+
+              if (!params.smsCode) {
+                  $scope.smsCodeErrMsg = "*验证码不能为空";
+                  return;
+              }
+            }
 
             if (type == "other") {
                 params = {
@@ -199,23 +237,11 @@ define([
                 };
             }
 
-            if (!params.cellphone) {
-                $scope.cellphoneErrMsg = "*手机号不能为空"
-            }
-
-            if (!params.smsId) {
-                $scope.smsCodeErrMsg = "*请先发送验证码验证"
-            }
-
-            if (!params.smsCode) {
-                $scope.smsCodeErrMsg = "*验证码不能为空"
-            }
-
             if (!params.username) {
                 $scope.nameErrMsg = "*账户名不能为空";
-                $scope.$apply();
                 return;
             }
+
             var isSensitive = false;
             sensitiveWord.checkSensitiveWord(params.username, function (foundWords, replacedStr) {
                 if (foundWords.length > 0) {
@@ -229,27 +255,22 @@ define([
             }
             if (params.username.length > 30) {
                 $scope.nameErrMsg = "*账户名需小于30位";
-                $scope.$apply();
                 return;
             }
             if (/^\d+$/.test(params.username)) {
                 $scope.nameErrMsg = "*账户名不可为纯数字";
-                $scope.$apply();
                 return;
             }
             if (/@/.test(params.username)) {
                 $scope.nameErrMsg = "*账户名不可包含@符号";
-                $scope.$apply();
                 return;
             }
             if (!/^[a-z_0-9]+$/.test(params.username)) {
                 $scope.nameErrMsg = "*账户名只能包含小写字母、数字";
-                $scope.$apply();
                 return;
             }
             if (params.password.length < 6) {
                 $scope.pwdErrMsg = "*密码最少6位";
-                $scope.$apply();
                 return;
             }
             var imgUrl = $scope.getImageUrl("default_portrait.png", $scope.imgsPath);
