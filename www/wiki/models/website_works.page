@@ -337,6 +337,17 @@ function website_works:api_getByWebsiteId(params)
 	return errors:wrap(nil, {total=total, worksList=worksList})
 end
 
+-- 通过单个作品
+function website_works:api_getByWorksUrl(params)
+	if not params.websiteId or not params.worksUrl then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+	
+	self:db():findOne({["+websiteId+worksUrl"] = {params.websiteId, params.worksUrl}}, resume)
+	
+	return errors:wrap(yield())
+end
+
 -- 获取作品列表通过url
 function website_works:api_getByWorksUrlList(params)
 	if (not params.websiteId) or (not params.worksUrlList) then
