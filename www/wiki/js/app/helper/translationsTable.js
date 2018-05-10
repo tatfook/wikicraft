@@ -3313,6 +3313,11 @@ define([], function () {
             "_key": "不可为空",
             "zh-cn": "不可为空",
             "en": " Is Required"
+        },
+        {
+            "_key": "国际智能创意大赛",
+            "zh-cn": "国际智能创意大赛",
+            "en": " IICC"
         }
     ];
 
