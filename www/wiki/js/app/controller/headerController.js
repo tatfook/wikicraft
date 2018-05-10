@@ -4,12 +4,13 @@
 
 define([
     'app',
+    'swiper',
     'helper/util',
     'helper/storage',
     'helper/dataSource',
     'text!html/header.html',
     'jquery-sharejs'
-], function (app, util, storage, dataSource,  htmlContent) {
+], function (app, swiper, util, storage, dataSource,  htmlContent) {
     app.controller('headerController', ['$rootScope', '$scope', 'Account', 'Message', 'modal', function ($rootScope, $scope, Account, Message, modal) {
         //console.log("headerController");
         //$scope.isLogin = Account.isAuthenticated();
@@ -122,15 +123,28 @@ define([
             initPageInfo();
 
             initPagePath();
+
+            initSwiper();
             // var container=document.getElementById("js-prev-container");
             // container.style.overflow="visible";
+        }
+
+        var initSwiper = function () {
+            setTimeout(function () {
+        var swiper1 = new swiper('.swiper-container', {
+          autoplay: 3000,
+            // paginationClickable: true,
+            mousewheelControl : true,
+        });
+        console.log(swiper1)
+    }, 1000);
         }
 
 		$scope.$watch('$viewContentLoaded', function() {
 			Account.getUser(function(userinfo){
 				$scope.user = userinfo;
 				init();
-			}, init);
+      }, init);
 		});
 
         $scope.selectSite = function (site) {
@@ -295,7 +309,6 @@ define([
 
         $scope.goLoginPage = function () {
             // util.go("login");
-            if (!config.isOfficialDomain() || (window.location.pathname != "/wiki/join" && window.location.pathname != "/wiki/login" && window.location.pathname != "/wiki/home" && window.location.pathname != "/")) {
                 modal('controller/loginController', {
                     controller: 'loginController',
                     size: 'lg',
@@ -306,9 +319,20 @@ define([
                 }, function (result) {
                     // console.log(result);
                 });
-            } else {
-                util.go("home");
-            }
+            // if (!config.isOfficialDomain() || (window.location.pathname != "/wiki/join" && window.location.pathname != "/wiki/login" && window.location.pathname != "/wiki/home" && window.location.pathname != "/")) {
+            //     modal('controller/loginController', {
+            //         controller: 'loginController',
+            //         size: 'lg',
+            //         backdrop: true
+            //     }, function (result) {
+            //         // console.log(result);
+            //         // nowPage.replaceSelection(login.content);
+            //     }, function (result) {
+            //         // console.log(result);
+            //     });
+            // } else {
+            //     util.go("home");
+            // }
         };
 
         $scope.goRegisterPage = function () {
