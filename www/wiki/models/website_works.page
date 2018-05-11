@@ -337,6 +337,19 @@ function website_works:api_getByWebsiteId(params)
 	return errors:wrap(nil, {total=total, worksList=worksList})
 end
 
+-- 获取单个用户的作品列表
+function website_works:api_getByUsername(params)
+	local username = getUsername()
+	if not params.websiteId or not username then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+	
+	params.websiteId = tonumber(params.websiteId)
+	self:db():find({["+websiteId+worksState+username"] = {params.websiteId, const.WEBSITE_WORKS_STATE_NORMAL, username}}, resume)
+
+	return errors:wrap(yield())
+end
+
 -- 通过单个作品
 function website_works:api_getByWorksUrl(params)
 	if not params.websiteId or not params.worksUrl then
