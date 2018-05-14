@@ -345,7 +345,33 @@ function website_works:api_getByUsername(params)
 	end
 	
 	params.websiteId = tonumber(params.websiteId)
+	self:db():find({["+websiteId+username"] = {params.websiteId, username}}, resume)
+
+	return errors:wrap(yield())
+end
+
+-- 获取单个用户的作品列表
+function website_works:api_getNormalByUsername(params)
+	local username = getUsername()
+	if not params.websiteId or not username then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+	
+	params.websiteId = tonumber(params.websiteId)
 	self:db():find({["+websiteId+worksState+username"] = {params.websiteId, const.WEBSITE_WORKS_STATE_NORMAL, username}}, resume)
+
+	return errors:wrap(yield())
+end
+
+-- 获取单个用户的申请作品列表
+function website_works:api_getApplyByUsername(params)
+	local username = getUsername()
+	if not params.websiteId or not username then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+	
+	params.websiteId = tonumber(params.websiteId)
+	self:db():find({["+websiteId+worksState+username"] = {params.websiteId, const.WEBSITE_WORKS_STATE_APPLY, username}}, resume)
 
 	return errors:wrap(yield())
 end
