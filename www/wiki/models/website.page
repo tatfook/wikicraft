@@ -673,6 +673,10 @@ function website:api_visitWebsite(params)
 	local userVisitHistoryDB = models.user_visit_history:new()
 	userVisitHistoryDB:api_upsert({username=username, visitUsername=params.username, visitSitename=params.sitename, url=params.url})
 	
+	-- 更新作品的访问记录数
+	local websiteWorksModel = models.website_works:new()
+	websiteWorksModel:api_updateVisitCount({worksUrl = params.url})
+
 	return errors:wrap()
 end
 

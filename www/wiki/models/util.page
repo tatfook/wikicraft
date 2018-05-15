@@ -218,6 +218,8 @@ const.WEBSITE_MEMBER_STATE_NORMAL="normal"    -- 正常
 const.WEBSITE_WORKS_FLAG_NORMAL=0  -- 普通
 const.WEBSITE_WORKS_FLAG_UPGRADE=1 -- 入围
 const.WEBSITE_WORKS_FLAG_HOT=2     -- 热门
+const.WEBSITE_WORKS_FLAG_PUBLIC = 3 -- 公开组
+const.WEBSITE_WORKS_FLAG_STUDENT = 4  -- 学生组
 
 -- 站点申请类型
 const.WEBSITE_APPLY_TYPE_MEMBER=0     -- 成员申请

@@ -18,6 +18,12 @@ function website_member:ctor()
 	self:addfield("websiteType", "string") -- 站点类型
 	self:addfield("username", "string")    -- 成员名
 	self:addfield("portrait", "string")    -- 成员logo
+	self:addfield("sex", "string")         -- 性别
+	self:addfield("realname", "string")    -- 姓名
+	self:addfield("email", "string")       -- 邮箱
+	self:addfield("QQId", "string")        -- QQ号
+	self:addfield("cellphoneId", "string") -- 手机号
+	self:addfield("identifyCardId", "string") -- 身份证号
 	self:addfield("roleName", "string")    -- 角色
 	self:addfield("desc", "string")        -- 角色
 	self:addfield("state", "string")       -- 角色
@@ -32,17 +38,39 @@ function website_member:api_deleteByWebsiteId(params)
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
 	
+	params.websiteId = tonumber(params.websiteId)
 	self:db():delete({["+websiteId"]={params.websiteId}}, resume)
 	
 	return errors:wrap(yield())
 end
 
+function website_member:api_deleteMember(params) 
+	local username = getUsername()
+	if not params.username or not params.websiteId or username ~= params.username then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+
+	self:db():delete({
+		websiteId=params.websiteId,
+		username=params.username,
+	}, resume);
+
+	return errors:wrap(yield());
+end
+
 -- 删除记录
 function website_member:api_deleteById(params)
-	if not params._id then
+	local username = getUsername()
+	if not params._id or not username then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
 	
+	self:db():findOne({_id=tonumber(params._id)}, resume)
+	local _, data = yield()
+	if not data  or data.username ~= username then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+
 	self:db():delete({_id=params._id}, resume)
 	
 	return errors:wrap(yield())
@@ -50,7 +78,8 @@ end
 
 -- 创建记录
 function website_member:api_upsert(params)
-	if (not params.websiteId) or (not params.username) then
+	local username = getUsername()
+	if username ~= params.username or (not params.websiteId) or (not params.username) then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
 
@@ -150,6 +179,7 @@ function website_member:api_getApplyByWebsiteId(params)
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR, nil)
 	end
 
+	params.websiteId = tonumber(params.websiteId)
 	local query = {["+websiteId+state"]={params.websiteId, const.WEBSITE_MEMBER_STATE_APPLY}}
 	local total = self:api_getCount(query).data
 
@@ -166,6 +196,7 @@ function website_member:api_getByWebsiteId(params)
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR, nil)
 	end
 
+	params.websiteId = tonumber(params.websiteId)
 	local query = {["+websiteId+state"]={params.websiteId, const.WEBSITE_MEMBER_STATE_NORMAL}}
 	local total = self:api_getCount(query).data
 
@@ -203,23 +234,13 @@ function website_member:api_getCountByWebsiteId(params)
 	return errors:wrap(yield())
 end
 
--- 删除站点成员
-function website_member:api_deleteById(params)
-	if not params._id then
-		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
-	end
-
-	self:db():deleteOne({_id=params._id}, resume)
-
-	return errors:wrap(yield())
-end
-
 -- 获取单个成员信息
 function website_member:api_getBySiteUsername(params)
 	if (not params.websiteId) or (not params.username) then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
 	
+	params.websiteId = tonumber(params.websiteId)
 	self:db():findOne({["+websiteId+username"]={params.websiteId, params.username}}, resume)
 	
 	return errors:wrap(yield())

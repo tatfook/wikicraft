@@ -22,7 +22,7 @@ KEEPWORK["mem_cache"] = mem_cache
 
 -- 获取对端ip
 function getpeername()
-	return request:header("Cdn-Src-Ip") or request:header("X-Real-IP")
+	return request:header("Cdn-Src-Ip") or request:header("X-Real-IP") or request:getpeername() or ""
 end
 
 -- 确定当前环境

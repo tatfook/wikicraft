@@ -69,6 +69,10 @@ else
 	end
 end
 
+if not userThreeService.username then
+	return response:send({error=0, message="user not bind"})
+end
+
 db.user:findOne({["+username"]={userThreeService.username}}, resume)
 local err, userinfo = yield()
 
