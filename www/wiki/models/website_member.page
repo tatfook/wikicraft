@@ -38,6 +38,7 @@ function website_member:api_deleteByWebsiteId(params)
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
 	
+	params.websiteId = tonumber(params.websiteId)
 	self:db():delete({["+websiteId"]={params.websiteId}}, resume)
 	
 	return errors:wrap(yield())
@@ -178,6 +179,7 @@ function website_member:api_getApplyByWebsiteId(params)
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR, nil)
 	end
 
+	params.websiteId = tonumber(params.websiteId)
 	local query = {["+websiteId+state"]={params.websiteId, const.WEBSITE_MEMBER_STATE_APPLY}}
 	local total = self:api_getCount(query).data
 
@@ -194,6 +196,7 @@ function website_member:api_getByWebsiteId(params)
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR, nil)
 	end
 
+	params.websiteId = tonumber(params.websiteId)
 	local query = {["+websiteId+state"]={params.websiteId, const.WEBSITE_MEMBER_STATE_NORMAL}}
 	local total = self:api_getCount(query).data
 
@@ -237,6 +240,7 @@ function website_member:api_getBySiteUsername(params)
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
 	
+	params.websiteId = tonumber(params.websiteId)
 	self:db():findOne({["+websiteId+username"]={params.websiteId, params.username}}, resume)
 	
 	return errors:wrap(yield())
