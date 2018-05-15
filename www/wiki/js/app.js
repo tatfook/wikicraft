@@ -38,6 +38,7 @@ define([
         var browserLocale = (window.navigator.userLanguage || window.navigator.language);
         browserLocale = (browserLocale && browserLocale.toLowerCase) ? browserLocale.toLowerCase() : browserLocale;
         var locale = window.localStorage.getItem('keepwork-language-locale') || browserLocale || 'zh-cn';
+        locale = /^zh/.test(locale) ? 'zh-cn' : 'en';
         $translateProvider.preferredLanguage(locale);
 
 		// 注册loading拦截器
