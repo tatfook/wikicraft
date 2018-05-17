@@ -49,7 +49,7 @@ end
 function website_works:insert_to_es(params)
 	local data = {
 		id = params._id,
-		_id = params._id,
+		worksId = params._id,
 		type = indexType,
 		websiteId = params.websiteId,
 		username = params.username,
@@ -163,8 +163,8 @@ function website_works:search(params)
 	
 	es:search({type=indexType, body=body}, resume)
 	local  err, data = yield()
-	log(body)
-	log(data)
+	--log(body)
+	--log(data)
 	return err, data.data
 end
 
@@ -201,6 +201,7 @@ function website_works:api_upsert(params)
 	params.commentCount = nil
 	params.updateDate = ParaGlobal.GetDateFormat("yyyy-MM-dd") .. " " .. ParaGlobal.GetTimeFormat("HH:mm:ss")
 	params.createDate = params.createDate or params.updateDate
+	--log(params)
 	
 	self:db():insertOne({["+websiteId+worksUrl"]={params.websiteId, params.worksUrl}}, params, resume)
 	local err, data = yield()

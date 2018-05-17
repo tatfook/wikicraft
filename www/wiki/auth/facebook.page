@@ -5,28 +5,19 @@ Author: LiXizhi
 Date: 2016/5/10
 ]]
 
-local accessTokenUrl = 'https://www.googleapis.com/oauth2/v4/token'
+local accessTokenUrl = 'https://graph.facebook.com/v3.0/oauth/access_token'
 local tokenInfoUrl = "https://www.googleapis.com/oauth2/v3/tokeninfo"
 local userApiUrl = 'https://www.googleapis.com/plus/v1/people/me'
-local serviceName = "google"
+local serviceName = "facebook"
 local params = {
 	grant_type="authorization_code",
 	code = request:get("code"),
 	client_id = request:get("clientId"),
-	client_secret = KEEPWORK["config"][CURRENT_ENV]["threeService"]["google"]["client_secret"],
+	client_secret = KEEPWORK["config"][CURRENT_ENV]["threeService"]["facebook"]["client_secret"],
 	redirect_uri = request:get("redirectUri"),
 };
 
 log(params)
-function urlencode(obj) 
-	local str = ""
-	for key in pairs(obj or {}) do
-		if #str > 0 then str = str .. "&" end
-		str = str .. key .. "=" .. util.url_encode(obj[key])
-	end
-
-	return str
-end
 response:Begin()
 if not params.client_id then
 	return response:send_xml("keepwork.com认证")
@@ -34,13 +25,10 @@ end
 -- Step 1. Exchange authorization code for access token.
 System.os.GetUrl({
 	url = accessTokenUrl, 
-	method="POST", 
-	headers={
-		["Content-Type"]="application/x-www-form-urlencoded",
-	},
-	postfields = urlencode(params),
+	qs = params,
 }, resume)
 local err, data = yield()
+log(data)
 local accessToken = data.data
 log("auth step 1")
 log(accessToken)

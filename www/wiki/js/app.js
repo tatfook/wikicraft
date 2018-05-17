@@ -45,12 +45,16 @@ define([
 
 		//$httpProvider.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded;charset=utf-8';
 		//{{{
-		$authProvider.facebook({
+		$authProvider.oauth2({
+			name: "facebook",
 			url: "/api/wiki/auth/facebook",
 			clientId: '1942795522419535',
 			redirectUri:window.location.origin +  '/wiki/login',
-			// scope: ["public_repo", "delete_repo"],
-			scope: ["public_repo"],
+			authorizationEndpoint: 'https://www.facebook.com/v3.0/dialog/oauth',
+			oauthType: '2.0',
+			scope: ['email'],
+			requiredUrlParams: ['scope'],
+			scopeDelimiter: ',',
 		});
 
 		$authProvider.oauth2({

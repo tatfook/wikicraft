@@ -59,6 +59,7 @@ define([
             //        console.log("-------finish-----------");
             //    });
             // });
+			//Authenticate("facebook"); 
         };
 
         $scope.goRegisterPage = function () {
