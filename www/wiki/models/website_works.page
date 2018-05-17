@@ -49,6 +49,7 @@ end
 function website_works:insert_to_es(params)
 	local data = {
 		id = params._id,
+		_id = params._id,
 		type = indexType,
 		websiteId = params.websiteId,
 		username = params.username,
@@ -111,8 +112,17 @@ function website_works:search(params)
 				}
 			}
 		},
+		{
+			term = {
+				websiteId = params.websiteId,
+			}
+		},
+		{
+			term = {
+				worksState = const.WEBSITE_WORKS_STATE_NORMAL,
+			}
+		}
 	}
-
 	if params.awords then
 		must[#must+1] = {
 			match = {
@@ -121,17 +131,18 @@ function website_works:search(params)
 		}
 	end
 
+	if params.worksFlag then
+		must[#must+1] = {
+			term = {
+				worksFlag = params.worksFlag,
+			}		
+		}
+	end
+
 	local body = {
 		query = {
 			bool = {
 				must = must,
-				filter = {
-					term = {
-						websiteId = tonumber(params.websiteId),
-						worksFlag = params.worksFlag,
-						awords = params.awords,
-					}
-				}
 			} 
 		},
 		sort = {
@@ -147,17 +158,19 @@ function website_works:search(params)
 		}
 	}
 
-	body.size = params.size;
-	body.from = params.from;
+	body.size = tonumber(params.size);
+	body.from = tonumber(params.from);
 	
 	es:search({type=indexType, body=body}, resume)
 	local  err, data = yield()
+	log(body)
+	log(data)
 	return err, data.data
 end
 
 function website_works:api_search(params)
 	local err, data = self:search(params)
-	if not data then
+	if not data or not data.hits then
 		return errors:wrap(nil, {total=0, list={}})
 	end
 

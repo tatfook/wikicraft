@@ -180,7 +180,7 @@ function elasticsearch:add_extra_search_conditions(params, body)
             body.from = params.from or ((params.page - 1) * body.size)
         end
 
-        body.timeout = "50ms"
+		body.timeout = "50ms"
     return body
 end
 
