@@ -224,8 +224,11 @@ function pages:api_updateVisitCount(params)
 
     local userDB = models.user:new()
     local username, sitename = util:get_username_and_sitename(params.url)
-    if userDB:is_locked({username = username}) then
-        errors:raise(403, "该帐号已被封禁")
+
+    if username then
+        if userDB:is_locked({username = username}) then
+            errors:raise(403, "该帐号已被封禁")
+        end
     end
 
     local page = {url = params.url}
@@ -248,8 +251,11 @@ function pages:api_getDetail(params)
 
     local userDB = models.user:new()
     local username, sitename = util:get_username_and_sitename(params.url)
-    if userDB:is_locked({username = username}) then
-        errors:raise(403, "该帐号已被封禁")
+
+    if username then
+        if userDB:is_locked({username = username}) then
+            errors:raise(403, "该帐号已被封禁")
+        end
     end
 
     local page = {url = params.url, visitor = params.visitor}
