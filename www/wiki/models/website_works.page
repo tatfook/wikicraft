@@ -49,7 +49,7 @@ end
 function website_works:insert_to_es(params)
 	local data = {
 		id = params._id,
-		worksId = params._id,
+		worksId = tostring(params._id),
 		type = indexType,
 		websiteId = params.websiteId,
 		username = params.username,
@@ -109,6 +109,11 @@ function website_works:search(params)
 							realname = keyword,
 						}
 					},
+					{
+						wildcard = {
+							worksId = keyword,
+						}
+					},
 				}
 			}
 		},
@@ -138,6 +143,14 @@ function website_works:search(params)
 			}		
 		}
 	end
+
+	--if params.worksId then
+		--must[#must+1] = {
+			--term = {
+				--worksId = params.worksId,
+			--}		
+		--}
+	--end
 
 	local body = {
 		query = {
