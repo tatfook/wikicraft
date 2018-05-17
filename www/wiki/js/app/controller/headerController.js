@@ -133,8 +133,11 @@ define([
             setTimeout(function () {
         var swiper1 = new swiper('.swiper-container', {
           autoplay: 3000,
-            // paginationClickable: true,
-            mousewheelControl : true,
+            prevButton:'.swiper-button-prev',
+            nextButton:'.swiper-button-next',
+            paginationClickable: true,
+            pagination : '.swiper-pagination',
+            mousewheelControl : false,
         });
         console.log(swiper1)
     }, 1000);
