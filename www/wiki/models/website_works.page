@@ -159,15 +159,21 @@ function website_works:search(params)
 			} 
 		},
 		sort = {
-			createDate= {
-				order = order.createDate or "desc", -- asc 
+			{
+				createDate= {
+					order = order.createDate or "desc", -- asc 
+				},
 			},
-			visitCount= {
-				order = order.visitCount or "desc",
+			{
+				visitCount= {
+					order = order.visitCount or "desc",
+				},
 			},
-			voteCount = {
-				order = order.voteCount or "desc",
-			},
+			{
+				voteCount = {
+					order = order.voteCount or "desc",
+				},
+			}
 		}
 	}
 

@@ -168,8 +168,8 @@ function elasticsearch:add_extra_search_conditions(params, body)
             body.highlight.post_tags = params.post_tags
         end
 
-        body.sort = params.sort      -- array
-        body.post_filter = params.post_filter
+        body.sort = body.sort or params.sort      -- array
+        body.post_filter = body.post_filter or params.post_filter
 
         -- pagination
         if (params.size) and ((params.page) or (params.from)) then
