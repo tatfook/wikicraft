@@ -443,6 +443,8 @@
                                     <span class="iconfont icon-paixuleft" ng-class="{true: 'active'}[order.expression == 'file.size' && order.reverse == false]"></span>
                                     <span class="iconfont icon-paixuright" ng-class="{true: 'active'}[order.expression == 'file.size' && order.reverse == true]"></span>
                                 </td>
+                                <td class="type-column order-column hidden-xs" ng-click="changeOrder('file.type')">{{ "审核状态" | translate }}
+                                </td>
                                 <td class="date-column order-column hidden-xs" ng-click="changeOrder('updateDate')">{{ "更新时间" | translate }}
                                     <span class="iconfont icon-paixuleft" ng-class="{true: 'active'}[order.expression == 'updateDate' && order.reverse == false]"></span>
                                     <span class="iconfont icon-paixuright" ng-class="{true: 'active'}[order.expression == 'updateDate' && order.reverse == true]"></span>
@@ -459,12 +461,13 @@
                         <table class="table" ng-show="filelist.length > 0">
                             <tbody>
                                 <tr ng-repeat="file in filelist | filter:{filename:searchName} | orderBy: order.expression: order.reverse" ng-hide="file.isDelete">
-                                    <td class="checkbox-column"><input type="checkbox" ng-model="file.checkedIndex" ng-true-value="{{$index}}"></td>
+                                    <td class="checkbox-column"><input type="checkbox" ng-model="file.checkedIndex" ng-true-value="{{$index}}" ng-disabled="!file.checked || file.checked==2"></td>
                                     <td class="file-column" title="{{file.filename}}">{{file.filename}}</td>
                                     <td class="type-column" title="{{file.file.type}}">{{file.filename.substring(file.filename.lastIndexOf("."))}}</td>
                                     <td class="size-column hidden-xs" title="{{file.filesize || sizeTransfer(file)}}">
                                         {{file.filesize || sizeTransfer(file)}}
                                     </td>
+                                    <td class="type-column hidden-xs" title="{{file.status}}" ng-init="getFileStatus(file)">{{file.status}}</td>
                                     <td class="date-column hidden-xs" title="{{file.updateDate}}">{{file.updateDate}}</td>
                                     <td class="operate-column">
                                         <span title="拷贝链接" ng-click="insertBigfileUrl(file)"><img ng-src="{{getImageUrl('icon/wiki_bigfile_paste.png', imgsPath)}}" alt=""></span>
@@ -497,7 +500,10 @@
                                 </td>
                                 <td class="size-column order-column hidden-xs" ng-click="changeOrder('file.size')">{{ "大小" | translate }}
                                     <span class="iconfont icon-paixuleft" ng-class="{true: 'active'}[order.expression == 'file.size' && order.reverse == false]"></span>
-                                    <span class="iconfont icon-paixuright" ng-class="{true: 'active'}[order.expression == 'file.size' && order.reverse == true]"></span></td>
+                                    <span class="iconfont icon-paixuright" ng-class="{true: 'active'}[order.expression == 'file.size' && order.reverse == true]"></span>
+                                </td>
+                                <td class="type-column order-column hidden-xs" ng-click="changeOrder('file.type')">{{ "审核状态" | translate }}
+                                </td>
                                 <td class="date-column order-column hidden-xs" ng-click="changeOrder('updateDate')">{{ "更新时间" | translate }}
                                     <span class="iconfont icon-paixuleft" ng-class="{true: 'active'}[order.expression == 'updateDate' && order.reverse == false]"></span>
                                     <span class="iconfont icon-paixuright" ng-class="{true: 'active'}[order.expression == 'updateDate' && order.reverse == true]"></span>
@@ -522,6 +528,7 @@
                                     <td class="size-column hidden-xs" title="{{file.filesize || sizeTransfer(file)}}">
                                         {{file.filesize || sizeTransfer(file)}}
                                     </td>
+                                    <td class="type-column hidden-xs" title="{{file.status}}" ng-init="getFileStatus(file)">{{file.status}}</td>
                                     <td class="date-column hidden-xs" title="{{file.updateDate}}">{{file.updateDate}}</td>
                                     <td class="operate-column">
                                         <span title="更新" ng-click="updateFile(file)"><img ng-src="{{getImageUrl('icon/wiki_upload.png', imgsPath)}}" alt=""></span>

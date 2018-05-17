@@ -22,7 +22,7 @@ KEEPWORK["mem_cache"] = mem_cache
 
 -- 获取对端ip
 function getpeername()
-	return request:header("Cdn-Src-Ip") or request:header("X-Real-IP")
+	return request:header("Cdn-Src-Ip") or request:header("X-Real-IP") or request:getpeername() or ""
 end
 
 -- 确定当前环境
@@ -51,6 +51,7 @@ include_once(WIKI_ROOT .. "helpers/sms.page")
 include_once(WIKI_ROOT .. "helpers/filter.page")
 include_once(WIKI_ROOT .. "helpers/cros.page")
 include_once(WIKI_ROOT .. "helpers/log.page")
+include_once(WIKI_ROOT .. 'models/user.page')
 WIKI_ENV="www"
 WIKI_DB_PATH="database/www/"
 
@@ -206,6 +207,13 @@ function checkAuthenticated()
 	return request.userid
 end
 
+
+function refuseLockedUser()
+	local userDB = models.user:new()
+	userDB:refuseLockedUser()
+end
+
+
 -- 初始wiki module
 function init_wiki_module()
 	local isWebServerStart = mem_cache:get("isWebServerStart")
@@ -306,20 +314,3 @@ function init()
 end
 
 init()
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

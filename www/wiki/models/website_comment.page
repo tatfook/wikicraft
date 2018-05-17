@@ -26,6 +26,18 @@ function website_comment:ctor()
 	self:addfield("updateTime", "string")
 end
 
+
+function website_comment:getCountByUrl(params)
+	if not params.url then
+		return 0
+	end
+
+	self:db():count({["+url"]={params.url}}, resume)
+	local err, count = yield()
+
+	return count or 0
+end
+
 -- 创建一条评论
 function website_comment:api_create(params)
 	if (not params.url) or (not params.userId) or (not params.websiteId) then

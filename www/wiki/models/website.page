@@ -429,6 +429,11 @@ function website:api_getAllByUsername(params)
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
 
+	local userDB = models.user:new()
+	if userDB:is_locked({username = params.username}) then
+		errors:raise(403, "该帐号已被封禁")
+	end
+
 	self:db():find({["+username"]={params.username, limit=1000}}, resume)
 	local err, sites = yield()
 
@@ -668,6 +673,10 @@ function website:api_visitWebsite(params)
 	local userVisitHistoryDB = models.user_visit_history:new()
 	userVisitHistoryDB:api_upsert({username=username, visitUsername=params.username, visitSitename=params.sitename, url=params.url})
 	
+	-- 更新作品的访问记录数
+	local websiteWorksModel = models.website_works:new()
+	websiteWorksModel:api_updateVisitCount({worksUrl = params.url})
+
 	return errors:wrap()
 end
 
@@ -680,9 +689,13 @@ function website:api_getDetailInfo(params)
 	local userDB = models.user:new()
 	local userinfo = userDB:db():findOne({["+username"] = {params.username}}, resume)
 	local _, userinfo = yield()
-	
+
 	if not userinfo or userinfo.roleId == const.USER_ROLE_EXCEPTION then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+
+	if userDB:is_locked({user = userinfo}) then
+		errors:raise(403, "该帐号已被封禁")
 	end
 
 	--models.user:new():filterUserInfo(userinfo)

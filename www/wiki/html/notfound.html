@@ -1,66 +1,86 @@
 <style>
-    body{
-        background-color: #F4F9FF;
+    body {
+        background-color: white;
     }
-    .notfound{
+
+    .notfound {
         text-align: center;
-        padding: 60px 0;
+        /* padding: 60px 0; */
         color: #3977AD;
     }
-    .notfound h1{
-        font-size: 36px;
+
+    .notfound h1 {
+        font-size: 28px;
         margin: 0 0 30px;
+        color: #303133;
+        font-weight: bold;
     }
-    .notfound .background-image{
+
+    .notfound .background-image {
         position: absolute;
         width: 100%;
         z-index: -1;
         left: 0;
-        bottom: 0;
+        padding-top: 5%;
+        /* top: 240px; */
     }
-    .notfound .background-image img{
-        width: 30%;
+
+    .notfound .background-image img {
+        width: 20%;
+        /* background-color: white; */
         height: auto;
         cursor: pointer;
     }
-    .notfound .btns{
+
+    .notfound .btns {
         display: flex;
         justify-content: center;
     }
-    .notfound .btn-primary-outline{
-        font-size: 20px;
-        width:168px;
-        height: 42px;
-        line-height: 38px;
+
+    .notfound .btn-primary-outline {
+        font-size: 14px;
+        font-weight: 500;
+        width: 110px;
+        height: 40px;
+        line-height: 40px;
         padding: 0;
-        border: 1px solid #3977AD;
-        background-color: transparent;
+        border: 1px solid #337ab7;
+        background-color: #337ab7;
         margin: 0 10px;
-    }
-    .notfound .btn-primary-outline:hover{
-        background-color: #3977AD;
+        border-radius: 100px;
         color: #FFF;
     }
-    .notfound .fa{
-        font-size: 22px;
+
+    .notfound .btn-primary-outline:hover {
+        background-color: #4e99d9;
+        color: #FFF;
+    }
+
+    .notfound .fa {
+        font-size: 16px;
         -webkit-text-stroke: 1px #F4F9FF;
     }
-    .notfound .btn-primary-outline:hover .fa{
-        -webkit-text-stroke: 1px #3977AD;
+
+    .notfound .btn-primary-outline:hover .fa {
+        font-size: 16px;
+        -webkit-text-stroke: 1px #F4F9FF;
+    }
+
+    .text {
+        padding-top: 28.5%
     }
 </style>
 <div ng-controller="notfoundController" class="notfound">
     <div class="background-image">
-        <img ng-src="{{imgsPath+'wiki_404.jpg'}}" alt="">
+        <img ng-src="{{imgsPath+'404.png'}}" alt="">
     </div>
     <div class="text">
-        <h1 translate="很抱歉！您访问的页面不存在..."></h1>
+        <h1 translate="很抱歉！您访问的页面不存在!"></h1>
         <div class="btns">
             <div class="btn btn-primary-outline" ng-click="goBack()">
-                <i class="fa fa-arrow-circle-o-left"></i>
-                {{ "返回上一页" | translate }}
+                返&nbsp&nbsp回
             </div>
-            <div class="btn btn-primary-outline" ng-click="newPage()" ng-show="showNewPageBtn" translate="创建该页面"></div>
+            <!-- <div class="btn btn-primary-outline" ng-click="newPage()" ng-show="showNewPageBtn" translate="创建该页面"></div> -->
         </div>
     </div>
 </div>

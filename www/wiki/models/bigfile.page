@@ -8,6 +8,7 @@ Date: 2017/09/11
 include_once("./abstract/base.page")
 include_once("./qiniu.page")
 include_once("./qiniu_files.page")
+include_once("./user.page")
 
 local bigfile = inherit(models.abstract.base, gettable("models.bigfile"))
 bigfile.db_name = "bigfile"
@@ -19,6 +20,7 @@ function bigfile:ctor()
 	self:addfield("source_url", "string") -- channel=none 网络视屏地址
 	self:addfield("file_id", "number") -- channel ~= none 文件id
 	self:addfield("size", "number")  -- 文件大小
+	self:addfield("checked", "number")  -- 审核状态    1 - 通过  2 - 审核不通过   0 - 未审核
 
 	self:addfield("updateDate", "string")     -- 最近使用时间
 	self:addfield("createDate", "string")     -- 创建时间
@@ -30,9 +32,16 @@ function bigfile:api_test()
 end
 
 function bigfile:api_upsert(params)
+	ensureAuthenticated()
+
 	if not params.channel then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
+
+	-- files of special users are not necessary to be checked
+	params.checked = 0
+	local user = getUser()
+	if user.roleId >= const.USER_ROLE_SPECIAL then params.checked = 1 end
 
 	params.updateDate = ParaGlobal.GetDateFormat("yyyy-MM-dd") .. " " .. ParaGlobal.GetTimeFormat("HH:mm:ss")
 	params.createDate = params.createDate or (ParaGlobal.GetDateFormat("yyyy-MM-dd") .. " " .. ParaGlobal.GetTimeFormat("HH:mm:ss"))
@@ -87,6 +96,11 @@ function bigfile:api_getDownloadUrlById(params)
 		return errors:wrap(errors.NOT_FOUND)
 	end
 
+	bf.checked = tonumber(bf.checked) or 0
+	if bf.checked ~= 1 then
+		errors:raise(403, "the file was banned or has not been checked")
+	end
+
 	local download_url = ""
 	if bf.channel == const.BIGFILE_QINIU then
 		local qiniuFileDB = models.qiniu_files:new()
@@ -101,10 +115,10 @@ end
 function bigfile:api_getDownloadUrlByKey(params)
 	if not params.key then 
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
-    end
+	end
 
-    local qiniuFileDB = models.qiniu_files:new()
-    download_url = qiniuFileDB:api_getDownloadUrlByKey(params).data
+	local qiniuFileDB = models.qiniu_files:new()
+	download_url = qiniuFileDB:api_getDownloadUrlByKey(params).data
 
 	return errors:wrap(nil, download_url)
 end
@@ -124,17 +138,30 @@ end
 
 -- 改变文件名
 function bigfile:api_changeFilename(params)
-	--local username = getUsername()
-	local username = "xiaoyao"
+	local username = getUsername()
 
 	if not username or not params._id or not params.filename then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
 
+	self:db():findOne({_id=params._id}, resume)
+	local err, bf = yield()
+	if not bf then
+		errors:raise(404, "file not found")
+	end
+
+	if bf.username ~= username then
+		errors:raise(403, "you are not allowed to change the name of this file")
+	end
+
+	local qiniuFileDB = models.qiniu_files:new()
+	qiniuFileDB:changeFilename({filename=params.filename, _id=bf.file_id})
+
 	params.updateDate = ParaGlobal.GetDateFormat("yyyy-MM-dd")
 	self:db():updateOne({_id=params._id},{filename=params.filename}, resume)
+	err, bf = yield()
 
-	return errors:wrap(yield())
+	return errors:wrap(err)
 end
 
 -- 上传文件
@@ -190,6 +217,10 @@ function bigfile:api_getByUsername(params)
 
 	local qiniuFilesDB = models.qiniu_files:new()
 	for _, bf in ipairs(bfs or {}) do
+		bf.checked = bf.checked or 0
+		if bf.checked ~= 1 then
+			bf.source_url = nil
+		end
 		if bf.channel == const.BIGFILE_QINIU then
 			bf.file = qiniuFilesDB:api_getById({_id=bf.file_id}).data
 		end
@@ -201,7 +232,8 @@ end
 
  --更新文件
 function bigfile:api_updateById(params)
-	local username = getUsername()
+	local user = getUser()
+	local username = user.username
 	if not params._id or not params.channel or not params.filename then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
@@ -222,6 +254,10 @@ function bigfile:api_updateById(params)
 	new_data.username = username
 	new_data.channel = params.channel
 	new_data.filename = params.filename
+
+	new_data.checked = 0
+	if user.roleId >= const.USER_ROLE_SPECIAL then new_data.checked = 1 end
+
 	if params.channel == const.BIGFILE_QINIU then
 		local qiniuDB = models.qiniu:new()
 		local ret = qiniuDB:api_upload(params)
@@ -248,7 +284,14 @@ function bigfile:api_getByFilename(params)
 	end
 
 	self:db():findOne({["+username+filename"]={username, params.filename}}, resume)
-	return errors:wrap(yield())
+	local err, bf = yield()
+	if bf then
+		bf.checked = bf.checked or 0
+		if bf.checked ~= 1 then
+			bf.source_url = nil
+		end
+	end
+	return errors:wrap(err, bf)
 end
 
 
@@ -271,24 +314,12 @@ function bigfile:api_getUserStoreInfo(params)
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
 
+	local userDB = models.user:new()
+	if userDB:is_locked({username = username}) then
+		errors:raise(403, "该帐号已被封禁")
+	end
+
 	local qiniuDB = models.qiniu:new()
 
 	return qiniuDB:api_getByUsername({username=username})
 end
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

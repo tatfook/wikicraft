@@ -1,0 +1,86 @@
+<style>
+    body {
+        background-color: white;
+    }
+
+    .serviceStop {
+        text-align: center;
+        /* padding: 60px 0; */
+        color: #3977AD;
+    }
+
+    .serviceStop h1 {
+        font-size: 28px;
+        margin: 0 0 30px;
+        color: #303133;
+        font-weight: bold;
+    }
+
+    .serviceStop .background-image {
+        position: absolute;
+        width: 100%;
+        z-index: -1;
+        left: 0;
+        padding-top: 5%;
+        /* top: 240px; */
+    }
+
+    .serviceStop .background-image img {
+        width: 20%;
+        /* background-color: white; */
+        height: auto;
+        cursor: pointer;
+    }
+
+    .serviceStop .btns {
+        display: flex;
+        justify-content: center;
+    }
+
+    .serviceStop .btn-primary-outline {
+        font-size: 14px;
+        font-weight: 500;
+        width: 110px;
+        height: 40px;
+        line-height: 40px;
+        padding: 0;
+        border: 1px solid #337ab7;
+        background-color: #337ab7;
+        margin: 0 10px;
+        border-radius: 100px;
+        color: #FFF;
+    }
+
+    .serviceStop .btn-primary-outline:hover {
+        background-color: #4e99d9;
+        color: #FFF;
+    }
+
+    .serviceStop .fa {
+        font-size: 16px;
+        -webkit-text-stroke: 1px #F4F9FF;
+    }
+
+    .serviceStop .btn-primary-outline:hover .fa {
+        font-size: 16px;
+        -webkit-text-stroke: 1px #F4F9FF;
+    }
+
+    .text {
+        padding-top: 25.5%
+    }
+</style>
+<div ng-controller="serviceStopController" class="serviceStop">
+    <div class="background-image">
+        <img ng-src="{{imgsPath+'service_stop.png'}}" alt="">
+    </div>
+    <div class="text">
+        <h1 translate="您访问的网站暂时停止服务，请稍后再试。"></h1>
+        <div class="btns">
+            <div class="btn btn-primary-outline" ng-click="goBack()">
+                返&nbsp回
+            </div>
+            <!-- <div class="btn btn-primary-outline" ng-click="newPage()" ng-show="showNewPageBtn" translate="创建该页面"></div> -->
+        </div>
+    </div>
+</div>

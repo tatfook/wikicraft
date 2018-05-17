@@ -69,6 +69,19 @@
         color: #333;
         padding-left: 12px;;
     }
+    .banner-swiper{
+      height: 538px;
+    }
+    .banner-swiper img{
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    @media(max-width: 768px){
+      .banner-swiper{
+        height: 250px;
+      }
+    }
     .banner .form-group {
         position: relative;
     }
@@ -78,6 +91,10 @@
         align-items: center;
         color: #FFF;
         display: flex;
+    }
+    
+    .banner{
+      display: none !important;
     }
     .banner .message{
         display: flex;
@@ -448,7 +465,19 @@
 </style>
 
 <div ng-controller="homeController">
-	<div id="test"></div>
+  <div id="test"></div>
+    <div class="swiper-container banner-swiper">
+      <div class="swiper-wrapper">
+        <div class="swiper-slide">
+            <a href="http://iicc.keepwork.com" target="_blank">
+              <img ng-src="{{getImageUrl('wiki_carousel_banner1.jpg', imgsPath)}}" alt="">
+            </a>
+          </div>
+        <div class="swiper-slide">
+          <img ng-src="{{getImageUrl('wiki_carousel_banner2.jpg', imgsPath)}}" alt="">
+        </div>
+      </div>
+    </div>
     <div class="banner clearfix">
         <div class="col-lg-4 col-lg-offset-2 col-md-5 col-md-offset-1 hidden-xs hidden-sm">
             <h1 translate="一网乾坤 个人作品网"></h1>
@@ -525,7 +554,7 @@
             </div>
         </div>
         <img ng-src="{{imgsPath+'wiki_banner1.jpg'}}" alt="">
-    </div>
+    </div> 
     <div class="web-message clearfix">
         <div class="col-xs-12 col-sm-6 left-col">
             <div class="icon">

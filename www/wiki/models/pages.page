@@ -14,6 +14,8 @@ include_once("./pages_stars.page")
 include_once("./website.page")
 include_once("./tags.page")
 include_once("./user_tags.page")
+include_once("./site_data_source.page")
+include_once("./site_user.page")
 
 
 local pages = inherit(models.abstract.base, gettable("models.pages"))
@@ -35,9 +37,28 @@ end
 function pages:check_identity(params)
     local allowed = util:check_identity(params)
     if (not allowed) then
+        if self:check_permission(params) then return end
         local message = "You are not allowed to do it"
         errors:raise(403, message)
     end
+end
+
+
+function pages:check_permission(params)
+    local site_owner, sitename = util:get_username_and_sitename(params.url)
+    local memberName = getUsername()
+    local site_userDB = models.site_user:new()
+    local data = site_userDB:api_getSiteByName({
+        username = site_owner,
+        sitename = sitename,
+        memberName = memberName
+    }).data or {}
+
+    if data.siteUser and data.siteinfo then
+        return true
+    end
+
+    return false
 end
 
 
@@ -131,7 +152,8 @@ function pages:update_tags_validator(params)
     local clean_data = {}
 
     local validate_tasks = {
-        required_fields = {"url", "tags"},
+        required_fields = {"url"},
+        -- required_fields = {"url", "tags"},
         sensitive_fields = {"tags"},
         fields_length = {tags = 5},
     }
@@ -200,23 +222,22 @@ function pages:api_updateVisitCount(params)
     local params_error, message = validators.required_fields_validator(params, required_fields)
     if (params_error) then errors:raise(400, message) end
 
+    local userDB = models.user:new()
+    local username, sitename = util:get_username_and_sitename(params.url)
+    if not username then return errors:wrap(nil) end
+
+    if userDB:is_locked({username = username}) then
+        errors:raise(403, "该帐号已被封禁")
+    end
+
     local page = {url = params.url}
     self:db():findOne({["+url"]={page.url}}, resume)
     local err, result = yield()
-    if (result) then
-        visitCount = (result.visitCount or 0) + 1
-        self:db():updateOne({["+url"] = {page.url}}, {visitCount = visitCount}, resume)
-        err, result = yield()
-    else
-        page.visitCount = 1
-        page.siteUrl = self:get_site_url(params)
-        self:db():insertOne({["+url"] = {page.url}}, page, resume)
-        err, result = yield()
-        if (result) then
-            page.id = result._id
-            self:insert_to_es(page)
-        end
-    end
+    if (not result) then errors:raise(404, "page not found") end
+
+    visitCount = (result.visitCount or 0) + 1
+    self:db():updateOne({["+url"] = {page.url}}, {visitCount = visitCount}, resume)
+    err, result = yield()
     result = {visitCount = result.visitCount}
     return errors:wrap(err, result)
 end
@@ -227,9 +248,19 @@ function pages:api_getDetail(params)
     local params_error, message = validators.required_fields_validator(params, required_fields)
     if (params_error) then errors:raise(400, message) end
 
+    local userDB = models.user:new()
+    local username, sitename = util:get_username_and_sitename(params.url)
+    if not username then return errors:wrap(nil, {}) end
+
+    if userDB:is_locked({username = username}) then
+        errors:raise(403, "该帐号已被封禁")
+    end
+
     local page = {url = params.url, visitor = params.visitor}
     self:db():findOne({["+url"] = {page.url}}, resume)
     local err, result = yield()
+    if (not result) then errors:raise(404, "page not found") end
+
     result = result or {}
     local stars = models.pages_stars:new()
     local starredCount_and_starred = stars:get_starred_count_of_a_page(page)
@@ -316,25 +347,24 @@ end
 function pages:insert_to_es(params)
     local username, sitename = self:get_username_and_sitename(params.url)
     if (not sitename) then return nil end
+    local pagename = string.gsub(params.url, format("/%s/%s/", username, sitename), "")
 
-    local website_model = models.website:new()
-    params.visibility = "public"
-
-    website_model:db():findOne({["+username+sitename"] = {username, sitename}}, resume)
-    local err, site = yield()
-    if (site) then params.visibility = site.visibility or "public" end
+    local visibility, message = self:get_visibility(username, sitename)
+    if message then errors:raise(400, message) end
+    local source_url = self:get_source_url(username, sitename, pagename)
 
     local page = {
         type = "pages",
         id = params.id,
         username = username,
         sitename = sitename,
-        pagename = string.gsub(params.url, format("/%s/%s/", username, sitename), ""),
+        pagename = pagename,
         url = params.url,
         tags = params.tags or {},
         content = self:md_to_string(params.content) or "",
         update_time = datetime(),
-        visibility = params.visibility,
+        visibility = visibility,
+        source_url = source_url,
     }
 
     es:insertOne(page, function(err, data) end)
@@ -345,22 +375,13 @@ function pages:update_to_es(params)
     local username, sitename = self:get_username_and_sitename(params.url)
     if (not sitename) then return nil end
 
-    local website_model = models.website:new()
-    params.visibility = "public"
-
-    website_model:db():findOne({["+username+sitename"] = {username, sitename}}, resume)
-    local err, site = yield()
-    if (site) then params.visibility = site.visibility or "public" end
-
     local page = {
         type = "pages",
         id = params.id,
         tags = params.tags,
         content = self:md_to_string(params.content),
         update_time = datetime(),
-        visibility = params.visibility,
     }
-
     es:updateOne(page, function(err, data) end)
 end
 
@@ -489,25 +510,137 @@ function pages:update_visibility_to_es(params)
 end
 
 
--- function pages:api_fixSiteUrl(params)
---     local passwd = KEEPWORK["config"][CURRENT_ENV]["wiki"]["scripts"]["passwd"]
---     if (not passwd) then return "please set your script password" end
---     if (not params.passwd) then return "please input your password" end
---     if (params.passwd ~= passwd) then return "incorrect password" end
+function pages:get_source_url(username, sitename, pagename)
+    local source_url, message
+    local git_host = KEEPWORK["config"][CURRENT_ENV]["threeService"]["gitlab"]["host"]
+    local site_data_sourceDB = models.site_data_source:new()
 
---     self:db():find({_id={gt=0, limit=999999}}, resume)
---     local err, pages = yield()
---     local data_to_insert = {}
---     local username, sitename
---     if (pages) then
---         for i, page in ipairs(pages) do
---             username, sitename = self:get_username_and_sitename(page.url)
---             if (sitename) and (not page.siteUrl) then
---                 local siteUrl = self:get_site_url(page)
---                 self:db():updateOne({["+url"]={page.url}}, {siteUrl=siteUrl}, resume)
---                 yield()
---             end
---         end
---     end
---     return errors:wrap(nil)
--- end
+    site_data_sourceDB:db():findOne({
+        ["+username+sitename"]={username, sitename}}, resume)
+    local err, data_source = yield()
+
+    if not data_source then
+        message = "the data source of this website does not exist"
+    else
+        source_url = format(
+            "%s/api/v4/projects/%s/repository/files/%s/%s/%s.md?ref=master",
+            git_host,
+            data_source.projectId,
+            username,
+            sitename,
+            pagename
+        )
+    end
+    return source_url, message
+end
+
+
+function pages:get_visibility(username, sitename)
+    local website_model = models.website:new()
+    local visibility, message
+    website_model:db():findOne({["+username+sitename"]={username, sitename}}, resume)
+    local err, site = yield()
+    if site then
+        visibility = site.visibility or "public"
+    else
+        message = "this website does not exist"
+    end
+    return visibility, message
+end
+
+
+function pages:api_migrate(params)
+    local message
+    local passwd = KEEPWORK["config"][CURRENT_ENV]["wiki"]["scripts"]["passwd"]
+    if not params.passwd then message =  "please input your password" end
+    if params.passwd ~= passwd then message =  "incorrect password" end
+    if message then errors:raise(401, message) end
+
+    local results = {}
+    local has_errors = false
+    local status_code = 200
+    for i, file in ipairs(params.files) do
+        local status = 200
+        local message= self:migrate_one(file)
+        if message ~= "created" and message ~= "updated" then
+            has_errors = true
+            status = 400
+        end
+        local result = {
+            url = file.url,
+            message = message or "no message",
+            status = status,
+        }
+        results[#results + 1] = result
+    end
+    if has_errors then status_code = 400 end
+    return response:status(status_code):send({results=results})
+end
+
+
+function pages:migrate_one(params)
+    local source_url, message = self:get_source_url(
+        params.username, params.sitename, params.pagename)
+    if message then return message end
+
+    self:db():findOne({["+url"]={params.url}}, resume)
+    local err, exist_page = yield()
+    if not exist_page then
+        local site_url = self:get_site_url(params)
+        self:db():insertOne({["+url"] = {params.url}},
+            {url = params.url, siteUrl = site_url},
+            resume)
+        local err, result = yield()
+        if result then
+            local visibility, message = self:get_visibility(
+                params.username, params.sitename)
+            if message then return message end
+            es:insertOne({
+                type = "pages",
+                id = result._id,
+                username = params.username,
+                sitename = params.sitename,
+                pagename = params.pagename,
+                url = params.url,
+                tags = params.tags or {},
+                content = self:md_to_string(params.content) or "",
+                update_time = datetime(),
+                visibility = visibility,
+                source_url = source_url,
+            })
+        end
+        message = "created"
+    else
+        es:updateOne({
+            type = "pages",
+            id = exist_page._id,
+            source_url = source_url,
+            content = self:md_to_string(params.content) or "",
+        })
+        message = "updated"
+    end
+    return message
+end
+
+
+function pages:api_fixProfilePages(params)
+    local errMsg = util:check_script_password(params)
+    if errMsg then errors:raise(400, errMsg) end
+
+    local userDB = models.user:new()
+    userDB:db():find({_id={gt=-1, limit=9999999}}, resume)
+    local err, users = yield()
+
+    for i, user in ipairs(users) do
+        local url = "/" .. user.username
+        self:db():findOne({url=url}, resume)
+        local err, page = yield()
+
+        if not page then
+            self:db():insertOne({["+url"]={url}}, {url=url}, resume)
+            local err, result = yield()
+        end
+    end
+
+    return errors:wrap(nil)
+end

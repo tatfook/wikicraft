@@ -422,6 +422,11 @@
             width: 100%;
         }
     }
+    .iicc-logo{
+      width: auto;
+      height: 30px;
+      margin: 5px 0;
+    }
 </style>
 <style>
     .url-header .nav-bread-crumb {
@@ -723,6 +728,12 @@
                                 <span translate="帮助"></span>
                             </a>
                         </li>
+                        <li class="iconfont-icon">
+                            <a href="http://iicc.keepwork.com" target="_blank">
+                                <img class="iicc-logo" ng-src="{{getImageUrl('iicc_logo.png', imgsPath)}}" alt="">
+                                {{"国际智能创意大赛" | translate}}
+                            </a>
+                        </li>
                         <!-- <li class=""><a href="http://para.keepwork.com" target="_blank">{{'paracraft' | translate}}</a></li> -->
                     </ul>
                     <ul class="nav navbar-nav navbar-left" ng-show="!isLogin">
@@ -740,6 +751,12 @@
                         <li class="iconfont-icon">
                             <a href="http://keepwork.com/official/help/index">
                                 <i class="iconfont icon-bangzhu"></i>{{"帮助" | translate}}</a>
+                        </li>
+                        <li class="iconfont-icon">
+                            <a href="http://iicc.keepwork.com" target="_blank">
+                                <img class="iicc-logo" ng-src="{{getImageUrl('iicc_logo.png', imgsPath)}}" alt="">
+                                {{"国际智能创意大赛" | translate}}
+                            </a>
                         </li>
                         <!-- <li class=""><a href="http://para.keepwork.com" target="_blank">{{'paracraft' | translate}}</a></li> -->
                     </ul>

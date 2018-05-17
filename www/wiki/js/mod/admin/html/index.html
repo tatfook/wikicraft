@@ -110,6 +110,11 @@
     }
     .pagination-box{
         text-align: center;
+        position: relative;
+    }
+    .file-pagination-box{
+        text-align: center;
+        position: relative;
     }
     .tab-content p.info{
         font-size: 12px;
@@ -200,6 +205,22 @@
     .delGoodsMan{
         margin-bottom: 10px;
     }
+    .totalFiles {
+        position: absolute;
+        left: 10px;
+        top: 20px;
+    }
+    .totalUsers {
+        position: absolute;
+        left: 10px;
+        top: 20px;
+    }
+    .table tbody tr td {
+        vertical-align: middle;
+    }
+    .datetime {
+        width: 50%;
+    }
     @media(max-width: 768px){
         .subnav .list-group-item:first-child .list-group-item{
             padding: 10px 5px;
@@ -272,7 +293,7 @@
                             </li>
                             <li>
                                 <div ng-class='getStyleClass("fileCheck")'>
-                                    <div class="panel-heading" ng-click='getFileCheckList()'>文件审核</div>
+                                    <div class="panel-heading" ng-click='get_file_list()'>文件审核</div>
                                 </div>
                             </li>
                             <li>
@@ -869,11 +890,15 @@
                             <label>
                                 用户名:
                             </label>
-                            <input ng-model="userSearchByUsername" type="text" class="form-control" placeholder="请输入用户名">
+                            <input type="text" ng-model="userSearchByUsername" placeholder="请输入用户名"
+                                uib-typeahead="user for user in getUsername($viewValue)"
+                                class="form-control">
                         </div>
                         <button class="btn btn-default" ng-click="userSearch()">查询</button>
                     </form>
                 </div>
+
+
                 <table class="table table-hover table-bordered">
                     <thead>
                         <tr>
@@ -881,31 +906,37 @@
                             <th>用户名</th>
                             <th>显示名</th>
                             <th>注册时间</th>
-                            <th>网站数</th>
-                            <th>粉丝数</th>
-                            <th>用户等级</th>
-                            <th>状态</th>
+                            <!-- <th>网站数</th>
+                            <th>粉丝数</th> -->
+                            <th>权限等级</th>
+                            <th>封禁期限</th>
                             <th>操作</th>
                         </tr>
                     </thead>
+
                     <tbody>
-                        <tr ng-repeat="x in userList" ng-hide="x.isDelete">
-                            <td>{{x._id}}</td>
-                            <td>{{x.username}}</td>
-                            <td>{{x.displayName}}</td>
-                            <td>{{x.joindate}}</td>
-                            <td>{{x.websiteCount}}</td>
-                            <td>{{x.fansCount}}</td>
-                            <td>{{x.roleId}}</td>
-                            <td>{{x.state == -1 ? "异常" : "正常"}}</td>
-                            <td>
-                                <button class="btn btn-default" ng-click="clickEnableUser(x)">{{x.roleId == -1 ? "启用" : "禁用"}}</button>
-                                <button class="btn btn-default" ng-click="clickDeleteUser(x)">删除</button>
-                            </td>
-                        </tr>
+                            <tr ng-repeat="user in userList" ng-hide="user.isDelete">
+                                <td>{{user._id}}</td>
+                                <td><a href={{linkToUserPage(user)}} target="_blank">{{user.username}}</a></td>
+                                <td>{{user.displayName}}</td>
+                                <td>{{user.joindate}}</td>
+                                <!-- <td>{{user.websiteCount}}</td>
+                                <td>{{user.fansCount}}</td> -->
+                                <td>{{user.roleId}}</td>
+                                <td class="col-sm-1">
+                                    <pre>{{isUserLocked(user) ? user.locked_deadline : "未被封禁"}}</pre>
+                                </td>
+                                <td>
+                                    <button class="btn btn-default" ng-click="clickLockUser(user)">封禁</button>
+                                    <button class="btn btn-default" ng-click="clickUnLockUser(user)" ng-disabled="!isUserLocked(user)">解封</button>
+                                </td>
+                            </tr>
                     </tbody>
                 </table>
+
+
                 <div class="pagination-box">
+                    <div class="totalUsers"><span>共 {{userTotalItems}} 个用户</span></div>
                     <ul uib-pagination ng-change="getUserList()"
                         items-per-page='userPageSize' previous-text="上一页"
                         next-text="下一页" total-items="userTotalItems"
@@ -914,6 +945,44 @@
                     </ul>
                 </div>
             </div>
+
+
+            <div class="modal lock_user" id="lock_user" tabindex="-1" role="dialog" aria-hidden="true" keyboard="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content" style="width:200%;margin-top:30%;margin-left:-50%;">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
+                                <h4 class="modal-title">封禁用户 {{user_to_lock.username}}</h4>
+                            </div>
+                            <div class="modal-body">
+                                <p class="form-group">
+                                    <div class="datetime">
+                                        <div class="input-group">
+                                            <span class="input-group-addon" id="sizing-addon1">封禁至</span>
+                                            <input type="text" class="form-control" uib-datepicker-popup="{{format}}" ng-model="locked_deadline" ng-value = "locked_deadline"/>
+                                        </div><br>
+                                        <div class="input-group">
+                                            <span class="input-group-addon" id="sizing-addon1"> 操作</span>
+                                            <button class="btn btn-default" ng-click="resetDuration()">now</button>
+                                            <button class="btn btn-default" ng-click="addLockDuration(0,0,1)">加一天</button>
+                                            <button class="btn btn-default" ng-click="addLockDuration(0,0,3)">加三天</button>
+                                            <button class="btn btn-default" ng-click="addLockDuration(0,0,7)">加一周</button>
+                                            <button class="btn btn-default" ng-click="addLockDuration(0,1,0)">加一个月</button>
+                                            <button class="btn btn-default" ng-click="addLockDuration(1,0,0)">加一年</button>
+                                            <button class="btn btn-danger" ng-click="addLockDuration(100,0,0)">永久</button>
+                                        </div>
+                                    </div>
+                                </p>
+                            </div>
+                            <div class="modal-footer">
+                                <button class="btn btn-danger" data-dismiss="modal" ng-click="lockUser(user_to_lock)">确定</button>
+                                <button class="btn btn-primary" data-dismiss="modal" ng-disabled="!isUserLocked(user_to_lock)" ng-click="unlockUser(user_to_lock)">解封</button>
+                                <button class="btn btn-primary" data-dismiss="modal">关闭</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
 
             <!--网站管理-->
             <div ng-show='selectMenuItem=="site"'>
@@ -1037,8 +1106,99 @@
 
             <!--文件审核-->
             <div ng-show='selectMenuItem=="fileCheck"'>
-                文件审核
+                <div style="margin: 10px;">
+                        <form role="form" class="form-inline">
+                            <div class="dropdown">
+                                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    {{files_checking}}<span class="caret"></span>
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li ng-repeat="type in file_types" ng-click="change_file_type(type)">
+                                        <a>{{type}}</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </form>
+                </div>
+
+                <table class="table table-hover table-bordered">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>文件名</th>
+                            <th>上传用户</th>
+                            <th>文件大小</th>
+                            <th>上传日期</th>
+                            <th>播放/查看</th>
+                            <th>下载</th>
+                            <th>审核状态</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="file in file_list" ng-hide="file.deleted">
+                            <td>{{file._id}}</td>
+                            <td title="{{file.filename}}">{{file_name_filter(file.filename)}}</td>
+                            <td>{{file.username}}</td>
+                            <td>{{size_transfer(file.size)}}</td>
+                            <td>{{file.updateDate}}</td>
+                            <td> 
+                                <span class="glyphicon glyphicon-play" aria-hidden="true" ng-click="playVideo(file)" ng-show="abledToPlay(file)"></span>
+                            </td>
+                            <td>
+                                <a ng-href="{{file.download_url+';attname='+file.filename}}" download="{{file.filename || ""}}">
+                                    <span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span>
+                                </a>
+                            </td>
+                            <td>
+                                <div ng-if="file.checked==0">未审核</div>
+                                <div ng-if="file.checked==1">审核通过</div>
+                                <div ng-if="file.checked==2">审核不通过</div>
+                            </td>
+                            <td>
+                                <button class="btn btn-default" ng-click="check_file(file, 1)" ng-disabled="file.checked==1">通过</button>
+                                <button class="btn btn-default" ng-click="check_file(file, 2)" ng-disabled="file.checked==2">不通过</button>
+                                <button class="btn btn-default" ng-click="clickDeleteFile(file)">删除文件</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="file-pagination-box">
+                        <div class="totalFiles"><span>共 {{fileTotalItems}} 个文件</span></div>
+                        <ul uib-pagination ng-change="get_file_list()"
+                            items-per-page='filePageSize' previous-text="上一页"
+                            next-text="下一页" total-items="fileTotalItems"
+                            ng-model="fileCurrentPage" max-size="5"
+                            class="pagination-sm" boundary-link-numbers="true">
+                    </ul>
+                </div>
             </div>
+
+
+
+            <div class="modal video-modal" id="videoModal" tabindex="-1" role="dialog" aria-labelledby="videoModal" aria-hidden="true" keyboard="true">
+                <div class="modal-dialog">
+                    <div class="modal-content" style="width:200%;margin-top:30%;margin-left:-50%;">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" ng-click="stop()"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
+                            <h4 class="modal-title">文件审核</h4>
+                        </div>
+                        <div class="modal-body">
+                            <div class="modal-video-body">
+                                <div class="embed-responsive embed-responsive-16by9">
+                                    <div ng-bind-html="iframe_html"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="check_file_and_stop(file_playing, 1)">通过</button>
+                            <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="check_file_and_stop(file_playing, 2)">不通过</button>
+                            <button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="stop()">关闭</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
 
             <!--VIP管理-->
             <div ng-show='selectMenuItem=="vip"'>

@@ -338,7 +338,7 @@ define([
 
 					currentDataSource.writeFile({path:path + config.pageSuffixName, content:content}, function(){
 						result.filename = data.filename;
-						result.url = "http://keepwork.com" + path;
+						result.url = config.httpProto+"://keepwork.com" + path;
 						$scope.filename = data.filename;
 						util.$apply($scope);
 						currentDataSource.getLastCommitId();
@@ -438,7 +438,7 @@ define([
         }
 
         function initPageTemplates() {
-            var url = "http://git.keepwork.com/api/v4/projects/6803/repository/files/official%2Ftemplate%2FpageTemplateConfig%2Emd?ref=master";
+            var url = config.httpProto+"://git.keepwork.com/api/v4/projects/6803/repository/files/official%2Ftemplate%2FpageTemplateConfig%2Emd?ref=master";
             var isShowLoading = true;
             $http({
                 "method": "GET",
@@ -1509,7 +1509,7 @@ define([
             }//}}}
 
             function getPageTemplateContent(pageUrl, contentUrl) {
-                var url = "http://git.keepwork.com/api/v4/projects/6803/repository/files/" + encodeURI(contentUrl) + "?ref=master";
+                var url = config.httpProto+"://git.keepwork.com/api/v4/projects/6803/repository/files/" + encodeURI(contentUrl) + "?ref=master";
                 $http({
                     "method": "GET",
                     "url": url

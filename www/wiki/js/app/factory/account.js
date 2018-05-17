@@ -67,7 +67,7 @@ define([
 					util.post(config.apiUrlPrefix + 'site_data_source/getByUsername', {username: user.username}, function (data) {
 						user.dataSource = data || [];
                         //storage.localStorageSetItem("userinfo", user);
-						console.log(user);
+						// console.log(user);
                         DataSource.init(user.dataSource, user.defaultDataSourceSitename);
 						cb && cb();
                     }, errcb);
@@ -89,7 +89,7 @@ define([
 					var self = this;
 
 					util.post(config.apiUrlPrefix + 'user/getProfile', {}, function(data){
-						self.setUser(data);
+                        self.setUser(data);
 						cb && cb(data);
 					}, errcb);
 				},
@@ -134,12 +134,12 @@ define([
 
                     if ($auth.isAuthenticated()) {
                         var token = $auth.getToken();
-                        $.cookie('token', token, {path: '/', expires: 365, domain: '.' + config.hostname});
+                        $.cookie('token', token, {path: '/', expires: 365});
                     }
                     this.send("onUserProfile", this.user);
                     storage.sessionStorageSetItem("userinfo", this.user);
                 },
-				
+
 				isValidVip: function() {
 					return this.user && this.user.vipInfo && this.user.vipInfo.isValid;
 				},
@@ -182,9 +182,22 @@ define([
 
                 // logout
                 logout: function () {
-					$.removeCookie('token', {path:'/', expires:365, domain: '.' + config.hostname});
+                    // remove all token forcely
+                    $.removeCookie('token');
+                    $.removeCookie('token', {path:'/', expires:365});
+                    $.removeCookie('token', {path:'/', expires:365, domain: config.hostname});
+                    $.removeCookie('token', {path:'/', expires:365, domain: '.' + config.hostname});
                     $auth.logout();
                     this.send("onLogout", "");
+                },
+
+                refuseUser: function () {
+                    if ($rootScope.isLogin) {
+                        this.logout();
+                        $rootScope.isLogin = false;
+                        alert("您的帐号已被封禁")
+                        util.go("login")
+                    }
                 },
 
                 // github s授权认证

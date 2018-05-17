@@ -54,7 +54,7 @@ function errors:wrap(err, data)
 end
 
 
-function errors:raise(code, message)
-	response:status(code):send({error={id=-1, message=message, status=code}})
+function errors:raise(code, message, data)
+	response:status(code):send({error={id=-1, message=message, status=code}, data=data})
 	exit()
 end

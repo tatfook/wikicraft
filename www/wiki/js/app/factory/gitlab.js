@@ -28,15 +28,16 @@ define([
             var result = "";
             switch (env) {
                 case "prod":
-                    result = "http://git.keepwork.com";
+                    result = "://git.keepwork.com";
                     break;
                 case "release":
-                    result = "http://git.release.keepwork.com";
+                    result = "://git.release.keepwork.com";
                     break;
                 default:
-                    result = "http://git.stage.keepwork.com";
+                    result = "://git.stage.keepwork.com";
                     break;
             }
+			result = config.httpProto + result;
             return result;
         }
         var gitlab = {
@@ -572,8 +573,8 @@ define([
             self.username = dataSource.dataSourceUsername;
             self.httpHeader["PRIVATE-TOKEN"] = dataSource.dataSourceToken;
 			self.dataSourceToken = dataSource.dataSourceToken;
-            self.apiBaseUrl = dataSource.apiBaseUrl;
-            self.rawBaseUrl = dataSource.rawBaseUrl || getRawBaseUrl();
+            //self.apiBaseUrl = dataSource.apiBaseUrl;
+            //self.rawBaseUrl = dataSource.rawBaseUrl || getRawBaseUrl();
             // 移到站点中
 			self.rootPath = dataSource.rootPath || '';
             self.lastCommitId = dataSource.lastCommitId || "master";

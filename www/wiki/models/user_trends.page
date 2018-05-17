@@ -45,6 +45,11 @@ function user_trends:api_get(params)
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
 	
+	local userDB = models.user:new()
+	if userDB:is_locked({_id = params.userId}) then
+		errors:raise(403, "该帐号已被封禁")
+	end
+
 	local skip, limit = util:pagination(params)	
 	-- 获取组织动态
 	self:db():count({['+userId-updateDate']={params.userId}}, resume)

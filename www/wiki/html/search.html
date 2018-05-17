@@ -303,7 +303,7 @@
         </div>
         <div class="tab-content">
             <div role="tabpanel" class="tab-pane clearfix" ng-class="{true:'active'}[searchType == 'pageinfo']" id="pageinfo">
-                <h4 class="title">{{ "共" | translate }}{{pageResult.total || 0}}条页面：</h4>
+                <h4 class="title">{{ "共" | translate }}{{totalItems || 0}}条页面：</h4>
                 <div class="empty-box" ng-hide="searchResult.total > 0">
                     <span class="iconfont icon-sousuo"></span>
                     <p>{{ "抱歉！ ~没有搜索到" | translate }}

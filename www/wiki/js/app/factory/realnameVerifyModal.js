@@ -101,7 +101,7 @@ define([
 
     app.factory('realnameVerifyModal', ['$uibModal', function ($uibModal) {
         function realnameVerifyModal(successCallback, errorCallback) {
-			if (config.isLocal()) {
+			if (config.isLocal() || config.isGlobalVersion) {
 				return Promise.resolve();
 			}
             return new Promise(function(resolve, reject) {

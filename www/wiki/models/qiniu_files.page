@@ -20,6 +20,7 @@ function qiniu_files:ctor()
 	self:addfield("hash", "string")         -- hash
 	self:addfield("type", "string")         -- hash
 	self:addfield("size", "number")         -- file size
+	self:addfield("checked", "number")      -- 审核状态    1 - 通过  2 - 审核不通过   0 - 未审核
 
 	self:addfield("usedCount", "number")      -- 使用次数
 	self:addfield("updateDate", "string")     -- 最近使用时间
@@ -28,7 +29,13 @@ end
 
 -- 添加记录
 function qiniu_files:api_upsert(params)
-	local username = getUsername()
+	ensureAuthenticated()
+
+	params.checked = 0
+	local user = getUser()
+	local username = user.username
+	if user.roleId >= const.USER_ROLE_SPECIAL then params.checked = 1 end
+
 	if not params.username or not params.domain or not params.key or params.size < 0 or params.username ~= username then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
@@ -51,8 +58,14 @@ function qiniu_files:api_getById(params)
 	end
 
 	self:db():findOne({_id=params._id}, resume)
+	local err, file = yield()
 
-	return errors:wrap(yield())
+	if tonumber(file.checked) ~= 1 then
+		file.download_url = nil
+		file.key = nil
+	end
+
+	return errors:wrap(err, file)
 end
 
 -- 通过id删除文件
@@ -82,7 +95,14 @@ function qiniu_files:api_getByUsername(params)
 
 	self:db():find({["+username"]={username, skip=skip, limit=limit}}, resume)
 	local _, list = yield()
-
+	
+	for i, bf in ipairs(list) do
+		bf.checked = tonumber(bf.checked) or 0
+		if bf.checked ~= 1 then
+			bf.source_url = nil
+			bf.key = nil
+		end
+	end
 
 	return errors:wrap(nil, {total=total or 0, list=list});
 end
@@ -95,9 +115,14 @@ function qiniu_files:api_getDownloadUrlById(params)
 
 	self:db():findOne({_id=params._id}, resume)
 	local _, qiniuFiles = yield()
-	
+
 	if not qiniuFiles then
 		return errors:wrap(errors.NOT_FOUND)
+	end
+
+	qiniuFiles.checked = tonumber(qiniuFiles.checked) or 0
+	if qiniuFiles.checked ~= 1 then
+		errors:raise(403, "the file was banned or has not been checked")
 	end
 
 	local qiniuDB = models.qiniu:new()
@@ -120,6 +145,11 @@ function qiniu_files:api_getDownloadUrlByKey(params)
 		return errors:wrap(errors.NOT_FOUND)
 	end
 
+	qiniuFiles.checked = tonumber(qiniuFiles.checked) or 0
+	if qiniuFiles.checked ~= 1 then
+		errors:raise(403, "the file was banned or has not been checked")
+	end
+
 	local qiniuDB = models.qiniu:new()
 	local download_url = qiniuDB:api_getDownloadUrl(qiniuFiles).data
 	download_url = download_url and download_url.download_url
@@ -127,3 +157,7 @@ function qiniu_files:api_getDownloadUrlByKey(params)
 	return errors:wrap(nil, download_url or qiniuFiles.download_url)
 end
 
+function qiniu_files:changeFilename(params)
+	self:db():updateOne({_id=params._id},{filename=params.filename}, resume)
+	return yield()
+end

@@ -14,7 +14,7 @@ usage() {
   exit 1
 }
 
-if [[ $# -eq 0 ]] || [[ $# -gt 1 ]]; then
+if [[ $# -ne 1 ]]; then
   usage
 fi
 
@@ -27,19 +27,19 @@ DATE=$(date +"%Y-%m-%d-%H-%M")
 
 case $ENV_TYPE in
   dev)
-    ROOT_DIR=www
+    ROOT_DIR="www"
     PORT=8900
     ;;
   stage)
-    ROOT_DIR=www
+    ROOT_DIR="www"
     PORT=8099
     ;;
   release)
-    ROOT_DIR=test
+    ROOT_DIR="test"
     PORT=8088
     ;;
   prod)
-    ROOT_DIR=rls
+    ROOT_DIR="rls"
     PORT=8088
     ;;
 esac
@@ -50,6 +50,7 @@ logfile="$LOG_DIR/${ENV_TYPE}-${DATE}.log"
 runtime_error_logfile="$LOG_DIR/runtime-error.log"
 
 ulimit -c unlimited
+export KEEPWORK_LOCALE=${KEEPWORK_LOCALE}
 npl -D bootstrapper="script/apps/WebServer/WebServer.lua"  root="$ROOT_DIR/" port="$PORT" logfile="$logfile"
 exit_code=$?
 
