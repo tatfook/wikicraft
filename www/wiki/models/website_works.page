@@ -152,29 +152,37 @@ function website_works:search(params)
 		--}
 	--end
 
+	local sort = {}
+	if order.createDate then
+		sort[#sort+1] = {
+			createDate= {
+				order = order.createDate or "desc", -- asc 
+			},
+		}
+	end
+
+	if order.visitCount then
+		sort[#sort+1] = {
+			visitCount= {
+				order = order.visitCount or "desc", -- asc 
+			},
+		}
+	end
+
+	if order.voteCount then
+		sort[#sort+1] = {
+			voteCount= {
+				order = order.voteCount or "desc", -- asc 
+			},
+		}
+	end
 	local body = {
 		query = {
 			bool = {
 				must = must,
 			} 
 		},
-		sort = {
-			{
-				createDate= {
-					order = order.createDate or "desc", -- asc 
-				},
-			},
-			{
-				visitCount= {
-					order = order.visitCount or "desc",
-				},
-			},
-			{
-				voteCount = {
-					order = order.voteCount or "desc",
-				},
-			}
-		}
+		sort = sort,
 	}
 
 	body.size = tonumber(params.size);
@@ -254,18 +262,18 @@ end
 
 -- 更新访问数量
 function website_works:api_updateVisitCount(params) 
-	if not params.worksUrl then
+	if not params.worksUrl or not params.websiteId then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
 
-	self:db():findOne({["+worksUrl"]={params.worksUrl}}, resume)
+	self:db():findOne({["+websiteId+worksUrl"]={params.websiteId, params.worksUrl}}, resume)
 	local _, data = yield()
 
 	if not data then return errors:wrap("记录未找到") end
 
 	data.visitCount = (data.visitCount or 0) + 1
 
-	self:db():updateOne({["+worksUrl"]={params.worksUrl}}, data, resume)
+	self:db():updateOne({["+websiteId+worksUrl"]={params.websiteId, params.worksUrl}}, data, resume)
 	return errors:wrap(yield())
 end
 
@@ -319,9 +327,27 @@ end
 
 -- 提交作品申请
 function website_works:api_submitWorksApply(params)
-	params.worksState = const.WEBSITE_WORKS_STATE_APPLY
+	local username = getUsername()
 
-	return self:api_upsert(params)
+	if username ~= params.username or (not params.websiteId) or (not params.worksUrl) then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+
+	params.websiteId = tonumber(params.websiteId)
+	params.worksState = const.WEBSITE_WORKS_STATE_APPLY
+	params.voteCount = 0
+	params.visitCount = 0
+	params.commentCount = 0
+	params.updateDate = ParaGlobal.GetDateFormat("yyyy-MM-dd") .. " " .. ParaGlobal.GetTimeFormat("HH:mm:ss")
+	params.createDate = params.createDate or params.updateDate
+	--log(params)
+	
+	self:db():insertOne({["+websiteId+worksUrl"]={params.websiteId, params.worksUrl}}, params, resume)
+	local err, data = yield()
+	
+	self:insert_to_es(data)
+
+	return errors:wrap(err, data)
 end
 
 -- 同意作品申请
