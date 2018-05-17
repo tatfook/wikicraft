@@ -26,6 +26,8 @@ case $RUN_ENV in
     "dev-zh_CN")
         outside_port=8900
         inside_port=8900
+        database=stage-database
+        log=stage-log
     ;;
     "dev-en_US")
         echo "no i18n setting for dev env"
