@@ -16,7 +16,7 @@ local elasticsearch = inherit(models.abstract.base, gettable("models.elasticsear
 function elasticsearch:connect(params)
     local params = params or {}
     local es_setting = KEEPWORK["config"][CURRENT_ENV]["wiki"]["es_setting"] or {}
-    self.host = params.host or es_setting["host"] or "10.28.18.7"
+    self.host = params.host or es_setting["host"] or "localhost"
     self.port = params.port or es_setting["port"] or 9200
     self.index = params.index or es_setting["index"]
     self.enabled = params.enabled or es_setting["enabled"] or 1
@@ -168,8 +168,8 @@ function elasticsearch:add_extra_search_conditions(params, body)
             body.highlight.post_tags = params.post_tags
         end
 
-        body.sort = params.sort      -- array
-        body.post_filter = params.post_filter
+        body.sort = body.sort or params.sort      -- array
+        body.post_filter = body.post_filter or params.post_filter
 
         -- pagination
         if (params.size) and ((params.page) or (params.from)) then
@@ -180,7 +180,7 @@ function elasticsearch:add_extra_search_conditions(params, body)
             body.from = params.from or ((params.page - 1) * body.size)
         end
 
-        body.timeout = "50ms"
+		body.timeout = "50ms"
     return body
 end
 

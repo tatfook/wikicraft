@@ -46,7 +46,7 @@
 			"dev.qiankunew.com",
 			"stage.qiankunew.com",
 			"test.qiankunew.com",
-			"wxa.keepwork.tk",
+			"wxa.keepwork.com",
 			"inside.keepwork.tk",
 		],
 		// 预加载模块列表
