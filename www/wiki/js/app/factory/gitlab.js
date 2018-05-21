@@ -37,7 +37,7 @@ define([
                     result = "https://stgapi.keepwork.com/git";
                     break;
             }
-			result = config.httpProto + result;
+			// result = config.httpProto + result;
             return result;
         }
         var gitlab = {
