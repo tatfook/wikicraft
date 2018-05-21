@@ -28,13 +28,13 @@ define([
             var result = "";
             switch (env) {
                 case "prod":
-                    result = "://api.keepwork.com/git";
+                    result = "https://api.keepwork.com/git";
                     break;
                 case "release":
-                    result = "://rlsapi.keepwork.com/git";
+                    result = "https://rlsapi.keepwork.com/git";
                     break;
                 default:
-                    result = "://stgapi.keepwork.com/git";
+                    result = "https://stgapi.keepwork.com/git";
                     break;
             }
 			result = config.httpProto + result;
