@@ -273,6 +273,8 @@ function website_works:api_updateVisitCount(params)
 
 	data.visitCount = (data.visitCount or 0) + 1
 
+	self:insert_to_es(data)
+
 	self:db():updateOne({["+websiteId+worksUrl"]={params.websiteId, params.worksUrl}}, data, resume)
 	return errors:wrap(yield())
 end

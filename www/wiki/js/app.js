@@ -49,7 +49,7 @@ define([
 			name: "facebook",
 			url: "/api/wiki/auth/facebook",
 			clientId: '1942795522419535',
-			redirectUri:window.location.origin +  '/wiki/login',
+			redirectUri:window.location.origin +  '/api/wiki/auth/facebook',
 			authorizationEndpoint: 'https://www.facebook.com/v3.0/dialog/oauth',
 			oauthType: '2.0',
 			scope: ['email'],
