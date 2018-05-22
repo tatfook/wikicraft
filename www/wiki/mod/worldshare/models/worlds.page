@@ -141,6 +141,22 @@ function worlds:get(params)
 	end
 end
 
+function worlds:api_getByWorldsName(params) 
+	if not params.userid or not params.worldsName then
+		return {error = {id = -1}, msg = "参数不正确"}
+	end
+
+	params.userid = tonumber(params.userid)
+	self:db():findOne({["+userid+worldsName"] = {params.userid, params.worldsName}}, resume)
+	local err, data = yield()
+
+	if not data then
+		return {error = {id = -1}, msg = "not found"}
+	end
+
+	return {error = {id = 0}, data = data}
+end
+
 function worlds:api_getOneOpus(params)
 	local err, query = self:validateQuery(params);
 
