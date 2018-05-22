@@ -15,7 +15,8 @@ define([
 	//console.log("app");
 	var app = angular.module('webapp', ['ui.bootstrap', 'ui.select', 'pascalprecht.translate', 'satellizer', 'ngSanitize', 'toggle-switch',]).run(function () {
 		config.angularBootstrap = true;
-	});
+  });
+
 
 	app.registerController = app.controller;
 

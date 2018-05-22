@@ -408,6 +408,14 @@ define([
             Authenticate("github");
         }
 
+        $scope.facebookLogin = function () {
+          Authenticate("facebook");
+        }
+
+        $scope.googleLogin = function () {
+          Authenticate("google");
+        }
+
         function Authenticate(serviceName) {
             Account.authenticate(serviceName, function (data) {
                 if ($auth.isAuthenticated()) {
