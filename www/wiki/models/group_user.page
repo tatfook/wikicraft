@@ -23,6 +23,7 @@ end
 
 -- 添加组成员
 function group_user:api_upsert(params)
+	params.username = getUsername()
 	if (not params.groupname) or (not params.username) or (not params.memberName) then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
@@ -52,6 +53,7 @@ end
 
 -- 删除组成员
 function group_user:api_deleteMember(params)
+	params.username = getUsername()
 	if (not params.groupname) or (not params.username) or (not params.memberName) then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
@@ -77,6 +79,7 @@ end
 
 -- 删除组全部成员
 function group_user:api_deleteGroup(params)
+	params.username = getUsername()
 	if (not params.groupname) or (not params.username) then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
@@ -88,6 +91,7 @@ end
 
 -- 删除用户全部租成员
 function group_user:api_delete(params)
+	params.username = getUsername()
 	if not params.username then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end

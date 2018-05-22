@@ -48,3 +48,11 @@ function sensitive_words:api_query(params)
 
     return errors:wrap(nil,{total=total,data=data})
 end
+
+function sensitive_words:api_match(params) 
+	if not params.words then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+	local result = sensitiveWordFilter(params)
+	return errors:wrap(nil, result)
+end

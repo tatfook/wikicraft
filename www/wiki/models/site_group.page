@@ -26,6 +26,7 @@ end
 
 -- 创建一个站点组
 function site_group:api_upsert(params)
+	params.username = getUsername()
 	if (not params.username) or (not params.sitename) or not params.groupUsername or (not params.groupname) then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
@@ -44,6 +45,7 @@ end
 
 -- 删除一个站点组
 function site_group:api_deleteByName(params)
+	params.username = getUsername()
 	if (not params.username) or (not params.sitename) or not params.groupUsername or (not params.groupname) then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
@@ -61,6 +63,7 @@ end
 
 -- 删除通过站点名
 function site_group:api_deleteBySitename(params)
+	params.username = getUsername()
 	if (not params.username) or (not params.sitename) then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
@@ -158,6 +161,16 @@ function site_group:api_getGuestUserList(params)
 	return errors:wrap(nil, userlist)
 end
 
+-- 通过站点名获取组 
+function site_group:api_getBySitename(params) 
+	if not params.sitename or not params.username then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+
+	self:db():find({["+username+sitename"] = {params.username, params.sitename}}, resume)
+
+	return errors:wrap(yield())
+end
 
 
 
