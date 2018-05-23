@@ -30,8 +30,11 @@ case $RUN_ENV in
         log=stage-log
     ;;
     "dev-en_US")
-        echo "no i18n setting for dev env"
-        exit 1
+        name=keepwork-${ENV_TYPE}-server-${KEEPWORK_LOCALE}
+        outside_port=8901
+        inside_port=8901
+        database=stage-database-${KEEPWORK_LOCALE}
+        log=stage-log-${KEEPWORK_LOCALE}
     ;;
     "release-zh_CN")
         outside_port=8088
