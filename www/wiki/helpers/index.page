@@ -271,7 +271,7 @@ end
 function get_aho_corasick()
 	local result = mem_cache:get("aho_corasick")
 
-	if not t then
+	if not result then
 		local ac = KEEPWORK["aho_corasick"]
 		local words = load_sensitive_word()
 		result = ac.build(words)
