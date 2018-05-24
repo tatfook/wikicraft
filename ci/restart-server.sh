@@ -32,7 +32,7 @@ case $RUN_ENV in
     "dev-en_US")
         name=keepwork-${ENV_TYPE}-server-${KEEPWORK_LOCALE}
         outside_port=8901
-        inside_port=8901
+        inside_port=8900
         database=stage-database-${KEEPWORK_LOCALE}
         log=stage-log-${KEEPWORK_LOCALE}
     ;;
