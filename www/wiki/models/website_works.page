@@ -211,7 +211,7 @@ function website_works:api_search(params)
 	local item = nil
 	for _, val in ipairs(items or {}) do
 		item = val._source
-		item.commentCount = commentModel:getCountByUrl(item.worksUrl)
+		item.commentCount = commentModel:getCountByUrl({url = item.worksUrl})
 		list[#list+1] = item
 	end
 	return errors:wrap(nil, {total=total, list=list})
@@ -219,7 +219,7 @@ end
 
 function website_works:setWorksCommentCount(list) 
 	for _, item in ipairs(list or {}) do 
-		item.commentCount = commentModel:getCountByUrl(item.worksUrl)
+		item.commentCount = commentModel:getCountByUrl({url = item.worksUrl})
 	end
 end
 -- 创建站点作品
@@ -479,7 +479,7 @@ function website_works:api_getByWorksUrl(params)
 	local err, data = yield()
 
 	if data then
-		data.commentCount = commentModel:getCountByUrl(data.worksUrl)
+		data.commentCount = commentModel:getCountByUrl({url = data.worksUrl})
 	end
 
 	return errors:wrap(err, data)
