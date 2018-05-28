@@ -24,6 +24,7 @@ es:connect({index=index})
 
 function website_works:ctor()
 	self:addfield("websiteId", "number")      -- 站点ID
+	self:addfield("userId", "number")       -- 作品作者
 	self:addfield("username", "string")       -- 作品作者
 	self:addfield("realname", "string")       -- 真实姓名
 	self:addfield("worksTitle", "string")     -- 作品标题
@@ -39,6 +40,8 @@ function website_works:ctor()
 	self:addfield("liveUrl", "string")        -- 生活照
 	self:addfield("visitCount", "number")     -- 作品浏览量
 	self:addfield("voteCount", "number")      -- 投票数
+	self:addfield("birthdate", "string")       -- 出生日期
+	self:addfield("location", "string")       -- 住址
 	--self:addfield("todayVoteCount", "string") -- 今日投票数  yyyy-MM-dd count
 	self:addfield("commentCount", "number")   -- 评论量
 	self:addfield("createDate", "string", false, 64)
@@ -214,6 +217,11 @@ function website_works:api_search(params)
 	return errors:wrap(nil, {total=total, list=list})
 end
 
+function website_works:setWorksCommentCount(list) 
+	for _, item in ipairs(list or {}) do 
+		item.commentCount = commentModel:getCountByUrl(item.worksUrl)
+	end
+end
 -- 创建站点作品
 function website_works:api_upsert(params) 
 	local username = getUsername()
@@ -373,6 +381,8 @@ function website_works:api_getApplyByWebsiteId(params)
 	self:db():count({["+websiteId+worksState"] = {params.websiteId, const.WEBSITE_WORKS_STATE_APPLY}}, resume)
 	local _, total = yield()
 
+	self:setWorksCommentCount(worksList)
+
 	return errors:wrap(nil, {total=total, worksList=worksList})
 end
 
@@ -402,6 +412,8 @@ function website_works:api_getByWebsiteId(params)
 	self:db():find({["+websiteId+worksState"]={params.websiteId, const.WEBSITE_WORKS_STATE_NORMAL, skip=skip, limit=limit}}, resume)
 	local _, worksList = yield()
 
+	self:setWorksCommentCount(worksList)
+
 	return errors:wrap(nil, {total=total, worksList=worksList})
 end
 
@@ -415,7 +427,11 @@ function website_works:api_getByUsername(params)
 	params.websiteId = tonumber(params.websiteId)
 	self:db():find({["+websiteId+username"] = {params.websiteId, username}}, resume)
 
-	return errors:wrap(yield())
+	local err, list = yield()
+
+	self:setWorksCommentCount(list)
+
+	return errors:wrap(err, list)
 end
 
 -- 获取单个用户的作品列表
@@ -428,7 +444,11 @@ function website_works:api_getNormalByUsername(params)
 	params.websiteId = tonumber(params.websiteId)
 	self:db():find({["+websiteId+worksState+username"] = {params.websiteId, const.WEBSITE_WORKS_STATE_NORMAL, username}}, resume)
 
-	return errors:wrap(yield())
+	local err, list = yield()
+
+	self:setWorksCommentCount(list)
+
+	return errors:wrap(err, list)
 end
 
 -- 获取单个用户的申请作品列表
@@ -441,7 +461,11 @@ function website_works:api_getApplyByUsername(params)
 	params.websiteId = tonumber(params.websiteId)
 	self:db():find({["+websiteId+worksState+username"] = {params.websiteId, const.WEBSITE_WORKS_STATE_APPLY, username}}, resume)
 
-	return errors:wrap(yield())
+	local err, list = yield()
+
+	self:setWorksCommentCount(list)
+
+	return errors:wrap(err, list)
 end
 
 -- 通过单个作品
@@ -452,7 +476,13 @@ function website_works:api_getByWorksUrl(params)
 	
 	self:db():findOne({["+websiteId+worksUrl"] = {params.websiteId, params.worksUrl}}, resume)
 	
-	return errors:wrap(yield())
+	local err, data = yield()
+
+	if data then
+		data.commentCount = commentModel:getCountByUrl(data.worksUrl)
+	end
+
+	return errors:wrap(err, data)
 end
 
 -- 获取作品列表通过url
@@ -467,6 +497,8 @@ function website_works:api_getByWorksUrlList(params)
 		local _, works = yield()
 		worksList[#worksList+1] = works
 	end
+
+	self:setWorksCommentCount(worksList)
 
 	return errors:wrap(nil, {total=#worksList, worksList=worksList})
 end
@@ -562,6 +594,8 @@ function website_works:api_getLatestByWebsiteId(params)
 	local query = {["+websiteId-createDate"]={params.websiteId, gt=startDate, skip=skip, limit=limit}}
 	local worksList = self:api_get(query).data
 	
+	self:setWorksCommentCount(worksList)
+
 	return errors:wrap(nil, {total=total, worksList=worksList})
 end
 
