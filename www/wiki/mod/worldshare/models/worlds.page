@@ -190,7 +190,7 @@ function worlds:api_getWorldByFilePath(params)
 	local err, query = self:validateQuery(params);
 
 	if (not query or not query['filePath']) then
-		rresponse:status(404);
+		response:status(404);
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR);
 	end
 
@@ -203,7 +203,7 @@ function worlds:api_getWorldByFilePath(params)
 	end
 
 	local username = filePath[1];
-	local worldName = string.match(filePath[3] or '', "world_(%S+).md");
+	local worldName = string.match(filePath[3] or '', "world_(%S+)");
 
 	local userinfo = user:api_getByName({ username = username });
 	local userid = userinfo['data']['_id'];
