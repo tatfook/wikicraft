@@ -183,22 +183,21 @@ function worlds:api_getOpusById(params)
 	end
 end
 
-function worlds:api_getWorldByName(params)
+function worlds:api_getWorldByIdWithName(params)
 	response:status(503);
 	local err, query = self:validateQuery(params);
 
-	if (not query) then
+	if (not query or not query['worldsName'] or not query['userid']) then
 		response:status(404);
-		return errors:wrap(errors.NOT_FOUND);
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR);
 	end
 
-	self:db():findOne({["+worldsName"] = {query.worldsName}}, resume);
+	self:db():findOne({["+userid+worldsName"] = {query.userid, query.worldsName}}, resume);
 	local err, result = yield(true);
 
 	if (not err) then
 		if (result) then
 			response:status(200);
-			log(result, true)
 			return errors:wrap(nil, result);
 		else
 			response:status(404);
