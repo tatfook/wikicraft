@@ -371,7 +371,7 @@ function website_works:api_agreeWorksApply(params)
 	local err, data = yield()
 	self:insert_to_es(data)
 
-	return self:api_upsert(params) 
+	return errors:wrap(err, data)
 end
 
 -- 获取作品申请列表
