@@ -102,11 +102,12 @@ end
 
 -- 同意申请
 function website_member:api_agreeMemberApply(params)
-	params.username = getUsername()
-	params.state = const.WEBSITE_MEMBER_STATE_NORMAL
-	params.roleName = const.WEBSITE_USER_ROLE_NORMAL
-	params.level = const.RECORD_LEVEL_LOW
-	return self:api_upsert(params)
+	self:db():insertOne({["+websiteId+username"]={params.websiteId, params.username}}, {
+		state = const.WEBSITE_MEMBER_STATE_NORMAL,
+		roleName = const.WEBSITE_USER_ROLE_NORMAL,
+		level = const.RECORD_LEVEL_LOW,
+	}, resume)
+	return errors:wrap(yield())
 end
 
 -- 添加成员
