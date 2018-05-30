@@ -28,6 +28,8 @@ function worlds:ctor()
 	self:addfield("giturl", "string", false, 300);
 	--worlds name
 	self:addfield("worldsName","string",false,100);
+	--worlds file path
+	self:addfield("filePath","string",false);
 	--worlds modify date
 	self:addfield("revision","string",false,30);
 	--worlds update data
@@ -143,7 +145,7 @@ function worlds:get(params)
 	end
 end
 
-function worlds:api_getOpusById(params)
+function worlds:api_getWorldById(params)
 	local err, query = self:validateQuery(params);
 
 	if(not query.opusId) then
@@ -181,6 +183,34 @@ function worlds:api_getOpusById(params)
 	else
 		return {error = {id = -1} , msg = "database err"};
 	end
+end
+
+function worlds:api_getWorldByFilePath(params)
+	response:status(503);
+	local err, query = self:validateQuery(params);
+
+	if (not query or not query['filePath']) then
+		rresponse:status(404);
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR);
+	end
+
+	local filePath = {};
+
+	for item in string.gmatch(query['filePath'] or "", "([^/]*)") do
+    if (item and #item > 0) then
+        filePath[#filePath + 1] = item
+    end
+	end
+
+	local username = filePath[1];
+	local worldName = string.match(filePath[3] or '', "world_(%S+).md");
+
+	local userinfo = user:api_getByName({ username = username });
+	local userid = userinfo['data']['_id'];
+
+	local result = self:api_getWorldByIdWithName({ userid = userid, worldsName = worldName });
+
+	return result;
 end
 
 function worlds:api_getWorldByIdWithName(params)
