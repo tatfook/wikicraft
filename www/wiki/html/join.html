@@ -132,6 +132,15 @@
     .verify-code-container .verify-code-btn .btn {
         margin: 0 !important;
     }
+    .login-with-fb-gl a {
+        display: block;
+        margin-top: 20px;
+    }
+    .login-with-fb-gl a img {
+        display: block;
+        width: auto;
+        height: 40px;
+    }
 </style>
 
 <div ng-controller="joinController" class="container-fluid">
@@ -217,6 +226,14 @@
                     <a ng-click="githubLogin()">
                         <img ng-src="{{imgsPath+'icon/wiki_github_logo.png'}}" alt="">
                     </a>
+                </div>
+                <div ng-if="isGlobalVersion" class="login-with-fb-gl">
+                  <a ng-click="facebookLogin()">
+                    <img ng-src="{{imgsPath+'icon/wiki_facebook_login.png'}}" alt="">
+                  </a>
+                  <a ng-click="googleLogin()">
+                    <img ng-src="{{imgsPath+'icon/wiki_google_login.png'}}" alt="">
+                  </a>
                 </div>
             </div>
         </form>

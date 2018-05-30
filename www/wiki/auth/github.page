@@ -83,8 +83,9 @@ else
 end
 
 if not userThreeService.username then
-	return response:send({error=0, message="user not bind"})
+	return response:send({error=0, data={serviceId=githubId, access_token=accessToken.access_token, serviceName=serviceName}, message="user not bind"})
 end
+
 db.user:findOne({["+username"]={userThreeService.username}}, resume)
 local err, userinfo = yield()
 if not userinfo then

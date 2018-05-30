@@ -675,7 +675,7 @@ function website:api_visitWebsite(params)
 	
 	-- 更新作品的访问记录数
 	local websiteWorksModel = models.website_works:new()
-	websiteWorksModel:api_updateVisitCount({worksUrl = params.url})
+	websiteWorksModel:api_updateVisitCount({websiteId = params.websiteId, worksUrl = params.url})
 
 	return errors:wrap()
 end
@@ -726,7 +726,12 @@ function website:api_getDetailInfo(params)
 		end
 	end
 
-	self:api_visitWebsite(params)
+	self:api_visitWebsite({
+		username = params.username,
+		sitename = params.sitename,
+		url = params.url,
+		websiteId = siteinfo._id,
+	})
 
 	return errors:wrap(nil, {userinfo=userinfo, siteinfo=siteinfo})
 end

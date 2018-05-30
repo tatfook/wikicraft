@@ -11,6 +11,8 @@ define([
     app.registerController('loginController', ['$scope', '$auth', 'Account','modal', function ($scope, $auth, Account,modal) {
         //$scope.errMsg = "用户名或密码错误";
         $scope.isModal=false;
+
+        $scope.isGlobalVersion = config.isGlobalVersion;
 		$scope.keepPassword = storage.localStorageGetItem("keepPassword");
 
         function init() {
@@ -84,6 +86,14 @@ define([
         $scope.githubLogin = function () {
             // console.log("github登录");
             Authenticate("github");
+        }
+
+        $scope.facebookLogin = function () {
+          Authenticate("facebook");
+        }
+
+        $scope.googleLogin = function () {
+          Authenticate("google");
         }
 
         $scope.cancel = function () {

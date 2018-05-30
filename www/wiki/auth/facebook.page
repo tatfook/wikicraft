@@ -1,0 +1,95 @@
+<?npl
+--[[
+Title: oauth handler for `satellizer oauth framework`
+Author: LiXizhi
+Date: 2016/5/10
+]]
+
+local accessTokenUrl = 'https://graph.facebook.com/v3.0/oauth/access_token'
+local userApiUrl = 'https://graph.facebook.com/me'
+local serviceName = "facebook"
+local params = {
+	-- grant_type="authorization_code",
+	code = request:get("code"),
+	client_id = request:get("clientId"),
+	client_secret = KEEPWORK["config"][CURRENT_ENV]["threeService"]["facebook"]["client_secret"],
+	redirect_uri = request:get("redirectUri"),
+};
+
+log("===============================facebook========================")
+log(params)
+response:Begin()
+if not params.client_id then
+	return response:send_xml("keepwork.com认证")
+end
+-- Step 1. Exchange authorization code for access token.
+System.os.GetUrl({
+	url = accessTokenUrl, 
+	qs = params,
+}, resume)
+local err, data = yield()
+log(data)
+local accessToken = data.data
+log("auth step 1")
+log(accessToken)
+if not accessToken or accessToken.error then
+	return response:send({error=1, message="access token invaild"})
+end
+
+-- Step 2. Retrieve profile information about the current user.
+local access_token = accessToken.access_token
+--System.os.GetUrl({url = userApiUrl .. "?id_token=" .. accessToken.id_token}, resume)
+System.os.GetUrl({url = userApiUrl .. "?access_token=" .. access_token}, resume)
+local err, data = yield()
+data = data.data
+log("auth step 2")
+LOG.std(nil,"error","keepwork", data)
+if not data or not data.id then
+	return response:send({error=1, message= 'Failed to fetch user info' })
+end
+local serviceId = tostring(data.id)
+local serviceUsername = data.name
+
+-- 未登录
+db.user_three_service:findOne({["+serviceId+serviceName"]={serviceId, serviceName}}, resume)
+local err, userThreeService = yield()
+
+-- 是否已经登录
+local username = getUsername()
+if username then
+	if (userThreeService and userThreeService.username and userThreeService.username ~= username) then
+		return response:send({error=0, message="账号已被绑定:" .. userThreeService.username})
+	end
+
+	db.user_three_service:insertOne({["+serviceId+serviceName"]={serviceId, serviceName}}, {username=username, serviceId=serviceId, serviceName=serviceName, serviceUsername=serviceUsername}, resume)
+	yield()
+
+	return response:send({error=0, message="OK"})
+end
+
+-- 没有绑定
+if not userThreeService then
+	db.user_three_service:insertOne({["+serviceId+serviceName"]={serviceId, serviceName}}, {serviceId=serviceId, serviceName=serviceName, serviceUsername=serviceUsername}, resume)
+	yield()
+	return response:send({error=0, data={serviceId=serviceId, access_token=access_token, serviceName=serviceName}, message="user not found"})
+else
+	if not userThreeService.serviceUsername then
+		db.user_three_service:updateOne({["+serviceId+serviceName"]={serviceId, serviceName}}, {serviceUsername=serviceUsername}, resume)
+		yield()
+	end
+end
+
+if not userThreeService.username then
+	return response:send({error=0, message="user not bind", data={serviceId = serviceId, serviceName = serviceName}})
+end
+
+db.user:findOne({["+username"]=userThreeService.username}, resume)
+local err, userinfo = yield()
+if not userinfo then
+	return response:send({error=0, data={serviceId=serviceId, serviceName=serviceName}, message="user not found"})
+end
+local token = encodeJWT({userId=userinfo._id, username=userinfo.username})
+setAuthCookie(token)
+return response:send({token = token, data = userinfo, error=0, message="OK"})
+
+
