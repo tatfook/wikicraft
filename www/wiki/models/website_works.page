@@ -362,6 +362,7 @@ end
 
 -- 同意作品申请
 function website_works:api_agreeWorksApply(params)
+	params.username = getUsername()
 	params.worksState = const.WEBSITE_WORKS_STATE_NORMAL
 	
 	return self:api_upsert(params) 
