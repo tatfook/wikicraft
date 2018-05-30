@@ -134,7 +134,7 @@ function website_works:search(params)
 	if params.awords then
 		must[#must+1] = {
 			match = {
-				"awords.keyword" = params.awords,
+				["awords.keyword"] = params.awords,
 			},
 		}
 	end
