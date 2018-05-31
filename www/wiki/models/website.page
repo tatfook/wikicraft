@@ -726,12 +726,14 @@ function website:api_getDetailInfo(params)
 		end
 	end
 
-	self:api_visitWebsite({
-		username = params.username,
-		sitename = params.sitename,
-		url = params.url,
-		websiteId = siteinfo._id,
-	})
+	if siteinfo then
+		self:api_visitWebsite({
+			username = params.username,
+			sitename = params.sitename,
+			url = params.url,
+			websiteId = siteinfo._id,
+		})
+	end
 
 	return errors:wrap(nil, {userinfo=userinfo, siteinfo=siteinfo})
 end
