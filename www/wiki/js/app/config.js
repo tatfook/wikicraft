@@ -27,9 +27,13 @@
         }
         return "develop";
     }
+  var isGlobalVersion = wiki_config && wiki_config.locale == 'en_US'
+
 	config = {
-        // --------------------------------------前端配置 START----------------------------------------------
-        env: getEnv(),
+    // --------------------------------------前端配置 START----------------------------------------------
+    env: getEnv(),
+    serverConfig: wiki_config,
+    isGlobalVersion: isGlobalVersion,
 		localEnv:localEnv,                                                                                         // 是否本地调试环境
 		localVMEnv:localVMEnv,                                                                                     // 本地虚拟机环境
 		hostname:wiki_config.hostname ? wiki_config.hostname.split(":")[0] : window.location.hostname,             // url中的hostname, 优先取服务端给过来的(cname转发，客户端获取不到真实的hostname)
@@ -38,6 +42,9 @@
 			"release.keepwork.com",
 			"dev.keepwork.com",
 			"stage.keepwork.com",
+			"release-en.keepwork.com",
+			"stage-en.keepwork.com",
+			"en.keepwork.com",
 			"test.keepwork.com",
 			"dev.qiankunew.com",
 			"stage.qiankunew.com",

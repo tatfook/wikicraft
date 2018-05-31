@@ -9,7 +9,7 @@ define(['app', 'helper/util', 'text!html/apps.html'], function (app, util, htmlC
             {
                 "name":"Paracraft创意空间",
                 "title":"创造3D交互动画，学习编程",
-                "siteUrl":"https://www.paracraft.cn/",
+                "siteUrl":"http://www.paracraft.cn/",
                 "bgColor":"#62A1E1",
                 "logoUrl":config.httpProto+"://git.keepwork.com/gitlab_rls_kaitlyn/keepworkdatasource/raw/master/kaitlyn_images/img_1501572349355.png",
             },
@@ -44,7 +44,7 @@ define(['app', 'helper/util', 'text!html/apps.html'], function (app, util, htmlC
                     {
                         "name":"Paracraft创意空间",
                         "details":"创造3D交互动画，学习计算机编程...",
-                        "siteUrl":config.httpProto+"://www.paracraft.cn",
+                        "siteUrl":"http://www.paracraft.cn",
                         "logoUrl":config.httpProto+"://git.keepwork.com/gitlab_rls_kaitlyn/keepworkdatasource/raw/master/kaitlyn_images/img_1501572349355.png"
                     },
                     {

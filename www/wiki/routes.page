@@ -178,14 +178,15 @@ function RenderServerWikiScript()
 	config.hostname = request:GetHost() or ""
 	config.serverUpdateTime = getServerUpdateTime()
 	config.webroot = '/' .. WIKI_CODE_ENV .. '/'
-	config.wikiEnv = WIKI_ENV
+  config.wikiEnv = WIKI_ENV
+  config.locale = os.getenv("KEEPWORK_LOCALE")
 	--config.token = getTokenStr()
 	local devIndex = string.find(config.hostname, ".dev.keepwork.com")
 	if config.hostname == "dev.keepwork.com" or config.hostname == "stage.keepwork.com" or devIndex then
 		config.bustVersion = os.time()
 	else 
 		config.bustVersion = getBustVersion()
-	end
+  end
 	-- log(config)
 	echo(format('<script>window.wiki_config=%s</script>\n', json_encode(config)))
 	echo(format('<script src="/' .. WIKI_CODE_ENV .. '/js/app/config.js?bust=%s"></script>\n', config.bustVersion))

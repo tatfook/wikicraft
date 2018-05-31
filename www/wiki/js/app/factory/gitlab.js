@@ -15,7 +15,7 @@ define([
     }
 
 	function filenameEncode(str) {
-				
+
 	}
 
 	function filenameDecode(str) {
@@ -28,16 +28,16 @@ define([
             var result = "";
             switch (env) {
                 case "prod":
-                    result = "://git.keepwork.com";
+                    result = "https://api.keepwork.com/git";
                     break;
                 case "release":
-                    result = "://git.release.keepwork.com";
+                    result = "https://rlsapi.keepwork.com/git";
                     break;
                 default:
-                    result = "://git.stage.keepwork.com";
+                    result = "https://stgapi.keepwork.com/git";
                     break;
             }
-			result = config.httpProto + result;
+			// result = config.httpProto + result;
             return result;
         }
         var gitlab = {
@@ -64,7 +64,7 @@ define([
                 skipAuthorization: true,  // 跳过插件satellizer认证
 				isShowLoading:data.isShowLoading == undefined ? true : data.isShowLoading,
             };
-            
+
 
             data = data || {};
             data.per_page = 100;
@@ -141,9 +141,9 @@ define([
 		// groups
 		// get group list
 		gitlab.getGroupList = function (params, cb, errcb) {
-			var self = this;			
+			var self = this;
 			var url = '/groups';
-			
+
 			self.httpRequest("GET", url, {owned:true, isFetchAll:true, search:params.search}, function(data){
 				for (var i = 0; i < (data || []).length; i++) {
 					//data[i].name = data[i].name.substring((self.username+'_group_').length);
@@ -168,20 +168,20 @@ define([
 					//if (data[i].name == params.name) {
 						//return ;
 					//}
-				//}	
-				
+				//}
+
 				//self.httpRequest("POST", url, {
 					//name:groupname,
 					//path:groupname,
 					//visibility: "public",
-					//request_access_enabled: true, 
+					//request_access_enabled: true,
 				//}, cb, errcb)
 			//}, errcb);
 		//}
 		// update group
 		gitlab.upsertGroup = function(params, cb, errcb) {
 			var self = this;
-			var url = '/groups'; 
+			var url = '/groups';
 			var method = "POST";
 			params.path = self.username + "_group_"  + params.name;
 			params.name = params.path;
@@ -206,7 +206,7 @@ define([
 		gitlab.getGroupMemberList = function(params, cb, errcb) {
 			var self = this;
 			var url = '/groups/' + params.id + '/members';
-			
+
 			self.httpRequest("GET", url, params, function(data){
 				for (var i = 0; i < (data || []).length; i++) {
 					var user = data[i];
@@ -387,7 +387,7 @@ define([
 			var apiurl = self.getRawContentUrlPrefix(params);
 			//console.log(apiurl);
             var _getRawContent = function () {
-				if (self.apiBaseUrl.indexOf("git.keepwork.com") > 0 || self.apiBaseUrl.indexOf("git.stage.keepwork.com") > 0 || self.apiBaseUrl.indexOf("git.release.keepwork.com") > 0) {
+				if (self.apiBaseUrl.indexOf("api.keepwork.com/git/") > 0 || self.apiBaseUrl.indexOf("stgapi.keepwork.com/git/") > 0 || self.apiBaseUrl.indexOf("rlsapi.keepwork.com/git/") > 0) {
 					$http({
 						method: 'GET',
 						url: apiurl,
@@ -417,7 +417,7 @@ define([
 						//type:"GET",
 						//data:{
 							//ref:self.lastCommitId,
-						//}, 
+						//},
 						//beforeSend:function(request, statu, xhr) {
 							//request.setRequestHeader("PRIVATE-TOKEN", self.dataSourceToken);
 						//},
@@ -501,8 +501,8 @@ define([
                 encoding: 'base64',
 				isShowLoading: params.isShowLoading || false,
             }, function (data) {
-				//var imgUrl = self.getRawContentUrlPrefix({sha:"master"}) + '/' + data.file_path + (self.dataSource.visibility  == "private" ? ("?private_token=" + self.dataSource.dataSourceToken) : ""); 
-				var imgUrl = self.getRawContentUrlPrefix({sha:"master", path:path, token:"visitortoken"}); 
+				//var imgUrl = self.getRawContentUrlPrefix({sha:"master"}) + '/' + data.file_path + (self.dataSource.visibility  == "private" ? ("?private_token=" + self.dataSource.dataSourceToken) : "");
+				var imgUrl = self.getRawContentUrlPrefix({sha:"master", path:path, token:"visitortoken"});
                 cb && cb(imgUrl);
             }, errcb);
         }
@@ -591,7 +591,7 @@ define([
                 errcb && errcb();
                 return;
             }
-			
+
 			if (dataSource.isInited || dataSource.projectId) {
 				//self.getLastCommitId(function(lastCommitId){
 					//lastCommitId && (self.lastCommitId = lastCommitId);
@@ -662,7 +662,7 @@ define([
 			var projectName = params.projectName;
 			var visibility = params.visibility;
 			self.projectName = projectName;
-		
+
 			var successCallback = function(params) {
 				self.projectId = params.projectId;
 				self.projectMap[projectName] = {
@@ -679,7 +679,7 @@ define([
 					self.lastCommitId = lastCommitId;
 				});
 
-				cb && cb();	
+				cb && cb();
 				return;
 			}
 
@@ -723,7 +723,7 @@ define([
 					method = "PUT";
 					url += "/" + project.id;
 					data.id = project.id;
-					
+
 					// 不存在则创建项目 存在更新
 					self.httpRequest(method, url, data, function (project) {
 						//console.log(project);

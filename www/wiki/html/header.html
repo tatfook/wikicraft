@@ -422,6 +422,16 @@
             width: 100%;
         }
     }
+    @media (max-width: 1200px) {
+      .navbar-default li.iconfont-icon{
+        padding: 7px 10px 3px;
+      }
+    }
+    .iicc-logo{
+      width: auto;
+      height: 30px;
+      margin: 5px 0;
+    }
 </style>
 <style>
     .url-header .nav-bread-crumb {
@@ -514,6 +524,12 @@
     .url-header .breadcrumb > li > a:hover, .url-header .breadcrumb > li > a:focus{
         background-color: transparent;
         color: #0088FF;
+    }
+    .url-header .navbar-left{
+      float: left;
+    }
+    .url-header .navbar-right{
+      float: right;
     }
 </style>
 
@@ -717,10 +733,16 @@
                             <i class="iconfont icon-yingyongguanli"></i>
                             <span translate="应用中心"></span>
                         </li>
-                        <li class="iconfont-icon">
+                        <!-- <li class="iconfont-icon">
                             <a href="http://keepwork.com/official/help/index">
                                 <i class="iconfont icon-bangzhu"></i>
                                 <span translate="帮助"></span>
+                            </a>
+                        </li> -->
+                        <li class="iconfont-icon">
+                            <a href="http://iicc.keepwork.com" target="_blank">
+                                <img class="iicc-logo" ng-src="{{getImageUrl('iicc_logo.png', imgsPath)}}" alt="">
+                                {{"国际智能创意大赛" | translate}}
                             </a>
                         </li>
                         <!-- <li class=""><a href="http://para.keepwork.com" target="_blank">{{'paracraft' | translate}}</a></li> -->
@@ -737,9 +759,15 @@
                             <i class="iconfont icon-feature"></i>{{"功能" | translate}}</li>
                         <li class="iconfont-icon" ng-click="goApps()">
                             <i class="iconfont icon-yingyongguanli"></i>{{"应用中心" | translate}}</li>
-                        <li class="iconfont-icon">
+                        <!-- <li class="iconfont-icon">
                             <a href="http://keepwork.com/official/help/index">
                                 <i class="iconfont icon-bangzhu"></i>{{"帮助" | translate}}</a>
+                        </li> -->
+                        <li class="iconfont-icon">
+                            <a href="http://iicc.keepwork.com" target="_blank">
+                                <img class="iicc-logo" ng-src="{{getImageUrl('iicc_logo.png', imgsPath)}}" alt="">
+                                {{"国际智能创意大赛" | translate}}
+                            </a>
                         </li>
                         <!-- <li class=""><a href="http://para.keepwork.com" target="_blank">{{'paracraft' | translate}}</a></li> -->
                     </ul>
