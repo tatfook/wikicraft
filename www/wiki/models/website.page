@@ -704,7 +704,7 @@ function website:api_getDetailInfo(params)
 	self:db():findOne({["+username+name"]={params.username, params.sitename}}, resume)
 	local _, siteinfo = yield()
 	
-	if siteinfo and siteinfo.state == const.SITE_STATE_EXCEPTION then
+	if not siteinfo or siteinfo.state == const.SITE_STATE_EXCEPTION then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
 
