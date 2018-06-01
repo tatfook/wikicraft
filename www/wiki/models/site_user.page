@@ -172,7 +172,7 @@ function site_user:api_getSiteLevelByMemberName(params)
 	self:db():findOne({["+username+sitename+memberName"] = {params.username, params.sitename, params.memberName}}, resume)
 	local err, data = yield()
 	if data then
-		return errors:wrap(nil, data.level)
+		return errors:wrap(nil, data.level or 40)
 	end
 	
 	local limit = 100000
@@ -181,7 +181,7 @@ function site_user:api_getSiteLevelByMemberName(params)
 	local err, groups = yield()
 
 	local siteGroupDB = models.site_group:new()
-	for _, group in (groups or {}) do
+	for _, group in ipairs(groups or {}) do
 		siteGroupDB:db():findOne({["+username+sitename+groupUsername+groupname"] = {
 			params.username,
 			params.sitename,
