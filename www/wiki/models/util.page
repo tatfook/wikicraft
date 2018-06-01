@@ -127,7 +127,7 @@ function util:isArray(table)
 			return false -- not a array
 		end
 	end
-	if max > count * 2 then
+	if count == 0 or max > count * 2 then
 		return false -- not a array
 	end
 	return max -- return highest index in the table
