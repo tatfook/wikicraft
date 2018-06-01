@@ -12,7 +12,7 @@ include_once("./abstract/base.page");
 include_once("./user.page");
 
 local website_comment=inherit(models.abstract.base, gettable("models.website_comment"))
-website_comment.db_name = "website_works"
+website_comment.db_name = "website_comment"
 
 function website_comment:ctor()
 	self:addfield("url", "string")           -- 页面ID

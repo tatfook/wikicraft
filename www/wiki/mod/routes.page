@@ -34,6 +34,11 @@ if(isAPI == "api") then
 	send_nosniff_header();
 	nocache_headers();	
 
+	-- debug use start
+	if request:GetMethod() == "OPTIONS" then
+		return response:send("OPTIONS", true);
+	end
+
 	local modelname, params = path:match("^/?models/([%w_]+)/?(.*)")
 	if(modelname) then
 		local modelfilename = MOD_ROOT.."models/"..modelname..".page";
