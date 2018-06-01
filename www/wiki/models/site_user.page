@@ -165,7 +165,23 @@ end
 
 -- 通过成员名获取站点
 function site_user:api_getSiteLevelByMemberName(params)
-	if not params.username or not params.sitename or not params.memberName then 
+	if not params.username or not params.sitename then 
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+
+	local websiteDB = models.website:new()
+	websiteDB:db():findOne({["+username+name"] = {params.username, params.sitename}}, resume)
+	local err, data = yield()
+
+	if not data then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+
+	if data.visibility == "public" then
+		return errors:wrap(nil, 40)
+	end
+
+	if not params.memberName then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
 
