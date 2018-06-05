@@ -101,7 +101,7 @@
 </style>
 
 <div ng-controller="loginController" ng-class="{'container-fluid':!isModal}">
-    <div class="login-form" ng-class="{'col-lg-4 col-lg-offset-4 col-sm-6 col-sm-offset-3 responsive':!isModal}">
+    <div class="login-form" ng-class="{'col-lg-4 col-lg-offset-4 col-sm-6 col-sm-offset-3 responsive':!isModal}" ng-attr-id="{{ loginDomId }}">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close" aria-hidden="true" ng-click="cancel()" ng-show="isModal"><span aria-hidden="true">&times;</span></button>
         <form class="clearfix">
             <div class="form-group">
