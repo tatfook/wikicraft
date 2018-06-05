@@ -17,6 +17,7 @@ define(['app',
 ], function (app, util, storage, htmlContent, userProfileHtmlContent, websiteHtmlContent, dataSourceHtmlContent, myVIPHtmlContent, editWebsiteHtmlContent, newWebsiteHtmlContent, inviteHtmlContent, servicesHtmlContent) {
     app.registerController('userCenterController', ['$rootScope','$scope', 'Account', 'Message', function ($rootScope, $scope, Account, Message) {
         $scope.contentType = undefined;
+        $scope.isGlobalVersion = config.isGlobalVersion;
         $scope.userProfileItemList = [
             {contentType:"userProfile", subContentType:"myProfile", flag:'myProfile', name:'我的资料'},
             {contentType:"userProfile", subContentType:"accountSafe", flag:'accountSafe', name:'账户安全'},
@@ -24,11 +25,11 @@ define(['app',
             {contentType:"userProfile", subContentType:"myCollection", flag:'myCollection', name:'我的关注'},
             {contentType:"userProfile", subContentType:"myHistory", flag:'myHistory', name:'我的历史'},
             {contentType:"userProfile", subContentType:"myFans", flag:'myFans', name:'我的粉丝'},
-            {contentType:"userProfile", subContentType:"realName", flag:'realName', name:'实名认证'},
+            !$scope.isGlobalVersion && {contentType:"userProfile", subContentType:"realName", flag:'realName', name:'实名认证'},
             // {contentType:"userProfile", subContentType:"myPay", flag:'myPay', name:'消费记录'},
             {contentType:"userProfile", subContentType:"dataSource", flag:'dataSource', name:'数据源'},
             // {contentType:"userProfile", subContentType:"invite", flag:'invite', name:'邀请注册'},
-        ];
+        ].filter(x => x);
 
         $scope.websiteMangerItemList = [
             {contentType:"websiteManager", subContentType:"myWebsite", flag:'myWebsite', name:'我的站点'},
