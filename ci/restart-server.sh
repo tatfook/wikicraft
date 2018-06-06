@@ -76,8 +76,9 @@ docker run -d --restart=always --name=$name \
   -v "${log}:/project/wikicraft/log" \
   -p "${outside_port}:${inside_port}" \
   -e "KEEPWORK_LOCALE=${KEEPWORK_LOCALE}" \
-  -e "HTTP_PROXY=${KEEPWORK_PROXY}" \
-  -e "HTTPS_PROXY=${KEEPWORK_PROXY}" \
+  -e "http_proxy=${KEEPWORK_PROXY}" \
+  -e "https_proxy=${KEEPWORK_PROXY}" \
+  -e "no_proxy=${KEEPWORK_NOPROXY}" \
   keepwork/$ENV_TYPE:b$BUILD_NUMBER $ENV_TYPE
 
 
