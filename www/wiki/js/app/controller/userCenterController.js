@@ -29,7 +29,7 @@ define(['app',
             // {contentType:"userProfile", subContentType:"myPay", flag:'myPay', name:'消费记录'},
             {contentType:"userProfile", subContentType:"dataSource", flag:'dataSource', name:'数据源'},
             // {contentType:"userProfile", subContentType:"invite", flag:'invite', name:'邀请注册'},
-        ].filter(x => x);
+        ].filter(function(x) {return x});
 
         $scope.websiteMangerItemList = [
             {contentType:"websiteManager", subContentType:"myWebsite", flag:'myWebsite', name:'我的站点'},
