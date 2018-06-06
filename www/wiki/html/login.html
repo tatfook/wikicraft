@@ -89,14 +89,32 @@
             padding:0;
         }
     }
-    .login-with-fb-gl a {
-        display: block;
-        margin-top: 20px;
+    .login-for-global a {
+      padding: 10px 16px;
+      text-align: center;
+      position: relative;
     }
-    .login-with-fb-gl a img {
-        display: block;
-        width: auto;
-        height: 40px;
+    .login-for-global a .svg-wrapper {
+      position: absolute;
+      width: 20px;
+      height: 100%;
+      top: 0;
+      left: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .login-for-global a svg {
+      border: 0 !important;
+    }
+    .login-for-global a.facebook {
+      background: #4460a0 !important;
+    }
+    .login-for-global a.google {
+      background: #3f82f8 !important;
+    }
+    .login-for-global a.github {
+      background: #24292e !important;
     }
 </style>
 
@@ -126,29 +144,42 @@
                     {{ "没有账号？点击" | translate }}<a ng-click="goRegisterPage()" class="text-primary" translate="注册"></a>
                 </div>
             </div>
-            <div class="otherLogin">
-                <div class="title" translate="直接使用以下账号登录"></div>
-                <a ng-click="qqLogin()">
-                    <img ng-src="{{imgsPath+'icon/wiki_qq.png'}}" alt="">
-                </a>
-                <a ng-click="wechatLogin()">
-                    <img ng-src="{{imgsPath+'icon/wiki_wechat.png'}}" alt="">
-                </a>
-                <a ng-click="sinaWeiboLogin()">
-                    <img ng-src="{{imgsPath+'icon/wiki_sina_weibo.png'}}" alt="">
-                </a>
-                <a ng-click="githubLogin()">
-                    <img ng-src="{{imgsPath+'icon/wiki_github_logo.png'}}" alt="">
-                </a>
+            <div ng-if="!isGlobalVersion" class="otherLogin">
+              <div class="title" translate="直接使用以下账号登录"></div>
+              <a ng-click="qqLogin()">
+                <img ng-src="{{imgsPath+'icon/wiki_qq.png'}}" alt="">
+              </a>
+              <a ng-click="wechatLogin()">
+                <img ng-src="{{imgsPath+'icon/wiki_wechat.png'}}" alt="">
+              </a>
+              <a ng-click="sinaWeiboLogin()">
+                <img ng-src="{{imgsPath+'icon/wiki_sina_weibo.png'}}" alt="">
+              </a>
+              <a ng-click="githubLogin()">
+                <img ng-src="{{imgsPath+'icon/wiki_github_logo.png'}}" alt="">
+              </a>
             </div>
-            <div ng-if="isGlobalVersion" class="login-with-fb-gl">
-                <a ng-click="facebookLogin()">
-                  <img ng-src="{{imgsPath+'icon/wiki_facebook_login.png'}}" alt="">
-                </a>
-                <a ng-click="googleLogin()">
-                  <img ng-src="{{imgsPath+'icon/wiki_google_login.png'}}" alt="">
-                </a>
-              </div>
+            <div ng-if="isGlobalVersion" class="otherLogin login-for-global">
+              <div class="title" translate="直接使用以下账号登录"></div>
+              <a ng-click="githubLogin()" class="btn btn-primary btn-block btn-lg github">
+                <span class="svg-wrapper">
+                  <svg height="20" viewBox="0 0 16 16" version="1.1" width="20" aria-hidden="true"><path fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"></path></svg>
+                </span>
+                Continue with GitHub
+              </a>
+              <a ng-click="facebookLogin()" class="btn btn-primary btn-block btn-lg facebook">
+                <span class="svg-wrapper">
+                  <svg width="18" height="18" viewBox="0 0 18 18" xmlns="http://www.w3.org/2000/svg"><title>Facebook</title><path d="M9.614 18H.994A.993.993 0 0 1 0 17.006V.993C0 .445.445 0 .993 0h16.014c.548 0 .993.445.993.993v16.013a.994.994 0 0 1-.993.994H12.42v-6.97h2.34l.35-2.717h-2.69V6.578c0-.786.218-1.322 1.346-1.322h1.438v-2.43a19.23 19.23 0 0 0-2.096-.107c-2.074 0-3.494 1.266-3.494 3.59v2.004H7.27v2.716h2.345V18z" fill="#FFF" fill-rule="evenodd"/></svg>
+                </span>
+                Continue with Facebook
+              </a>
+              <a ng-click="googleLogin()" class="btn btn-primary btn-block btn-lg google">
+                <span class="svg-wrapper">
+                  <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"><title>GooglePlus</title><path d="M8.114 9.584s3.117-.004 4.386-.004c-.687 2.054-1.756 3.172-4.386 3.172-2.662 0-4.739-2.127-4.739-4.752s2.077-4.752 4.739-4.752c1.407 0 2.316.487 3.15 1.167.667-.658.611-.752 2.31-2.333A8.146 8.146 0 0 0 8.113 0C3.634 0 .002 3.582.002 8s3.632 8 8.112 8c6.697 0 8.334-5.75 7.791-9.584H8.114v3.168z" fill="#FFF" fill-rule="evenodd"/></svg>
+                </span>
+                Continue with Google
+              </a>
+            </div>
         </form>
     </div>
 </div>
