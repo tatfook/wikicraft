@@ -27,7 +27,7 @@ define([
                         require: false,
                         works:[{
                             is_leaf: true,
-                            logoUrl:"http://git.keepwork.com/gitlab_rls_kaitlyn/keepworkdatasource/raw/master/kaitlyn_images/img_1516099391929.jpeg",
+                            logoUrl:"https://api.keepwork.com/git/gitlab_rls_kaitlyn/keepworkdatasource/raw/master/kaitlyn_images/img_1516099391929.jpeg",
                             title:"日常摄影作品",
                             workLink:"/photograph/page01",
                             desc:"介绍日常生活中容易拍摄的照片",

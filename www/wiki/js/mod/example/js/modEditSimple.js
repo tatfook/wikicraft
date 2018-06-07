@@ -11,7 +11,7 @@ define(['app', 'text!wikimod/example/html/modEditSimple.html'], function (app, h
 				{
 					design:{
                         text:'style1',
-                        cover: 'http://git.keepwork.com/gitlab_rls_kaitlyn/keepworkdatasource/raw/master/kaitlyn_images/img_1513589432838.png'
+                        cover: 'https://api.keepwork.com/git/gitlab_rls_kaitlyn/keepworkdatasource/raw/master/kaitlyn_images/img_1513589432838.png'
 					}
 				},
 				{
