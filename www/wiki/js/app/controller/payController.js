@@ -432,7 +432,7 @@ define([
 
             $http({
                 "method"  : 'GET',
-                "url"     : config.httpProto + "://git.keepwork.com/gitlab_rls_official/keepworkhaqi/raw/master/official/haqi/payads.md",
+                "url"     : config.keepworkOfficialGitHost + "/gitlab_rls_official/keepworkhaqi/raw/master/official/haqi/payads.md",
                 "headers" : {
                     'Authorization': undefined,
                 }, // remove auth header for this request
