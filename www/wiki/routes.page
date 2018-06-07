@@ -180,7 +180,7 @@ function RenderServerWikiScript()
 	config.webroot = '/' .. WIKI_CODE_ENV .. '/'
   config.wikiEnv = WIKI_ENV
   config.locale = os.getenv("KEEPWORK_LOCALE")
-  config.gitServerConfig = util:getGitServerConfig()
+  config.gitServerHost = util:getGitServerConfig()["host"]
 	--config.token = getTokenStr()
 	local devIndex = string.find(config.hostname, ".dev.keepwork.com")
 	if config.hostname == "dev.keepwork.com" or config.hostname == "stage.keepwork.com" or devIndex then
