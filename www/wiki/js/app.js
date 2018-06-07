@@ -50,7 +50,7 @@ define([
 		$authProvider.oauth2({
 			name: "facebook",
 			url: "/api/wiki/auth/facebook",
-			clientId: '1942795522419535',
+			clientId: '1692681067519614',
 			redirectUri:window.location.origin +  '/api/wiki/auth/facebook',
 			authorizationEndpoint: 'https://www.facebook.com/v3.0/dialog/oauth',
 			oauthType: '2.0',
@@ -62,8 +62,7 @@ define([
 		$authProvider.oauth2({
 			name:'google',
 			url: "/api/wiki/auth/google",
-			//clientId: '308842717614-dd5df5hcsjap37au13j63iclrnpvn192.apps.googleusercontent.com',
-			clientId: '308842717614-0joglcbfhqbl8kri50to350l19lee9uf.apps.googleusercontent.com',
+			clientId: '670427490986-ks4bseleea18nvoi73c1ej1oae1gljof.apps.googleusercontent.com',
 			//redirectUri:window.location.origin +  '/wiki/login',
 			redirectUri:window.location.origin +  '/api/wiki/auth/google',
 			authorizationEndpoint: 'https://accounts.google.com/o/oauth2/v2/auth',

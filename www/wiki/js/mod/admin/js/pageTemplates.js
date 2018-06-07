@@ -10,7 +10,7 @@ define([
     'js-base64',
 ], function (app, util, storage, markdownit, htmlContent) {
     const GITLAB = {
-        "API_BASE_URL": "http://git.keepwork.com/api/v4",
+        "API_BASE_URL": "https://api.keepwork.com/git/api/v4",
         "FILE_PATH": "official%2Ftemplate%2FpageTemplateConfig%2Emd",// 模板配置保存页面 official/template/webTemplateConfig
         "REF": "master",
         "PRIVATE_TOKEN": "Gsx7JYVFxvsDod2MY2x5",

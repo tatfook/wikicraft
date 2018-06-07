@@ -151,9 +151,9 @@ function tabledb:api_delete(params)
 
 	local query, pageQuery, isAll = util:getQueryObj(record)
 
-	if isAll then
-		return errors:wrap(nil, {message="无法删除整张表"})
-	end
+	--if isAll then
+		--return errors:wrap(nil, {message="无法删除整张表"})
+	--end
 
     log(query)
 

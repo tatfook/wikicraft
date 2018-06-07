@@ -66,7 +66,7 @@ define([
  "displayName":"姓名",
  "nameinfo":"职位",
  "name":"PingYin Or EnglishName",
- "bgUrl":"http://git.keepwork.com/gitlab_rls_kaitlyn/keepworkdatasource/raw/master/kaitlyn_images/img_1504170502765.jpeg",
+ "bgUrl":"https://api.keepwork.com/git/gitlab_rls_kaitlyn/keepworkdatasource/raw/master/kaitlyn_images/img_1504170502765.jpeg",
  "messages":[
  {
  "message":"信息1介绍介绍简介简介",
@@ -93,7 +93,7 @@ define([
  ```@wiki/js/header
  {
  "moduleKind":"personal3",
- "headerBg":"http://git.keepwork.com/gitlab_rls_kaitlyn/keepworkdatasource/raw/master/kaitlyn_images/img_1503653688101.jpeg",
+ "headerBg":"https://api.keepwork.com/git/gitlab_rls_kaitlyn/keepworkdatasource/raw/master/kaitlyn_images/img_1503653688101.jpeg",
  "profile":"http://keepwork.com/wiki/assets/imgs/wiki_default_profile.jpg",
  "displayName":"姓名",
  "nameinfo":"职位",

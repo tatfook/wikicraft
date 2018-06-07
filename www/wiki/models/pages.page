@@ -512,7 +512,8 @@ end
 
 function pages:get_source_url(username, sitename, pagename)
     local source_url, message
-    local git_host = KEEPWORK["config"][CURRENT_ENV]["threeService"]["gitlab"]["host"]
+    local git_server_config = util:getGitServerConfig()
+    local git_host = git_server_config["host"]
     local site_data_sourceDB = models.site_data_source:new()
 
     site_data_sourceDB:db():findOne({

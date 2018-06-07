@@ -23,11 +23,21 @@ MOD_ROOT = dirname(__FILE__)..modname.."/";
 
 if(isAPI == "api") then	
 	-- Allow for cross-domain requests (from the frontend). 
-	send_origin_headers();
+	--send_origin_headers();
+	addheader('Access-Control-Allow-Origin','*');  -- debug use
+	--addheader('Access-Control-Allow-Credentials', 'true');  -- debug use
+	addheader('Access-Control-Allow-Methods',"OPTIONS, GET, POST, PUT, DELETE");  -- debug use
+	addheader("Access-Control-Allow-Headers", "Origin, No-Cache, X-Requested-With, If-Modified-Since, Pragma, Last-Modified, Cache-Control, Expires, Content-Type, X-E4M-With, Authorization"); -- debug use
+	addheader('Access-Control-Expose-Headers', 'Date')
 	addheader( 'Content-Type', 'text/html'); 
 	addheader( 'X-Robots-Tag', 'noindex'); 
 	send_nosniff_header();
 	nocache_headers();	
+
+	-- debug use start
+	if request:GetMethod() == "OPTIONS" then
+		return response:send("OPTIONS", true);
+	end
 
 	local modelname, params = path:match("^/?models/([%w_]+)/?(.*)")
 	if(modelname) then

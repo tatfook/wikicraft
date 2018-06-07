@@ -30,8 +30,11 @@ case $RUN_ENV in
         log=stage-log
     ;;
     "dev-en_US")
-        echo "no i18n setting for dev env"
-        exit 1
+        name=keepwork-${ENV_TYPE}-server-${KEEPWORK_LOCALE}
+        outside_port=8901
+        inside_port=8900
+        database=stage-database-${KEEPWORK_LOCALE}
+        log=stage-log-${KEEPWORK_LOCALE}
     ;;
     "release-zh_CN")
         outside_port=8088
@@ -73,6 +76,9 @@ docker run -d --restart=always --name=$name \
   -v "${log}:/project/wikicraft/log" \
   -p "${outside_port}:${inside_port}" \
   -e "KEEPWORK_LOCALE=${KEEPWORK_LOCALE}" \
+  -e "http_proxy=${KEEPWORK_PROXY}" \
+  -e "https_proxy=${KEEPWORK_PROXY}" \
+  -e "no_proxy=${KEEPWORK_NOPROXY}" \
   keepwork/$ENV_TYPE:b$BUILD_NUMBER $ENV_TYPE
 
 

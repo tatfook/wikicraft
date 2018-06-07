@@ -165,14 +165,30 @@ end
 
 -- 通过成员名获取站点
 function site_user:api_getSiteLevelByMemberName(params)
-	if not params.username or not params.sitename or not params.memberName then 
+	if not params.username or not params.sitename then 
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+
+	local websiteDB = models.website:new()
+	websiteDB:db():findOne({["+username+name"] = {params.username, params.sitename}}, resume)
+	local err, data = yield()
+
+	if not data then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+
+	if data.visibility == "public" then
+		return errors:wrap(nil, 40)
+	end
+
+	if not params.memberName then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
 
 	self:db():findOne({["+username+sitename+memberName"] = {params.username, params.sitename, params.memberName}}, resume)
 	local err, data = yield()
 	if data then
-		return errors:wrap(nil, data.level)
+		return errors:wrap(nil, data.level or 40)
 	end
 	
 	local limit = 100000
@@ -181,7 +197,7 @@ function site_user:api_getSiteLevelByMemberName(params)
 	local err, groups = yield()
 
 	local siteGroupDB = models.site_group:new()
-	for _, group in (groups or {}) do
+	for _, group in ipairs(groups or {}) do
 		siteGroupDB:db():findOne({["+username+sitename+groupUsername+groupname"] = {
 			params.username,
 			params.sitename,

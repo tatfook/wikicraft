@@ -24,7 +24,7 @@ define([
                         require: false,
                         experiences:[{
                             is_leaf: true,
-                            logoUrl:"http://git.keepwork.com/gitlab_rls_kaitlyn/keepworkdatasource/raw/master/kaitlyn_images/img_1516099391929.jpeg",
+                            logoUrl:"https://api.keepwork.com/git/gitlab_rls_kaitlyn/keepworkdatasource/raw/master/kaitlyn_images/img_1516099391929.jpeg",
                             title:"学习C语言",
                             link:"/photograph/page01",
                             startDate:"2017-06-09",

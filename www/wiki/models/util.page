@@ -32,6 +32,11 @@ function util:getPageCount(total, pageSize)
 	return m + 1
 end
 
+function util:getGitServerConfig()
+  local locale = os.getenv("KEEPWORK_LOCALE") or 'zh_CN'
+  local gitServerConfig = KEEPWORK["config"][CURRENT_ENV]["threeService"]["gitlab"][locale] or KEEPWORK["config"][CURRENT_ENV]["threeService"]["gitlab"]
+  return gitServerConfig
+end
 
 function util:generateSmsCode(cellphone)
 	local sms_setting = KEEPWORK["config"][CURRENT_ENV]["threeService"]["sms"]
@@ -127,7 +132,7 @@ function util:isArray(table)
 			return false -- not a array
 		end
 	end
-	if max > count * 2 then
+	if count == 0 or max > count * 2 then
 		return false -- not a array
 	end
 	return max -- return highest index in the table
