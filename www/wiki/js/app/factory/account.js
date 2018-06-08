@@ -134,7 +134,7 @@ define([
 
                     if ($auth.isAuthenticated()) {
                         var token = $auth.getToken();
-                        $.cookie('token', token, {path: '/', expires: 365});
+                        $.cookie('token', token, {path: '/', expires: 365, domain: "." + config.hostname});
                     }
                     this.send("onUserProfile", this.user);
                     storage.sessionStorageSetItem("userinfo", this.user);

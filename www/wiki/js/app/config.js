@@ -62,6 +62,11 @@
 			"test.qiankunew.com",
 			"wxa.keepwork.com",
 			"inside.keepwork.tk",
+
+			"stage-keepwork.tk",
+			"release-keepwork.tk",
+			"api.stage-keepwork.tk",
+			"api.release-keepwork.tk",
 		],
 		// 预加载模块列表
 		preloadModuleList:[
