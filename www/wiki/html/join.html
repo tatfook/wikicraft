@@ -270,11 +270,11 @@
         <div class="successInfo" ng-show="step==2">
             <h2><img ng-src="{{imgsPath+'icon/wiki_success.png'}}" alt=""> {{ "恭喜您注册成功！" | translate }}</h2>
             <div class="params">
-                <p>账号：{{username}}</p>
-                <p>系统默认个人网址地址：{{locationOrigin}}/{{username}}</p>
+                <p>{{"账号：" | translate}}{{username}}</p>
+                <p>{{"系统默认个人网址地址：" | translate}}{{locationOrigin}}/{{username}}</p>
             </div>
             <div class="params">
-                <p>{{ "请在个人资料管理中绑定手机、email。绑定后的手机号与email均可作为登录账号使用。打开" | translate }} <a ng-click="goUserCenter()">>>个人资料管理 << </a>{{ "，进行绑定。" | translate }}</p>
+                <p>{{ "请在个人资料管理中绑定手机、email。绑定后的手机号与email均可作为登录账号使用。打开" | translate }} <a ng-click="goUserCenter()">>>{{"个人资料管理" | translate}} << </a>{{ "，进行绑定。" | translate }}</p>
             </div>
             <div class="btns-group">
                 <div class="btn btn-primary" ng-click="goBack()" translate="返 回"></div>

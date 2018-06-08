@@ -926,7 +926,7 @@
                     <label class="col-xs-2 control-label" translate="默认数据源："></label>
                     <div class="col-xs-7">
                         <select class="form-control" ng-model="defaultDataSourceName" ng-change="changeDefaultDataSource()">
-                            <option ng-repeat="x in dataSourceList" value="{{x.name}}">{{x.name || '内置GItlab'}}</option>
+                            <option ng-repeat="x in dataSourceList" value="{{x.name}}">{{(x.name || '内置gitlab') | translate}}</option>
                         </select>
                     </div>
                 </div>

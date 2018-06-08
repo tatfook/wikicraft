@@ -1875,6 +1875,11 @@ define([], function () {
             "en": "Be followed"
         },
         {
+            "_key": "关注",
+            "zh-cn": "关注",
+            "en": "Follow"
+        },
+        {
             "_key": "被人浏览",
             "zh-cn": "被人浏览",
             "en": "Be browsed"
@@ -3388,6 +3393,71 @@ define([], function () {
             "_key": "用户名或密码错误",
             "zh-cn": "用户名或密码错误",
             "en": "*Username or password is incorrect"
+        },
+        {
+            "_key": "账号：",
+            "zh-cn": "账号：",
+            "en": "Account: "
+        },
+        {
+            "_key": "个人资料管理",
+            "zh-cn": "个人资料管理",
+            "en": "Userinfo Settings"
+        },
+        {
+            "_key": "审核状态",
+            "zh-cn": "审核状态",
+            "en": "Status"
+        },
+        {
+            "_key": "搜索我的网盘",
+            "zh-cn": "搜索我的网盘",
+            "en": "Search"
+        },
+        {
+            "_key": "立即充值",
+            "zh-cn": "立即充值",
+            "en": "Topup"
+        },
+        {
+            "_key": "预估完成时间",
+            "zh-cn": "预估完成时间",
+            "en": "Time estimate"
+        },
+        {
+            "_key": "剩余",
+            "zh-cn": "剩余",
+            "en": "Remain"
+        },
+        {
+            "_key": "个人信息",
+            "zh-cn": "个人信息",
+            "en": "Userinfo"
+        },
+        {
+            "_key": "网站",
+            "zh-cn": "网站",
+            "en": "Websites"
+        },
+        {
+            "_key": "社交",
+            "zh-cn": "社交",
+            "en": "Social"
+        },
+        {
+            "_key": "更多",
+            "zh-cn": "更多",
+            "en": "More"
+        },
+        {
+            "_key": "收起",
+            "zh-cn": "收起",
+            "en": "Foldup"
+        },
+        {
+            "_key": "查看更多",
+            "zh-cn": "查看更多",
+            "en": "More"
         }
     ];
 
