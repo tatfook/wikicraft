@@ -10,13 +10,13 @@ define([
     'helper/sensitiveWord',
     'text!html/join.html',
 ], function (app, util, storage, dataSource, sensitiveWord, htmlContent) {
-    app.registerController('joinController', ['$scope', '$auth', '$interval', 'Account', 'modal', 'Message', function ($scope, $auth, $interval, Account, modal, Message) {
+    app.registerController('joinController', ['$scope', '$auth', '$interval', '$translate', 'Account', 'modal', 'Message', function ($scope, $auth, $interval, $translate, Account, modal, Message) {
         //$scope.errMsg = "用户名或密码错误";
         var userThreeService = undefined;
         $scope.isModal = false;
         $scope.step = 1;
         $scope.agree = true;
-
+        $scope.locationOrigin = location.origin;
         $scope.isGlobalVersion = config.isGlobalVersion;
 
         $scope.registerInfo = {};
@@ -33,7 +33,7 @@ define([
             $scope.smsCodeErrMsg = "";
 
             if (!/^[0-9]{11}$/.test($scope.cellphone)) {
-                $scope.cellphoneErrMsg = "请先填写正确的手机号码";
+                $scope.cellphoneErrMsg = $translate.instant("请先填写正确的手机号码");
                 return;
             }
             if ($scope.registerCellPhoneSMSCodeWait > 0) {
@@ -97,30 +97,30 @@ define([
             }
             if (checks.password) {
                 if (pwd.length < 6) {
-                    $scope.pwdErrMsg = "*密码最少6位";
+                    $scope.pwdErrMsg = $translate.instant("*密码最少6位");
                     return;
                 }
             }
 
             function doCheckUsername(isSensitive, username) {
                 if (isSensitive) {
-                    $scope.nameErrMsg = "您输入的内容不符合互联网安全规范，请修改";
+                    $scope.nameErrMsg = $translate.instant("您输入的内容不符合互联网安全规范，请修改");
                     return;
                 }
                 if (username.length > 30) {
-                    $scope.nameErrMsg = "*账户名需小于30位";
+                    $scope.nameErrMsg = $translate.instant("*账户名需小于30位");
                     return;
                 }
                 if (/^\d+$/.test(username)) {
-                    $scope.nameErrMsg = "*账户名不可为纯数字";
+                    $scope.nameErrMsg = $translate.instant("*账户名不可为纯数字");
                     return;
                 }
                 if (/@/.test(username)) {
-                    $scope.nameErrMsg = "*账户名不可包含@符号";
+                    $scope.nameErrMsg = $translate.instant("*账户名不可包含@符号");
                     return;
                 }
                 if (!/^[a-z_0-9]+$/.test(username)) {
-                    $scope.nameErrMsg = "*账户名只能包含小写字母、数字";
+                    $scope.nameErrMsg = $translate.instant("*账户名只能包含小写字母、数字");
                     return;
                 }
             }
@@ -201,7 +201,7 @@ define([
               }
 
               if (!validateEmail(params.email)) {
-                $scope.emailErrMsg = "*请输入正确的邮箱";
+                $scope.emailErrMsg = $translate.instant("*请输入正确的邮箱");
                 return;
               }
             } else {
@@ -214,17 +214,17 @@ define([
               };
 
               if (!params.cellphone) {
-                  $scope.cellphoneErrMsg = "*手机号不能为空";
+                  $scope.cellphoneErrMsg = $translate.instant("*手机号不能为空");
                   return;
               }
 
               if (!params.smsId) {
-                  $scope.smsCodeErrMsg = "*请先发送验证码验证";
+                  $scope.smsCodeErrMsg = $translate.instant("*请先发送验证码验证");
                   return;
               }
 
               if (!params.smsCode) {
-                  $scope.smsCodeErrMsg = "*验证码不能为空";
+                  $scope.smsCodeErrMsg = $translate.instant("*验证码不能为空");
                   return;
               }
             }
@@ -238,7 +238,7 @@ define([
             }
 
             if (!params.username) {
-                $scope.nameErrMsg = "*账户名不能为空";
+                $scope.nameErrMsg = $translate.instant("*账户名不能为空");
                 return;
             }
 
@@ -250,27 +250,27 @@ define([
                 }
             });
             if (isSensitive) {
-                $scope.nameErrMsg = "您输入的内容不符合互联网安全规范，请修改";
+                $scope.nameErrMsg = $translate.instant("您输入的内容不符合互联网安全规范，请修改");
                 return;
             }
             if (params.username.length > 30) {
-                $scope.nameErrMsg = "*账户名需小于30位";
+                $scope.nameErrMsg = $translate.instant("*账户名需小于30位");
                 return;
             }
             if (/^\d+$/.test(params.username)) {
-                $scope.nameErrMsg = "*账户名不可为纯数字";
+                $scope.nameErrMsg = $translate.instant("*账户名不可为纯数字");
                 return;
             }
             if (/@/.test(params.username)) {
-                $scope.nameErrMsg = "*账户名不可包含@符号";
+                $scope.nameErrMsg = $translate.instant("*账户名不可包含@符号");
                 return;
             }
             if (!/^[a-z_0-9]+$/.test(params.username)) {
-                $scope.nameErrMsg = "*账户名只能包含小写字母、数字";
+                $scope.nameErrMsg = $translate.instant("*账户名只能包含小写字母、数字");
                 return;
             }
             if (params.password.length < 6) {
-                $scope.pwdErrMsg = "*密码最少6位";
+                $scope.pwdErrMsg = $translate.instant("*密码最少6位");
                 return;
             }
             var imgUrl = $scope.getImageUrl("default_portrait.png", $scope.imgsPath);
