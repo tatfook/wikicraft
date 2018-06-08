@@ -987,7 +987,7 @@ define([], function () {
         {
             "_key": "密码",
             "zh-cn": "密码",
-            "en": "password"
+            "en": "Password"
         },
         {
             "_key": "忘记密码？",
@@ -3317,7 +3317,77 @@ define([], function () {
         {
             "_key": "国际智能创意大赛",
             "zh-cn": "国际智能创意大赛",
-            "en": " IICC"
+            "en": "IICC"
+        },
+        {
+            "_key": "登录账号（推荐email或手机号）",
+            "zh-cn": "登录账号（推荐email或手机号）",
+            "en": "Account (email or username)"
+        },
+        {
+            "_key": "您输入的内容不符合互联网安全规范，请修改",
+            "zh-cn": "您输入的内容不符合互联网安全规范，请修改",
+            "en": "Don't input improper words please!"
+        },
+        {
+            "_key": "请先填写正确的手机号码",
+            "zh-cn": "请先填写正确的手机号码",
+            "en": "Please input correct Phone Number"
+        },
+        {
+            "_key": "*密码最少6位",
+            "zh-cn": "*密码最少6位",
+            "en": "*Password needs 6 chars at least"
+        },
+        {
+            "_key": "*请输入正确的邮箱",
+            "zh-cn": "*请输入正确的邮箱",
+            "en": "*Input correct email please!"
+        },
+        {
+            "_key": "*手机号不能为空",
+            "zh-cn": "*手机号不能为空",
+            "en": "*Phone number cannot be empty"
+        },
+        {
+            "_key": "*请先发送验证码验证",
+            "zh-cn": "*请先发送验证码验证",
+            "en": "*Please send the validate code first!"
+        },
+        {
+            "_key": "*验证码不能为空",
+            "zh-cn": "*验证码不能为空",
+            "en": "*Validate code cannot be empty"
+        },
+        {
+            "_key": "*账户名不能为空",
+            "zh-cn": "*账户名不能为空",
+            "en": "*Account name cannot be empty"
+        },
+        {
+            "_key": "*账户名需小于30位",
+            "zh-cn": "*账户名需小于30位",
+            "en": "*Account name cannot exceed 30 chars"
+        },
+        {
+            "_key": "*账户名不可为纯数字",
+            "zh-cn": "*账户名不可为纯数字",
+            "en": "*Account name cannot only contain numbers"
+        },
+        {
+            "_key": "*账户名不可包含@符号",
+            "zh-cn": "*账户名不可包含@符号",
+            "en": "*Account name cannot contain @"
+        },
+        {
+            "_key": "*账户名只能包含小写字母、数字",
+            "zh-cn": "*账户名只能包含小写字母、数字",
+            "en": "*Account name cant only contain a-z, 0-9"
+        },
+        {
+            "_key": "用户名或密码错误",
+            "zh-cn": "用户名或密码错误",
+            "en": "*Username or password is incorrect"
         }
     ];
 
