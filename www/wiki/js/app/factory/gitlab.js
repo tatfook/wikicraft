@@ -24,21 +24,7 @@ define([
 
     app.factory('gitlab', ['$http', function ($http) {
         var getRawBaseUrl = function(){
-            var env = config.env;
-            var result = "";
-            switch (env) {
-                case "prod":
-                    result = "https://api.keepwork.com/git";
-                    break;
-                case "release":
-                    result = "https://rlsapi.keepwork.com/git";
-                    break;
-                default:
-                    result = "https://stgapi.keepwork.com/git";
-                    break;
-            }
-			// result = config.httpProto + result;
-            return result;
+            return "https://" + config.serverConfig.gitServerHost
         }
         var gitlab = {
             inited: false,                                          // is already init
@@ -387,7 +373,10 @@ define([
 			var apiurl = self.getRawContentUrlPrefix(params);
 			//console.log(apiurl);
             var _getRawContent = function () {
-				if (self.apiBaseUrl.indexOf("api.keepwork.com/git/") > 0 || self.apiBaseUrl.indexOf("stgapi.keepwork.com/git/") > 0 || self.apiBaseUrl.indexOf("rlsapi.keepwork.com/git/") > 0) {
+				if (
+          // what the hell is this?
+          self.apiBaseUrl.indexOf(".keepwork.com/git/") > 0
+        ) {
 					$http({
 						method: 'GET',
 						url: apiurl,

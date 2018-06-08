@@ -4,30 +4,29 @@
 
 define([
     'app',
+    'jquery',
     'helper/util',
     'helper/storage',
     'text!html/login.html'
-], function (app, util, storage,  htmlContent) {
-    app.registerController('loginController', ['$scope', '$auth', 'Account','modal', function ($scope, $auth, Account,modal) {
+], function (app, jQuery, util, storage,  htmlContent) {
+    app.registerController('loginController', ['$scope', '$auth', 'Account', 'modal', function ($scope, $auth, Account, modal) {
         //$scope.errMsg = "用户名或密码错误";
+        $scope.loginDomId = 'loginDomId-' + Date.now()
         $scope.isModal=false;
-
         $scope.isGlobalVersion = config.isGlobalVersion;
-		$scope.keepPassword = storage.localStorageGetItem("keepPassword");
+        $scope.keepPassword = storage.localStorageGetItem("keepPassword");
 
-        function init() {
-            if ((!config.localEnv || config.localVMEnv) && window.location.pathname !="/wiki/login" && window.location.pathname !="/wiki/join"){
-                $scope.isModal=true;
-            }
+        $scope.$watch('$viewContentLoaded', function() {
+          setTimeout(function() {
+            $scope.isModal = jQuery('#' + $scope.loginDomId).closest('.modal').length > 0
+          })
+        });
+
+        $scope.changeKeepPassword = function() {
+          //console.log($scope.keepPassword);
+          //Account.keepPassword($scope.keepPassword);
+          storage.localStorageSetItem("keepPassword", $scope.keepPassword);
         }
-
-        $scope.$watch('$viewContentLoaded', init);
-
-		$scope.changeKeepPassword = function() {
-			//console.log($scope.keepPassword);
-			//Account.keepPassword($scope.keepPassword);
-			storage.localStorageSetItem("keepPassword", $scope.keepPassword);
-		}
 
         $scope.goRegisterPage = function () {
             util.go('/wiki/join');

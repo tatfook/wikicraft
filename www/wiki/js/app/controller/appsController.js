@@ -4,35 +4,35 @@
 
 define(['app', 'helper/util', 'text!html/apps.html'], function (app, util, htmlContent) {
     app.controller('appsController', ['$scope', '$location', '$anchorScroll', '$timeout', 'Message', function ($scope, $location, $anchorScroll, $timeout, Message) {
-        $scope.developingLogo = config.httpProto+"://git.keepwork.com/gitlab_rls_kaitlyn/keepworkdatasource/raw/master/kaitlyn_images/img_1504863330607.png";
+        $scope.developingLogo = config.keepworkOfficialGitHost + "/gitlab_rls_kaitlyn/keepworkdatasource/raw/master/kaitlyn_images/img_1504863330607.png";
         $scope.recommentApps = [
             {
                 "name":"Paracraft创意空间",
                 "title":"创造3D交互动画，学习编程",
                 "siteUrl":"http://www.paracraft.cn/",
                 "bgColor":"#62A1E1",
-                "logoUrl":config.httpProto+"://git.keepwork.com/gitlab_rls_kaitlyn/keepworkdatasource/raw/master/kaitlyn_images/img_1501572349355.png",
+                "logoUrl":config.keepworkOfficialGitHost + "/gitlab_rls_kaitlyn/keepworkdatasource/raw/master/kaitlyn_images/img_1501572349355.png",
             },
             {
                 "name":"3D 校园",
                 "title":"3D虚拟校园",
                 "siteUrl":config.httpProto+"://keepwork.com/paracra/3dcampus",
                 "bgColor":"#F5926E",
-                "logoUrl":config.httpProto+"://git.keepwork.com/gitlab_rls_kaitlyn/keepworkdatasource/raw/master/kaitlyn_images/img_1501664783232.png",
+                "logoUrl":config.keepworkOfficialGitHost + "/gitlab_rls_kaitlyn/keepworkdatasource/raw/master/kaitlyn_images/img_1501664783232.png",
             },
             {
                 "name":"3D打印",
                 "title":"3D打印网络平台",
                 "siteUrl":config.httpProto+"://keepwork.com/idreamtech/3dprint",
                 "bgColor":"#91C3FF",
-                "logoUrl":config.httpProto+"://git.keepwork.com/gitlab_rls_kaitlyn/keepworkdatasource/raw/master/kaitlyn_images/img_1501664852120.png",
+                "logoUrl":config.keepworkOfficialGitHost + "/gitlab_rls_kaitlyn/keepworkdatasource/raw/master/kaitlyn_images/img_1501664852120.png",
             },
             {
                 "name":"NPL CAD",
                 "title":"基于编程的计算机辅助设计",
                 "siteUrl":config.httpProto+"://keepwork.com/intro/keepwork/NPLCAD",
                 "bgColor":"#7CCDF7",
-                "logoUrl":config.httpProto+"://git.keepwork.com/gitlab_rls_kaitlyn/keepworkdatasource/raw/master/kaitlyn_images/img_1501664890190.png",
+                "logoUrl":config.keepworkOfficialGitHost + "/gitlab_rls_kaitlyn/keepworkdatasource/raw/master/kaitlyn_images/img_1501664890190.png",
             }
         ];
         $scope.classApps = [
@@ -45,19 +45,19 @@ define(['app', 'helper/util', 'text!html/apps.html'], function (app, util, htmlC
                         "name":"Paracraft创意空间",
                         "details":"创造3D交互动画，学习计算机编程...",
                         "siteUrl":"http://www.paracraft.cn",
-                        "logoUrl":config.httpProto+"://git.keepwork.com/gitlab_rls_kaitlyn/keepworkdatasource/raw/master/kaitlyn_images/img_1501572349355.png"
+                        "logoUrl":config.keepworkOfficialGitHost + "/gitlab_rls_kaitlyn/keepworkdatasource/raw/master/kaitlyn_images/img_1501572349355.png"
                     },
                     {
                         "name":"3D 打印",
                         "details":"用户可以上传创作的3D模型，由云端进行3D打印变成实物并邮寄给用户",
                         "siteUrl":config.httpProto+"://keepwork.com/idreamtech/3dprint",
-                        "logoUrl":config.httpProto+"://git.keepwork.com/gitlab_rls_kaitlyn/keepworkdatasource/raw/master/kaitlyn_images/img_1501664852120.png"
+                        "logoUrl":config.keepworkOfficialGitHost + "/gitlab_rls_kaitlyn/keepworkdatasource/raw/master/kaitlyn_images/img_1501664852120.png"
                     },
                     {
                         "name":"Mod 扩展",
                         "details":"Paracraft Mod扩展包管理器",
                         "siteUrl":config.httpProto+"://keepwork.com/wiki/mod/packages/index/paracraft",
-                        "logoUrl":config.httpProto+"://git.keepwork.com/gitlab_rls_kaitlyn/keepworkdatasource/raw/master/kaitlyn_images/img_1503915567396.png"
+                        "logoUrl":config.keepworkOfficialGitHost + "/gitlab_rls_kaitlyn/keepworkdatasource/raw/master/kaitlyn_images/img_1503915567396.png"
                     }
                 ]
             },
@@ -70,13 +70,13 @@ define(['app', 'helper/util', 'text!html/apps.html'], function (app, util, htmlC
                         "name":"道峰教育",
                         "details":"创造3D交互动画，学习计算机编程...",
                         "siteUrl":"#",
-                        "logoUrl":config.httpProto+"://git.keepwork.com/gitlab_rls_kaitlyn/keepworkdatasource/raw/master/kaitlyn_images/img_1501572342939.png"
+                        "logoUrl":config.keepworkOfficialGitHost + "/gitlab_rls_kaitlyn/keepworkdatasource/raw/master/kaitlyn_images/img_1501572342939.png"
                     },
                     {
                         "name":"PAC 3D创意大赛",
                         "details":"参加比赛，交流分享，制作出有意义的个人电脑作品...",
                         "siteUrl":config.httpProto+"://keepwork.com/official/pac2017",
-                        "logoUrl":config.httpProto+"://git.keepwork.com/gitlab_rls_kaitlyn/keepworkdatasource/raw/master/kaitlyn_images/img_1501572329890.png"
+                        "logoUrl":config.keepworkOfficialGitHost + "/gitlab_rls_kaitlyn/keepworkdatasource/raw/master/kaitlyn_images/img_1501572329890.png"
                     }
                 ]
             },
@@ -89,7 +89,7 @@ define(['app', 'helper/util', 'text!html/apps.html'], function (app, util, htmlC
                         "name":"十方百科",
                         "details":"",
                         "siteUrl":config.httpProto+"://baike.keepwork.com/",
-                        "logoUrl":config.httpProto+"://git.keepwork.com/gitlab_rls_kaitlyn/keepworkdatasource/raw/master/kaitlyn_images/img_1509613900057.png"
+                        "logoUrl":config.keepworkOfficialGitHost + "/gitlab_rls_kaitlyn/keepworkdatasource/raw/master/kaitlyn_images/img_1509613900057.png"
                     }
                 ]
             },
@@ -102,7 +102,7 @@ define(['app', 'helper/util', 'text!html/apps.html'], function (app, util, htmlC
                         "name":"NPL CAD",
                         "details":"基于编程的计算机辅助设计",
                         "siteUrl":config.httpProto+"://keepwork.com/intro/keepwork/NPLCAD",
-                        "logoUrl":config.httpProto+"://git.keepwork.com/gitlab_rls_kaitlyn/keepworkdatasource/raw/master/kaitlyn_images/img_1501664890190.png"
+                        "logoUrl":config.keepworkOfficialGitHost + "/gitlab_rls_kaitlyn/keepworkdatasource/raw/master/kaitlyn_images/img_1501664890190.png"
                     }
                 ]
             },
@@ -115,13 +115,13 @@ define(['app', 'helper/util', 'text!html/apps.html'], function (app, util, htmlC
                         "name":"3D校园",
                         "details":"3D虚拟校园",
                         "siteUrl":config.httpProto+"://keepwork.com/paracra/3dcampus",
-                        "logoUrl":config.httpProto+"://git.keepwork.com/gitlab_rls_kaitlyn/keepworkdatasource/raw/master/kaitlyn_images/img_1501664783232.png"
+                        "logoUrl":config.keepworkOfficialGitHost + "/gitlab_rls_kaitlyn/keepworkdatasource/raw/master/kaitlyn_images/img_1501664783232.png"
                     },
                     {
                         "name":"魔法哈奇3D社区",
                         "details":"魔法哈奇3D社区",
                         "siteUrl":config.httpProto+"://keepwork.com/official/haqi/",
-                        "logoUrl":config.httpProto+"://git.keepwork.com/gitlab_rls_kaitlyn/keepworkdatasource/raw/master/kaitlyn_images/img_1502247463705.png"
+                        "logoUrl":config.keepworkOfficialGitHost + "/gitlab_rls_kaitlyn/keepworkdatasource/raw/master/kaitlyn_images/img_1502247463705.png"
                     }
                 ]
             },
@@ -134,19 +134,19 @@ define(['app', 'helper/util', 'text!html/apps.html'], function (app, util, htmlC
                         "name":"中药溯源",
                         "details":"提供中药溯源系统的公共查询服务",
                         "siteUrl":config.httpProto+"://keepwork.com/idreamtech/zysy",
-                        "logoUrl":config.httpProto+"://git.keepwork.com/gitlab_rls_kaitlyn/keepworkdatasource/raw/master/kaitlyn_images/img_1502249323964.png"
+                        "logoUrl":config.keepworkOfficialGitHost + "/gitlab_rls_kaitlyn/keepworkdatasource/raw/master/kaitlyn_images/img_1502249323964.png"
                     },
                     {
                         "name":"电子铜人",
                         "details":"利用3D计算机技术展示人体内部结构",
                         "siteUrl":config.httpProto+"://keepwork.com/idreamtech/dztr",
-                        "logoUrl":config.httpProto+"://git.keepwork.com/gitlab_rls_kaitlyn/keepworkdatasource/raw/master/kaitlyn_images/img_1502248544807.png"
+                        "logoUrl":config.keepworkOfficialGitHost + "/gitlab_rls_kaitlyn/keepworkdatasource/raw/master/kaitlyn_images/img_1502248544807.png"
                     },
                     {
                         "name":"医时空",
                         "details":"更懂中医馆的SaaS服务平台",
                         "siteUrl":config.httpProto+"://www.sktcm.com",
-                        "logoUrl":config.httpProto+"://git.keepwork.com/gitlab_rls_kaitlyn/keepworkdatasource/raw/master/kaitlyn_images/img_1509096193919.jpeg"
+                        "logoUrl":config.keepworkOfficialGitHost + "/gitlab_rls_kaitlyn/keepworkdatasource/raw/master/kaitlyn_images/img_1509096193919.jpeg"
                     }
                 ]
             },
@@ -159,7 +159,7 @@ define(['app', 'helper/util', 'text!html/apps.html'], function (app, util, htmlC
                         "name":"逻辑塔线下积木",
                         "details":"逻辑塔线下积木",
                         "siteUrl":config.httpProto+"://keepwork.com/paracra/logitow",
-                        "logoUrl":config.httpProto+"://git.keepwork.com/gitlab_rls_kaitlyn/keepworkdatasource/raw/master/kaitlyn_images/img_1502250031130.png"
+                        "logoUrl":config.keepworkOfficialGitHost + "/gitlab_rls_kaitlyn/keepworkdatasource/raw/master/kaitlyn_images/img_1502250031130.png"
                     }
                 ]
             }
