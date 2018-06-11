@@ -3,90 +3,96 @@
  */
 
 define(['app', 'helper/util', 'text!html/apps.html'], function (app, util, htmlContent) {
-    app.controller('appsController', ['$scope', '$location', '$anchorScroll', '$timeout', 'Message', function ($scope, $location, $anchorScroll, $timeout, Message) {
+    app.controller('appsController', ['$scope', '$location', '$anchorScroll', '$timeout', '$translate', 'Message', function ($scope, $location, $anchorScroll, $timeout, $translate, Message) {
         $scope.developingLogo = config.keepworkOfficialGitHost + "/gitlab_rls_kaitlyn/keepworkdatasource/raw/master/kaitlyn_images/img_1504863330607.png";
+        $scope.isGlobalVersion = config.isGlobalVersion;
         $scope.recommentApps = [
             {
-                "name":"Paracraft创意空间",
-                "title":"创造3D交互动画，学习编程",
+                "name": $translate.instant("Paracraft创意空间"),
+                "title": $translate.instant("创造3D交互动画，学习编程"),
                 "siteUrl":"http://www.paracraft.cn/",
                 "bgColor":"#62A1E1",
+                "globalVisible": true,
                 "logoUrl":config.keepworkOfficialGitHost + "/gitlab_rls_kaitlyn/keepworkdatasource/raw/master/kaitlyn_images/img_1501572349355.png",
             },
             {
-                "name":"3D 校园",
-                "title":"3D虚拟校园",
+                "name": $translate.instant("3D校园"),
+                "title": $translate.instant("3D虚拟校园"),
                 "siteUrl":config.httpProto+"://keepwork.com/paracra/3dcampus",
                 "bgColor":"#F5926E",
                 "logoUrl":config.keepworkOfficialGitHost + "/gitlab_rls_kaitlyn/keepworkdatasource/raw/master/kaitlyn_images/img_1501664783232.png",
             },
             {
-                "name":"3D打印",
-                "title":"3D打印网络平台",
+                "name": $translate.instant("3D打印"),
+                "title": $translate.instant("3D打印网络平台"),
                 "siteUrl":config.httpProto+"://keepwork.com/idreamtech/3dprint",
                 "bgColor":"#91C3FF",
                 "logoUrl":config.keepworkOfficialGitHost + "/gitlab_rls_kaitlyn/keepworkdatasource/raw/master/kaitlyn_images/img_1501664852120.png",
             },
             {
-                "name":"NPL CAD",
-                "title":"基于编程的计算机辅助设计",
+                "name": "NPL CAD",
+                "title": $translate.instant("基于编程的计算机辅助设计"),
                 "siteUrl":config.httpProto+"://keepwork.com/intro/keepwork/NPLCAD",
                 "bgColor":"#7CCDF7",
+                "globalVisible": true,
                 "logoUrl":config.keepworkOfficialGitHost + "/gitlab_rls_kaitlyn/keepworkdatasource/raw/master/kaitlyn_images/img_1501664890190.png",
             }
         ];
         $scope.classApps = [
             {
-                "classes":"创作工具",
+                "classes": $translate.instant("创作工具"),
                 "targetId":"chuangzuogongju",
-                "info":"让你的网站更加生动的创作工具",
+                "info": $translate.instant("让你的网站更加生动的创作工具"),
+                "globalVisible": true,
                 "apps":[
                     {
-                        "name":"Paracraft创意空间",
-                        "details":"创造3D交互动画，学习计算机编程...",
+                        "name": $translate.instant("Paracraft创意空间"),
+                        "details": $translate.instant("创造3D交互动画，学习计算机编程..."),
                         "siteUrl":"http://www.paracraft.cn",
+                        "globalVisible": true,
                         "logoUrl":config.keepworkOfficialGitHost + "/gitlab_rls_kaitlyn/keepworkdatasource/raw/master/kaitlyn_images/img_1501572349355.png"
                     },
                     {
-                        "name":"3D 打印",
-                        "details":"用户可以上传创作的3D模型，由云端进行3D打印变成实物并邮寄给用户",
+                        "name": $translate.instant("3D打印"),
+                        "details": $translate.instant("用户可以上传创作的3D模型，由云端进行3D打印变成实物并邮寄给用户"),
                         "siteUrl":config.httpProto+"://keepwork.com/idreamtech/3dprint",
                         "logoUrl":config.keepworkOfficialGitHost + "/gitlab_rls_kaitlyn/keepworkdatasource/raw/master/kaitlyn_images/img_1501664852120.png"
                     },
                     {
-                        "name":"Mod 扩展",
-                        "details":"Paracraft Mod扩展包管理器",
+                        "name": $translate.instant("Mod 扩展"),
+                        "details": $translate.instant("Paracraft Mod扩展包管理器"),
+                        "globalVisible": true,
                         "siteUrl":config.httpProto+"://keepwork.com/wiki/mod/packages/index/paracraft",
                         "logoUrl":config.keepworkOfficialGitHost + "/gitlab_rls_kaitlyn/keepworkdatasource/raw/master/kaitlyn_images/img_1503915567396.png"
                     }
                 ]
             },
             {
-                "classes":"教育平台",
+                "classes": $translate.instant("教育平台"),
                 "targetId":"jiaoyu",
-                "info":"终身学习，有教无类，人人可为师",
+                "info": $translate.instant("终身学习，有教无类，人人可为师"),
                 "apps":[
                     {
-                        "name":"道峰教育",
-                        "details":"创造3D交互动画，学习计算机编程...",
+                        "name": $translate.instant("道峰教育"),
+                        "details": $translate.instant("创造3D交互动画，学习计算机编程..."),
                         "siteUrl":"#",
                         "logoUrl":config.keepworkOfficialGitHost + "/gitlab_rls_kaitlyn/keepworkdatasource/raw/master/kaitlyn_images/img_1501572342939.png"
                     },
                     {
-                        "name":"PAC 3D创意大赛",
-                        "details":"参加比赛，交流分享，制作出有意义的个人电脑作品...",
+                        "name": $translate.instant("PAC 3D创意大赛"),
+                        "details": $translate.instant("参加比赛，交流分享，制作出有意义的个人电脑作品..."),
                         "siteUrl":config.httpProto+"://keepwork.com/official/pac2017",
                         "logoUrl":config.keepworkOfficialGitHost + "/gitlab_rls_kaitlyn/keepworkdatasource/raw/master/kaitlyn_images/img_1501572329890.png"
                     }
                 ]
             },
             {
-                "classes":"百科和知识库",
+                "classes": $translate.instant("百科和知识库"),
                 "targetId":"baikehezhishiku",
-                "info":"大数据与个人百科平台",
+                "info": $translate.instant("大数据与个人百科平台"),
                 "apps":[
                     {
-                        "name":"十方百科",
+                        "name": $translate.instant("十方百科"),
                         "details":"",
                         "siteUrl":config.httpProto+"://baike.keepwork.com/",
                         "logoUrl":config.keepworkOfficialGitHost + "/gitlab_rls_kaitlyn/keepworkdatasource/raw/master/kaitlyn_images/img_1509613900057.png"
@@ -94,76 +100,100 @@ define(['app', 'helper/util', 'text!html/apps.html'], function (app, util, htmlC
                 ]
             },
             {
-                "classes":"编程",
+                "classes": $translate.instant("编程"),
                 "targetId":"biancheng",
-                "info":"自学计算机编程语言，辅助设计",
+                "globalVisible": true,
+                "info": $translate.instant("自学计算机编程语言，辅助设计"),
                 "apps":[
                     {
-                        "name":"NPL CAD",
-                        "details":"基于编程的计算机辅助设计",
+                        "name": "NPL CAD",
+                        "globalVisible": true,
+                        "details": $translate.instant("基于编程的计算机辅助设计"),
                         "siteUrl":config.httpProto+"://keepwork.com/intro/keepwork/NPLCAD",
                         "logoUrl":config.keepworkOfficialGitHost + "/gitlab_rls_kaitlyn/keepworkdatasource/raw/master/kaitlyn_images/img_1501664890190.png"
                     }
                 ]
             },
             {
-                "classes":"社区",
+                "classes": $translate.instant("社区"),
                 "targetId":"shequ",
-                "info":"多人在线虚拟社区，作品交流与分享平台",
+                "info": $translate.instant("多人在线虚拟社区，作品交流与分享平台"),
                 "apps":[
                     {
-                        "name":"3D校园",
-                        "details":"3D虚拟校园",
+                        "name": $translate.instant("3D校园"),
+                        "details": $translate.instant("3D虚拟校园"),
                         "siteUrl":config.httpProto+"://keepwork.com/paracra/3dcampus",
                         "logoUrl":config.keepworkOfficialGitHost + "/gitlab_rls_kaitlyn/keepworkdatasource/raw/master/kaitlyn_images/img_1501664783232.png"
                     },
                     {
-                        "name":"魔法哈奇3D社区",
-                        "details":"魔法哈奇3D社区",
+                        "name": $translate.instant("魔法哈奇3D社区"),
+                        "details": $translate.instant("魔法哈奇3D社区"),
                         "siteUrl":config.httpProto+"://keepwork.com/official/haqi/",
                         "logoUrl":config.keepworkOfficialGitHost + "/gitlab_rls_kaitlyn/keepworkdatasource/raw/master/kaitlyn_images/img_1502247463705.png"
                     }
                 ]
             },
             {
-                "classes":"健康",
-                "targetId":"jiankang",
-                "info":"学习医学知识， 每个人都是自己的医生",
+                "classes": $translate.instant("健康"),
+                "targetId": "jiankang",
+                "globalVisible": true,
+                "info": $translate.instant("学习医学知识， 每个人都是自己的医生"),
                 "apps":[
                     {
-                        "name":"中药溯源",
-                        "details":"提供中药溯源系统的公共查询服务",
+                        "name": $translate.instant("中药溯源"),
+                        "details": $translate.instant("提供中药溯源系统的公共查询服务"),
                         "siteUrl":config.httpProto+"://keepwork.com/idreamtech/zysy",
                         "logoUrl":config.keepworkOfficialGitHost + "/gitlab_rls_kaitlyn/keepworkdatasource/raw/master/kaitlyn_images/img_1502249323964.png"
                     },
                     {
-                        "name":"电子铜人",
-                        "details":"利用3D计算机技术展示人体内部结构",
+                        "name": $translate.instant("电子铜人"),
+                        "globalVisible": true,
+                        "details": $translate.instant("利用3D计算机技术展示人体内部结构"),
                         "siteUrl":config.httpProto+"://keepwork.com/idreamtech/dztr",
                         "logoUrl":config.keepworkOfficialGitHost + "/gitlab_rls_kaitlyn/keepworkdatasource/raw/master/kaitlyn_images/img_1502248544807.png"
                     },
                     {
-                        "name":"医时空",
-                        "details":"更懂中医馆的SaaS服务平台",
+                        "name": $translate.instant("医时空"),
+                        "details": $translate.instant("更懂中医馆的SaaS服务平台"),
                         "siteUrl":config.httpProto+"://www.sktcm.com",
                         "logoUrl":config.keepworkOfficialGitHost + "/gitlab_rls_kaitlyn/keepworkdatasource/raw/master/kaitlyn_images/img_1509096193919.jpeg"
                     }
                 ]
             },
             {
-                "classes":"其它",
+                "classes": $translate.instant("其它"),
                 "targetId":"qita",
+                "globalVisible": true,
                 "info":"",
                 "apps":[
                     {
-                        "name":"逻辑塔线下积木",
-                        "details":"逻辑塔线下积木",
+                        "name": $translate.instant("逻辑塔线下积木"),
+                        "globalVisible": true,
+                        "details": $translate.instant("逻辑塔线下积木"),
                         "siteUrl":config.httpProto+"://keepwork.com/paracra/logitow",
                         "logoUrl":config.keepworkOfficialGitHost + "/gitlab_rls_kaitlyn/keepworkdatasource/raw/master/kaitlyn_images/img_1502250031130.png"
                     }
                 ]
             }
         ];
+
+        var filterDataForGlobalVersion = function(list) {
+          let result = list.filter(function(item) {
+            return item.globalVisible
+          }).map(function(item) {
+            if (item.apps && item.apps.length) {
+              item.apps = filterDataForGlobalVersion(item.apps)
+            }
+            return item;
+          })
+          return result
+        }
+
+        if ($scope.isGlobalVersion) {
+          $scope.recommentApps = filterDataForGlobalVersion($scope.recommentApps)
+          $scope.classApps = filterDataForGlobalVersion($scope.classApps)
+        }
+
         var targets = {};
 
         $scope.goPart = function (event, app) {

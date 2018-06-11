@@ -10,7 +10,7 @@ define(['app',
     'controller/bigfileController',
 ], function (app, util, storage, htmlContent, bigfileContent) {
     app.registerController('servicesController', ['$scope', 'Account', 'Message', 'github', function ($scope, Account, Message) {
-        $scope.showItem = "myVIP";
+        $scope.showItem = "orders";
 
         // 订单中心
         $scope.clickOrders = function () {

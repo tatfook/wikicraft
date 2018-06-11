@@ -3458,7 +3458,187 @@ define([], function () {
             "_key": "查看更多",
             "zh-cn": "查看更多",
             "en": "More"
-        }
+        },
+      {
+        "_key": "Paracraft创意空间",
+        "zh-cn": "Paracraft创意空间",
+        "en": "Paracraft Inovation Space"
+      },
+      {
+        "_key": "创造3D交互动画，学习编程",
+        "zh-cn": "创造3D交互动画，学习编程",
+        "en": "Create 3D interactive animation, learn coding"
+      },
+      {
+        "_key": "3D校园",
+        "zh-cn": "3D校园",
+        "en": "3D Campus"
+      },
+      {
+        "_key": "3D虚拟校园",
+        "zh-cn": "3D虚拟校园",
+        "en": "3D Vitual Campus"
+      },
+      {
+        "_key": "3D打印",
+        "zh-cn": "3D打印",
+        "en": "3D Print"
+      },
+      {
+        "_key": "3D打印网络平台",
+        "zh-cn": "3D打印网络平台",
+        "en": "3D Print Online Platform"
+      },
+      {
+        "_key": "基于编程的计算机辅助设计",
+        "zh-cn": "基于编程的计算机辅助设计",
+        "en": "Programming Based Design"
+      },
+      {
+        "_key": "创作工具",
+        "zh-cn": "创作工具",
+        "en": "Tools"
+      },
+      {
+        "_key": "让你的网站更加生动的创作工具",
+        "zh-cn": "让你的网站更加生动的创作工具",
+        "en": "Empower you to be more creative"
+      },
+      {
+        "_key": "创造3D交互动画，学习计算机编程...",
+        "zh-cn": "创造3D交互动画，学习计算机编程...",
+        "en": "Create 3D Animation, learn programming..."
+      },
+      {
+        "_key": "用户可以上传创作的3D模型，由云端进行3D打印变成实物并邮寄给用户",
+        "zh-cn": "用户可以上传创作的3D模型，由云端进行3D打印变成实物并邮寄给用户",
+        "en": "Upload 3d model to cloud, we print and send it to you"
+      },
+      {
+        "_key": "Mod 扩展",
+        "zh-cn": "Mod 扩展",
+        "en": "Mod extends"
+      },
+      {
+        "_key": "Paracraft Mod扩展包管理器",
+        "zh-cn": "Paracraft Mod扩展包管理器",
+        "en": "Paracraft Mod extend package manager"
+      },
+      {
+        "_key": "教育平台",
+        "zh-cn": "教育平台",
+        "en": "Education Platform"
+      },
+      {
+        "_key": "终身学习，有教无类，人人可为师",
+        "zh-cn": "终身学习，有教无类，人人可为师",
+        "en": "Learn for life-term, for everyone, with everyone"
+      },
+      {
+        "_key": "道峰教育",
+        "zh-cn": "道峰教育",
+        "en": "Daofeng Education"
+      },
+      {
+        "_key": "PAC 3D创意大赛",
+        "zh-cn": "PAC 3D创意大赛",
+        "en": "PAC 3D Inovation Match"
+      },
+      {
+        "_key": "参加比赛，交流分享，制作出有意义的个人电脑作品...",
+        "zh-cn": "参加比赛，交流分享，制作出有意义的个人电脑作品...",
+        "en": "Join, share, create something interesting..."
+      },
+      {
+        "_key": "百科和知识库",
+        "zh-cn": "百科和知识库",
+        "en": "Wikipedia"
+      },
+      {
+        "_key": "大数据与个人百科平台",
+        "zh-cn": "大数据与个人百科平台",
+        "en": "Big Data with Personalized Wikipedia"
+      },
+      {
+        "_key": "十方百科",
+        "zh-cn": "十方百科",
+        "en": "Shifang Wikipedia"
+      },
+      {
+        "_key": "编程",
+        "zh-cn": "编程",
+        "en": "Coding"
+      },
+      {
+        "_key": "自学计算机编程语言，辅助设计",
+        "zh-cn": "自学计算机编程语言，辅助设计",
+        "en": "Learn by yourself, design by yourself."
+      },
+      {
+        "_key": "社区",
+        "zh-cn": "社区",
+        "en": "Community"
+      },
+      {
+        "_key": "多人在线虚拟社区，作品交流与分享平台",
+        "zh-cn": "多人在线虚拟社区，作品交流与分享平台",
+        "en": "A community, a platform, for everyone"
+      },
+      {
+        "_key": "魔法哈奇3D社区",
+        "zh-cn": "魔法哈奇3D社区",
+        "en": "Magic Haqi 3D Community"
+      },
+      {
+        "_key": "健康",
+        "zh-cn": "健康",
+        "en": "Health"
+      },
+      {
+        "_key": "学习医学知识， 每个人都是自己的医生",
+        "zh-cn": "学习医学知识， 每个人都是自己的医生",
+        "en": "Everyone should be a doctor by self-learning"
+      },
+      {
+        "_key": "中药溯源",
+        "zh-cn": "中药溯源",
+        "en": "Chinese Medicine History"
+      },
+      {
+        "_key": "提供中药溯源系统的公共查询服务",
+        "zh-cn": "提供中药溯源系统的公共查询服务",
+        "en": "Search Chinese Medicine History"
+      },
+      {
+        "_key": "电子铜人",
+        "zh-cn": "电子铜人",
+        "en": "Digital 3D Human Body"
+      },
+      {
+        "_key": "利用3D计算机技术展示人体内部结构",
+        "zh-cn": "利用3D计算机技术展示人体内部结构",
+        "en": "Show the structure of human body with 3D tech"
+      },
+      {
+        "_key": "医时空",
+        "zh-cn": "医时空",
+        "en": "Health Space"
+      },
+      {
+        "_key": "更懂中医馆的SaaS服务平台",
+        "zh-cn": "更懂中医馆的SaaS服务平台",
+        "en": "SaaS for Chinese Medical Clinics"
+      },
+      {
+        "_key": "其它",
+        "zh-cn": "其它",
+        "en": "Others"
+      },
+      {
+        "_key": "逻辑塔线下积木",
+        "zh-cn": "逻辑塔线下积木",
+        "en": "Logitow"
+      }
     ];
 
     var translationsTable = {};
