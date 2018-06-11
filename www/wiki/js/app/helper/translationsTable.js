@@ -3638,6 +3638,76 @@ define([], function () {
         "_key": "逻辑塔线下积木",
         "zh-cn": "逻辑塔线下积木",
         "en": "Logitow"
+      },
+      {
+        "_key": "个 人",
+        "zh-cn": "个 人",
+        "en": "Personal"
+      },
+      {
+        "_key": "空模板",
+        "zh-cn": "空模板",
+        "en": "Empty"
+      },
+      {
+        "_key": "默认样式",
+        "zh-cn": "默认样式",
+        "en": "Default"
+      },
+      {
+        "_key": "基本模板",
+        "zh-cn": "基本模板",
+        "en": "Basic"
+      },
+      {
+        "_key": "简历模板",
+        "zh-cn": "简历模板",
+        "en": "Resume"
+      },
+      {
+        "_key": "VIP可浏览全部",
+        "zh-cn": "VIP可浏览全部",
+        "en": "Visible for VIP"
+      },
+      {
+        "_key": "企 业",
+        "zh-cn": "企 业",
+        "en": "Company"
+      },
+      {
+        "_key": "企业模板2",
+        "zh-cn": "企业模板2",
+        "en": "Company 2"
+      },
+      {
+        "_key": "组 织",
+        "zh-cn": "组 织",
+        "en": "Organization"
+      },
+      {
+        "_key": "组织模板",
+        "zh-cn": "组织模板",
+        "en": "Organization"
+      },
+      {
+        "_key": "比 赛",
+        "zh-cn": "比 赛",
+        "en": "Match"
+      },
+      {
+        "_key": "大赛模板",
+        "zh-cn": "大赛模板",
+        "en": "Match"
+      },
+      {
+        "_key": "课 程",
+        "zh-cn": "课 程",
+        "en": "Lesson"
+      },
+      {
+        "_key": "课程",
+        "zh-cn": "课程",
+        "en": "Lesson"
       }
     ];
 

@@ -269,7 +269,7 @@
                         <!-- Nav tabs -->
                         <ul class="nav nav-tabs col-xs-2" role="tablist">
                             <li role="presentation" ng-repeat="category in categories" ng-class="getActiveStyleClass(category)">
-                                <a ng-click="selectCategory(category)" aria-controls="personal-web" role="tab" data-toggle="tab">{{category.name}}</a>
+                                <a ng-click="selectCategory(category)" aria-controls="personal-web" role="tab" data-toggle="tab">{{category.name | translate}}</a>
                             </li>
                         </ul>
 
@@ -282,7 +282,7 @@
                                         <div class="btn col-sm-6 col-xs-12 btn-lg" ng-disabled="!template.previewUrl" ng-click="template.previewUrl && goPreviewPage(template.previewUrl)" translate="预览"></div>
                                         <div class="btn col-sm-6 col-xs-12 btn-lg" ng-click="selectTemplate(template)" ng-class="website.templateName == template.name ? 'active' : ''" translate="选择"></div>
                                     </div>
-                                    <span class="label">{{template.name}}</span>
+                                    <span class="label">{{template.name | translate}}</span>
                                 </div>
                             </div>
                         </div>
@@ -316,7 +316,7 @@
                         {{ "功能模板：" | translate }}
                         <div class="label-img">
                             <img ng-src="{{template.logoUrl}}" alt="">
-                            <div class="label">{{website.templateName}}</div>
+                            <div class="label">{{website.templateName | translate}}</div>
                         </div>
                     </div>
                 </div>
@@ -349,7 +349,7 @@
                         <!-- Nav tabs -->
                         <ul class="nav nav-tabs col-sm-2" role="tablist">
                             <li role="presentation" ng-repeat="category in categories" ng-class="getActiveStyleClass(category)">
-                                <a ng-click="selectCategory(category)" aria-controls="personal-web" role="tab" data-toggle="tab">{{category.name}}</a>
+                                <a ng-click="selectCategory(category)" aria-controls="personal-web" role="tab" data-toggle="tab">{{category.name || translate}}</a>
                             </li>
                         </ul>
 
@@ -362,7 +362,7 @@
                                         <div class="btn col-sm-6 btn-lg" ng-disabled="!template.previewUrl" ng-click="template.previewUrl && goPreviewPage(template.previewUrl)" translate="预览"></div>
                                         <div class="btn col-sm-6 btn-lg" ng-click="selectTemplate(template)" ng-class="website.templateName == template.name ? 'active' : ''" translate="选择"></div>
                                     </div>
-                                    <span class="label">{{template.name}}</span>
+                                    <span class="label">{{template.name | translate}}</span>
                                 </div>
                             </div>
                         </div>
@@ -391,7 +391,7 @@
                         {{ "功能模板：" | translate }}
                         <div class="label-img">
                             <img ng-src="{{template.logoUrl}}" alt="">
-                            <div class="label">{{website.templateName}}</div>
+                            <div class="label">{{website.templateName | translate}}</div>
                         </div>
                     </div>
                 </div>

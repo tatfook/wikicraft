@@ -207,6 +207,7 @@ define([
         };
 
         function initSiteStyle(siteStyle) {
+          console.log(siteStyle);
             $scope.categories = siteStyle;
             $scope.templates = $scope.categories[0].templates;
             $scope.styles = $scope.templates[0].styles;
