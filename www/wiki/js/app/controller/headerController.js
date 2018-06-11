@@ -14,6 +14,7 @@ define([
     app.controller('headerController', ['$rootScope', '$scope', 'Account', 'Message', 'modal', function ($rootScope, $scope, Account, Message, modal) {
         //console.log("headerController");
         //$scope.isLogin = Account.isAuthenticated();
+        $scope.isGlobalVersion = config.isGlobalVersion;
         const SearchRangeText = ["全部内容", "当前站点", "我的网站"];
         const FoldPostfix = "/";
         $scope.urlObj = {};

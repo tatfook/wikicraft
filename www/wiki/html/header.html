@@ -561,7 +561,7 @@
                             </a>
                             <div class="dropdown-menu dropdown-menu-center" aria-labelledby="dropdownMenu1">
                                 <h5 title="{{user.displayName || user.username}}" class="title">{{user.displayName || user.username}}</h5>
-                                <div class="level clearfix">
+                                <div ng-if="!isGlobalVersion" class="level clearfix">
                                     <p class="info clearfix">
                                         <span class="pull-left" translate="等级0"></span>
                                         <span class="pull-right">0/2536</span>
@@ -593,7 +593,7 @@
                                     <li>
                                         <a ng-click="goUserCenterPage('userProfile')" translate="设置中心"></a>
                                     </li>
-                                    <li>
+                                    <li ng-if="!isGlobalVersion">
                                         <a ng-click="goUserCenterPage('services', 'myVIP')">VIP</a>
                                     </li>
                                     <li>
@@ -739,7 +739,7 @@
                                 <span translate="帮助"></span>
                             </a>
                         </li> -->
-                        <li class="iconfont-icon">
+                        <li ng-if="!isGlobalVersion" class="iconfont-icon">
                             <a href="http://iicc.keepwork.com" target="_blank">
                                 <img class="iicc-logo" ng-src="{{getImageUrl('iicc_logo.png', imgsPath)}}" alt="">
                                 {{"国际智能创意大赛" | translate}}
@@ -763,7 +763,7 @@
                             <a href="http://keepwork.com/official/help/index">
                                 <i class="iconfont icon-bangzhu"></i>{{"帮助" | translate}}</a>
                         </li> -->
-                        <li class="iconfont-icon">
+                        <li ng-if="!isGlobalVersion" class="iconfont-icon">
                             <a href="http://iicc.keepwork.com" target="_blank">
                                 <img class="iicc-logo" ng-src="{{getImageUrl('iicc_logo.png', imgsPath)}}" alt="">
                                 {{"国际智能创意大赛" | translate}}
@@ -790,7 +790,7 @@
                                 <span class="input-group-addon glyphicon glyphicon-search" ng-click="goSearchPage()"></span>
                             </div>
                         </li>
-                        <li>
+                        <li ng-if="!isGlobalVersion">
                             <a ng-click="goVipPay()">VIP</a>
                         </li>
                         <li>

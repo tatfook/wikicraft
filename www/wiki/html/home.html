@@ -466,7 +466,7 @@
 
 <div ng-controller="homeController">
   <div id="test"></div>
-    <div class="swiper-container banner-swiper">
+    <div ng-if="!isGlobalVersion" class="swiper-container banner-swiper">
       <div class="swiper-wrapper">
         <div class="swiper-slide">
             <a href="http://iicc.keepwork.com" target="_blank">
@@ -480,6 +480,13 @@
       <div class="swiper-button-prev swiper-button-white"></div>
       <div class="swiper-button-next swiper-button-white"></div>
       <div class="swiper-pagination"></div>
+    </div>
+    <div ng-if="isGlobalVersion" class="swiper-container banner-swiper">
+      <div class="swiper-wrapper">
+        <div class="swiper-slide">
+          <img ng-src="{{getImageUrl('wiki_carousel_banner2.jpg', imgsPath)}}" alt="">
+        </div>
+      </div>
     </div>
     <div class="banner clearfix">
         <div class="col-lg-4 col-lg-offset-2 col-md-5 col-md-offset-1 hidden-xs hidden-sm">

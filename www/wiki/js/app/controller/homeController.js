@@ -14,7 +14,7 @@ define([
     // 动态加载
     app.controller('homeController', ['$scope', '$rootScope', '$auth', '$sce', 'Account', 'Message', function ($scope, $rootScope, $auth, $sce, Account, Message) {
 		$scope.keepPassword = storage.localStorageGetItem("keepPassword");
-
+        $scope.isGlobalVersion = config.isGlobalVersion;
         $scope.goUserSite = function (site) {
             util.goUserSite('/' + site.username + '/' + site.name + '/index');
         }
