@@ -47,8 +47,8 @@
 			</tbody>
 		</table>
 		<div class="pagination-box">
-			<ul uib-pagination ng-change="getTableRecords()" items-per-page='pageSize' previous-text="上一页"
-				next-text="下一页" total-items="totalItems" ng-model="page" max-size="5"
+			<ul uib-pagination ng-change="getTableRecords()" items-per-page='pageSize' previous-text="previous-text="{{ '上一页' | translate }}""
+				next-text="{{ '下一页' | translate }}" total-items="totalItems" ng-model="page" max-size="5"
 				class="pagination-sm" boundary-link-numbers="true">
 			</ul>
 		</div>

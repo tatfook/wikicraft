@@ -8,16 +8,16 @@ define(['app',
     'helper/storage',
     'text!html/invite.html',
 ], function (app, util, storage, htmlContent) {
-    app.registerController('inviteController', ['$scope', 'Account', 'Message', 'github', function ($scope, Account, Message) {
+    app.registerController('inviteController', ['$scope', '$translate', 'Account', 'Message', 'github', function ($scope, $translate, Account, Message) {
         $scope.showItem = "addFriend";
 
         $scope.inviteFriend = function () {
             if (!$scope.friendMail) {
-                Message.info("请正确填写好友邮箱地址!!!");
+                Message.info($translate.instant("请正确填写好友邮箱地址!!!"));
                 return ;
             }
             util.post(config.apiUrlPrefix + 'user/inviteFriend',{username:$scope.user.username,friendMail:$scope.friendMail}, function () {
-                Message.info("邀请邮件已发送给" + $scope.friendMail);
+                Message.info($translate.instant("邀请邮件已发送给") + $scope.friendMail);
                 $scope.friendMail = "";
             });
         };
