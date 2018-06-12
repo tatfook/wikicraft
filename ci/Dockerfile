@@ -5,8 +5,7 @@ ARG DIST_PKG
 
 # compile qiniu sdk (libboost ver > 1.55)
 # install boost in npl image
-#RUN apt-get update
-#RUN apt-get install -y libboost-all-dev
+RUN apt-get update && apt-get install -y libboost-all-dev
 
 ADD ./bin/tini /tini
 RUN chmod +x /tini
