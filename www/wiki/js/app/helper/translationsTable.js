@@ -3829,6 +3829,217 @@ define([], function () {
         "_key": "密码修改成功",
         "zh-cn": "密码修改成功",
         "en": "Change password successfully"
+      },
+      {
+        "_key": "修改成功",
+        "zh-cn": "修改成功",
+        "en": "Update successfully"
+      },
+      {
+        "_key": "修改失败",
+        "zh-cn": "修改失败",
+        "en": "Update failed"
+      },
+      {
+        "_key": "请至少选择一个要下载的文件！",
+        "zh-cn": "请至少选择一个要下载的文件！",
+        "en": "Select one file at least please!"
+      },
+      {
+        "_key": "下载文件失败",
+        "zh-cn": "下载文件失败",
+        "en": "Download failed"
+      },
+      {
+        "_key": "含有未审核或审核不通过的文件",
+        "zh-cn": "含有未审核或审核不通过的文件",
+        "en": "Some files haven't passed the check yet."
+      },
+      {
+        "_key": "文件获取失败",
+        "zh-cn": "文件获取失败",
+        "en": "Get file failed"
+      },
+      {
+        "_key": "该资源未经审核或审核不通过",
+        "zh-cn": "该资源未经审核或审核不通过",
+        "en": "The file hasn't passed the check yet."
+      },
+      {
+        "_key": "请至少选择一个要插入的文件！",
+        "zh-cn": "请至少选择一个要插入的文件！",
+        "en": "Select one file at least please!"
+      },
+      {
+        "_key": "请输入要插入的url地址！",
+        "zh-cn": "请输入要插入的url地址！",
+        "en": "Input url to insert please!"
+      },
+      {
+        "_key": "请输入正确的url地址！",
+        "zh-cn": "请输入正确的url地址！",
+        "en": "Input correct url please!"
+      },
+      {
+        "_key": "拷贝链接",
+        "zh-cn": "拷贝链接",
+        "en": "Copy"
+      },
+      {
+        "_key": "插入",
+        "zh-cn": "插入",
+        "en": "Insert"
+      },
+      {
+        "_key": "未审核",
+        "zh-cn": "未审核",
+        "en": "Processing"
+      },
+      {
+        "_key": "已通过",
+        "zh-cn": "已通过",
+        "en": "Approved"
+      },
+      {
+        "_key": "不通过",
+        "zh-cn": "不通过",
+        "en": "Rejected"
+      },
+
+      {
+        "_key": "请至少选择一个要删除的文件！",
+        "zh-cn": "Select one file at least please!",
+        "en": "Copy"
+      },
+      {
+        "_key": "重命名失败",
+        "zh-cn": "重命名失败",
+        "en": "Rename failed"
+      },
+      {
+        "_key": "文件名不能为空！",
+        "zh-cn": "文件名不能为空！",
+        "en": "File name "
+      },
+      {
+        "_key": "网盘中已存在该文件名！",
+        "zh-cn": "网盘中已存在该文件名！",
+        "en": "The name already exists"
+      },
+      {
+        "_key": "文件名不能包含下列任何字符：\\\\ / : * ? \" < > |",
+        "zh-cn": "文件名不能包含下列任何字符：\\\\ / : * ? \" < > |",
+        "en": "File name cannot contain \\\\ / : * ? \" < > |"
+      },
+      {
+        "_key": "创建站点",
+        "zh-cn": "创建站点",
+        "en": "create website "
+      },
+      {
+        "_key": "删除历史功能开发中",
+        "zh-cn": "删除历史功能开发中",
+        "en": "Removing history function is in developing"
+      },
+      {
+        "_key": "请先填写正确的手机号码",
+        "zh-cn": "请先填写正确的手机号码",
+        "en": "Input correct phone number please!"
+      },
+      {
+        "_key": "请先发送验证码！",
+        "zh-cn": "请先发送验证码！",
+        "en": "Send validate code please!"
+      },
+      {
+        "_key": "请填写验证码！",
+        "zh-cn": "请填写验证码！",
+        "en": "Input validate code please!"
+      },
+      {
+        "_key": "邀请邮件已发送给",
+        "zh-cn": "邀请邮件已发送给",
+        "en": "Invite successfully"
+      },
+      {
+        "_key": "表单相关字段不能为空!!!",
+        "zh-cn": "Required info cannot be empty!!!",
+        "en": ""
+      },
+      {
+        "_key": "内置数据源不可更改!!!",
+        "zh-cn": "内置数据源不可更改!!!",
+        "en": "Inner data source cannot be changed!!!"
+      },
+      {
+        "_key": "操作成功",
+        "zh-cn": "操作成功",
+        "en": "Success"
+      },
+      {
+        "_key": "内置数据源不可删除!!!",
+        "zh-cn": "内置数据源不可删除!!!",
+        "en": "Inner data source cannot be removed!!!"
+      },
+      {
+        "_key": "取消关注成功",
+        "zh-cn": "取消关注成功",
+        "en": "Unfollow successfully"
+      },
+      {
+        "_key": "关注成功",
+        "zh-cn": "关注成功",
+        "en": "Follow successfully"
+      },
+      {
+        "_key": "登录后才能关注",
+        "zh-cn": "登录后才能关注",
+        "en": "Login at first please!"
+      },
+      {
+        "_key": "自己不关注自己",
+        "zh-cn": "自己不关注自己",
+        "en": "Cannot follow yourself"
+      },
+      {
+        "_key": "登录后才能收藏!!!",
+        "zh-cn": "登录后才能收藏!!!",
+        "en": "Login at first please!"
+      },
+      {
+        "_key": "不能收藏自己作品!!!",
+        "zh-cn": "不能收藏自己作品!!!",
+        "en": "Cannot favorite your works"
+      },
+      {
+        "_key": "作品已收藏",
+        "zh-cn": "作品已收藏",
+        "en": "Add to favorite successfully"
+      },
+      {
+        "_key": "作品已取消收藏",
+        "zh-cn": "作品已取消收藏",
+        "en": "Remove from favorite successfully"
+      },
+      {
+        "_key": "置顶内容",
+        "zh-cn": "置顶内容",
+        "en": "Sticky to top"
+      },
+      {
+        "_key": "创建的网站",
+        "zh-cn": "创建的网站",
+        "en": "My websites"
+      },
+      {
+        "_key": "参与的网站",
+        "zh-cn": "参与的网站",
+        "en": "Contributed websites"
+      },
+      {
+        "_key": "关注的网页",
+        "zh-cn": "关注的网页",
+        "en": "Followed websites"
       }
     ];
 

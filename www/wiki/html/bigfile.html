@@ -467,11 +467,11 @@
                                     <td class="size-column hidden-xs" title="{{file.filesize || sizeTransfer(file)}}">
                                         {{file.filesize || sizeTransfer(file)}}
                                     </td>
-                                    <td class="type-column hidden-xs" title="{{file.status}}" ng-init="getFileStatus(file)">{{file.status}}</td>
+                                    <td class="type-column hidden-xs" title="{{file.status | translate}}" ng-init="getFileStatus(file)">{{file.status | translate}}</td>
                                     <td class="date-column hidden-xs" title="{{file.updateDate}}">{{file.updateDate}}</td>
                                     <td class="operate-column">
-                                        <span title="拷贝链接" ng-click="insertBigfileUrl(file)"><img ng-src="{{getImageUrl('icon/wiki_bigfile_paste.png', imgsPath)}}" alt=""></span>
-                                        <span title="插入" ng-click="insertFile(file)"><img ng-src="{{getImageUrl('icon/wiki_insert.png', imgsPath)}}" alt=""></span>
+                                        <span title="{{'拷贝链接' | translate}}" ng-click="insertBigfileUrl(file)"><img ng-src="{{getImageUrl('icon/wiki_bigfile_paste.png', imgsPath)}}" alt=""></span>
+                                        <span title="{{'插入' | translate}}" ng-click="insertFile(file)"><img ng-src="{{getImageUrl('icon/wiki_insert.png', imgsPath)}}" alt=""></span>
                                     </td>
                                 </tr>
                             </tbody>
