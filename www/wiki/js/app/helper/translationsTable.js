@@ -112,7 +112,7 @@ define([], function () {
         {
             "_key": "全部内容",
             "zh-cn": "全部内容",
-            "en": "All content"
+            "en": "All"
         },
         {
             "_key": "当前站点",
@@ -3708,6 +3708,127 @@ define([], function () {
         "_key": "课程",
         "zh-cn": "课程",
         "en": "Lesson"
+      },
+      {
+        "_key": "打开",
+        "zh-cn": "打开",
+        "en": "Open"
+      },
+      {
+        "_key": "编辑",
+        "zh-cn": "编辑",
+        "en": "Edit"
+      },
+      {
+        "_key": "设置",
+        "zh-cn": "设置",
+        "en": "Setting"
+      },
+      {
+        "_key": "删除",
+        "zh-cn": "删除",
+        "en": "Remove"
+      },
+      {
+        "_key": "条页面：",
+        "zh-cn": "条页面：",
+        "en": "pages: "
+      },
+      {
+        "_key": "热度：",
+        "zh-cn": "热度：",
+        "en": "Hot: "
+      },
+      {
+        "_key": "上一页",
+        "zh-cn": "上一页",
+        "en": "Prev"
+      },
+      {
+        "_key": "下一页",
+        "zh-cn": "下一页",
+        "en": "Next"
+      },
+      {
+        "_key": "请正确填写好友邮箱地址!!!",
+        "zh-cn": "请正确填写好友邮箱地址!!!",
+        "en": "Please input a correct email"
+      },
+      {
+        "_key": "邀请邮件已发送给",
+        "zh-cn": "邀请邮件已发送给",
+        "en": "Invite Successfully"
+      },
+      {
+        "_key": "提示",
+        "zh-cn": "提示",
+        "en": "Warning"
+      },
+      {
+        "_key": "还有文件正在上传，请完成后重试，或者打开新窗口操作！",
+        "zh-cn": "还有文件正在上传，请完成后重试，或者打开新窗口操作！",
+        "en": "Upload is in process, please retry after awhile, or open a new window."
+      },
+      {
+        "_key": "还有文件正在上传，确定关闭窗口？",
+        "zh-cn": "还有文件正在上传，确定关闭窗口？",
+        "en": "Upload is in process, are you sure to leave?"
+      },
+      {
+        "_key": "取消上传",
+        "zh-cn": "取消上传",
+        "en": "Cancel Upload"
+      },
+      {
+        "_key": "确定取消该文件上传吗？",
+        "zh-cn": "确定取消该文件上传吗？",
+        "en": "Are you sure to cancel upload ?"
+      },
+      {
+        "_key": "删除文件",
+        "zh-cn": "删除文件",
+        "en": "Remove File"
+      },
+      {
+        "_key": "确定删除文件吗？",
+        "zh-cn": "确定删除文件吗？",
+        "en": "Are you sure to remove file ?"
+      },
+
+      {
+        "_key": "手机格式错误",
+        "zh-cn": "手机格式错误",
+        "en": "Incorrect Phone Number"
+      },
+      {
+        "_key": "图片验证码错误",
+        "zh-cn": "图片验证码错误",
+        "en": "Incorrect Captcha Code"
+      },
+      {
+        "_key": "删除文件",
+        "zh-cn": "删除文件",
+        "en": "Remove File"
+      },
+      {
+        "_key": "确定删除文件吗？",
+        "zh-cn": "确定删除文件吗？",
+        "en": "Are you sure to remove file ?"
+      },
+      {
+        "_key": "请输入密码",
+        "zh-cn": "请输入密码",
+        "en": "Input password please"
+      },
+      {
+        "_key": "两次新密码不一致!!!",
+        "zh-cn": "两次新密码不一致!!!",
+        "en": "New passwords don't match"
+      },
+      {
+        "_key": "密码修改成功",
+        "zh-cn": "密码修改成功",
+        "en": "Change password successfully"
       }
     ];
 

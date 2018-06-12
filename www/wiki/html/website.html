@@ -147,10 +147,10 @@
                     </div>
                     <div class="hidden-xs">{{website.createDate}}</div>
                     <div>
-                        <a class="iconfont icon-bianjiqi-dakai" ng-href="/{{user.username}}/{{website.name}}" target="_blank" title="打开"></a>
-                        <a class="iconfont icon-bianjiqi-bianji" ng-href="/wiki/wikieditor#/{{user.username}}/{{website.name}}/index" title="编辑"></a>
-                        <a class="iconfont icon-bianjiqi-shezhi"  ng-click="goEditWebsitePage(website)" title="设置"></a>
-                        <a class="iconfont icon-bianjiqi-shanchu text-danger" ng-click="deleteWebsite(website)" title="删除"></a>
+                        <a class="iconfont icon-bianjiqi-dakai" ng-href="/{{user.username}}/{{website.name}}" target="_blank" title="{{ '打开' | translate }}"></a>
+                        <a class="iconfont icon-bianjiqi-bianji" ng-href="/wiki/wikieditor#/{{user.username}}/{{website.name}}/index" title="{{ '编辑' | translate }}"></a>
+                        <a class="iconfont icon-bianjiqi-shezhi"  ng-click="goEditWebsitePage(website)" title="{{ '设置' | translate }}"></a>
+                        <a class="iconfont icon-bianjiqi-shanchu text-danger" ng-click="deleteWebsite(website)" title="{{ '删除' | translate }}"></a>
                     </div>
                 </div>
             </div>

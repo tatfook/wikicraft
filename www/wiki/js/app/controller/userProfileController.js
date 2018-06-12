@@ -11,7 +11,7 @@ define(['app',
     'cropper',
     'bluebird'
 ], function (app, util, storage, dataSource, sensitiveWord, htmlContent, cropper, Promise) {
-    app.registerController('userProfileController', ['$scope', '$interval', 'Account', 'Message', function ($scope, $interval, Account, Message) {
+    app.registerController('userProfileController', ['$scope', '$interval', '$translate', 'Account', 'Message', function ($scope, $interval, $translate, Account, Message) {
         $scope.passwordObj = {};
         $scope.fansWebsiteId = "0";
         $scope.showItem = 'myProfile';
@@ -345,7 +345,7 @@ define(['app',
 			}
 
 			if (!/[0-9]{11}/.test($scope.userPhone)) {
-				Message.info("手机格式错误");
+				Message.info($translate.instant("手机格式错误"));
 				return;
 			}
 
@@ -362,7 +362,7 @@ define(['app',
         $scope.bindPhone=function () {
             $scope.errorMsg = "";
 			if ($scope.imageCode != $scope.rightImageCode) {
-				$scope.imageCodeErrMsg = "图片验证码错误";
+				$scope.imageCodeErrMsg = $translate.instant("图片验证码错误");
 				return;
 			} else {
 				$scope.imageCodeErrMsg = "";
@@ -455,16 +455,16 @@ define(['app',
             // 修改密码
             $scope.modifyPassword = function () {
                 if (!$scope.passwordObj || !$scope.passwordObj.oldPassword || !$scope.passwordObj.newPassword1 || !$scope.passwordObj.newPassword2){
-                    Message.info("请输入密码");
+                    Message.info($translate.instant("请输入密码"));
                     return;
                 }
                 if ($scope.passwordObj.newPassword1 != $scope.passwordObj.newPassword2) {
-                    Message.info("两次新密码不一致!!!");
+                    Message.info($translate.instant("两次新密码不一致!!!"));
                     return;
                 }
                 var params = {oldpassword: $scope.passwordObj.oldPassword, newpassword: $scope.passwordObj.newPassword1};
                 util.http("POST", config.apiUrlPrefix + "user/changepw", params, function (data) {
-                    Message.success("密码修改成功");
+                    Message.success($translate.instant("密码修改成功"));
                     $scope.passwordObj = {};
                 }, function (error) {
                     Message.info(error.message);

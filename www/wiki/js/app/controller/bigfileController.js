@@ -7,7 +7,7 @@ define([
     "helper/util",
     "text!html/bigfile.html"
 ], function (app, qiniu, util, htmlContent) {
-    app.registerController("bigfileController", ["$scope", "$rootScope", function ($scope, $rootScope) {
+    app.registerController("bigfileController", ["$scope", "$rootScope", "$translate", function ($scope, $rootScope, $translate) {
         var qiniuBack;
         var uploadTotalSecond = 0;
         var fileUploadTime = 0;
@@ -29,13 +29,13 @@ define([
             if ($scope.uploadingFiles && $scope.uploadingFiles.length > 0 && !$scope.finishUploading){
                 // console.log("正在上传");
                 var confirmObj = {
-                    "title": "提示",
+                    "title": $translate.instant("提示"),
                     "confirmBtnClass": "btn-danger",
                     "theme": "danger",
-                    "content": "还有文件正在上传，确定关闭窗口？"
+                    "content": $translate.instant("还有文件正在上传，确定关闭窗口？")
                 };
                 if (params){
-                    confirmObj.content = "还有文件正在上传，请完成后重试，或者打开新窗口操作";
+                    confirmObj.content = $translate.instant("还有文件正在上传，请完成后重试，或者打开新窗口操作！");
                     confirmObj.cancelBtn = false;
                     confirmObj.confirmBtnClass = "";
                 }
@@ -531,10 +531,10 @@ define([
                 qiniuBack.stop();
             }
             config.services.confirmDialog({
-                "title": "取消上传",
+                "title": $translate.instant("取消上传"),
                 "confirmBtnClass": "btn-danger",
                 "theme": "danger",
-                "content": "确定取消该文件上传吗？"
+                "content": $translate.instant("确定取消该文件上传吗？")
             }, function () {
                 fileStop(file);
             }, function () {
@@ -544,10 +544,10 @@ define([
 
         $scope.deleteFile = function(files, index) {
             config.services.confirmDialog({
-                "title":"删除文件",
-                "confirmBtnClass":"btn-danger",
-                "theme":"danger",
-                "content":"确定删除文件吗？"
+                "title": $translate.instant("删除文件"),
+                "confirmBtnClass": "btn-danger",
+                "theme": "danger",
+                "content": $translate.instant("确定删除文件吗？")
             },function(){
                 if (!Array.isArray(files)){
                     var file = files;
@@ -662,8 +662,8 @@ define([
         $scope.updateFile = function (file) {
             if ($scope.uploadingFiles && $scope.uploadingFiles.length > 0 && !$scope.finishUploading){
                 config.services.confirmDialog({
-                    "title": "提示",
-                    "content": "还有文件正在上传，请完成后重试，或者打开新窗口操作！",
+                    "title": $translate.instant("提示"),
+                    "content": $translate.instant("还有文件正在上传，请完成后重试，或者打开新窗口操作！"),
                     "cancelBtn": false
                 }, function () {
                     $("#activeUpload").tab("show");

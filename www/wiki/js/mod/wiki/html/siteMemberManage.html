@@ -177,8 +177,8 @@
                         </div>
                     </div>
                     <div class="pagination-box">
-                        <ul uib-pagination ng-change="clickMember()" items-per-page='pageSize' previous-text="上一页"
-                            next-text="下一页" total-items="memberTotal" ng-model="currentPage" class="pagination-sm" boundary-link-numbers="true"></ul>
+                        <ul uib-pagination ng-change="clickMember()" items-per-page='pageSize' previous-text="previous-text="{{ '上一页' | translate }}""
+                            next-text="{{ '下一页' | translate }}" total-items="memberTotal" ng-model="currentPage" class="pagination-sm" boundary-link-numbers="true"></ul>
                     </div>
                 </div>
                 <div role="tabpanel" class="tab-pane" id="notify">
