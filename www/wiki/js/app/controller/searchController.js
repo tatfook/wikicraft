@@ -8,7 +8,7 @@ define([
    	'helper/storage',
    	'text!html/search.html'
 ], function (app, util, storage, htmlContent) {
-    app.controller('searchController', ['$scope', '$location', '$sce', 'Account','Message', 'modal', function ($scope, $location, $sce, Account, Message, modal) {
+    app.controller('searchController', ['$scope', '$location', '$sce', '$translate', 'Account','Message', 'modal', function ($scope, $location, $sce, $translate, Account, Message, modal) {
         const tagSplitRegexp = /\[([^\]]+)\]/;
         const SearchRangeText = ["全部内容", "当前站点", "我的网站"];
         $scope.totalItems = 0;
@@ -147,12 +147,12 @@ define([
         // 收藏作品
         $scope.worksFavorite=function (event, site) {
             if (!Account.isAuthenticated()) {
-                Message.info("登录后才能收藏!!!");
+                Message.info($translate.instant("登录后才能收藏!!!"));
                 return ;
             }
 
             if (site.userId == $scope.user._id) {
-                Message.info("不能收藏自己作品!!!");
+                Message.info($translate.instant("不能收藏自己作品!!!"));
                 return ;
             }
 
@@ -165,7 +165,7 @@ define([
 
                 var url = config.apiUrlPrefix + 'user_favorite/' + (isFavorite ? 'favoriteSite' : 'unfavoriteSite');
                 util.post(url, params, function () {
-                    Message.info(isFavorite ? '作品已收藏' : '作品已取消收藏');
+                    Message.info(isFavorite ? $translate.instant('作品已收藏') : $translate.instant('作品已取消收藏'));
                 });
             };
 
@@ -195,7 +195,7 @@ define([
             }
 
             if (!Account.isAuthenticated()) {
-                Message.info("登录后才能关注");
+                Message.info($translate.instant("登录后才能关注"));
                 modal('controller/loginController', {
                     controller: 'loginController',
                     size: 'lg',
@@ -206,18 +206,18 @@ define([
                 return; // 登录后才能关注
             }
             if (!Account.isAuthenticated() || !$scope.user || $scope.user.username == fansUser.username) {
-                Message.danger("自己不关注自己");
+                Message.danger($translate.instant("自己不关注自己"));
                 return; // 自己不关注自己
             }
 
             if(fansUser.following){//取消关注
                 util.post(config.apiUrlPrefix + 'user_fans/unattent', {username:fansUser.username, fansUsername:$scope.user.username}, function () {
-                    Message.info("取消关注成功");
+                    Message.info($translate.instant("取消关注成功"));
                     fansUser.following =false;
                 });
             }else{
                 util.post(config.apiUrlPrefix + 'user_fans/attent', {username:fansUser.username, fansUsername:$scope.user.username}, function () {
-                    Message.info("关注成功");
+                    Message.info($translate.instant("关注成功"));
                     fansUser.following =true;
                 });
             }

@@ -495,7 +495,10 @@ define(['app',
 
             function getUserTrends() {
                 util.post(config.apiUrlPrefix + 'user_trends/get', {userId:$scope.user._id}, function (data) {
-                    $scope.trendsList = data.trendsList;
+                    $scope.trendsList = (data.trendsList || []).map(function(item) {
+                      item.desc = (item.desc||'').replace('创建站点', $translate.instant('创建站点'))
+                      return item
+                    });
                 });
             }
 
@@ -585,7 +588,7 @@ define(['app',
         }
 
         $scope.deleteHistory = function () {
-            Message.info("删除历史功能开发中");
+            Message.info($translate.instant("删除历史功能开发中"));
         };
 
         // 我的粉丝
@@ -623,7 +626,7 @@ define(['app',
                 $scope.realNameInfo.cellphone = cellphone;
 
                 if ( !/^[0-9]{11}$/.test($scope.realNameInfo.cellphone) ) {
-                    $scope.errorMsg = "请先填写正确的手机号码";
+                    $scope.errorMsg = $translate.instant("请先填写正确的手机号码");
                     return;
                 }
                 $scope.errorMsg = "";
@@ -661,11 +664,11 @@ define(['app',
             $scope.submitRealnameInfo = function () {
                 $scope.errorMsg = "";
                 if (!$scope.realNameCellPhoneSMSId){
-                    $scope.errorMsg = "请先发送验证码！";
+                    $scope.errorMsg = $translate.instant("请先发送验证码！");
                     return;
                 }
                 if (!$scope.realNameInfo.SMSCode){
-                    $scope.errorMsg = "请填写验证码！";
+                    $scope.errorMsg = $translate.instant("请填写验证码！");
                     return;
                 }
                 util.post(config.apiUrlPrefix + "user/verifyCellphoneTwo", {
@@ -708,11 +711,11 @@ define(['app',
 
             $scope.inviteFriend = function () {
                 if (!$scope.friendMail) {
-                    Message.info("请正确填写好友邮箱地址!!!");
+                    Message.info($translate.instant("请正确填写好友邮箱地址!!!"));
                     return ;
                 }
                 util.post(config.apiUrlPrefix + 'user/inviteFriend',{username:$scope.user.username,friendMail:$scope.friendMail}, function () {
-                    Message.info("邀请邮件已发送给" + $scope.friendMail);
+                    Message.info($translate.instant("邀请邮件已发送给") + $scope.friendMail);
                     $scope.friendMail = "";
                 });
             }
@@ -736,12 +739,12 @@ define(['app',
             $scope.clickNewDataSource = function () {
                 //console.log($scope.newDataSource);
                 if (!$scope.newDataSource.type || !$scope.newDataSource.name || !$scope.newDataSource.apiBaseUrl || !$scope.newDataSource.dataSourceToken) {
-                    $scope.errMsg = "表单相关字段不能为空!!!";
+                    $scope.errMsg = $translate.instant("表单相关字段不能为空!!!");
                     return ;
                 }
 
                 if ($scope.newDataSource.name == "内置gitlab" || $scope.newDataSource.name == "内置github") {
-                    $scope.errMsg = "内置数据源不可更改!!!";
+                    $scope.errMsg = $translate.instant("内置数据源不可更改!!!");
                     return;
                 }
 
@@ -769,7 +772,7 @@ define(['app',
                 //}
 
                 util.post(config.apiUrlPrefix + 'data_source/setDataSource', $scope.newDataSource, function (data) {
-                    Message.info("操作成功");
+                    Message.info($translate.instant("操作成功"));
                     !isModify && $scope.dataSourceList.push(angular.copy(data));
                     $scope.newDataSource = {username:$scope.user.username};
                     //getUserDataSource();
@@ -784,7 +787,7 @@ define(['app',
             // 删除数据源
             $scope.clickDeleteDataSource = function (x) {
                 if (x.name == "内置gitlab" || x.name == "内置github") {
-                    Message.info( "内置数据源不可删除!!!");
+                    Message.info($translate.instant("内置数据源不可删除!!!"));
                     return;
                 }
 

@@ -66,7 +66,7 @@
                 </thead>
                 <tbody>
                 <tr ng-repeat="x in dataSourceList" ng-hide="x.isDelete">
-                    <td>{{x.name}}</td>
+                    <td>{{x.name | translate}}</td>
                     <td>{{x.type}}</td>
                     <td>{{x.apiBaseUrl}}</td>
                     <td>{{x.rawBaseUrl}}</td>
