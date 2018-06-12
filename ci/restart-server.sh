@@ -7,11 +7,11 @@ set -ex
 usage() {
   echo "usage error"
   echo
-  echo "usage: $0 dev|stage|release [branch_name] [port]"
+  echo "usage: $0 dev|stage|test|release [branch_name] [port]"
   exit 1
 }
 
-if [[ $1 != "stage" ]] && [[ $1 != "dev" ]] && [[ $1 != "release" ]]; then
+if [[ $1 != "stage" ]] && [[ $1 != "dev" ]] && [[ $1 != "test" ]] && [[ $1 != "release" ]]; then
   usage
 fi
 
@@ -33,6 +33,25 @@ case $RUN_ENV in
         echo "no i18n setting for dev env"
         exit 1
     ;;
+    "stage-zh_CN")
+        name=$2
+        outside_port=$3
+        inside_port=8099
+        ;;
+    "stage-en_US")
+        echo "no i18n setting for stage env"
+        exit 1
+        ;;
+    "test-zh_CN")
+        outside_port=9000
+        inside_port=8088
+        database=prod-database
+        log=prod-log
+        ;;
+    "test-en_US")
+        echo "no i18n setting for test env"
+        exit 1
+        ;;
     "release-zh_CN")
         outside_port=8088
         inside_port=8088
@@ -43,15 +62,6 @@ case $RUN_ENV in
         inside_port=8088
         database=${ENV_TYPE}-database-${KEEPWORK_LOCALE}
         log=${ENV_TYPE}-log-${KEEPWORK_LOCALE}
-    ;;
-    "stage-zh_CN")
-        name=$2
-        outside_port=$3
-        inside_port=8099
-    ;;
-    "stage-en_US")
-        echo "no i18n setting for stage env"
-        exit 1
     ;;
     *)
         exit 1

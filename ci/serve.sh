@@ -10,7 +10,7 @@ set -x
 usage() {
   echo "usage error"
   echo
-  echo "usage: $0 dev|stage|release|prod"
+  echo "usage: $0 dev|stage|test|release|prod"
   exit 1
 }
 
@@ -18,7 +18,7 @@ if [[ $# -ne 1 ]]; then
   usage
 fi
 
-if [[ $1 != "stage" ]] && [[ $1 != "dev" ]] && [[ $1 != "release" ]] && [[ $1 != "prod" ]]; then
+if [[ $1 != "stage" ]] && [[ $1 != "dev" ]] && [[ $1 != "test" ]] && [[ $1 != "release" ]] && [[ $1 != "prod" ]]; then
   usage
 fi
 
@@ -33,6 +33,10 @@ case $ENV_TYPE in
   stage)
     ROOT_DIR="www"
     PORT=8099
+    ;;
+  test)
+    ROOT_DIR="rls"
+    PORT=8088
     ;;
   release)
     ROOT_DIR="test"

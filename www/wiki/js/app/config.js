@@ -5,7 +5,7 @@
 /* 程序配置模块 */
 
 (function () {
-    const ProdHost = "^keepwork.com$";
+    const ProdHost = "^(test.)?keepwork.com$";
     const ReleaseHost = "^release.keepwork.com$";
 	var wiki_config = window.wiki_config || {};
 	var localEnv = window.location.hostname.indexOf("localhost") >= 0 ? true : false;
