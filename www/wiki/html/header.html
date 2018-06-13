@@ -849,7 +849,7 @@
             <li class="icon" ng-hide="isUserPage">
                 <img ng-src="{{imgsPath+'icon/wiki_edit.png'}}" alt="" ng-click="goWikiEditorPage()">
             </li>
-            <li class="icon dropdown share-dropdown">
+            <li class="icon dropdown share-dropdown" ng-if="!isGlobalVersion">
                 <img class="dropdown-toggle" ng-src="{{imgsPath+'icon/wiki_share.png'}}" ng-click="clickShare()" alt="" data-toggle="dropdown"
                     aria-haspopup="true" aria-expanded="true">
                 <div class="dropdown-menu">
