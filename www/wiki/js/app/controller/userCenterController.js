@@ -45,8 +45,8 @@ define(['app',
 
         $scope.servicesItemList = [
             !$scope.isGlobalVersion && {contentType:"services", subContentType:"myVIP", flag:'myVIP', name:'我的VIP'},
-            {contentType:"services", subContentType:"orders", flag:'orders', name:'订单中心'},
-            {contentType:"services", subContentType:"myPay", flag:'myPay', name:'消费记录'},
+            !$scope.isGlobalVersion && {contentType:"services", subContentType:"orders", flag:'orders', name:'订单中心'},
+            !$scope.isGlobalVersion && {contentType:"services", subContentType:"myPay", flag:'myPay', name:'消费记录'},
             {contentType:"services", subContentType:"qiniuPan", flag:'qiniuPan', name:'我的网盘'},
         ].filter(function(x) {return x});
 
