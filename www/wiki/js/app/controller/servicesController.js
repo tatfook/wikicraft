@@ -10,7 +10,17 @@ define(['app',
     'controller/bigfileController',
 ], function (app, util, storage, htmlContent, bigfileContent) {
     app.registerController('servicesController', ['$scope', 'Account', 'Message', 'github', function ($scope, Account, Message) {
-        $scope.showItem = "orders";
+        $scope.isGlobalVersion = config.isGlobalVersion;
+        $scope.showItem = "";
+
+        function init(userinfo) {
+          $scope.user = userinfo || $scope.user;
+          if (!$scope.isGlobalVersion) {
+            $scope.showItem = "myVIP";
+          } else {
+            setTimeout(loadQiniuPan);
+          }
+        }
 
         // 订单中心
         $scope.clickOrders = function () {
@@ -63,13 +73,13 @@ define(['app',
             else if(item == 'myVIP'){
                 $scope.showMyVIP();
             }else if(item == 'qiniuPan'){
-                $scope.showItem = 'qiniuPan';
-                util.html('#qiniuPan', bigfileContent);
+              loadQiniuPan()
             }
         });
 
-        function init(userinfo) {
-            $scope.user = userinfo || $scope.user;
+        function loadQiniuPan() {
+          $scope.showItem = 'qiniuPan';
+          util.html('#qiniuPan', bigfileContent);
         }
 
         // 文档加载完成
