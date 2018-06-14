@@ -213,13 +213,14 @@ local function getDownloadDomain()
 end
 
 local function getCalllbackUrl()
+	local locale = os.getenv("KEEPWORK_LOCALE") or 'zh_CN'
 	local host = "keepwork.com"
 	if WIKI_ENV == "rls" then
-		host = "keepwork.com"
+		if locale == 'zh_CN' then host = "keepwork.com" else host = "en.keepwork.com"
 	elseif WIKI_ENV == "test" then
-		host = "release.keepwork.com"
+		if locale == 'zh_CN' then host = "release.keepwork.com" else host = "release-en.keepwork.com"
 	else 
-		host = "stage.keepwork.com"
+		if locale == 'zh_CN' then host = "stage.keepwork.com" else host = "stage-en.keepwork.com"
 	end
 	
 	 return "http://" .. host .. "/api/wiki/models/qiniu/callback"
