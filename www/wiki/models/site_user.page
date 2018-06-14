@@ -169,6 +169,8 @@ function site_user:api_getSiteLevelByMemberName(params)
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
 
+	params.memberName = params.memberName or getUsername()
+
 	local websiteDB = models.website:new()
 	websiteDB:db():findOne({["+username+name"] = {params.username, params.sitename}}, resume)
 	local err, data = yield()
