@@ -7,7 +7,7 @@ define([
     "helper/util",
     "text!html/bigfile.html"
 ], function (app, qiniu, util, htmlContent) {
-    app.registerController("bigfileController", ["$scope", "$rootScope", function ($scope, $rootScope) {
+    app.registerController("bigfileController", ["$scope", "$rootScope", "$translate", function ($scope, $rootScope, $translate) {
         var qiniuBack;
         var uploadTotalSecond = 0;
         var fileUploadTime = 0;
@@ -29,13 +29,13 @@ define([
             if ($scope.uploadingFiles && $scope.uploadingFiles.length > 0 && !$scope.finishUploading){
                 // console.log("正在上传");
                 var confirmObj = {
-                    "title": "提示",
+                    "title": $translate.instant("提示"),
                     "confirmBtnClass": "btn-danger",
                     "theme": "danger",
-                    "content": "还有文件正在上传，确定关闭窗口？"
+                    "content": $translate.instant("还有文件正在上传，确定关闭窗口？")
                 };
                 if (params){
-                    confirmObj.content = "还有文件正在上传，请完成后重试，或者打开新窗口操作";
+                    confirmObj.content = $translate.instant("还有文件正在上传，请完成后重试，或者打开新窗口操作！");
                     confirmObj.cancelBtn = false;
                     confirmObj.confirmBtnClass = "";
                 }
@@ -531,10 +531,10 @@ define([
                 qiniuBack.stop();
             }
             config.services.confirmDialog({
-                "title": "取消上传",
+                "title": $translate.instant("取消上传"),
                 "confirmBtnClass": "btn-danger",
                 "theme": "danger",
-                "content": "确定取消该文件上传吗？"
+                "content": $translate.instant("确定取消该文件上传吗？")
             }, function () {
                 fileStop(file);
             }, function () {
@@ -544,10 +544,10 @@ define([
 
         $scope.deleteFile = function(files, index) {
             config.services.confirmDialog({
-                "title":"删除文件",
-                "confirmBtnClass":"btn-danger",
-                "theme":"danger",
-                "content":"确定删除文件吗？"
+                "title": $translate.instant("删除文件"),
+                "confirmBtnClass": "btn-danger",
+                "theme": "danger",
+                "content": $translate.instant("确定删除文件吗？")
             },function(){
                 if (!Array.isArray(files)){
                     var file = files;
@@ -591,8 +591,8 @@ define([
             });
             if (deletingArr.length <= 0){
                 config.services.confirmDialog({
-                    "title": "提示",
-                    "content": "请至少选择一个要删除的文件！",
+                    "title": $translate.instant("提示"),
+                    "content": $translate.instant("请至少选择一个要删除的文件！"),
                     "cancelBtn": false
                 }, function () {
                 });
@@ -607,8 +607,8 @@ define([
             if (!filename || file == ""){
                 targetElem.html(file.filename);
                 config.services.confirmDialog({
-                    "title": "重命名失败",
-                    "content": "文件名不能为空！",
+                    "title": $translate.instant("重命名失败"),
+                    "content": $translate.instant("文件名不能为空！"),
                     "cancelBtn": false
                 }, function () {
                 });
@@ -640,8 +640,8 @@ define([
                 if (data.length > 0){
                     targetElem.html(file.filename);
                     config.services.confirmDialog({
-                        "title": "重命名失败",
-                        "content": "网盘中已存在该文件名！",
+                        "title": $translate.instant("重命名失败"),
+                        "content": $translate.instant("网盘中已存在该文件名！"),
                         "cancelBtn": false
                     }, function () {
                     });
@@ -662,8 +662,8 @@ define([
         $scope.updateFile = function (file) {
             if ($scope.uploadingFiles && $scope.uploadingFiles.length > 0 && !$scope.finishUploading){
                 config.services.confirmDialog({
-                    "title": "提示",
-                    "content": "还有文件正在上传，请完成后重试，或者打开新窗口操作！",
+                    "title": $translate.instant("提示"),
+                    "content": $translate.instant("还有文件正在上传，请完成后重试，或者打开新窗口操作！"),
                     "cancelBtn": false
                 }, function () {
                     $("#activeUpload").tab("show");
@@ -693,8 +693,8 @@ define([
                 if (!ErrFilenamePatt.test(filename)){
                     targetElem.html(file.filename);
                     config.services.confirmDialog({
-                        "title": "重命名失败",
-                        "content": '文件名不能包含下列任何字符：\\\\ / : * ? " < > |',
+                        "title": $translate.instant("重命名失败"),
+                        "content": $translate.instant('文件名不能包含下列任何字符：\\\\ / : * ? " < > |'),
                         "cancelBtn": false
                     }, function () {
                     });
@@ -732,8 +732,8 @@ define([
                     }
                 }, function(err) {
                     config.services.confirmDialog({
-                        "title": "文件获取失败",
-                        "content": "该资源未经审核或审核不通过",
+                        "title": $translate.instant("文件获取失败"),
+                        "content": $translate.instant("该资源未经审核或审核不通过"),
                         "cancelBtn": false
                     }, function () {});
                 });
@@ -747,8 +747,8 @@ define([
             });
             if (downloadingArr.length <= 0){
                 config.services.confirmDialog({
-                    "title": "提示",
-                    "content": "请至少选择一个要下载的文件！",
+                    "title": $translate.instant("提示"),
+                    "content": $translate.instant("请至少选择一个要下载的文件！"),
                     "cancelBtn": false
                 }, function () {
                 });
@@ -757,8 +757,8 @@ define([
                     var file = downloadingArr[i]
                     if(!file.checked || file.checked==2) {
                         config.services.confirmDialog({
-                            "title": "下载文件失败",
-                            "content": "含有未审核或审核不通过的文件",
+                            "title": $translate.instant("下载文件失败"),
+                            "content": $translate.instant("含有未审核或审核不通过的文件"),
                             "cancelBtn": false
                         }, function () {})
                         return
@@ -780,8 +780,8 @@ define([
         $scope.insertBigfileUrl = function (file) {
             if (!file.checked || file.checked==2){
                 config.services.confirmDialog({
-                    "title": "文件获取失败",
-                    "content": "该资源未经审核或审核不通过",
+                    "title": $translate.instant("文件获取失败"),
+                    "content": $translate.instant("该资源未经审核或审核不通过"),
                     "cancelBtn": false
                 }, function () {})
             } else {
@@ -799,8 +799,8 @@ define([
         $scope.insertFile = function (file) {
             if (!file.checked || file.checked==2){
                 config.services.confirmDialog({
-                    "title": "文件获取失败",
-                    "content": "该资源未经审核或审核不通过",
+                    "title": $translate.instant("文件获取失败"),
+                    "content": $translate.instant("该资源未经审核或审核不通过"),
                     "cancelBtn": false
                 }, function () {})
             } else {
@@ -819,8 +819,8 @@ define([
 
             if (files.length <= 0){
                 config.services.confirmDialog({
-                    "title": "提示",
-                    "content": "请至少选择一个要插入的文件！",
+                    "title": $translate.instant("提示"),
+                    "content": $translate.instant("请至少选择一个要插入的文件！"),
                     "cancelBtn": false
                 }, function () {
                 });
@@ -835,11 +835,11 @@ define([
             var url = $scope.insertUrl;
             var urlReg= /^(http|https):\/\//;
             if (!url){
-                $scope.insertFileUrlErr = "请输入要插入的url地址！";
+                $scope.insertFileUrlErr = $translate.instant("请输入要插入的url地址！");
                 return;
             }
             if (!urlReg.test(url)){
-                $scope.insertFileUrlErr = "请输入正确的url地址！";
+                $scope.insertFileUrlErr = $translate.instant("请输入正确的url地址！");
                 return;
             }
             switch ($scope.selectedType){

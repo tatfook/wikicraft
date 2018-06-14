@@ -561,7 +561,7 @@
                             </a>
                             <div class="dropdown-menu dropdown-menu-center" aria-labelledby="dropdownMenu1">
                                 <h5 title="{{user.displayName || user.username}}" class="title">{{user.displayName || user.username}}</h5>
-                                <div class="level clearfix">
+                                <div ng-if="!isGlobalVersion" class="level clearfix">
                                     <p class="info clearfix">
                                         <span class="pull-left" translate="等级0"></span>
                                         <span class="pull-right">0/2536</span>
@@ -593,7 +593,7 @@
                                     <li>
                                         <a ng-click="goUserCenterPage('userProfile')" translate="设置中心"></a>
                                     </li>
-                                    <li>
+                                    <li ng-if="!isGlobalVersion">
                                         <a ng-click="goUserCenterPage('services', 'myVIP')">VIP</a>
                                     </li>
                                     <li>
@@ -635,7 +635,7 @@
                                     </div>
                                 </div>
                                 <div class="dropdown-footer" ng-click="goUserCenterPage('userProfile','myTrends')">
-                                    <a href="#">查看更多></a>
+                                    <a href="#">{{ "查看更多" | translate }}></a>
                                 </div>
                             </div>
                         </li>
@@ -649,7 +649,7 @@
                                     </li>
                                 </ul>
                                 <div class="dropdown-footer" ng-click="goUserCenterPage('userProfile','myCollection')">
-                                    <a href="#">查看更多></a>
+                                    <a href="#">{{ "查看更多" | translate }}></a>
                                 </div>
                             </div>
                         </li>
@@ -663,7 +663,7 @@
                                     </li>
                                 </ul>
                                 <div class="dropdown-footer" ng-click="goUserCenterPage('userProfile','myHistory')">
-                                    <a href="#">查看更多></a>
+                                    <a href="#">{{ "查看更多" | translate }}></a>
                                 </div>
                             </ul>
                         </li>
@@ -739,7 +739,7 @@
                                 <span translate="帮助"></span>
                             </a>
                         </li> -->
-                        <li class="iconfont-icon">
+                        <li ng-if="!isGlobalVersion" class="iconfont-icon">
                             <a href="http://iicc.keepwork.com" target="_blank">
                                 <img class="iicc-logo" ng-src="{{getImageUrl('iicc_logo.png', imgsPath)}}" alt="">
                                 {{"国际智能创意大赛" | translate}}
@@ -763,7 +763,7 @@
                             <a href="http://keepwork.com/official/help/index">
                                 <i class="iconfont icon-bangzhu"></i>{{"帮助" | translate}}</a>
                         </li> -->
-                        <li class="iconfont-icon">
+                        <li ng-if="!isGlobalVersion" class="iconfont-icon">
                             <a href="http://iicc.keepwork.com" target="_blank">
                                 <img class="iicc-logo" ng-src="{{getImageUrl('iicc_logo.png', imgsPath)}}" alt="">
                                 {{"国际智能创意大赛" | translate}}
@@ -790,7 +790,7 @@
                                 <span class="input-group-addon glyphicon glyphicon-search" ng-click="goSearchPage()"></span>
                             </div>
                         </li>
-                        <li>
+                        <li ng-if="!isGlobalVersion">
                             <a ng-click="goVipPay()">VIP</a>
                         </li>
                         <li>
@@ -808,7 +808,7 @@
     </header>
 
     <div class="url-header container clearfix" ng-show="isIconShow || isUserPage">
-        <ul class="nav navbar-left">
+        <!-- <ul class="nav navbar-left">
             <li id="js-prev-container" class="nav-bread-crumb">
                 <ol id="js-prev-ellipsis" class="prev-ellipsis">
                     <li>...</li>
@@ -844,12 +844,12 @@
                     </li>
                 </ol>
             </li>
-        </ul>
+        </ul> -->
         <ul class="nav navbar-right" ng-class="{true: 'hidden-xs'}[!isLogin]">
             <li class="icon" ng-hide="isUserPage">
                 <img ng-src="{{imgsPath+'icon/wiki_edit.png'}}" alt="" ng-click="goWikiEditorPage()">
             </li>
-            <li class="icon dropdown share-dropdown">
+            <li class="icon dropdown share-dropdown" ng-if="!isGlobalVersion">
                 <img class="dropdown-toggle" ng-src="{{imgsPath+'icon/wiki_share.png'}}" ng-click="clickShare()" alt="" data-toggle="dropdown"
                     aria-haspopup="true" aria-expanded="true">
                 <div class="dropdown-menu">

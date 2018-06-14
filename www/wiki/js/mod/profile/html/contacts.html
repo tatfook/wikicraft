@@ -77,7 +77,7 @@
                     <p class="p-link">
                         <a ng-href="{{'/'+ site.username+'/'+site.name}}" target="_blank">{{'/'+ site.username+'/'+site.name}}</a>
                     </p>
-                    <p class="p-desc">{{site.desc || "暂无简介"}}</p>
+                    <p class="p-desc">{{(site.desc || "暂无简介") | translate}}</p>
                     <p class="p-tags">
                         <span ng-repeat="tag in site.tags track by $index">{{tag}}</span>
                     </p>

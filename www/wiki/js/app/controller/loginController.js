@@ -9,7 +9,7 @@ define([
     'helper/storage',
     'text!html/login.html'
 ], function (app, jQuery, util, storage,  htmlContent) {
-    app.registerController('loginController', ['$scope', '$auth', 'Account', 'modal', function ($scope, $auth, Account, modal) {
+    app.registerController('loginController', ['$scope', '$auth', '$translate', 'Account', 'modal', function ($scope, $auth, $translate, Account, modal) {
         //$scope.errMsg = "用户名或密码错误";
         $scope.loginDomId = 'loginDomId-' + Date.now()
         $scope.isModal=false;
@@ -46,7 +46,7 @@ define([
                 password: util.stringTrim($scope.password),
             };
             if (!params.username || !params.password) {
-                $scope.errMsg = "用户名或密码错误";
+                $scope.errMsg = $translate.instant("用户名或密码错误");
                 $("#total-err").removeClass("visible-hidden");
                 return;
             }

@@ -10,7 +10,7 @@ define([
     'text!wikimod/profile/html/sites.html'
 ], function (app, util, htmlContent) {
     function registerController(wikiBlock) {
-        app.registerController("sitesCtrl", ['$scope',function ($scope) {
+        app.registerController("sitesCtrl", ['$scope', '$translate', function ($scope, $translate) {
             wikiBlock.init({
 				scope:$scope,
 				params_template:{
@@ -24,16 +24,16 @@ define([
                 var title = "";
                 switch (type) {
                     case "stick":
-                        title = "置顶内容";
+                        title = $translate.instant("置顶内容");
                         break;
                     case "created":
-                        title = "创建的网站";
+                        title = $translate.instant("创建的网站");
                         break;
                     case "joined":
-                        title = "参与的网站";
+                        title = $translate.instant("参与的网站");
                         break;
                     case "concerned":
-                        title = "关注的网页";
+                        title = $translate.instant("关注的网页");
                         break;
                     default:
                         break;

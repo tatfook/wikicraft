@@ -29,11 +29,21 @@
     }
   var isGlobalVersion = wiki_config && wiki_config.locale == 'en_US'
 
+  var languageLocale = (function(){
+    var browserLocale = (window.navigator.userLanguage || window.navigator.language);
+    browserLocale = (browserLocale && browserLocale.toLowerCase) ? browserLocale.toLowerCase() : browserLocale;
+    var locale = window.localStorage.getItem('keepwork-language-locale') || browserLocale || 'zh-cn';
+    locale = /^zh/.test(locale) ? 'zh-cn' : 'en';
+    return locale
+  })();
+
 	config = {
     // --------------------------------------前端配置 START----------------------------------------------
     env: getEnv(),
     serverConfig: wiki_config,
     isGlobalVersion: isGlobalVersion,
+    languageLocale: languageLocale,
+    languageLocaleIsForGlobalUser: languageLocale === 'en',
 		localEnv:localEnv,                                                                                         // 是否本地调试环境
 		localVMEnv:localVMEnv,                                                                                     // 本地虚拟机环境
 		hostname:wiki_config.hostname ? wiki_config.hostname.split(":")[0] : window.location.hostname,             // url中的hostname, 优先取服务端给过来的(cname转发，客户端获取不到真实的hostname)

@@ -16,7 +16,7 @@ define([
 ], function (app, util, storage, markdownwiki, markdownit, htmlContent, notfoundHtmlContent, serviceStopHtmlContent, echartsRadar) {
 	//console.log("load userController file");
 
-	app.registerController('userController', ['$rootScope', '$scope', '$timeout', 'Account', 'Message', 'modal', function ($rootScope, $scope, $timeout, Account, Message, modal) {
+	app.registerController('userController', ['$rootScope', '$scope', '$timeout', '$translate', 'Account', 'Message', 'modal', function ($rootScope, $scope, $timeout, $translate, Account, Message, modal) {
 		const UserSystemProjectName = "keepworkdatasource";
 		const ProfileDataFileName = "profile.md";
 		var topBlockList = [], subBlockList = [];
@@ -215,15 +215,15 @@ define([
 				content: content
 			}, function () {
 				errorCount = 0;
-				Message.info("修改成功");
+				Message.info($translate.instant("修改成功"));
 			}, function () {
 				errorCount++;
 				if (errorCount > 3) {
-					Message.danger("修改失败");
+					Message.danger($translate.instant("修改失败"));
 					return;
 				}
 				saveNewProfileToGit();
-				console.log("修改失败");
+				console.log($translate.instant("修改失败"));
 			});
 		}
 

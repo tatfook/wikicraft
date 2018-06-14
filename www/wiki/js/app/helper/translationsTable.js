@@ -112,7 +112,7 @@ define([], function () {
         {
             "_key": "全部内容",
             "zh-cn": "全部内容",
-            "en": "All content"
+            "en": "All"
         },
         {
             "_key": "当前站点",
@@ -987,7 +987,7 @@ define([], function () {
         {
             "_key": "密码",
             "zh-cn": "密码",
-            "en": "password"
+            "en": "Password"
         },
         {
             "_key": "忘记密码？",
@@ -1873,6 +1873,11 @@ define([], function () {
             "_key": "被人关注",
             "zh-cn": "被人关注",
             "en": "Be followed"
+        },
+        {
+            "_key": "关注",
+            "zh-cn": "关注",
+            "en": "Follow"
         },
         {
             "_key": "被人浏览",
@@ -3317,8 +3322,725 @@ define([], function () {
         {
             "_key": "国际智能创意大赛",
             "zh-cn": "国际智能创意大赛",
-            "en": " IICC"
-        }
+            "en": "IICC"
+        },
+        {
+            "_key": "登录账号（推荐email或手机号）",
+            "zh-cn": "登录账号（推荐email或手机号）",
+            "en": "Account (email or username)"
+        },
+        {
+            "_key": "您输入的内容不符合互联网安全规范，请修改",
+            "zh-cn": "您输入的内容不符合互联网安全规范，请修改",
+            "en": "Don't input improper words please!"
+        },
+        {
+            "_key": "请先填写正确的手机号码",
+            "zh-cn": "请先填写正确的手机号码",
+            "en": "Please input correct Phone Number"
+        },
+        {
+            "_key": "*密码最少6位",
+            "zh-cn": "*密码最少6位",
+            "en": "*Password needs 6 chars at least"
+        },
+        {
+            "_key": "*请输入正确的邮箱",
+            "zh-cn": "*请输入正确的邮箱",
+            "en": "*Input correct email please!"
+        },
+        {
+            "_key": "*手机号不能为空",
+            "zh-cn": "*手机号不能为空",
+            "en": "*Phone number cannot be empty"
+        },
+        {
+            "_key": "*请先发送验证码验证",
+            "zh-cn": "*请先发送验证码验证",
+            "en": "*Please send the validate code first!"
+        },
+        {
+            "_key": "*验证码不能为空",
+            "zh-cn": "*验证码不能为空",
+            "en": "*Validate code cannot be empty"
+        },
+        {
+            "_key": "*账户名不能为空",
+            "zh-cn": "*账户名不能为空",
+            "en": "*Account name cannot be empty"
+        },
+        {
+            "_key": "*账户名需小于30位",
+            "zh-cn": "*账户名需小于30位",
+            "en": "*Account name cannot exceed 30 chars"
+        },
+        {
+            "_key": "*账户名不可为纯数字",
+            "zh-cn": "*账户名不可为纯数字",
+            "en": "*Account name cannot only contain numbers"
+        },
+        {
+            "_key": "*账户名不可包含@符号",
+            "zh-cn": "*账户名不可包含@符号",
+            "en": "*Account name cannot contain @"
+        },
+        {
+            "_key": "*账户名只能包含小写字母、数字",
+            "zh-cn": "*账户名只能包含小写字母、数字",
+            "en": "*Account name cant only contain a-z, 0-9"
+        },
+        {
+            "_key": "用户名或密码错误",
+            "zh-cn": "用户名或密码错误",
+            "en": "*Username or password is incorrect"
+        },
+        {
+            "_key": "账号：",
+            "zh-cn": "账号：",
+            "en": "Account: "
+        },
+        {
+            "_key": "个人资料管理",
+            "zh-cn": "个人资料管理",
+            "en": "Userinfo Settings"
+        },
+        {
+            "_key": "审核状态",
+            "zh-cn": "审核状态",
+            "en": "Status"
+        },
+        {
+            "_key": "搜索我的网盘",
+            "zh-cn": "搜索我的网盘",
+            "en": "Search"
+        },
+        {
+            "_key": "立即充值",
+            "zh-cn": "立即充值",
+            "en": "Topup"
+        },
+        {
+            "_key": "预估完成时间",
+            "zh-cn": "预估完成时间",
+            "en": "Time estimate"
+        },
+        {
+            "_key": "剩余",
+            "zh-cn": "剩余",
+            "en": "Remain"
+        },
+        {
+            "_key": "个人信息",
+            "zh-cn": "个人信息",
+            "en": "Userinfo"
+        },
+        {
+            "_key": "网站",
+            "zh-cn": "网站",
+            "en": "Websites"
+        },
+        {
+            "_key": "社交",
+            "zh-cn": "社交",
+            "en": "Social"
+        },
+        {
+            "_key": "更多",
+            "zh-cn": "更多",
+            "en": "More"
+        },
+        {
+            "_key": "收起",
+            "zh-cn": "收起",
+            "en": "Foldup"
+        },
+        {
+            "_key": "查看更多",
+            "zh-cn": "查看更多",
+            "en": "More"
+        },
+      {
+        "_key": "Paracraft创意空间",
+        "zh-cn": "Paracraft创意空间",
+        "en": "Paracraft Inovation Space"
+      },
+      {
+        "_key": "创造3D交互动画，学习编程",
+        "zh-cn": "创造3D交互动画，学习编程",
+        "en": "Create 3D interactive animation, learn coding"
+      },
+      {
+        "_key": "3D校园",
+        "zh-cn": "3D校园",
+        "en": "3D Campus"
+      },
+      {
+        "_key": "3D虚拟校园",
+        "zh-cn": "3D虚拟校园",
+        "en": "3D Vitual Campus"
+      },
+      {
+        "_key": "3D打印",
+        "zh-cn": "3D打印",
+        "en": "3D Print"
+      },
+      {
+        "_key": "3D打印网络平台",
+        "zh-cn": "3D打印网络平台",
+        "en": "3D Print Online Platform"
+      },
+      {
+        "_key": "基于编程的计算机辅助设计",
+        "zh-cn": "基于编程的计算机辅助设计",
+        "en": "Programming Based Design"
+      },
+      {
+        "_key": "创作工具",
+        "zh-cn": "创作工具",
+        "en": "Tools"
+      },
+      {
+        "_key": "让你的网站更加生动的创作工具",
+        "zh-cn": "让你的网站更加生动的创作工具",
+        "en": "Empower you to be more creative"
+      },
+      {
+        "_key": "创造3D交互动画，学习计算机编程...",
+        "zh-cn": "创造3D交互动画，学习计算机编程...",
+        "en": "Create 3D Animation, learn programming..."
+      },
+      {
+        "_key": "用户可以上传创作的3D模型，由云端进行3D打印变成实物并邮寄给用户",
+        "zh-cn": "用户可以上传创作的3D模型，由云端进行3D打印变成实物并邮寄给用户",
+        "en": "Upload 3d model to cloud, we print and send it to you"
+      },
+      {
+        "_key": "Mod 扩展",
+        "zh-cn": "Mod 扩展",
+        "en": "Mod extends"
+      },
+      {
+        "_key": "Paracraft Mod扩展包管理器",
+        "zh-cn": "Paracraft Mod扩展包管理器",
+        "en": "Paracraft Mod extend package manager"
+      },
+      {
+        "_key": "教育平台",
+        "zh-cn": "教育平台",
+        "en": "Education Platform"
+      },
+      {
+        "_key": "终身学习，有教无类，人人可为师",
+        "zh-cn": "终身学习，有教无类，人人可为师",
+        "en": "Learn for life-term, for everyone, with everyone"
+      },
+      {
+        "_key": "道峰教育",
+        "zh-cn": "道峰教育",
+        "en": "Daofeng Education"
+      },
+      {
+        "_key": "PAC 3D创意大赛",
+        "zh-cn": "PAC 3D创意大赛",
+        "en": "PAC 3D Inovation Match"
+      },
+      {
+        "_key": "参加比赛，交流分享，制作出有意义的个人电脑作品...",
+        "zh-cn": "参加比赛，交流分享，制作出有意义的个人电脑作品...",
+        "en": "Join, share, create something interesting..."
+      },
+      {
+        "_key": "百科和知识库",
+        "zh-cn": "百科和知识库",
+        "en": "Wikipedia"
+      },
+      {
+        "_key": "大数据与个人百科平台",
+        "zh-cn": "大数据与个人百科平台",
+        "en": "Big Data with Personalized Wikipedia"
+      },
+      {
+        "_key": "十方百科",
+        "zh-cn": "十方百科",
+        "en": "Shifang Wikipedia"
+      },
+      {
+        "_key": "编程",
+        "zh-cn": "编程",
+        "en": "Coding"
+      },
+      {
+        "_key": "自学计算机编程语言，辅助设计",
+        "zh-cn": "自学计算机编程语言，辅助设计",
+        "en": "Learn by yourself, design by yourself."
+      },
+      {
+        "_key": "社区",
+        "zh-cn": "社区",
+        "en": "Community"
+      },
+      {
+        "_key": "多人在线虚拟社区，作品交流与分享平台",
+        "zh-cn": "多人在线虚拟社区，作品交流与分享平台",
+        "en": "A community, a platform, for everyone"
+      },
+      {
+        "_key": "魔法哈奇3D社区",
+        "zh-cn": "魔法哈奇3D社区",
+        "en": "Magic Haqi 3D Community"
+      },
+      {
+        "_key": "健康",
+        "zh-cn": "健康",
+        "en": "Health"
+      },
+      {
+        "_key": "学习医学知识， 每个人都是自己的医生",
+        "zh-cn": "学习医学知识， 每个人都是自己的医生",
+        "en": "Everyone should be a doctor by self-learning"
+      },
+      {
+        "_key": "中药溯源",
+        "zh-cn": "中药溯源",
+        "en": "Chinese Medicine History"
+      },
+      {
+        "_key": "提供中药溯源系统的公共查询服务",
+        "zh-cn": "提供中药溯源系统的公共查询服务",
+        "en": "Search Chinese Medicine History"
+      },
+      {
+        "_key": "电子铜人",
+        "zh-cn": "电子铜人",
+        "en": "Digital 3D Human Body"
+      },
+      {
+        "_key": "利用3D计算机技术展示人体内部结构",
+        "zh-cn": "利用3D计算机技术展示人体内部结构",
+        "en": "Show the structure of human body with 3D tech"
+      },
+      {
+        "_key": "医时空",
+        "zh-cn": "医时空",
+        "en": "Health Space"
+      },
+      {
+        "_key": "更懂中医馆的SaaS服务平台",
+        "zh-cn": "更懂中医馆的SaaS服务平台",
+        "en": "SaaS for Chinese Medical Clinics"
+      },
+      {
+        "_key": "其它",
+        "zh-cn": "其它",
+        "en": "Others"
+      },
+      {
+        "_key": "逻辑塔线下积木",
+        "zh-cn": "逻辑塔线下积木",
+        "en": "Logitow"
+      },
+      {
+        "_key": "个 人",
+        "zh-cn": "个 人",
+        "en": "Personal"
+      },
+      {
+        "_key": "空模板",
+        "zh-cn": "空模板",
+        "en": "Empty"
+      },
+      {
+        "_key": "默认样式",
+        "zh-cn": "默认样式",
+        "en": "Default"
+      },
+      {
+        "_key": "基本模板",
+        "zh-cn": "基本模板",
+        "en": "Basic"
+      },
+      {
+        "_key": "简历模板",
+        "zh-cn": "简历模板",
+        "en": "Resume"
+      },
+      {
+        "_key": "VIP可浏览全部",
+        "zh-cn": "VIP可浏览全部",
+        "en": "Visible for VIP"
+      },
+      {
+        "_key": "企 业",
+        "zh-cn": "企 业",
+        "en": "Company"
+      },
+      {
+        "_key": "企业模板2",
+        "zh-cn": "企业模板2",
+        "en": "Company 2"
+      },
+      {
+        "_key": "组 织",
+        "zh-cn": "组 织",
+        "en": "Organization"
+      },
+      {
+        "_key": "组织模板",
+        "zh-cn": "组织模板",
+        "en": "Organization"
+      },
+      {
+        "_key": "比 赛",
+        "zh-cn": "比 赛",
+        "en": "Match"
+      },
+      {
+        "_key": "大赛模板",
+        "zh-cn": "大赛模板",
+        "en": "Match"
+      },
+      {
+        "_key": "课 程",
+        "zh-cn": "课 程",
+        "en": "Lesson"
+      },
+      {
+        "_key": "课程",
+        "zh-cn": "课程",
+        "en": "Lesson"
+      },
+      {
+        "_key": "打开",
+        "zh-cn": "打开",
+        "en": "Open"
+      },
+      {
+        "_key": "编辑",
+        "zh-cn": "编辑",
+        "en": "Edit"
+      },
+      {
+        "_key": "设置",
+        "zh-cn": "设置",
+        "en": "Setting"
+      },
+      {
+        "_key": "删除",
+        "zh-cn": "删除",
+        "en": "Remove"
+      },
+      {
+        "_key": "条页面：",
+        "zh-cn": "条页面：",
+        "en": "pages: "
+      },
+      {
+        "_key": "热度：",
+        "zh-cn": "热度：",
+        "en": "Hot: "
+      },
+      {
+        "_key": "上一页",
+        "zh-cn": "上一页",
+        "en": "Prev"
+      },
+      {
+        "_key": "下一页",
+        "zh-cn": "下一页",
+        "en": "Next"
+      },
+      {
+        "_key": "请正确填写好友邮箱地址!!!",
+        "zh-cn": "请正确填写好友邮箱地址!!!",
+        "en": "Please input a correct email"
+      },
+      {
+        "_key": "邀请邮件已发送给",
+        "zh-cn": "邀请邮件已发送给",
+        "en": "Invite Successfully"
+      },
+      {
+        "_key": "提示",
+        "zh-cn": "提示",
+        "en": "Warning"
+      },
+      {
+        "_key": "还有文件正在上传，请完成后重试，或者打开新窗口操作！",
+        "zh-cn": "还有文件正在上传，请完成后重试，或者打开新窗口操作！",
+        "en": "Upload is in process, please retry after awhile, or open a new window."
+      },
+      {
+        "_key": "还有文件正在上传，确定关闭窗口？",
+        "zh-cn": "还有文件正在上传，确定关闭窗口？",
+        "en": "Upload is in process, are you sure to leave?"
+      },
+      {
+        "_key": "取消上传",
+        "zh-cn": "取消上传",
+        "en": "Cancel Upload"
+      },
+      {
+        "_key": "确定取消该文件上传吗？",
+        "zh-cn": "确定取消该文件上传吗？",
+        "en": "Are you sure to cancel upload ?"
+      },
+      {
+        "_key": "删除文件",
+        "zh-cn": "删除文件",
+        "en": "Remove File"
+      },
+      {
+        "_key": "确定删除文件吗？",
+        "zh-cn": "确定删除文件吗？",
+        "en": "Are you sure to remove file ?"
+      },
+
+      {
+        "_key": "手机格式错误",
+        "zh-cn": "手机格式错误",
+        "en": "Incorrect Phone Number"
+      },
+      {
+        "_key": "图片验证码错误",
+        "zh-cn": "图片验证码错误",
+        "en": "Incorrect Captcha Code"
+      },
+      {
+        "_key": "删除文件",
+        "zh-cn": "删除文件",
+        "en": "Remove File"
+      },
+      {
+        "_key": "确定删除文件吗？",
+        "zh-cn": "确定删除文件吗？",
+        "en": "Are you sure to remove file ?"
+      },
+      {
+        "_key": "请输入密码",
+        "zh-cn": "请输入密码",
+        "en": "Input password please"
+      },
+      {
+        "_key": "两次新密码不一致!!!",
+        "zh-cn": "两次新密码不一致!!!",
+        "en": "New passwords don't match"
+      },
+      {
+        "_key": "密码修改成功",
+        "zh-cn": "密码修改成功",
+        "en": "Change password successfully"
+      },
+      {
+        "_key": "修改成功",
+        "zh-cn": "修改成功",
+        "en": "Update successfully"
+      },
+      {
+        "_key": "修改失败",
+        "zh-cn": "修改失败",
+        "en": "Update failed"
+      },
+      {
+        "_key": "请至少选择一个要下载的文件！",
+        "zh-cn": "请至少选择一个要下载的文件！",
+        "en": "Select one file at least please!"
+      },
+      {
+        "_key": "下载文件失败",
+        "zh-cn": "下载文件失败",
+        "en": "Download failed"
+      },
+      {
+        "_key": "含有未审核或审核不通过的文件",
+        "zh-cn": "含有未审核或审核不通过的文件",
+        "en": "Some files haven't passed the check yet."
+      },
+      {
+        "_key": "文件获取失败",
+        "zh-cn": "文件获取失败",
+        "en": "Get file failed"
+      },
+      {
+        "_key": "该资源未经审核或审核不通过",
+        "zh-cn": "该资源未经审核或审核不通过",
+        "en": "The file hasn't passed the check yet."
+      },
+      {
+        "_key": "请至少选择一个要插入的文件！",
+        "zh-cn": "请至少选择一个要插入的文件！",
+        "en": "Select one file at least please!"
+      },
+      {
+        "_key": "请输入要插入的url地址！",
+        "zh-cn": "请输入要插入的url地址！",
+        "en": "Input url to insert please!"
+      },
+      {
+        "_key": "请输入正确的url地址！",
+        "zh-cn": "请输入正确的url地址！",
+        "en": "Input correct url please!"
+      },
+      {
+        "_key": "拷贝链接",
+        "zh-cn": "拷贝链接",
+        "en": "Copy"
+      },
+      {
+        "_key": "插入",
+        "zh-cn": "插入",
+        "en": "Insert"
+      },
+      {
+        "_key": "未审核",
+        "zh-cn": "未审核",
+        "en": "Processing"
+      },
+      {
+        "_key": "已通过",
+        "zh-cn": "已通过",
+        "en": "Approved"
+      },
+      {
+        "_key": "不通过",
+        "zh-cn": "不通过",
+        "en": "Rejected"
+      },
+
+      {
+        "_key": "请至少选择一个要删除的文件！",
+        "zh-cn": "Select one file at least please!",
+        "en": "Copy"
+      },
+      {
+        "_key": "重命名失败",
+        "zh-cn": "重命名失败",
+        "en": "Rename failed"
+      },
+      {
+        "_key": "文件名不能为空！",
+        "zh-cn": "文件名不能为空！",
+        "en": "File name "
+      },
+      {
+        "_key": "网盘中已存在该文件名！",
+        "zh-cn": "网盘中已存在该文件名！",
+        "en": "The name already exists"
+      },
+      {
+        "_key": "文件名不能包含下列任何字符：\\\\ / : * ? \" < > |",
+        "zh-cn": "文件名不能包含下列任何字符：\\\\ / : * ? \" < > |",
+        "en": "File name cannot contain \\\\ / : * ? \" < > |"
+      },
+      {
+        "_key": "创建站点",
+        "zh-cn": "创建站点",
+        "en": "create website "
+      },
+      {
+        "_key": "删除历史功能开发中",
+        "zh-cn": "删除历史功能开发中",
+        "en": "Removing history function is in developing"
+      },
+      {
+        "_key": "请先填写正确的手机号码",
+        "zh-cn": "请先填写正确的手机号码",
+        "en": "Input correct phone number please!"
+      },
+      {
+        "_key": "请先发送验证码！",
+        "zh-cn": "请先发送验证码！",
+        "en": "Send validate code please!"
+      },
+      {
+        "_key": "请填写验证码！",
+        "zh-cn": "请填写验证码！",
+        "en": "Input validate code please!"
+      },
+      {
+        "_key": "邀请邮件已发送给",
+        "zh-cn": "邀请邮件已发送给",
+        "en": "Invite successfully"
+      },
+      {
+        "_key": "表单相关字段不能为空!!!",
+        "zh-cn": "Required info cannot be empty!!!",
+        "en": ""
+      },
+      {
+        "_key": "内置数据源不可更改!!!",
+        "zh-cn": "内置数据源不可更改!!!",
+        "en": "Inner data source cannot be changed!!!"
+      },
+      {
+        "_key": "操作成功",
+        "zh-cn": "操作成功",
+        "en": "Success"
+      },
+      {
+        "_key": "内置数据源不可删除!!!",
+        "zh-cn": "内置数据源不可删除!!!",
+        "en": "Inner data source cannot be removed!!!"
+      },
+      {
+        "_key": "取消关注成功",
+        "zh-cn": "取消关注成功",
+        "en": "Unfollow successfully"
+      },
+      {
+        "_key": "关注成功",
+        "zh-cn": "关注成功",
+        "en": "Follow successfully"
+      },
+      {
+        "_key": "登录后才能关注",
+        "zh-cn": "登录后才能关注",
+        "en": "Login at first please!"
+      },
+      {
+        "_key": "自己不关注自己",
+        "zh-cn": "自己不关注自己",
+        "en": "Cannot follow yourself"
+      },
+      {
+        "_key": "登录后才能收藏!!!",
+        "zh-cn": "登录后才能收藏!!!",
+        "en": "Login at first please!"
+      },
+      {
+        "_key": "不能收藏自己作品!!!",
+        "zh-cn": "不能收藏自己作品!!!",
+        "en": "Cannot favorite your works"
+      },
+      {
+        "_key": "作品已收藏",
+        "zh-cn": "作品已收藏",
+        "en": "Add to favorite successfully"
+      },
+      {
+        "_key": "作品已取消收藏",
+        "zh-cn": "作品已取消收藏",
+        "en": "Remove from favorite successfully"
+      },
+      {
+        "_key": "置顶内容",
+        "zh-cn": "置顶内容",
+        "en": "Sticky to top"
+      },
+      {
+        "_key": "创建的网站",
+        "zh-cn": "创建的网站",
+        "en": "My websites"
+      },
+      {
+        "_key": "参与的网站",
+        "zh-cn": "参与的网站",
+        "en": "Contributed websites"
+      },
+      {
+        "_key": "关注的网页",
+        "zh-cn": "关注的网页",
+        "en": "Followed websites"
+      }
     ];
 
     var translationsTable = {};
