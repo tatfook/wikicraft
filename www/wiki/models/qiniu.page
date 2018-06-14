@@ -216,11 +216,11 @@ local function getCalllbackUrl()
 	local locale = os.getenv("KEEPWORK_LOCALE") or 'zh_CN'
 	local host = "keepwork.com"
 	if WIKI_ENV == "rls" then
-		if locale == 'zh_CN' then host = "keepwork.com" else host = "en.keepwork.com"
+		if locale == 'zh_CN' then host = "keepwork.com" else host = "en.keepwork.com" end
 	elseif WIKI_ENV == "test" then
-		if locale == 'zh_CN' then host = "release.keepwork.com" else host = "release-en.keepwork.com"
+		if locale == 'zh_CN' then host = "release.keepwork.com" else host = "release-en.keepwork.com" end
 	else 
-		if locale == 'zh_CN' then host = "stage.keepwork.com" else host = "stage-en.keepwork.com"
+		if locale == 'zh_CN' then host = "stage.keepwork.com" else host = "stage-en.keepwork.com" end
 	end
 	
 	 return "http://" .. host .. "/api/wiki/models/qiniu/callback"
