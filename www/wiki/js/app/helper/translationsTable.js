@@ -497,12 +497,12 @@ define([], function () {
         {
             "_key": "常用设置",
             "zh-cn": "常用设置",
-            "en": "Common settings"
+            "en": "General settings"
         },
         {
             "_key": "数据源设置",
             "zh-cn": "数据源设置",
-            "en": "Oracle JDBC"
+            "en": "Data Source Management"
         },
         {
             "_key": "域名管理",
@@ -1182,7 +1182,7 @@ define([], function () {
         {
             "_key": "新建网站",
             "zh-cn": "新建网站",
-            "en": "addon domain"
+            "en": "New website"
         },
         {
             "_key": "选择功能模板：",
@@ -1602,7 +1602,7 @@ define([], function () {
         {
             "_key": "位置：",
             "zh-cn": "位置：",
-            "en": "Position:"
+            "en": "Location:"
         },
         {
             "_key": "广东省",
@@ -1617,7 +1617,7 @@ define([], function () {
         {
             "_key": "位置字数超过限制。",
             "zh-cn": "位置字数超过限制。",
-            "en": "The number of position words exceeds the limit."
+            "en": "The number of location words exceeds the limit."
         },
         {
             "_key": "个人简介字数超过限制。",
@@ -1873,11 +1873,6 @@ define([], function () {
             "_key": "被人关注",
             "zh-cn": "被人关注",
             "en": "Be followed"
-        },
-        {
-            "_key": "关注",
-            "zh-cn": "关注",
-            "en": "Follow"
         },
         {
             "_key": "被人浏览",
