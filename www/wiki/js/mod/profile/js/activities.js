@@ -10,7 +10,7 @@ define([
     'text!wikimod/profile/html/activities.html'
 ], function (app, util, htmlContent) {
     function registerController(wikiBlock) {
-        app.registerController("activitiesCtrl", ['$scope',function ($scope) {
+        app.registerController("activitiesCtrl", ['$scope', '$translate',function ($scope, $translate) {
             var init = function(userinfo){
                 var username = $scope.urlObj.username.toLowerCase();;
                 if (!username && userinfo && userinfo.username) {
@@ -27,7 +27,11 @@ define([
                         return ;
                     }
 
-                    $scope.trendsList = data.trendsObj.trendsList;
+                    $scope.trendsList = (data.trendsObj.trendsList || []).map(function(item) {
+                      item.desc = (item.desc||'').replace('创建站点', $translate.instant('创建站点'))
+                      return item
+                    });
+
                     $scope.trendsCount = data.trendsObj.total;
                 });
             }

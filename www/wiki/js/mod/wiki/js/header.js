@@ -8,7 +8,7 @@ define([
     // 使用闭包使模块重复独立使用
     function registerController(wikiblock) {
         // 个人主页头部控制器
-        app.registerController("headerController", ['$scope','Account','Message', function ($scope, Account, Message) {
+        app.registerController("headerController", ['$scope', '$translate', 'Account','Message', function ($scope, $translate, Account, Message) {
             $scope.imgsPath = config.wikiModPath + 'wiki/assets/imgs/';
             $scope.modParams = angular.copy(wikiblock.modParams || {});
             $scope.user = Account.getUser();
@@ -35,7 +35,7 @@ define([
                 };
 
                 util.http("POST", config.apiUrlPrefix + "user_favorite/favoriteUser", params, function (data) {
-                    Message.info("关注成功");
+                    Message.info($translate.instant("关注成功"));
                     // console.log(data);  // 申请成功
                 });
             }

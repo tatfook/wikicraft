@@ -301,7 +301,7 @@
     <div class="org-works-list container game-works-list" ng-show="modParams.moduleKind=='game'">
         <h1>{{modParams.title || "全部作品"}}</h1>
         <div class="navigation" ng-hide="modParams.pagination" ng-click="goMore(modParams)">
-            <a>查看更多</a>
+            <a>{{ "查看更多" | translate }}</a>
         </div>
         <div class="clearfix works">
             <div class="col-md-3 hover-slide col-sm-6 col-xs-10 col-xs-offset-1 col-sm-offset-0 col-lg-3" ng-repeat="works in worksList">
@@ -320,8 +320,8 @@
             </div>
         </div>
         <div class="pagination-box" ng-show="modParams.pagination">
-            <ul uib-pagination ng-change="sitePageChanged()" items-per-page='pageSize' previous-text="上一页"
-                next-text="下一页" total-items="worksTotal" ng-model="currentPage" max-size="5"
+            <ul uib-pagination ng-change="sitePageChanged()" items-per-page='pageSize' previous-text="previous-text="{{ '上一页' | translate }}""
+                next-text="{{ '下一页' | translate }}" total-items="worksTotal" ng-model="currentPage" max-size="5"
                 class="pagination-sm" boundary-link-numbers="true"></ul>
         </div>
     </div>
@@ -329,7 +329,7 @@
     <div class="org-works-list container game-works-list" ng-show="modParams.moduleKind=='gameStatic'">
         <h1>{{modParams.title || "全部作品"}}</h1>
         <div class="navigation">
-            <a href="{{modParams.moreLink}}">查看更多</a>
+            <a href="{{modParams.moreLink}}">{{ "查看更多" | translate }}</a>
         </div>
         <div class="clearfix works">
             <div class="col-md-3 hover-slide col-sm-6 col-xs-10 col-xs-offset-1 col-sm-offset-0 col-lg-3" ng-repeat="works in modParams.worksList">

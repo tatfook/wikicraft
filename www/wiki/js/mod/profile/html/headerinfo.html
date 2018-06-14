@@ -142,7 +142,7 @@
             </div>
             <div class="text">
                 <h2>{{userinfo.displayName || userinfo.username}}</h2>
-                <p>{{ "注册于" + userinfo.joindate}}</p>
+                <p>{{ "注册于" | translate }}{{userinfo.joindate}}</p>
             </div>
         </div>
         <p class="main-msg">
@@ -176,9 +176,9 @@
             </span>
         </p>
         <div class="intro" ng-class="{true:'one-line'}[!isExceed]">
-            <p id="show-content" ng-class="{true:'is-fold'}[isFold]">{{params.desc || userinfo.introduce || '暂无简介'}}</p>
-            <p class="visibility-hidden" id="fake-content">{{params.desc || userinfo.introduce || '暂无简介'}}</p>
-            <p ng-click="toggleFold()" ng-show="isExceed">{{isFold ? '更多' : '收起'}}
+            <p id="show-content" ng-class="{true:'is-fold'}[isFold]">{{(params.desc || userinfo.introduce || '暂无简介') | translate}}</p>
+            <p class="visibility-hidden" id="fake-content">{{(params.desc || userinfo.introduce || '暂无简介') | translate}}</p>
+            <p ng-click="toggleFold()" ng-show="isExceed">{{(isFold ? '更多' : '收起') | translate}}
                 <span class="iconfont icon-zhankai" ng-class="{false:'rotate-icon'}[isFold]"></span>
             </p>
         </div>

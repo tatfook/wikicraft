@@ -866,9 +866,9 @@
 					<div class="msg-top">
 						<div class="msg-left">
 							<h2>{{user.username}}</h2>
-							<p class="info"><span class="glyphicon glyphicon-map-marker"></span> {{user.location + '注册于:' + user.joindate}}</p>
+							<p class="info"><span class="glyphicon glyphicon-map-marker"></span> {{user.location}} {{'注册于' | translate}}: {{user.joindate}}</p>
 						</div>
-						<div class="btn btn-primary btn-lg">关注</div>
+						<div class="btn btn-primary btn-lg">{{ '关注' | translate }}</div>
 					</div>
 					<p class="intro">{{user.introduce}}</p>
 				</div>

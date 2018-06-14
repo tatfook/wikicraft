@@ -36,11 +36,7 @@ define([
             $translateProvider.translations(locale, translationsTable[locale]);
         }
 
-        var browserLocale = (window.navigator.userLanguage || window.navigator.language);
-        browserLocale = (browserLocale && browserLocale.toLowerCase) ? browserLocale.toLowerCase() : browserLocale;
-        var locale = window.localStorage.getItem('keepwork-language-locale') || browserLocale || 'zh-cn';
-        locale = /^zh/.test(locale) ? 'zh-cn' : 'en';
-        $translateProvider.preferredLanguage(locale);
+        $translateProvider.preferredLanguage(config.languageLocale);
 
 		// 注册loading拦截器
 		$httpProvider.interceptors.push("loadingInterceptor");

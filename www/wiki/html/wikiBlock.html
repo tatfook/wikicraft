@@ -297,12 +297,12 @@
                                         <a class="btn btn-primary pull-right" ng-click="selectWikiBlock(wikiBlock)" translate="添加"></a>
                                     </h4>
                                     <p class="info">
-                                        热度：{{wikiBlock.useCount}}
+                                        {{ '热度：' | translate }}{{wikiBlock.useCount}}
                                         <span ng-click="favoriteWikiBlock(wikiBlock._id)" class="pull-right glyphicon  text-danger" ng-class="wikiBlock.myfavorite ? 'glyphicon-star' : 'glyphicon-star-empty'"></span>
                                     </p>
                                     <p title="{{wikiBlock.desc}}">{{wikiBlock.desc || "这里有内容，显示mod说明文字"}}</p>
                                 </div>
-                            </div>
+                            </div>`
                             <div class="empty-box" ng-if="!wikiBlockListFilteredToDisplay.length">
                                 <span class="iconfont icon-kongbaiyemian"></span>
                                 <p translate="暂无相关内容..."></p>
@@ -310,8 +310,8 @@
                         </div>
 
                         <!-- <div class="pagination-box">
-                            <ul uib-pagination ng-change="sitePageChanged()" items-per-page='pageSize' previous-text="上一页"
-                                next-text="下一页" total-items="totalItems" ng-model="currentPage" max-size="5"
+                            <ul uib-pagination ng-change="sitePageChanged()" items-per-page='pageSize' previous-text="previous-text="{{ '上一页' | translate }}""
+                                next-text="{{ '下一页' | translate }}" total-items="totalItems" ng-model="currentPage" max-size="5"
                                 class="pagination-sm" boundary-link-numbers="true"></ul>
                         </div> -->
                     </div>

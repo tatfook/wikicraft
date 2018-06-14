@@ -423,7 +423,7 @@
                     <div class="search-zone clearfix">
                         <span class="hidden-xs" translate="或者在我的大文件中选择："></span>
                         <div class="searchbar pull-right">
-                            <input type="text" class="form-control" placeholder="搜索我的网盘" ng-model="searchName">
+                            <input type="text" class="form-control" placeholder="{{ '搜索我的网盘' | translate }}" ng-model="searchName">
                             <span class="glyphicon glyphicon-search"></span>
                         </div>
                     </div>
@@ -467,11 +467,11 @@
                                     <td class="size-column hidden-xs" title="{{file.filesize || sizeTransfer(file)}}">
                                         {{file.filesize || sizeTransfer(file)}}
                                     </td>
-                                    <td class="type-column hidden-xs" title="{{file.status}}" ng-init="getFileStatus(file)">{{file.status}}</td>
+                                    <td class="type-column hidden-xs" title="{{file.status | translate}}" ng-init="getFileStatus(file)">{{file.status | translate}}</td>
                                     <td class="date-column hidden-xs" title="{{file.updateDate}}">{{file.updateDate}}</td>
                                     <td class="operate-column">
-                                        <span title="拷贝链接" ng-click="insertBigfileUrl(file)"><img ng-src="{{getImageUrl('icon/wiki_bigfile_paste.png', imgsPath)}}" alt=""></span>
-                                        <span title="插入" ng-click="insertFile(file)"><img ng-src="{{getImageUrl('icon/wiki_insert.png', imgsPath)}}" alt=""></span>
+                                        <span title="{{'拷贝链接' | translate}}" ng-click="insertBigfileUrl(file)"><img ng-src="{{getImageUrl('icon/wiki_bigfile_paste.png', imgsPath)}}" alt=""></span>
+                                        <span title="{{'插入' | translate}}" ng-click="insertFile(file)"><img ng-src="{{getImageUrl('icon/wiki_insert.png', imgsPath)}}" alt=""></span>
                                     </td>
                                 </tr>
                             </tbody>
@@ -482,7 +482,7 @@
                 <div class="tab-pane clearfix" ng-class="{true:'active'}[!isModal]" role="tabpanel" id="fileManage">
                     <div class="only-search clearfix">
                         <div class="searchbar pull-right">
-                            <input type="text" class="form-control" placeholder="搜索我的网盘" ng-model="searchName">
+                            <input type="text" class="form-control" placeholder="{{ '搜索我的网盘' | translate }}" ng-model="searchName">
                             <span class="glyphicon glyphicon-search"></span>
                         </div>
                     </div>
@@ -558,7 +558,7 @@
                         <span class="text-danger" ng-show="isUidErr" translate="出错了，请稍后重试"></span>
                         <p class="pull-right time" ng-hide="!uploadingFiles || uploadingFiles.length  < 1">
                             <span class="preview-time">
-                                预估完成时间:{{finishTime || translate("等待计算")}} (剩余 {{remainTime}})
+                                {{"预估完成时间" | translate}}:{{finishTime || translate("等待计算")}} ({{ '剩余' | translate }} {{remainTime}})
                             </span>
                         </p>
                     </div>

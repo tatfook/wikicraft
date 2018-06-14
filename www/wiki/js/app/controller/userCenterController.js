@@ -15,7 +15,7 @@ define(['app',
     'controller/inviteController',
     'controller/servicesController',
 ], function (app, util, storage, htmlContent, userProfileHtmlContent, websiteHtmlContent, dataSourceHtmlContent, myVIPHtmlContent, editWebsiteHtmlContent, newWebsiteHtmlContent, inviteHtmlContent, servicesHtmlContent) {
-    app.registerController('userCenterController', ['$rootScope','$scope', 'Account', 'Message', function ($rootScope, $scope, Account, Message) {
+    app.registerController('userCenterController', ['$rootScope','$scope', '$translate', 'Account', 'Message', function ($rootScope, $scope, $translate, Account, Message) {
         $scope.contentType = undefined;
         $scope.isGlobalVersion = config.isGlobalVersion;
         $scope.userProfileItemList = [
@@ -44,11 +44,11 @@ define(['app',
         ];
 
         $scope.servicesItemList = [
-            {contentType:"services", subContentType:"myVIP", flag:'myVIP', name:'我的VIP'},
-            {contentType:"services", subContentType:"orders", flag:'orders', name:'订单中心'},
-            {contentType:"services", subContentType:"myPay", flag:'myPay', name:'消费记录'},
+            !$scope.isGlobalVersion && {contentType:"services", subContentType:"myVIP", flag:'myVIP', name:'我的VIP'},
+            !$scope.isGlobalVersion && {contentType:"services", subContentType:"orders", flag:'orders', name:'订单中心'},
+            !$scope.isGlobalVersion && {contentType:"services", subContentType:"myPay", flag:'myPay', name:'消费记录'},
             {contentType:"services", subContentType:"qiniuPan", flag:'qiniuPan', name:'我的网盘'},
-        ];
+        ].filter(function(x) {return x});
 
         // $scope.dataSourceItemList = [
         //     {contentType:"dataSource", subContentType:"dataSource", flag:'dataSource', name:'数据源配置'},
@@ -84,8 +84,8 @@ define(['app',
         $scope.selectContentType = function (contentType, subContentType) {
             if ($rootScope.isBigfileUploading){
                 config.services.confirmDialog({
-                    "title": "提示",
-                    "content": "还有文件正在上传，请完成后重试，或者打开新窗口操作！",
+                    "title": $translate.instant("提示"),
+                    "content": $translate.instant("还有文件正在上传，请完成后重试，或者打开新窗口操作！"),
                     "cancelBtn": false
                 }, function () {
                     return;
@@ -132,8 +132,8 @@ define(['app',
         $scope.clickUserCenterItem = function (item) {
             if ($rootScope.isBigfileUploading){
                 config.services.confirmDialog({
-                    "title": "提示",
-                    "content": "还有文件正在上传，请完成后重试，或者打开新窗口操作！",
+                    "title": $translate.instant("提示"),
+                    "content": $translate.instant("还有文件正在上传，请完成后重试，或者打开新窗口操作！"),
                     "cancelBtn": false
                 }, function () {
                     return;

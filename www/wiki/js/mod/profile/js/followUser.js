@@ -10,7 +10,7 @@ define([
     'text!wikimod/profile/html/followUser.html'
 ], function (app, util, htmlContent) {
     function registerController(wikiBlock) {
-        app.registerController("followsUserCtrl", ['$scope', 'Message', function ($scope, Message) {
+        app.registerController("followsUserCtrl", ['$scope', '$translate', 'Message', function ($scope, $translate, Message) {
             $scope.toggleFollowUser = function (fansUser, subInfo) {
                 fansUser.concerned  = (fansUser.concerned == undefined) ? true: fansUser.concerned;
                 if(fansUser.concerned){//取消关注
@@ -18,12 +18,12 @@ define([
                         userId:fansUser.userinfo._id,        // 被关注者id
                         fansUserId:$scope.user._id  // 关注者id
                     }, function () {
-                        Message.info("取消关注成功");
+                        Message.info($translate.instant("取消关注成功"));
                         fansUser.concerned=false;
                     });
                 }else{
                     util.post(config.apiUrlPrefix + 'user_fans/attent', {userId:fansUser.userinfo._id, fansUserId:$scope.user._id}, function () {
-                        Message.info("关注成功");
+                        Message.info($translate.instant("关注成功"));
                         fansUser.concerned=true;
                     });
                 }

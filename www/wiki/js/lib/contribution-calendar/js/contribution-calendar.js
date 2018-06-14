@@ -19,17 +19,21 @@
  *     "2016-05-01"：5,
  *     "2016-06-01":6,
  *   }
- *});
+ *}); 
  */
 (function(window, document, undefined) {
     var defaults = {
         year: new Date().getFullYear(),
         week: ["星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六"],
+        monthChar: '月',
         step:5,
         stepColor:["#E8D8F8","#B5CdE6","#77A4D0","#3977AD"],
         defaultColor:"#EBEDF0",
-        active: {}
+        active: {},
+        languageLocaleIsForGlobalUser: false
     };
+    var monthChar = defaults.monthChar;
+    var languageLocaleIsForGlobalUser = defaults.languageLocaleIsForGlobalUser;
     var svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
     var year = defaults.year;
     var yearLen = 0;
@@ -87,7 +91,7 @@
             text.setAttribute("x", 30 + 52 * (i - 1));
             text.setAttribute("y", -10);
             text.setAttribute("class", "month");
-            var textNode = document.createTextNode(i + "月");
+            var textNode = document.createTextNode(i + monthChar);
             text.appendChild(textNode);
             svg.appendChild(text);
         }
@@ -146,9 +150,15 @@
             console.log("传入的ID不存在");
             return;
         }
+        if(options.languageLocaleIsForGlobalUser){
+          languageLocaleIsForGlobalUser = options.languageLocaleIsForGlobalUser
+        }
         if(options.year){
             year=options.year;
         }
+
+        week= languageLocaleIsForGlobalUser ? ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"] : week;
+        monthChar = languageLocaleIsForGlobalUser ? 'Month' : monthChar;
         if(options.active){
             dateCount=options.active;
         }

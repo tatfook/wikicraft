@@ -173,7 +173,7 @@
         </div>
         <div class="empty-to-edit" ng-hide="params.type != 'created' || sites[params.type].length > 0">
             <p>
-                <span>尚未发表相关内容，请添加</span>
+                <span>{{ '尚未发表相关内容，请添加' | translate }}</span>
                 <a class="iconfont icon-tianjia" href="/wiki/user_center?userCenterContentType=newWebsite" target="_blank"></a>
             </p>
         </div>
@@ -191,7 +191,7 @@
                     <p class="p-link ellipsis">
                         <a ng-href="{{'/'+ site.username+'/'+site.name}}" target="_blank">{{'/'+ site.username+'/'+site.name}}</a>
                     </p>
-                    <p class="p-desc ellipsis">{{site.desc || "暂无简介"}}</p>
+                    <p class="p-desc ellipsis">{{(site.desc || "暂无简介") | translate}}</p>
                     <p class="p-tags ellipsis">
                         <span ng-repeat="tag in site.tags track by $index">{{tag}}</span>
                     </p>

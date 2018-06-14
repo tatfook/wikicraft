@@ -75,7 +75,7 @@
     </div>
     <div class="user-msg col-xs-12 col-sm-8 col-sm-offset-2 col-lg-4 col-lg-offset-4">
         <h1 class="theme-font-color">{{userinfo.displayName || userinfo.username || "USERNAME"}}</h1>
-        <p class="info"><img ng-src="{{imgsPath+'icon/blog_location.png'}}" alt=""> {{userinfo.location || "深圳"}}<span class="time">注册于2016.9.12</span></p>
+        <p class="info"><img ng-src="{{imgsPath+'icon/blog_location.png'}}" alt=""> {{userinfo.location || "深圳"}}<span class="time">{{'注册于' | translate}}2016.9.12</span></p>
         <p class="align-left xs-align-center">{{modParams.introduce || "我是一个边学习边分享的人。关于读书、关于影视剧、关于足球， 所学，所思，所感，所闻，分享一切有趣的、有用的。"}}</p>
         <div class="btn btn-primary btn-lg theme-btn">收藏网站</div>
     </div>
