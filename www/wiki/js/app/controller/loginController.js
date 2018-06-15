@@ -110,8 +110,9 @@ define([
                     }
                 } else {
                     // 用户不存在 注册用户并携带data.data信息
-                    storage.sessionStorageSetItem("userThreeService", data.data);
-                    util.go("/wiki/join");
+                    var userThreeServiceOnceToken = Date.now()
+                    storage.onceStorageSetItem("userThreeServiceOnceToken" + userThreeServiceOnceToken, data.data);
+                    util.go("/wiki/join?userThreeServiceOnceToken=" + userThreeServiceOnceToken);
                 }
             }, function (data) {
 

@@ -12,7 +12,7 @@ define([
 ], function (app, util, storage, dataSource, sensitiveWord, htmlContent) {
     app.registerController('joinController', ['$scope', '$auth', '$interval', '$translate', 'Account', 'modal', 'Message', function ($scope, $auth, $interval, $translate, Account, modal, Message) {
         //$scope.errMsg = "用户名或密码错误";
-        var userThreeService = undefined;
+        $scope.userThreeService = undefined;
         $scope.isModal = false;
         $scope.step = 1;
         $scope.agree = true;
@@ -65,10 +65,18 @@ define([
         };
 
         function init() {
-            userThreeService = storage.sessionStorageGetItem('userThreeService');
-            if (userThreeService) {
-                $scope.step = 3;
-            }
+          handleThirdUserJoin()
+        }
+
+        function handleThirdUserJoin() {
+          var locationSeachArr = location.search.split(/\?|\=/);
+          var userThreeServiceOnceTokenIndex = locationSeachArr.indexOf("userThreeServiceOnceToken");
+          if (userThreeServiceOnceTokenIndex < 0) return
+          var userThreeServiceOnceToken = locationSeachArr[userThreeServiceOnceTokenIndex + 1];
+          if (!userThreeServiceOnceToken) return
+          $scope.userThreeService = storage.onceStorageGetItem("userThreeServiceOnceToken" + userThreeServiceOnceToken)
+          if (!$scope.userThreeService) return
+          $scope.step = 3
         }
 
         $scope.$watch('$viewContentLoaded', init);
@@ -198,7 +206,7 @@ define([
               params = {
                   username: $scope.otherUsername ? $scope.otherUsername.trim() : "",
                   password: $scope.otherPassword ? $scope.otherPassword.trim() : "",
-                  threeService: userThreeService,
+                  threeService: $scope.userThreeService,
               }
             } else {
               if (config.isGlobalVersion) {
@@ -429,7 +437,7 @@ define([
                     }
                 } else {
                     // 用户不存在 注册用户并携带data.data信息
-                    userThreeService = data.data;
+                    $scope.userThreeService = data.data;
                     $scope.step = 3;
                 }
             }, function (data) {
