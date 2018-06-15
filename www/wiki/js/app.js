@@ -59,7 +59,6 @@ define([
 			name:'google',
 			url: "/api/wiki/auth/google",
 			clientId: '670427490986-ks4bseleea18nvoi73c1ej1oae1gljof.apps.googleusercontent.com',
-			//redirectUri:window.location.origin +  '/wiki/login',
 			redirectUri:window.location.origin +  '/api/wiki/auth/google',
 			authorizationEndpoint: 'https://accounts.google.com/o/oauth2/v2/auth',
 			oauthType: '2.0',
@@ -69,24 +68,36 @@ define([
 			scopePrefix: 'openid',
 		});
 
+    // for some unknown reason, if we still want to keep http
+    // we need to do this for github, qq, and weibo
+    var getHTTPLocationOriginForGithubQQAndWeibo = function() {
+      return window.location.origin.replace(/^https/, 'http')
+    }
+
 		// github 认证配置
 		$authProvider.github({
 			url: "/api/wiki/auth/github",
-			clientId: '2219fe9cb6d105dd30fb',
-			redirectUri:window.location.origin +  '/wiki/login',
+      clientId: '2219fe9cb6d105dd30fb',
+			redirectUri: getHTTPLocationOriginForGithubQQAndWeibo() + '/wiki/login',
 			// scope: ["public_repo", "delete_repo"],
 			scope: ["public_repo"],
 		});
-
 		$authProvider.oauth2({
 			name: 'qq',
 			url: '/api/wiki/auth/qq',
 			clientId: '101403344',
-			//redirectUri: window.location.origin + '/api/wiki/auth/qq',//window.location.origin,
-			redirectUri: window.location.origin  +  '/wiki/login',
+			redirectUri: getHTTPLocationOriginForGithubQQAndWeibo() +  '/wiki/login',
 			authorizationEndpoint: 'https://graph.qq.com/oauth2.0/authorize',
 			oauthType: '2.0',
 			scope:'get_user_info',
+    });
+		$authProvider.oauth2({
+			name: 'xinlangweibo',
+			url: '/api/wiki/auth/xinlangweibo',
+			clientId: '2411934420',
+			redirectUri: getHTTPLocationOriginForGithubQQAndWeibo() +  '/wiki/login',
+			authorizationEndpoint: 'https://api.weibo.com/oauth2/authorize',
+			oauthType: '2.0',
 		});
 
 		$authProvider.oauth2({
@@ -94,24 +105,14 @@ define([
 			url: '/api/wiki/auth/weixin',
 			clientId: 'wxc97e44ce7c18725e',
 			appid: 'wxc97e44ce7c18725e',
-			//redirectUri: window.location.origin + '/api/wiki/auth/weixin',//window.location.origin,
 			redirectUri: window.location.origin  +  '/wiki/login',
 			authorizationEndpoint: 'https://open.weixin.qq.com/connect/qrconnect',
 			oauthType: '2.0',
 			scope:'snsapi_login',
 			requiredUrlParams: ['scope', "appid"],
-		});
-		// 新浪微博
-		$authProvider.oauth2({
-			name: 'xinlangweibo',
-			url: '/api/wiki/auth/xinlangweibo',
-			clientId: '2411934420',
-			//redirectUri: window.location.origin + '/api/wiki/auth/xinlangweibo',//window.location.origin,
-			redirectUri: window.location.origin  +  '/wiki/login',
-			authorizationEndpoint: 'https://api.weibo.com/oauth2/authorize',
-			oauthType: '2.0',
-		});
-		// keepwork微博
+    });
+
+		// keepwork
 		$authProvider.oauth2({
 			name: 'keepwork',
 			url: '/api/wiki/models/oauth_app/callback',

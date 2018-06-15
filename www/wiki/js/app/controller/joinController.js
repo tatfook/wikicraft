@@ -193,48 +193,50 @@ define([
 
             var params = {};
 
-            if (config.isGlobalVersion) {
+            // this is special for users from third auth service providers
+            if (type == "other") {
               params = {
-                username: $scope.username ? $scope.username.trim() : "",
-                password: $scope.password ? $scope.password.trim() : "",
-                email: $scope.email ? $scope.email.trim() : ""
-              }
-
-              if (!validateEmail(params.email)) {
-                $scope.emailErrMsg = $translate.instant("*请输入正确的邮箱");
-                return;
+                  username: $scope.otherUsername ? $scope.otherUsername.trim() : "",
+                  password: $scope.otherPassword ? $scope.otherPassword.trim() : "",
+                  threeService: userThreeService,
               }
             } else {
-              params = {
+              if (config.isGlobalVersion) {
+                params = {
                   username: $scope.username ? $scope.username.trim() : "",
                   password: $scope.password ? $scope.password.trim() : "",
-                  smsCode: $scope.smsCode,
-                  smsId: $scope.smsId,
-                  cellphone: $scope.cellphone
-              };
-
-              if (!params.cellphone) {
-                  $scope.cellphoneErrMsg = $translate.instant("*手机号不能为空");
+                  email: $scope.email ? $scope.email.trim() : ""
+                }
+  
+                if (!validateEmail(params.email)) {
+                  $scope.emailErrMsg = $translate.instant("*请输入正确的邮箱");
                   return;
-              }
-
-              if (!params.smsId) {
-                  $scope.smsCodeErrMsg = $translate.instant("*请先发送验证码验证");
-                  return;
-              }
-
-              if (!params.smsCode) {
-                  $scope.smsCodeErrMsg = $translate.instant("*验证码不能为空");
-                  return;
-              }
-            }
-
-            if (type == "other") {
+                }
+  
+              } else {
                 params = {
-                    username: $scope.otherUsername ? $scope.otherUsername.trim() : "",
-                    password: $scope.otherPassword ? $scope.otherPassword.trim() : "",
-                    threeService: userThreeService,
+                    username: $scope.username ? $scope.username.trim() : "",
+                    password: $scope.password ? $scope.password.trim() : "",
+                    smsCode: $scope.smsCode,
+                    smsId: $scope.smsId,
+                    cellphone: $scope.cellphone
                 };
+  
+                if (!params.cellphone) {
+                    $scope.cellphoneErrMsg = $translate.instant("*手机号不能为空");
+                    return;
+                }
+  
+                if (!params.smsId) {
+                    $scope.smsCodeErrMsg = $translate.instant("*请先发送验证码验证");
+                    return;
+                }
+  
+                if (!params.smsCode) {
+                    $scope.smsCodeErrMsg = $translate.instant("*验证码不能为空");
+                    return;
+                }
+              }
             }
 
             if (!params.username) {
