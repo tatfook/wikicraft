@@ -309,7 +309,7 @@ define([
                         console.log(err)
                     })
                 } else {
-
+                  _go();
                 }
             }, function (error) {
                 $scope.errMsg = error.message;
