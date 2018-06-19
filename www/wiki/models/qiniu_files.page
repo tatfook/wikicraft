@@ -34,7 +34,7 @@ function qiniu_files:api_upsert(params)
 	params.checked = 0
 	local user = getUser()
 	local username = user.username
-	if user.roleId >= const.USER_ROLE_SPECIAL then params.checked = 1 end
+	if util:isInTable(user.roleId, const.DONT_CHECK_WHOES_FILES) then params.checked = 1 end
 
 	if not params.username or not params.domain or not params.key or params.size < 0 or params.username ~= username then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
