@@ -737,7 +737,7 @@ define([], function () {
         {
             "_key": "返回登录",
             "zh-cn": "返回登录",
-            "en": "Back to login"
+            "en": "Goto login"
         },
         {
             "_key": "重置Keepwork密码",
@@ -1092,7 +1092,7 @@ define([], function () {
         {
             "_key": "跳转个人首页",
             "zh-cn": "跳转个人首页",
-            "en": "Back to homepage"
+            "en": "Goto homepage"
         },
         {
             "_key": "完善账号信息",
@@ -1792,7 +1792,7 @@ define([], function () {
         {
             "_key": "邮箱验证码：",
             "zh-cn": "邮箱验证码：",
-            "en": "Email verification code:"
+            "en": "Verify-Code:"
         },
         {
             "_key": "图片验证码：",
@@ -3007,7 +3007,7 @@ define([], function () {
         {
             "_key": "发送验证码",
             "zh-cn": "发送验证码",
-            "en": "Send authentication code"
+            "en": "Send code"
         },
         {
             "_key": "邮箱解绑",
