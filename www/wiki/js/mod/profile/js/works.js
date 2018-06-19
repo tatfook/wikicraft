@@ -1,11 +1,11 @@
 /*
- * @Author: ZhangKaitlyn 
+ * @Author: ZhangKaitlyn
  * @Date: 2018-01-19
  * @Last Modified by: none
  * @Last Modified time: 2018-02-27 17:44:58
  */
 define([
-    'app', 
+    'app',
     'helper/util',
     'helper/mdconf',
     'text!wikimod/profile/html/works.html',
@@ -27,7 +27,7 @@ define([
                         require: false,
                         works:[{
                             is_leaf: true,
-                            logoUrl:"https://api.keepwork.com/git/gitlab_rls_kaitlyn/keepworkdatasource/raw/master/kaitlyn_images/img_1516099391929.jpeg",
+                            logoUrl:"https://git.keepwork.com/gitlab_rls_kaitlyn/keepworkdatasource/raw/master/kaitlyn_images/img_1516099391929.jpeg",
                             title:"日常摄影作品",
                             workLink:"/photograph/page01",
                             desc:"介绍日常生活中容易拍摄的照片",
@@ -67,7 +67,7 @@ define([
                     }
                 });
             }
-            
+
             $scope.works = util.arrayFrom($scope.params.works);
             $scope.userinfo.worksCount = $scope.works.length;
             $scope.editing = false;
@@ -232,7 +232,7 @@ define([
                     'key': 'workLink',
                     'value': $translate.instant('作品链接')
                 }];
-                var requiredResult = isRequiredEmptyAttr(requiredAttrs); 
+                var requiredResult = isRequiredEmptyAttr(requiredAttrs);
                 if (requiredResult.boolResult) {
                     $scope.errMsg = requiredResult.attr + $translate.instant("不可为空");
                     return;

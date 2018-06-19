@@ -1,11 +1,11 @@
 /*
- * @Author: ZhangKaitlyn 
+ * @Author: ZhangKaitlyn
  * @Date: 2018-01-19
  * @Last Modified by: none
  * @Last Modified time: 2018-02-27 17:45:44
  */
 define([
-    'app', 
+    'app',
     'text!wikimod/profile/html/experiences.html',
     'text!wikimod/profile/html/modalTemplate/addExperienceModal.html',
     'helper/mdconf',
@@ -24,7 +24,7 @@ define([
                         require: false,
                         experiences:[{
                             is_leaf: true,
-                            logoUrl:"https://api.keepwork.com/git/gitlab_rls_kaitlyn/keepworkdatasource/raw/master/kaitlyn_images/img_1516099391929.jpeg",
+                            logoUrl:"https://git.keepwork.com/gitlab_rls_kaitlyn/keepworkdatasource/raw/master/kaitlyn_images/img_1516099391929.jpeg",
                             title:"学习C语言",
                             link:"/photograph/page01",
                             startDate:"2017-06-09",
@@ -33,7 +33,7 @@ define([
                     }
                 }
             });
-            
+
             $scope.experiences = util.arrayFrom($scope.params.experiences);
             $scope.editing = false;
 
@@ -139,7 +139,7 @@ define([
             $scope.cancel = function(){
                 $uibModalInstance.dismiss("cancel");
             }
-            
+
             var isRequiredEmptyAttr = function(attrNames){
                 attrNames = attrNames || [];
                 for(var i = 0;i < attrNames.length;i++){
@@ -179,7 +179,7 @@ define([
                     'key': 'startDate',
                     'value': $translate.instant('开始时间')
                 }];
-                var requiredResult = isRequiredEmptyAttr(requiredAttrs); 
+                var requiredResult = isRequiredEmptyAttr(requiredAttrs);
                 if (requiredResult.boolResult) {
                     $scope.errMsg = requiredResult.attr + $translate.instant("不可为空");
                     result.startDate = startTemp;
