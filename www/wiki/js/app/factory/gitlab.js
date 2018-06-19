@@ -375,7 +375,7 @@ define([
             var _getRawContent = function () {
 				if (
           // what the hell is this?
-          self.apiBaseUrl.indexOf(".keepwork.com/git/") > 0
+          self.apiBaseUrl.indexOf(".keepwork.com/") > 0
         ) {
 					$http({
 						method: 'GET',

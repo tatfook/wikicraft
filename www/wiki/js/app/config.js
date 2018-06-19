@@ -47,7 +47,7 @@
 		localEnv:localEnv,                                                                                         // 是否本地调试环境
 		localVMEnv:localVMEnv,                                                                                     // 本地虚拟机环境
 		hostname:wiki_config.hostname ? wiki_config.hostname.split(":")[0] : window.location.hostname,             // url中的hostname, 优先取服务端给过来的(cname转发，客户端获取不到真实的hostname)
-    keepworkOfficialGitHost: 'https://api.keepwork.com/git',
+    keepworkOfficialGitHost: 'https://git.keepwork.com',
     officialDomainList:["keepwork.com", "qiankunew.com"],                                                      // 官方域名 因存在用户官方子域名和其它域名 故需记录
 		officialSubDomainList:[                                                                                    // 官方占用的子域名列表
 			"dev.keepwork.com",

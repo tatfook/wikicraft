@@ -12,7 +12,7 @@ define([
 ], function (app, util, storage, dataSource, sensitiveWord, htmlContent) {
     app.registerController('joinController', ['$scope', '$auth', '$interval', '$translate', 'Account', 'modal', 'Message', function ($scope, $auth, $interval, $translate, Account, modal, Message) {
         //$scope.errMsg = "用户名或密码错误";
-        var userThreeService = undefined;
+        $scope.userThreeService = undefined;
         $scope.isModal = false;
         $scope.step = 1;
         $scope.agree = true;
@@ -65,10 +65,18 @@ define([
         };
 
         function init() {
-            userThreeService = storage.sessionStorageGetItem('userThreeService');
-            if (userThreeService) {
-                $scope.step = 3;
-            }
+          handleThirdUserJoin()
+        }
+
+        function handleThirdUserJoin() {
+          var locationSeachArr = location.search.split(/\?|\=/);
+          var userThreeServiceOnceTokenIndex = locationSeachArr.indexOf("userThreeServiceOnceToken");
+          if (userThreeServiceOnceTokenIndex < 0) return
+          var userThreeServiceOnceToken = locationSeachArr[userThreeServiceOnceTokenIndex + 1];
+          if (!userThreeServiceOnceToken) return
+          $scope.userThreeService = storage.onceStorageGetItem("userThreeServiceOnceToken" + userThreeServiceOnceToken)
+          if (!$scope.userThreeService) return
+          $scope.step = 3
         }
 
         $scope.$watch('$viewContentLoaded', init);
@@ -193,48 +201,50 @@ define([
 
             var params = {};
 
-            if (config.isGlobalVersion) {
+            // this is special for users from third auth service providers
+            if (type == "other") {
               params = {
-                username: $scope.username ? $scope.username.trim() : "",
-                password: $scope.password ? $scope.password.trim() : "",
-                email: $scope.email ? $scope.email.trim() : ""
-              }
-
-              if (!validateEmail(params.email)) {
-                $scope.emailErrMsg = $translate.instant("*请输入正确的邮箱");
-                return;
+                  username: $scope.otherUsername ? $scope.otherUsername.trim() : "",
+                  password: $scope.otherPassword ? $scope.otherPassword.trim() : "",
+                  threeService: $scope.userThreeService,
               }
             } else {
-              params = {
+              if (config.isGlobalVersion) {
+                params = {
                   username: $scope.username ? $scope.username.trim() : "",
                   password: $scope.password ? $scope.password.trim() : "",
-                  smsCode: $scope.smsCode,
-                  smsId: $scope.smsId,
-                  cellphone: $scope.cellphone
-              };
-
-              if (!params.cellphone) {
-                  $scope.cellphoneErrMsg = $translate.instant("*手机号不能为空");
+                  email: $scope.email ? $scope.email.trim() : ""
+                }
+  
+                if (!validateEmail(params.email)) {
+                  $scope.emailErrMsg = $translate.instant("*请输入正确的邮箱");
                   return;
-              }
-
-              if (!params.smsId) {
-                  $scope.smsCodeErrMsg = $translate.instant("*请先发送验证码验证");
-                  return;
-              }
-
-              if (!params.smsCode) {
-                  $scope.smsCodeErrMsg = $translate.instant("*验证码不能为空");
-                  return;
-              }
-            }
-
-            if (type == "other") {
+                }
+  
+              } else {
                 params = {
-                    username: $scope.otherUsername ? $scope.otherUsername.trim() : "",
-                    password: $scope.otherPassword ? $scope.otherPassword.trim() : "",
-                    threeService: userThreeService,
+                    username: $scope.username ? $scope.username.trim() : "",
+                    password: $scope.password ? $scope.password.trim() : "",
+                    smsCode: $scope.smsCode,
+                    smsId: $scope.smsId,
+                    cellphone: $scope.cellphone
                 };
+  
+                if (!params.cellphone) {
+                    $scope.cellphoneErrMsg = $translate.instant("*手机号不能为空");
+                    return;
+                }
+  
+                if (!params.smsId) {
+                    $scope.smsCodeErrMsg = $translate.instant("*请先发送验证码验证");
+                    return;
+                }
+  
+                if (!params.smsCode) {
+                    $scope.smsCodeErrMsg = $translate.instant("*验证码不能为空");
+                    return;
+                }
+              }
             }
 
             if (!params.username) {
@@ -299,7 +309,7 @@ define([
                         console.log(err)
                     })
                 } else {
-
+                  _go();
                 }
             }, function (error) {
                 $scope.errMsg = error.message;
@@ -427,7 +437,7 @@ define([
                     }
                 } else {
                     // 用户不存在 注册用户并携带data.data信息
-                    userThreeService = data.data;
+                    $scope.userThreeService = data.data;
                     $scope.step = 3;
                 }
             }, function (data) {
