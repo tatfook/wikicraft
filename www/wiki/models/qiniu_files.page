@@ -157,6 +157,20 @@ function qiniu_files:api_getDownloadUrlByKey(params)
 	return errors:wrap(nil, download_url or qiniuFiles.download_url)
 end
 
+-- export data
+function qiniu_files:api_export()
+	self:db():find({_id={gt=0, limit=1000000}}, resume)
+
+	local _, list = yield()
+	local userDB = models.user:new()
+	for _, item in ipairs(list or {}) do
+		userDB:db():findOne({["+username"] = {item.username}}, resume)
+		local _, data = yield()
+		if data then item.userId = data.id end
+	end
+	return list
+end
+
 function qiniu_files:changeFilename(params)
 	self:db():updateOne({_id=params._id},{filename=params.filename}, resume)
 	return yield()
