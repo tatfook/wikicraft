@@ -80,13 +80,13 @@ else
 end
 
 if not userThreeService.username then
-	return response:send({error=0, message="user not bind", data={serviceId = serviceId, serviceName = serviceName}})
+	return response:send({error=0, data={serviceId=serviceId, access_token=access_token, serviceName=serviceName}, message="user not bind"})
 end
 
 db.user:findOne({["+username"]=userThreeService.username}, resume)
 local err, userinfo = yield()
 if not userinfo then
-	return response:send({error=0, data={serviceId=serviceId, serviceName=serviceName}, message="user not found"})
+	return response:send({error=0, data={serviceId=serviceId, access_token=access_token, serviceName=serviceName}, message="user not found"})
 end
 local token = encodeJWT({userId=userinfo._id, username=userinfo.username})
 setAuthCookie(token)
