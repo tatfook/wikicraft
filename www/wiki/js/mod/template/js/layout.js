@@ -27,7 +27,7 @@ define([
 				}
 			}
 			]
-			
+
 		}
 	};
 
@@ -67,21 +67,21 @@ define([
 					var pageinfo = $rootScope.pageinfo;
 					var currentDataSource = dataSource.getDataSource(pageinfo.username,pageinfo.sitename);
 					if (contentUrl && currentDataSource){
-						var urlPrefix = "/" + pageinfo.username + "/" + pageinfo.sitename + "/"; 
+						var urlPrefix = "/" + pageinfo.username + "/" + pageinfo.sitename + "/";
 						if (contentUrl.indexOf(urlPrefix) != 0){
 							contentUrl = urlPrefix + contentUrl;
 						}
 						currentDataSource.getRawContent({
-							path:contentUrl+config.pageSuffixName, 
+							path:contentUrl+config.pageSuffixName,
 							isShowLoading:false
 						}, function(content){
 							content = content || "";
 							util.html("#" + id, md.render(content));
 						});
-					}	
+					}
 				}
 			}
-			
+
 			function init() {
 				//$scope.params = modParams;
 				//console.log(modParams);
@@ -187,12 +187,12 @@ define([
 
 			wikiBlock.init({
 				scope: $scope,
-				params_template:params_template_func(modParams), 
+				params_template:params_template_func(modParams),
 				styles:[
 				{
 					design:{
 						text:"style1",
-						cover:"https://api.keepwork.com/git/gitlab_rls_official/keepworkimages/raw/master/official_images/img_1515574485684.png",
+						cover:"https://git.keepwork.com/gitlab_rls_official/keepworkimages/raw/master/official_images/img_1515574485684.png",
 					},
 					urlmatch: {
 						text:"",
@@ -215,7 +215,7 @@ define([
 				{
 					design:{
 						text:"style2",
-						cover:"https://api.keepwork.com/git/gitlab_rls_official/keepworkimages/raw/master/official_images/img_1515574515531.png",
+						cover:"https://git.keepwork.com/gitlab_rls_official/keepworkimages/raw/master/official_images/img_1515574515531.png",
 					},
 					urlmatch: {
 						text:"",
@@ -239,7 +239,7 @@ define([
 				{
 					design:{
 						text:"style3",
-						cover:"https://api.keepwork.com/git/gitlab_rls_official/keepworkimages/raw/master/official_images/img_1515574564150.png",
+						cover:"https://git.keepwork.com/gitlab_rls_official/keepworkimages/raw/master/official_images/img_1515574564150.png",
 					},
 					urlmatch: {
 						text:"",
@@ -255,7 +255,7 @@ define([
 										isMainContent:false,
 									},
 								]
-							}	
+							}
 						},
 						{
 							cols:{
@@ -273,12 +273,12 @@ define([
 							}
 						}
 						]
-					}, 
+					},
 				},
 				{
 					design:{
 						text:"style4",
-						cover:"https://api.keepwork.com/git/gitlab_rls_official/keepworkimages/raw/master/official_images/img_1515574526094.png",
+						cover:"https://git.keepwork.com/gitlab_rls_official/keepworkimages/raw/master/official_images/img_1515574526094.png",
 					},
 					urlmatch: {
 						text:"",
@@ -294,7 +294,7 @@ define([
 										isMainContent:false,
 									},
 								]
-							}	
+							}
 						},
 						{
 							cols:{
@@ -312,7 +312,7 @@ define([
 							}
 						}
 						]
-					}, 
+					},
 				},
 				]
 			});

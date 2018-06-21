@@ -41,7 +41,7 @@ function bigfile:api_upsert(params)
 	-- files of special users are not necessary to be checked
 	params.checked = 0
 	local user = getUser()
-	if user.roleId >= const.USER_ROLE_SPECIAL then params.checked = 1 end
+	if util:isInTable(user.roleId, const.DONT_CHECK_WHOES_FILES) then params.checked = 1 end
 
 	params.updateDate = ParaGlobal.GetDateFormat("yyyy-MM-dd") .. " " .. ParaGlobal.GetTimeFormat("HH:mm:ss")
 	params.createDate = params.createDate or (ParaGlobal.GetDateFormat("yyyy-MM-dd") .. " " .. ParaGlobal.GetTimeFormat("HH:mm:ss"))
@@ -256,7 +256,7 @@ function bigfile:api_updateById(params)
 	new_data.filename = params.filename
 
 	new_data.checked = 0
-	if user.roleId >= const.USER_ROLE_SPECIAL then new_data.checked = 1 end
+	if util:isInTable(user.roleId, const.DONT_CHECK_WHOES_FILES) then new_data.checked = 1 end
 
 	if params.channel == const.BIGFILE_QINIU then
 		local qiniuDB = models.qiniu:new()
