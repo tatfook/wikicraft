@@ -1167,6 +1167,10 @@ function user:api_getGitlabAccount(params)
 	return errors:wrap(nil, {username=dataSource.dataSourceUsername, password=dataSource.dataSourcePassword})
 end
 
+function user:api_tokeninfo(params) 
+	return getTokenInfo()
+end
+
 -- 用户是否登录
 function user:api_isLogin(params)
 	--log(request.headers, true)
@@ -1373,7 +1377,6 @@ function user:refuseLockedUser()
 
 	errors:raise(401, "您的帐号已被封禁")
 end
-
 
 function user:api_test()
 	user:refuseLockedUser()
