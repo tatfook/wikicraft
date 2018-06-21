@@ -54,6 +54,7 @@
 			"test.keepwork.com",
 
 			"stage.keepwork.com",
+			"lessons-stage.keepwork.com",
 			"release.keepwork.com",
       // "keepwork.com"
 			"api-stage.keepwork.com",
