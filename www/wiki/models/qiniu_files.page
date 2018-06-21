@@ -163,10 +163,11 @@ function qiniu_files:api_export()
 
 	local _, list = yield()
 	local userDB = models.user:new()
+	
 	for _, item in ipairs(list or {}) do
 		userDB:db():findOne({["+username"] = {item.username}}, resume)
 		local _, data = yield()
-		if data then item.userId = data.id end
+		if data then item.userId = data._id end
 	end
 	return list
 end
