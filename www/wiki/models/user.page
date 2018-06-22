@@ -616,7 +616,8 @@ function user:api_bindThreeService(params)
 	end
 	-- 用户存在则绑定
 	local userThreeServiceDB = models.user_three_service:new()
-	threeService.userId = userinfo._id
+  threeService.userId = userinfo._id
+  threeService.username = params.username
 	userThreeServiceDB:api_upsert(threeService)
 	userinfo.password = nil
 
@@ -730,7 +731,8 @@ function user:api_register(params)
 	local threeService = params.threeService
 	if threeService and threeService.serviceId and threeService.serviceName then
 		local userThreeServiceDB = models.user_three_service:new()
-		threeService.userId = userinfo._id
+    threeService.userId = userinfo._id
+    threeService.username = userinfo.username
 		userThreeServiceDB:api_upsert(threeService)
 	end
 
