@@ -1,77 +1,99 @@
 <style>
-    body{
+    body {
         background-color: #F1F1F1;
     }
-    li{
+
+    li {
         list-style-type: none;
     }
 
     /*左侧菜单栏*/
+
     .subnav {
         text-align: left;
     }
-    .subnav > .list-group > .list-group-item{
+
+    .subnav>.list-group>.list-group-item {
         padding: 0;
         margin-bottom: 10px;
     }
-    .subnav .panel{
+
+    .subnav .panel {
         margin-bottom: 0;
         border-radius: 0;
     }
-    .subnav .panel-heading{
+
+    .subnav .panel-heading {
         border-radius: 0;
         cursor: pointer;
     }
-    .subnav .panel-body{
+
+    .subnav .panel-body {
         padding: 0;
     }
-    .subnav .list-group{
+
+    .subnav .list-group {
         margin-bottom: 0;
     }
-    .subnav .list-group .list-group-item{
+
+    .subnav .list-group .list-group-item {
         border: none;
     }
-    .subnav .panel-body .list-group-item{
-        padding:10px 15px;
+
+    .subnav .panel-body .list-group-item {
+        padding: 10px 15px;
     }
-    .subnav .list-group .list-group-item.active{
+
+    .subnav .list-group .list-group-item.active {
         background-color: #E0E3E9;
         color: #3977AD;
     }
-    .subnav .glyphicon{
+
+    .subnav .glyphicon {
         display: none;
     }
-    .subnav .list-group .list-group-item.active .glyphicon{
-        display:inline-block;
+
+    .subnav .list-group .list-group-item.active .glyphicon {
+        display: inline-block;
     }
-    .subscribe{
+
+    .subscribe {
         font-size: 12px;
     }
-    .main-content{
-        border:1px solid #DEE1E5;
+
+    .main-content {
+        border: 1px solid #DEE1E5;
         background-color: #FFF;
         padding: 0;
         min-height: 515px;
     }
-    .main-content .panel-heading{
+
+    .main-content .panel-heading {
         border-bottom: 2px solid #F1F1F1;
         color: #3977AD;
         font-size: 16px;
     }
-    .main-content .tab-content{
+
+    .main-content .tab-content {
         padding-top: 40px;
     }
-    .main-content .form-control{
+
+    .main-content .form-control {
         margin-bottom: 25px;
     }
-    .main-content .nav-tabs>li[role="presentation"]>a{
+
+    .main-content .nav-tabs>li[role="presentation"]>a {
         font-size: 16px;
         color: #333;
     }
-    .main-content .nav-tabs>li[role="presentation"]>a>span{
+
+    .main-content .nav-tabs>li[role="presentation"]>a>span {
         color: #666;
     }
-    .main-content .nav-tabs>li.active>a, .main-content .nav-tabs>li.active>a:focus, .main-content .nav-tabs>li.active>a:hover {
+
+    .main-content .nav-tabs>li.active>a,
+    .main-content .nav-tabs>li.active>a:focus,
+    .main-content .nav-tabs>li.active>a:hover {
         left: -1px;
         top: 0px;
         border-top: 0px;
@@ -80,157 +102,197 @@
         border-bottom: 0px;
         color: #3977AD;
     }
-    .img-text{
+
+    .img-text {
         display: flex;
         align-items: center;
         background-color: #F9F9F9;
         border: 1px solid #e5e7e9;
         margin-bottom: 20px;
     }
-    .img-text .text{
+
+    .img-text .text {
         flex: 1;
     }
-    .main-content .img-text img{
+
+    .main-content .img-text img {
         width: 140px;
         height: 140px;
         object-fit: cover;
     }
-    .main-content .img-text .text{
+
+    .main-content .img-text .text {
         padding: 0 5px 0 15px;
         max-height: 140px;
         overflow: hidden;
     }
-    .main-content .img-text .col-md-12,.tab-content .img-text .col-md-4{
+
+    .main-content .img-text .col-md-12,
+    .tab-content .img-text .col-md-4 {
         padding: 0;
         line-height: 32px;
     }
-    .main-content .img-text p{
+
+    .main-content .img-text p {
         margin-bottom: 0;
         line-height: 32px;
     }
-    .pagination-box{
+
+    .pagination-box {
         text-align: center;
         position: relative;
     }
-    .file-pagination-box{
+
+    .file-pagination-box {
         text-align: center;
         position: relative;
     }
-    .tab-content p.info{
+
+    .tab-content p.info {
         font-size: 12px;
-        color: #999;;
+        color: #999;
+        ;
     }
-    .subnav .panel-body{
+
+    .subnav .panel-body {
         margin-top: 0;
     }
-    .admin-main-panel{
+
+    .admin-main-panel {
         background-color: #FFF;
     }
-    .templates-panel{
+
+    .templates-panel {
         margin: 0 -15px;
     }
-    .templates-panel .panel-heading{
+
+    .templates-panel .panel-heading {
         border-bottom: 1px solid #DCDCDC;
         font-size: 16px;
         color: #3977AD;
     }
-    .oauth-table-head{
-        text-align:center;
-        table-layout:fixed;
+
+    .oauth-table-head {
+        text-align: center;
+        table-layout: fixed;
     }
-    .oauth-table-head{
+
+    .oauth-table-head {
         word-break: break-word;
     }
-    .oauth-table-head tr td:nth-child(1){
-        width:116px;
+
+    .oauth-table-head tr td:nth-child(1) {
+        width: 116px;
     }
-    .oauth-table-head tr td:nth-child(2){
-        width:90px;
+
+    .oauth-table-head tr td:nth-child(2) {
+        width: 90px;
     }
-    .oauth-table-head tr td:nth-child(3){
-        width:96px;
+
+    .oauth-table-head tr td:nth-child(3) {
+        width: 96px;
     }
-    .oauth-table-head tr td:nth-child(4){
-        width:305px;
+
+    .oauth-table-head tr td:nth-child(4) {
+        width: 305px;
     }
-    .oauth-table-head tr td:nth-child(5){
-        width:90px;
+
+    .oauth-table-head tr td:nth-child(5) {
+        width: 90px;
     }
-    .oauth-table-head tr td:nth-child(6){
-        width:148px;
+
+    .oauth-table-head tr td:nth-child(6) {
+        width: 148px;
     }
-    .oauth-table-head tr td:nth-child(7){
-        width:117px;
+
+    .oauth-table-head tr td:nth-child(7) {
+        width: 117px;
     }
-    .oauth-table-head tr td:nth-child(8){
-        width:141px;
+
+    .oauth-table-head tr td:nth-child(8) {
+        width: 141px;
     }
-    .oauth-button{
-        margin:10px 0;
+
+    .oauth-button {
+        margin: 10px 0;
     }
-    .oauth-add{
-        padding:30px;
+
+    .oauth-add {
+        padding: 30px;
     }
-    .oauth-a{
-        position:relative;
-        top:5px;
+
+    .oauth-a {
+        position: relative;
+        top: 5px;
     }
-    .oauth-skip{
-        position:relative;
+
+    .oauth-skip {
+        position: relative;
         left: -166px;
         top: -6px;
     }
-    .oauth-skip2{
-        position:relative;
-        top:1px;
+
+    .oauth-skip2 {
+        position: relative;
+        top: 1px;
     }
-    .form-control{
-        width:78%;
+
+    .form-control {
+        width: 78%;
     }
-    .oauth-label{
-        position:relative;
+
+    .oauth-label {
+        position: relative;
         left: -133px
     }
+
     .oauth-pre {
         display: inline-block;
         width: 12%;
         height: 30px;
         margin-bottom: 20px;
         padding-top: 5px;
-        overflow:hidden;
+        overflow: hidden;
     }
-    .goods{
+
+    .goods {
         text-align: center;
     }
-    .delGoodsMan{
+
+    .delGoodsMan {
         margin-bottom: 10px;
     }
+
     .totalFiles {
         position: absolute;
         left: 10px;
         top: 20px;
     }
+
     .totalUsers {
         position: absolute;
         left: 10px;
         top: 20px;
     }
+
     .table tbody tr td {
         vertical-align: middle;
     }
+
     .datetime {
         width: 50%;
     }
-    @media(max-width: 768px){
-        .subnav .list-group-item:first-child .list-group-item{
+
+    @media(max-width: 768px) {
+        .subnav .list-group-item:first-child .list-group-item {
             padding: 10px 5px;
             float: left;
             width: 25%;
         }
-        .subnav .list-group .list-group-item.active .glyphicon{
+        .subnav .list-group .list-group-item.active .glyphicon {
             display: none;
         }
-        .main-content{
+        .main-content {
             /*min-height: auto;*/
         }
     }
@@ -244,7 +306,9 @@
                 <li class="list-group-item">
                     <div class="panel-heading">
                         <div>
-                            <div class="panel-heading"><strong>后台管理</strong></div>
+                            <div class="panel-heading">
+                                <strong>后台管理</strong>
+                            </div>
                         </div>
                         <ul>
                             <li>
@@ -262,27 +326,29 @@
                 </li>
                 <li class="list-group-item">
                     <div class="panel-heading">
-                        <div >
-                            <div class="panel-heading"><strong>KeepWork管理</strong></div>
+                        <div>
+                            <div class="panel-heading">
+                                <strong>KeepWork管理</strong>
+                            </div>
                         </div>
                         <ul>
                             <li>
-                                <div ng-class='getStyleClass("user")' >
+                                <div ng-class='getStyleClass("user")'>
                                     <div class="panel-heading" ng-click='getUserList()'>用户</div>
                                 </div>
                             </li>
                             <li>
-                                <div ng-class='getStyleClass("oauth")' >
+                                <div ng-class='getStyleClass("oauth")'>
                                     <div class="panel-heading" ng-click='getOauthList()'>Oauth 管理</div>
                                 </div>
                             </li>
                             <li>
-                                <div ng-class='getStyleClass("goodsManager")' >
+                                <div ng-class='getStyleClass("goodsManager")'>
                                     <div class="panel-heading" ng-click='getGoodmnagerList()'>商品管理</div>
                                 </div>
                             </li>
                             <li>
-                                <div  ng-class='getStyleClass("site")'>
+                                <div ng-class='getStyleClass("site")'>
                                     <div class="panel-heading" ng-click='getSiteList()'>网站</div>
                                 </div>
                             </li>
@@ -311,13 +377,20 @@
                                     <div class="panel-heading" ng-click='getSensitiveWords()'>敏感词管理</div>
                                 </div>
                             </li>
+                            <li>
+                                <div ng-class='getStyleClass("lessons")'>
+                                    <div class="panel-heading" ng-click='getInvitationCodes()'>Lessons邀请码管理</div>
+                                </div>
+                            </li>
                         </ul>
                     </div>
                 </li>
                 <li class="list-group-item">
                     <div class="panel-heading">
-                        <div >
-                            <div class="panel-heading" ><strong>数据统计</strong></div>
+                        <div>
+                            <div class="panel-heading">
+                                <strong>数据统计</strong>
+                            </div>
                         </div>
                         <ul>
                             <li>
@@ -375,7 +448,7 @@
                             <input ng-model="managerSearchByUsername" type="text" class="form-control" placeholder="请输入用户名">
                         </div>
                         <button class="btn btn-default" ng-click="managerSearch()">查询</button>
-                        <button class="btn btn-default pull-right" ng-click="newManager()" >新建管理员账号</button>
+                        <button class="btn btn-default pull-right" ng-click="newManager()">新建管理员账号</button>
                     </form>
                 </div>
                 <table class="table table-hover table-bordered">
@@ -410,15 +483,12 @@
                     </tbody>
                 </table>
                 <div class="pagination-box">
-                    <ul uib-pagination ng-change="getManagerList()"
-                        items-per-page='pageSize' previous-text="{{ '上一页' | translate }}"
-                                next-text="{{ '下一页' | translate }}" total-items="totalItems"
-                              ng-model="managerCurrentPage" max-size="5"
-                                class="pagination-sm" boundary-link-numbers="true">
+                    <ul uib-pagination ng-change="getManagerList()" items-per-page='pageSize' previous-text="{{ '上一页' | translate }}" next-text="{{ '下一页' | translate }}"
+                        total-items="totalItems" ng-model="managerCurrentPage" max-size="5" class="pagination-sm" boundary-link-numbers="true">
                     </ul>
                 </div>
             </div>
-            
+
             <!--管理员操作日志-->
             <div ng-show='selectMenuItem=="operationLog"'>
                 管理员操作日志
@@ -429,14 +499,30 @@
                 <button type="button" class="btn btn-primary oauth-button" data-toggle="modal" data-target=".oauth" ng-click="clickOauthToggle(1)">添加Oauth账号</button>
                 <table class="table table-bordered oauth-table-head">
                     <tr>
-                        <td><strong>app名称</strong></td>
-                        <td><strong>公司名</strong></td>
-                        <td><strong>Clientld</strong></td>
-                        <td><strong>ClientSecret</strong></td>
-                        <td><strong>跳过授权</strong></td>
-                        <td><strong>PayCallbackUrl</strong></td>
-                        <td><strong>RedirectUrl</strong></td>
-                        <td><strong>操作</strong></td>
+                        <td>
+                            <strong>app名称</strong>
+                        </td>
+                        <td>
+                            <strong>公司名</strong>
+                        </td>
+                        <td>
+                            <strong>Clientld</strong>
+                        </td>
+                        <td>
+                            <strong>ClientSecret</strong>
+                        </td>
+                        <td>
+                            <strong>跳过授权</strong>
+                        </td>
+                        <td>
+                            <strong>PayCallbackUrl</strong>
+                        </td>
+                        <td>
+                            <strong>RedirectUrl</strong>
+                        </td>
+                        <td>
+                            <strong>操作</strong>
+                        </td>
                     </tr>
                     <tr ng-repeat="item in oauthData">
                         <td>{{item.appName}}</td>
@@ -454,93 +540,87 @@
                 </table>
                 <div class="modal oauth" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
                     <div class="modal-dialog modal-lg" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                            <h4 class="modal-title" ng-if="oauthVar == 1">添加Oauth账号</h4>
-                            <h4 class="modal-title" ng-if="oauthVar == 2">修改Oauth账号</h4>
-                        </div>
                         <div class="modal-content">
-                            <form class="form-horizontal oauth-add">
-                                <div class="form-group">
-                                    <label class="col-sm-2 control-label">app名称</label>
-                                    <div class="col-sm-10">
-                                      <input type="text" class="form-control" ng-model="oauthParams.appName" ng-if="oauthVar == 1" placeholder="" />
-                                      <input type="text" class="form-control" ng-model="oauthParams.appName" ng-if="oauthVar == 2" placeholder="" disabled="disabled" />
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                                <h4 class="modal-title" ng-if="oauthVar == 1">添加Oauth账号</h4>
+                                <h4 class="modal-title" ng-if="oauthVar == 2">修改Oauth账号</h4>
+                            </div>
+                            <div class="modal-content">
+                                <form class="form-horizontal oauth-add">
+                                    <div class="form-group">
+                                        <label class="col-sm-2 control-label">app名称</label>
+                                        <div class="col-sm-10">
+                                            <input type="text" class="form-control" ng-model="oauthParams.appName" ng-if="oauthVar == 1" placeholder="" />
+                                            <input type="text" class="form-control" ng-model="oauthParams.appName" ng-if="oauthVar == 2" placeholder="" disabled="disabled"
+                                            />
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="form-group">
-                                    <label class="col-sm-2 control-label">公司名</label>
-                                    <div class="col-sm-10">
-                                      <input type="text" class="form-control" placeholder="" ng-if="oauthVar == 1" ng-model="oauthParams.company">
-                                      <input type="text" class="form-control" placeholder="" ng-if="oauthVar == 2" ng-model="oauthParams.company" disabled="disabled">
+                                    <div class="form-group">
+                                        <label class="col-sm-2 control-label">公司名</label>
+                                        <div class="col-sm-10">
+                                            <input type="text" class="form-control" placeholder="" ng-if="oauthVar == 1" ng-model="oauthParams.company">
+                                            <input type="text" class="form-control" placeholder="" ng-if="oauthVar == 2" ng-model="oauthParams.company" disabled="disabled">
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="form-group" ng-if="oauthVar == 2">
-                                    <label class="col-sm-2 control-label">Clientld</label>
-                                    <div class="col-sm-10">
-                                      <input type="text" class="form-control" placeholder="" ng-model="oauthParams.clientId" disabled="disabled">
+                                    <div class="form-group" ng-if="oauthVar == 2">
+                                        <label class="col-sm-2 control-label">Clientld</label>
+                                        <div class="col-sm-10">
+                                            <input type="text" class="form-control" placeholder="" ng-model="oauthParams.clientId" disabled="disabled">
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="form-group oauth-group">
-                                    <label class="col-sm-2 control-label">ClientSecret</label>
-                                    <div class="col-sm-10">
-                                      <input type="text" class="form-control pull-left" placeholder="" ng-model="oauthParams.clientSecret">
-                                      <a class="oauth-a" ng-click="selectOAuthValue()">随机生成</a>
+                                    <div class="form-group oauth-group">
+                                        <label class="col-sm-2 control-label">ClientSecret</label>
+                                        <div class="col-sm-10">
+                                            <input type="text" class="form-control pull-left" placeholder="" ng-model="oauthParams.clientSecret">
+                                            <a class="oauth-a" ng-click="selectOAuthValue()">随机生成</a>
+                                        </div>
                                     </div>
-                                </div>
-                                
-                                <div class="form-group">
-                                    <div class="col-sm-offset-2 col-sm-10">
-                                      <div class="checkbox oauth-skip2">
-                                        <label class="col-sm-2 control-label oauth-skip"><strong>是否跳过授权</strong></label>
-                                        <label class="oauth-label">
-                                          <input name="oauth" type="radio" ng-model="oauthParams.skipUserGrant" ng-value=1> 是
-                                        </label>
-                                        <label class="oauth-label">
-                                          <input name="oauth" type="radio" ng-model="oauthParams.skipUserGrant" ng-value=0> 否
-                                        </label>
-                                      </div>
+
+                                    <div class="form-group">
+                                        <div class="col-sm-offset-2 col-sm-10">
+                                            <div class="checkbox oauth-skip2">
+                                                <label class="col-sm-2 control-label oauth-skip">
+                                                    <strong>是否跳过授权</strong>
+                                                </label>
+                                                <label class="oauth-label">
+                                                    <input name="oauth" type="radio" ng-model="oauthParams.skipUserGrant" ng-value=1> 是
+                                                </label>
+                                                <label class="oauth-label">
+                                                    <input name="oauth" type="radio" ng-model="oauthParams.skipUserGrant" ng-value=0> 否
+                                                </label>
+                                            </div>
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="form-group">
-                                    <label class="col-sm-2 control-label">PayCallbackUrl</label>
-                                    <div class="col-sm-10">
-                                      <input type="test" class="form-control" placeholder="" ng-model="oauthParams.payCallbackUrl" ng-value="oauthValue">
+                                    <div class="form-group">
+                                        <label class="col-sm-2 control-label">PayCallbackUrl</label>
+                                        <div class="col-sm-10">
+                                            <input type="test" class="form-control" placeholder="" ng-model="oauthParams.payCallbackUrl" ng-value="oauthValue">
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="form-group">
-                                    <label class="col-sm-2 control-label">RedirectUrl</label>
-                                    <div class="col-sm-10">
-                                      <input type="test" class="form-control" placeholder="" ng-model="oauthParams.redirectUrl" ng-value="oauthValue">
+                                    <div class="form-group">
+                                        <label class="col-sm-2 control-label">RedirectUrl</label>
+                                        <div class="col-sm-10">
+                                            <input type="test" class="form-control" placeholder="" ng-model="oauthParams.redirectUrl" ng-value="oauthValue">
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="form-group">
-                                    <div class="col-sm-offset-2 col-sm-10">
-                                      <button type="submit" class="btn btn-default" ng-if="oauthVar == 1" ng-click="oauthAdd()">添加</button>
-                                      <button type="submit" class="btn btn-default" ng-if="oauthVar == 2" ng-click="oauthModify()">修改</button>
+                                    <div class="form-group">
+                                        <div class="col-sm-offset-2 col-sm-10">
+                                            <button type="submit" class="btn btn-default" ng-if="oauthVar == 1" ng-click="oauthAdd()">添加</button>
+                                            <button type="submit" class="btn btn-default" ng-if="oauthVar == 2" ng-click="oauthModify()">修改</button>
+                                        </div>
                                     </div>
-                                </div>
-                            </form>
+                                </form>
+                            </div>
                         </div>
-                    </div>
                     </div>
                 </div>
                 <pre class="oauth-pre">Page: {{OAuthCurrentPage}} / {{OAuthNumPages}}</pre>
-                <ul uib-pagination
-                    class="pagination-sm"
-                    boundary-link-numbers="true"
-                    first-text="首页" 
-                    last-text="尾页" 
-                    next-text="{{ '下一页' | translate }}" 
-                    previous-text="{{ '上一页' | translate }}"
-                    items-per-page="OAuthItemPrePage"
-                    total-items="OAuthTotalItems"
-                    ng-model="OAuthCurrentPage"
-                    max-size="OAuthMaxSize"
-                    boundary-links="true"
-                    ng-change = "oauthList()"
-                    num-pages="OAuthNumPages"></ul>
+                <ul uib-pagination class="pagination-sm" boundary-link-numbers="true" first-text="首页" last-text="尾页" next-text="{{ '下一页' | translate }}"
+                    previous-text="{{ '上一页' | translate }}" items-per-page="OAuthItemPrePage" total-items="OAuthTotalItems" ng-model="OAuthCurrentPage"
+                    max-size="OAuthMaxSize" boundary-links="true" ng-change="oauthList()" num-pages="OAuthNumPages"></ul>
             </div>
 
             <!--商品管理-->
@@ -548,20 +628,48 @@
                 <button type="button" class="btn btn-primary oauth-button" data-toggle="modal" data-target=".additionalField" ng-click="clickGoodsToggle(2)">添加商品信息</button>
                 <table class="table table-bordered goods">
                     <tr>
-                        <td><strong>商品名称</strong></td>
-                        <td><strong>第三方商品ID</strong></td>
-                        <td><strong>商品ID</strong></td>
-                        <td><strong>商品详情</strong></td>
-                        <td><strong>价格</strong></td>
-                        <td><strong>汇率</strong></td>
-                        <td><strong>默认购买数量</strong></td>
-                        <td><strong>最少购买数量</strong></td>
-                        <td><strong>最大购买数量</strong></td>
-                        <td><strong>第三方oauth账号</strong></td>
-                        <td><strong>销售状态</strong></td>
-                        <td><strong>additional_field</strong></td>
-                        <td><strong>操作</strong></td>
-                        <td><strong>修改时间</strong></td>
+                        <td>
+                            <strong>商品名称</strong>
+                        </td>
+                        <td>
+                            <strong>第三方商品ID</strong>
+                        </td>
+                        <td>
+                            <strong>商品ID</strong>
+                        </td>
+                        <td>
+                            <strong>商品详情</strong>
+                        </td>
+                        <td>
+                            <strong>价格</strong>
+                        </td>
+                        <td>
+                            <strong>汇率</strong>
+                        </td>
+                        <td>
+                            <strong>默认购买数量</strong>
+                        </td>
+                        <td>
+                            <strong>最少购买数量</strong>
+                        </td>
+                        <td>
+                            <strong>最大购买数量</strong>
+                        </td>
+                        <td>
+                            <strong>第三方oauth账号</strong>
+                        </td>
+                        <td>
+                            <strong>销售状态</strong>
+                        </td>
+                        <td>
+                            <strong>additional_field</strong>
+                        </td>
+                        <td>
+                            <strong>操作</strong>
+                        </td>
+                        <td>
+                            <strong>修改时间</strong>
+                        </td>
                     </tr>
                     <tr ng-repeat="item in goodsData">
                         <td>{{item.subject}}</td>
@@ -579,7 +687,7 @@
                             <button class="btn btn-default" type="button" ng-click="additionalfieldSee(item)">查看详情</button>
                         </td>
                         <td>
-                            <button type="button" class="btn btn-default" data-toggle="modal" data-target=".additionalField"  ng-click="clickGoodsToggle(3, item)">修改</button>&nbsp;
+                            <button type="button" class="btn btn-default" data-toggle="modal" data-target=".additionalField" ng-click="clickGoodsToggle(3, item)">修改</button>&nbsp;
                             <button class="btn btn-default" type="submit" ng-click="deleteGoodsRecord(item.goods_id)">删除</button>
                         </td>
                         <td>{{item.create_date}}</td>
@@ -589,14 +697,16 @@
                 <div class="modal additionalField" tabindex="-1" role="dialog" data-backdrop="static" aria-labelledby="myModalLabel">
                     <div class="modal-dialog" role="document">
                         <div class="modal-content">
-                                <div class="modal-header">
-                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                    <h4 class="modal-title" id="myModalLabel" ng-if="goodsVar == 1">additional_field</h4>
-                                    <h4 class="modal-title" id="myModalLabel" ng-if="goodsVar == 2">添加商品信息</h4>
-                                    <h4 class="modal-title" id="myModalLabel" ng-if="goodsVar == 3">修改商品信息</h4>
-                                </div>
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                                <h4 class="modal-title" id="myModalLabel" ng-if="goodsVar == 1">additional_field</h4>
+                                <h4 class="modal-title" id="myModalLabel" ng-if="goodsVar == 2">添加商品信息</h4>
+                                <h4 class="modal-title" id="myModalLabel" ng-if="goodsVar == 3">修改商品信息</h4>
+                            </div>
                             <div class="modal-body">
-                            <!-- A表单 -->
+                                <!-- A表单 -->
                                 <form class="form-horizontal">
                                     <!-- 添加商品 -->
                                     <div ng-if="goodsVar == 2">
@@ -703,152 +813,152 @@
                                                 <button class="btn btn-default delGoodsMan" type="submit" ng-click="deleteGoodsMan($index)">删除</button>
                                             </div>
                                         </div>
-                                        <button class="btn btn-default" type="submit" ng-click="addGoodsAccount()">添加多个信息</button>									
+                                        <button class="btn btn-default" type="submit" ng-click="addGoodsAccount()">添加多个信息</button>
                                     </div>
                                     <!-- 修改商品信息 -->
                                     <div ng-if="goodsVar == 3">
+                                        <div class="form-group">
+                                            <label for="inputEmail3" class="col-sm-2 control-label">subject/商品名称</label>
+                                            <div class="col-sm-10">
+                                                <input type="test" class="form-control goods-control" id="inputEmail3" ng-model="goodsParams.subject" placeholder="可输入中文/英文/数字或混合输入">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="inputEmail3" class="col-sm-2 control-label">商品详情</label>
+                                            <div class="col-sm-10">
+                                                <input type="test" class="form-control goods-control" id="inputEmail3" ng-model="goodsParams.body" placeholder="无限制">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="inputEmail3" class="col-sm-2 control-label">默认购买数量</label>
+                                            <div class="col-sm-10">
+                                                <input type="test" class="form-control goods-control" id="inputEmail3" ng-model="goodsParams.default_buy_count" placeholder="非零正整数">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">最少购买数量</label>
+                                            <div class="col-sm-10">
+                                                <input type="test" class="form-control goods-control" ng-model="goodsParams.min_buy_count" placeholder="非零正整数">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">最大购买数量</label>
+                                            <div class="col-sm-10">
+                                                <input type="test" class="form-control goods-control" ng-model="goodsParams.max_buy_count" placeholder="非零正整数">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="inputEmail3" class="col-sm-2 control-label">price/价格</label>
+                                            <div class="col-sm-10">
+                                                <input type="test" class="form-control goods-control" id="inputEmail3" ng-model="goodsParams.price" placeholder="非零正整数">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">汇率</label>
+                                            <div class="col-sm-10">
+                                                <input type="test" class="form-control goods-control" ng-model="goodsParams.exchange_rate" placeholder="非零正整数">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="inputEmail3" class="col-sm-2 control-label">app_name</label>
+                                            <div class="col-sm-10">
+                                                <input type="test" class="form-control goods-control" id="inputEmail3" ng-model="goodsParams.app_name" placeholder="可输入中文/英文/数字或混合输入">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="inputEmail3" class="col-sm-2 control-label">app_goods_id</label>
+                                            <div class="col-sm-10">
+                                                <input type="test" class="form-control goods-control" id="inputEmail3" ng-model="goodsParams.app_goods_id" placeholder="仅可输入数字">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <div class="col-sm-offset-2 col-sm-10">
+                                                <label for="inputEmail3" class="col-sm-2 control-label">is_on_sale</label>
+                                                <div class="checkbox">
+                                                    <label>
+                                                        <input name="goods_is_on_sale" type="radio" ng-model="goodsParams.is_on_sale" ng-value=1> 是
+                                                    </label>
+                                                    <label>
+                                                        <input name="goods_is_on_sale" type="radio" ng-model="goodsParams.is_on_sale" ng-value=0> 否
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div ng-repeat="x in goodsParams.additional_field">
                                             <div class="form-group">
-                                                <label for="inputEmail3" class="col-sm-2 control-label">subject/商品名称</label>
+                                                <label for="inputEmail3" class="col-sm-2 control-label">name</label>
                                                 <div class="col-sm-10">
-                                                    <input type="test" class="form-control goods-control" id="inputEmail3" ng-model="goodsParams.subject" placeholder="可输入中文/英文/数字或混合输入">
+                                                    <input type="test" class="form-control goods-control" id="inputEmail3" ng-model="x.name" placeholder="暂无限制，未知所需">
                                                 </div>
                                             </div>
                                             <div class="form-group">
-                                                <label for="inputEmail3" class="col-sm-2 control-label">商品详情</label>
+                                                <label for="inputEmail3" class="col-sm-2 control-label">displayName</label>
                                                 <div class="col-sm-10">
-                                                    <input type="test" class="form-control goods-control" id="inputEmail3" ng-model="goodsParams.body" placeholder="无限制">
+                                                    <input type="test" class="form-control goods-control" id="inputEmail3" ng-model="x.displayName" placeholder="暂无限制，未知所需">
                                                 </div>
                                             </div>
                                             <div class="form-group">
-                                                <label for="inputEmail3" class="col-sm-2 control-label">默认购买数量</label>
+                                                <label for="inputEmail3" class="col-sm-2 control-label">desc</label>
                                                 <div class="col-sm-10">
-                                                    <input type="test" class="form-control goods-control" id="inputEmail3" ng-model="goodsParams.default_buy_count" placeholder="非零正整数">
-                                                </div>
-                                            </div>
-                                            <div class="form-group">
-                                                <label class="col-sm-2 control-label">最少购买数量</label>
-                                                <div class="col-sm-10">
-                                                    <input type="test" class="form-control goods-control" ng-model="goodsParams.min_buy_count" placeholder="非零正整数">
-                                                </div>
-                                            </div>
-                                            <div class="form-group">
-                                                <label class="col-sm-2 control-label">最大购买数量</label>
-                                                <div class="col-sm-10">
-                                                    <input type="test" class="form-control goods-control" ng-model="goodsParams.max_buy_count" placeholder="非零正整数">
-                                                </div>
-                                            </div>
-                                            <div class="form-group">
-                                                <label for="inputEmail3" class="col-sm-2 control-label">price/价格</label>
-                                                <div class="col-sm-10">
-                                                    <input type="test" class="form-control goods-control" id="inputEmail3" ng-model="goodsParams.price" placeholder="非零正整数">
-                                                </div>
-                                            </div>
-                                            <div class="form-group">
-                                                <label class="col-sm-2 control-label">汇率</label>
-                                                <div class="col-sm-10">
-                                                    <input type="test" class="form-control goods-control" ng-model="goodsParams.exchange_rate" placeholder="非零正整数">
-                                                </div>
-                                            </div>
-                                            <div class="form-group">
-                                                <label for="inputEmail3" class="col-sm-2 control-label">app_name</label>
-                                                <div class="col-sm-10">
-                                                    <input type="test" class="form-control goods-control" id="inputEmail3" ng-model="goodsParams.app_name" placeholder="可输入中文/英文/数字或混合输入">
-                                                </div>
-                                            </div>
-                                            <div class="form-group">
-                                                <label for="inputEmail3" class="col-sm-2 control-label">app_goods_id</label>
-                                                <div class="col-sm-10">
-                                                    <input type="test" class="form-control goods-control" id="inputEmail3" ng-model="goodsParams.app_goods_id" placeholder="仅可输入数字">
+                                                    <input type="test" class="form-control goods-control" id="inputEmail3" ng-model="x.desc" placeholder="暂无限制，未知所需">
                                                 </div>
                                             </div>
                                             <div class="form-group">
                                                 <div class="col-sm-offset-2 col-sm-10">
-                                                    <label for="inputEmail3" class="col-sm-2 control-label">is_on_sale</label>
+                                                    <label for="inputEmail3" class="col-sm-2 control-label">required</label>
                                                     <div class="checkbox">
                                                         <label>
-                                                            <input name="goods_is_on_sale" type="radio" ng-model="goodsParams.is_on_sale" ng-value=1> 是
+                                                            <input type="radio" id="changeName" ng-model="x.required" ng-value=1> 是
                                                         </label>
                                                         <label>
-                                                            <input name="goods_is_on_sale" type="radio" ng-model="goodsParams.is_on_sale" ng-value=0> 否
+                                                            <input type="radio" id="changeName" ng-model="x.required" ng-value=0> 否
                                                         </label>
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div ng-repeat="x in goodsParams.additional_field">
-                                                <div class="form-group">
-                                                    <label for="inputEmail3" class="col-sm-2 control-label">name</label>
-                                                    <div class="col-sm-10">
-                                                        <input type="test" class="form-control goods-control" id="inputEmail3" ng-model="x.name" placeholder="暂无限制，未知所需">
-                                                    </div>
-                                                </div>
-                                                <div class="form-group">
-                                                    <label for="inputEmail3" class="col-sm-2 control-label">displayName</label>
-                                                    <div class="col-sm-10">
-                                                        <input type="test" class="form-control goods-control" id="inputEmail3" ng-model="x.displayName" placeholder="暂无限制，未知所需">
-                                                    </div>
-                                                </div>
-                                                <div class="form-group">
-                                                    <label for="inputEmail3" class="col-sm-2 control-label">desc</label>
-                                                    <div class="col-sm-10">
-                                                        <input type="test" class="form-control goods-control" id="inputEmail3" ng-model="x.desc" placeholder="暂无限制，未知所需">
-                                                    </div>
-                                                </div>
-                                                <div class="form-group">
-                                                    <div class="col-sm-offset-2 col-sm-10">
-                                                        <label for="inputEmail3" class="col-sm-2 control-label">required</label>
-                                                        <div class="checkbox">
-                                                            <label>
-                                                                <input type="radio" id="changeName" ng-model="x.required" ng-value=1> 是
-                                                            </label>
-                                                            <label>
-                                                                <input type="radio" id="changeName" ng-model="x.required" ng-value=0> 否
-                                                            </label>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div>
-                                                    <button class="btn btn-default delGoodsMan" type="submit" ng-click="deleteGoodsParamsAdditionalField($index)">删除</button>
-                                                </div>
+                                            <div>
+                                                <button class="btn btn-default delGoodsMan" type="submit" ng-click="deleteGoodsParamsAdditionalField($index)">删除</button>
                                             </div>
-                                            <div ng-repeat="x in goodsMan">
-                                                <div class="form-group">
-                                                    <label for="inputEmail3" class="col-sm-2 control-label">name</label>
-                                                    <div class="col-sm-10">
-                                                        <input type="test" class="form-control goods-control" ng-model="x.name" id="inputEmail3" placeholder="暂无限制，未知所需">
-                                                    </div>
-                                                </div>
-                                                <div class="form-group">
-                                                    <label for="inputEmail3" class="col-sm-2 control-label">displayName</label>
-                                                    <div class="col-sm-10">
-                                                        <input type="test" class="form-control goods-control" id="inputEmail3" ng-model="x.displayName" placeholder="暂无限制，未知所需">
-                                                    </div>
-                                                </div>
-                                                <div class="form-group">
-                                                    <label for="inputEmail3" class="col-sm-2 control-label">desc</label>
-                                                    <div class="col-sm-10">
-                                                        <input type="test" class="form-control goods-control" id="inputEmail3" ng-model="x.desc" placeholder="暂无限制，未知所需">
-                                                    </div>
-                                                </div>
-                                                <div class="form-group">
-                                                    <div class="col-sm-offset-2 col-sm-10">
-                                                        <label for="inputEmail3" class="col-sm-2 control-label">required</label>
-                                                        <div class="checkbox">
-                                                            <label>
-                                                                <input type="radio" id="changeName" ng-model="x.required" ng-value=1> 是
-                                                            </label>
-                                                            <label>
-                                                                <input type="radio" id="changeName" ng-model="x.required" ng-value=0> 否
-                                                            </label>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div>
-                                                    <button class="btn btn-default delGoodsMan" type="submit" ng-click="deleteGoodsMans($index)">删除</button>
-                                                </div>
-                                            </div>
-                                            <button class="btn btn-default" type="submit" ng-click="modifyGoodsAccount()">添加额外字段</button>
-                                            <div id="accounttGoods"></div>										
                                         </div>
+                                        <div ng-repeat="x in goodsMan">
+                                            <div class="form-group">
+                                                <label for="inputEmail3" class="col-sm-2 control-label">name</label>
+                                                <div class="col-sm-10">
+                                                    <input type="test" class="form-control goods-control" ng-model="x.name" id="inputEmail3" placeholder="暂无限制，未知所需">
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="inputEmail3" class="col-sm-2 control-label">displayName</label>
+                                                <div class="col-sm-10">
+                                                    <input type="test" class="form-control goods-control" id="inputEmail3" ng-model="x.displayName" placeholder="暂无限制，未知所需">
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="inputEmail3" class="col-sm-2 control-label">desc</label>
+                                                <div class="col-sm-10">
+                                                    <input type="test" class="form-control goods-control" id="inputEmail3" ng-model="x.desc" placeholder="暂无限制，未知所需">
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <div class="col-sm-offset-2 col-sm-10">
+                                                    <label for="inputEmail3" class="col-sm-2 control-label">required</label>
+                                                    <div class="checkbox">
+                                                        <label>
+                                                            <input type="radio" id="changeName" ng-model="x.required" ng-value=1> 是
+                                                        </label>
+                                                        <label>
+                                                            <input type="radio" id="changeName" ng-model="x.required" ng-value=0> 否
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <button class="btn btn-default delGoodsMan" type="submit" ng-click="deleteGoodsMans($index)">删除</button>
+                                            </div>
+                                        </div>
+                                        <button class="btn btn-default" type="submit" ng-click="modifyGoodsAccount()">添加额外字段</button>
+                                        <div id="accounttGoods"></div>
+                                    </div>
                                     <div class="modal-footer" ng-if="goodsVar == 2">
                                         <button type="submit" class="btn btn-default" ng-click="goodsAdd()">添加</button>
                                     </div>
@@ -860,20 +970,9 @@
                     </div>
                 </div>
                 <pre class="oauth-pre">Page: {{GoodsCurrentPage}} / {{GoosNumPages}}</pre>
-                <ul uib-pagination
-                    class="pagination-sm"
-                    boundary-link-numbers="true"
-                    first-text="首页" 
-                    last-text="尾页" 
-                    next-text="{{ '下一页' | translate }}" 
-                    previous-text="{{ '上一页' | translate }}"
-                    items-per-page="GoodsItemPrePage"
-                    total-items="GoodsTotalItems"
-                    ng-model="GoodsCurrentPage"
-                    max-size="GoodsMaxSize"
-                    boundary-links="true"
-                    ng-change = "getGoods()"
-                    num-pages="GoosNumPages"></ul>
+                <ul uib-pagination class="pagination-sm" boundary-link-numbers="true" first-text="首页" last-text="尾页" next-text="{{ '下一页' | translate }}"
+                    previous-text="{{ '上一页' | translate }}" items-per-page="GoodsItemPrePage" total-items="GoodsTotalItems" ng-model="GoodsCurrentPage"
+                    max-size="GoodsMaxSize" boundary-links="true" ng-change="getGoods()" num-pages="GoosNumPages"></ul>
             </div>
 
             <!--用户管理-->
@@ -890,8 +989,7 @@
                             <label>
                                 用户名:
                             </label>
-                            <input type="text" ng-model="userSearchByUsername" placeholder="请输入用户名"
-                                uib-typeahead="user for user in getUsername($viewValue)"
+                            <input type="text" ng-model="userSearchByUsername" placeholder="请输入用户名" uib-typeahead="user for user in getUsername($viewValue)"
                                 class="form-control">
                         </div>
                         <button class="btn btn-default" ng-click="userSearch()">查询</button>
@@ -915,73 +1013,79 @@
                     </thead>
 
                     <tbody>
-                            <tr ng-repeat="user in userList" ng-hide="user.isDelete">
-                                <td>{{user._id}}</td>
-                                <td><a href={{linkToUserPage(user)}} target="_blank">{{user.username}}</a></td>
-                                <td>{{user.displayName}}</td>
-                                <td>{{user.joindate}}</td>
-                                <!-- <td>{{user.websiteCount}}</td>
+                        <tr ng-repeat="user in userList" ng-hide="user.isDelete">
+                            <td>{{user._id}}</td>
+                            <td>
+                                <a href={{linkToUserPage(user)}} target="_blank">{{user.username}}</a>
+                            </td>
+                            <td>{{user.displayName}}</td>
+                            <td>{{user.joindate}}</td>
+                            <!-- <td>{{user.websiteCount}}</td>
                                 <td>{{user.fansCount}}</td> -->
-                                <td>{{user.roleId}}</td>
-                                <td class="col-sm-1">
-                                    <pre>{{isUserLocked(user) ? user.locked_deadline : "未被封禁"}}</pre>
-                                </td>
-                                <td>
-                                    <button class="btn btn-default" ng-click="clickLockUser(user)">封禁</button>
-                                    <button class="btn btn-default" ng-click="clickUnLockUser(user)" ng-disabled="!isUserLocked(user)">解封</button>
-                                </td>
-                            </tr>
+                            <td>{{user.roleId}}</td>
+                            <td class="col-sm-1">
+                                <pre>{{isUserLocked(user) ? user.locked_deadline : "未被封禁"}}</pre>
+                            </td>
+                            <td>
+                                <button class="btn btn-default" ng-click="clickLockUser(user)">封禁</button>
+                                <button class="btn btn-default" ng-click="clickUnLockUser(user)" ng-disabled="!isUserLocked(user)">解封</button>
+                            </td>
+                        </tr>
                     </tbody>
                 </table>
 
 
                 <div class="pagination-box">
-                    <div class="totalUsers"><span>共 {{userTotalItems}} 个用户</span></div>
-                    <ul uib-pagination ng-change="getUserList()"
-                        items-per-page='userPageSize' previous-text="{{ '上一页' | translate }}"
-                        next-text="{{ '下一页' | translate }}" total-items="userTotalItems"
-                        ng-model="userCurrentPage" max-size="5"
-                        class="pagination-sm" boundary-link-numbers="true">
+                    <div class="totalUsers">
+                        <span>共 {{userTotalItems}} 个用户</span>
+                    </div>
+                    <ul uib-pagination ng-change="getUserList()" items-per-page='userPageSize' previous-text="{{ '上一页' | translate }}" next-text="{{ '下一页' | translate }}"
+                        total-items="userTotalItems" ng-model="userCurrentPage" max-size="5" class="pagination-sm" boundary-link-numbers="true">
                     </ul>
                 </div>
             </div>
 
 
             <div class="modal lock_user" id="lock_user" tabindex="-1" role="dialog" aria-hidden="true" keyboard="true">
-                    <div class="modal-dialog">
-                        <div class="modal-content" style="width:200%;margin-top:30%;margin-left:-50%;">
-                            <div class="modal-header">
-                                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
-                                <h4 class="modal-title">封禁用户 {{user_to_lock.username}}</h4>
-                            </div>
-                            <div class="modal-body">
-                                <p class="form-group">
-                                    <div class="datetime">
-                                        <div class="input-group">
-                                            <span class="input-group-addon" id="sizing-addon1">封禁至</span>
-                                            <input type="text" class="form-control" uib-datepicker-popup="{{format}}" ng-model="locked_deadline" ng-value = "locked_deadline"/>
-                                        </div><br>
-                                        <div class="input-group">
-                                            <span class="input-group-addon" id="sizing-addon1"> 操作</span>
-                                            <button class="btn btn-default" ng-click="resetDuration()">now</button>
-                                            <button class="btn btn-default" ng-click="addLockDuration(0,0,1)">加一天</button>
-                                            <button class="btn btn-default" ng-click="addLockDuration(0,0,3)">加三天</button>
-                                            <button class="btn btn-default" ng-click="addLockDuration(0,0,7)">加一周</button>
-                                            <button class="btn btn-default" ng-click="addLockDuration(0,1,0)">加一个月</button>
-                                            <button class="btn btn-default" ng-click="addLockDuration(1,0,0)">加一年</button>
-                                            <button class="btn btn-danger" ng-click="addLockDuration(100,0,0)">永久</button>
-                                        </div>
+                <div class="modal-dialog">
+                    <div class="modal-content" style="width:200%;margin-top:30%;margin-left:-50%;">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal">
+                                <span aria-hidden="true">×</span>
+                                <span class="sr-only">Close</span>
+                            </button>
+                            <h4 class="modal-title">封禁用户 {{user_to_lock.username}}</h4>
+                        </div>
+                        <div class="modal-body">
+                            <p class="form-group">
+                                <div class="datetime">
+                                    <div class="input-group">
+                                        <span class="input-group-addon" id="sizing-addon1">封禁至</span>
+                                        <input type="text" class="form-control" uib-datepicker-popup="{{format}}" ng-model="locked_deadline" ng-value="locked_deadline"
+                                        />
                                     </div>
-                                </p>
-                            </div>
-                            <div class="modal-footer">
-                                <button class="btn btn-danger" data-dismiss="modal" ng-click="lockUser(user_to_lock)">确定</button>
-                                <button class="btn btn-primary" data-dismiss="modal" ng-disabled="!isUserLocked(user_to_lock)" ng-click="unlockUser(user_to_lock)">解封</button>
-                                <button class="btn btn-primary" data-dismiss="modal">关闭</button>
-                            </div>
+                                    <br>
+                                    <div class="input-group">
+                                        <span class="input-group-addon" id="sizing-addon1"> 操作</span>
+                                        <button class="btn btn-default" ng-click="resetDuration()">now</button>
+                                        <button class="btn btn-default" ng-click="addLockDuration(0,0,1)">加一天</button>
+                                        <button class="btn btn-default" ng-click="addLockDuration(0,0,3)">加三天</button>
+                                        <button class="btn btn-default" ng-click="addLockDuration(0,0,7)">加一周</button>
+                                        <button class="btn btn-default" ng-click="addLockDuration(0,1,0)">加一个月</button>
+                                        <button class="btn btn-default" ng-click="addLockDuration(1,0,0)">加一年</button>
+                                        <button class="btn btn-danger" ng-click="addLockDuration(100,0,0)">永久</button>
+                                    </div>
+                                </div>
+                            </p>
+                        </div>
+                        <div class="modal-footer">
+                            <button class="btn btn-danger" data-dismiss="modal" ng-click="lockUser(user_to_lock)">确定</button>
+                            <button class="btn btn-primary" data-dismiss="modal" ng-disabled="!isUserLocked(user_to_lock)" ng-click="unlockUser(user_to_lock)">解封</button>
+                            <button class="btn btn-primary" data-dismiss="modal">关闭</button>
                         </div>
                     </div>
                 </div>
+            </div>
 
 
             <!--网站管理-->
@@ -1039,9 +1143,8 @@
                     </tbody>
                 </table>
                 <div class="pagination-box">
-                    <ul uib-pagination ng-change="getSiteList()" items-per-page='sitePageSize' previous-text="{{ '上一页' | translate }}"
-                        next-text="{{ '下一页' | translate }}" total-items="siteTotalItems" ng-model="siteCurrentPage" max-size="5"
-                        class="pagination-sm" boundary-link-numbers="true">
+                    <ul uib-pagination ng-change="getSiteList()" items-per-page='sitePageSize' previous-text="{{ '上一页' | translate }}" next-text="{{ '下一页' | translate }}"
+                        total-items="siteTotalItems" ng-model="siteCurrentPage" max-size="5" class="pagination-sm" boundary-link-numbers="true">
                     </ul>
                 </div>
             </div>
@@ -1065,7 +1168,7 @@
                         <button class="btn btn-default" ng-click="domainSearch()">查询</button>
                     </form>
                 </div>
-            
+
                 <table class="table table-hover table-bordered">
                     <thead>
                         <tr>
@@ -1096,29 +1199,29 @@
                     </tbody>
                 </table>
                 <div class="pagination-box">
-                    <ul uib-pagination ng-change="getDomainList()" items-per-page='domainPageSize' previous-text="{{ '上一页' | translate }}"
-                        next-text="{{ '下一页' | translate }}" total-items="domainTotalItems" ng-model="domainCurrentPage" max-size="5"
-                        class="pagination-sm" boundary-link-numbers="true">
+                    <ul uib-pagination ng-change="getDomainList()" items-per-page='domainPageSize' previous-text="{{ '上一页' | translate }}" next-text="{{ '下一页' | translate }}"
+                        total-items="domainTotalItems" ng-model="domainCurrentPage" max-size="5" class="pagination-sm" boundary-link-numbers="true">
                     </ul>
                 </div>
-                
+
             </div>
 
             <!--文件审核-->
             <div ng-show='selectMenuItem=="fileCheck"'>
                 <div style="margin: 10px;">
-                        <form role="form" class="form-inline">
-                            <div class="dropdown">
-                                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    {{files_checking}}<span class="caret"></span>
-                                </button>
-                                <ul class="dropdown-menu">
-                                    <li ng-repeat="type in file_types" ng-click="change_file_type(type)">
-                                        <a>{{type}}</a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </form>
+                    <form role="form" class="form-inline">
+                        <div class="dropdown">
+                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                {{files_checking}}
+                                <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li ng-repeat="type in file_types" ng-click="change_file_type(type)">
+                                    <a>{{type}}</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </form>
                 </div>
 
                 <table class="table table-hover table-bordered">
@@ -1142,11 +1245,11 @@
                             <td>{{file.username}}</td>
                             <td>{{size_transfer(file.size)}}</td>
                             <td>{{file.updateDate}}</td>
-                            <td> 
+                            <td>
                                 <span class="glyphicon glyphicon-play" aria-hidden="true" ng-click="playVideo(file)" ng-show="abledToPlay(file)"></span>
                             </td>
                             <td>
-                                <a ng-href="{{file.download_url+';attname='+file.filename}}" download="{{file.filename || ""}}">
+                                <a ng-href="{{file.download_url+';attname='+file.filename}}" download="{{file.filename || " "}}">
                                     <span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span>
                                 </a>
                             </td>
@@ -1164,23 +1267,26 @@
                     </tbody>
                 </table>
                 <div class="file-pagination-box">
-                        <div class="totalFiles"><span>共 {{fileTotalItems}} 个文件</span></div>
-                        <ul uib-pagination ng-change="get_file_list()"
-                            items-per-page='filePageSize' previous-text="{{ '上一页' | translate }}"
-                            next-text="{{ '下一页' | translate }}" total-items="fileTotalItems"
-                            ng-model="fileCurrentPage" max-size="5"
-                            class="pagination-sm" boundary-link-numbers="true">
+                    <div class="totalFiles">
+                        <span>共 {{fileTotalItems}} 个文件</span>
+                    </div>
+                    <ul uib-pagination ng-change="get_file_list()" items-per-page='filePageSize' previous-text="{{ '上一页' | translate }}" next-text="{{ '下一页' | translate }}"
+                        total-items="fileTotalItems" ng-model="fileCurrentPage" max-size="5" class="pagination-sm" boundary-link-numbers="true">
                     </ul>
                 </div>
             </div>
 
 
 
-            <div class="modal video-modal" id="videoModal" tabindex="-1" role="dialog" aria-labelledby="videoModal" aria-hidden="true" keyboard="true">
+            <div class="modal video-modal" id="videoModal" tabindex="-1" role="dialog" aria-labelledby="videoModal" aria-hidden="true"
+                keyboard="true">
                 <div class="modal-dialog">
                     <div class="modal-content" style="width:200%;margin-top:30%;margin-left:-50%;">
                         <div class="modal-header">
-                            <button type="button" class="close" data-dismiss="modal" ng-click="stop()"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
+                            <button type="button" class="close" data-dismiss="modal" ng-click="stop()">
+                                <span aria-hidden="true">×</span>
+                                <span class="sr-only">Close</span>
+                            </button>
                             <h4 class="modal-title">文件审核</h4>
                         </div>
                         <div class="modal-body">
@@ -1219,7 +1325,7 @@
                         <button class="btn btn-default" ng-click="vipSearch()">查询</button>
                     </form>
                 </div>
-            
+
                 <table class="table table-hover table-bordered">
                     <thead>
                         <tr>
@@ -1248,9 +1354,8 @@
                     </tbody>
                 </table>
                 <div class="pagination-box">
-                    <ul uib-pagination ng-change="getVIPList()" items-per-page='VIPPageSize' previous-text="{{ '上一页' | translate }}"
-                        next-text="{{ '下一页' | translate }}" total-items="VIPTotalItems" ng-model="VIPCurrentPage" max-size="5"
-                        class="pagination-sm" boundary-link-numbers="true">
+                    <ul uib-pagination ng-change="getVIPList()" items-per-page='VIPPageSize' previous-text="{{ '上一页' | translate }}" next-text="{{ '下一页' | translate }}"
+                        total-items="VIPTotalItems" ng-model="VIPCurrentPage" max-size="5" class="pagination-sm" boundary-link-numbers="true">
                     </ul>
                 </div>
             </div>
@@ -1303,18 +1408,72 @@
                     </tbody>
                 </table>
                 <div class="pagination-box">
-                    <ul uib-pagination 
-                        ng-change="updateSensitiveWordsView()" 
-                        items-per-page='sensitiveWordsListPageSize' 
-                        previous-text="{{ '上一页' | translate }}"
-                        next-text="{{ '下一页' | translate }}"
-                        total-items="sensitiveWordsListTotalItems" 
-                        ng-model="sensitiveWordsListPageIndex" 
-                        max-size="9"
-                        class="pagination-sm" 
-                        boundary-link-numbers="true"
-                    >
+                    <ul uib-pagination ng-change="updateSensitiveWordsView()" items-per-page='sensitiveWordsListPageSize' previous-text="{{ '上一页' | translate }}"
+                        next-text="{{ '下一页' | translate }}" total-items="sensitiveWordsListTotalItems" ng-model="sensitiveWordsListPageIndex"
+                        max-size="9" class="pagination-sm" boundary-link-numbers="true">
                     </ul>
+                </div>
+            </div>
+
+            <!--Lessons邀请码管理-->
+            <div ng-show="selectMenuItem == 'lessons'">
+                <div style="margin: 10px;">
+                    <form class="form-inline" class="pull-right">
+                        <div class="searchbar pull-right" style="position: relative;">
+                            <button class="btn btn-default" ng-click="clickGenInvitationCodes()">批量生成</button>
+                        </div>
+                    </form>
+                </div>
+                <table class="table table-hover table-bordered">
+                    <thead>
+                        <tr>
+                            <th>序号</th>
+                            <th>激活码</th>
+                            <th>生成日期</th>
+                            <th>使用状态</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="code in invitationCodes" ng-hide="code.isDelete">
+                            <td>{{code.sn}}</td>
+                            <td>{{code.key}}</td>
+                            <td>{{code.createTime}}</td>
+                            <td>{{invitationCodeStatus[code.state]}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="invitationCodes-pagination-box">
+                    <div class="totalFiles">
+                        <span>共 {{ totalInvitationCodes }} 条记录</span>
+                    </div>
+                    <ul uib-pagination ng-change="getInvitationCodes()" items-per-page='InvitationCodesPageSize' previous-text="{{ '上一页' | translate }}"
+                        next-text="{{ '下一页' | translate }}" total-items="totalInvitationCodes" ng-model="currentInvitationCodesPage"
+                        max-size="5" class="pagination-sm" boundary-link-numbers="true">
+                    </ul>
+                </div>
+            </div>
+
+            <div class="modal invitationCodesModal" id="invitationCodesModal" tabindex="-1" role="dialog" aria-hidden="true" keyboard="true">
+                <div class="modal-dialog">
+                    <div class="modal-content" style="width:200%;margin-top:30%;margin-left:-50%;">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal">
+                                <span aria-hidden="true">×</span>
+                                <span class="sr-only">Close</span>
+                            </button>
+                            <h4 class="modal-title">请输入需生成的激活码数：</h4>
+                        </div>
+                        <div class="modal-body">
+                            <p class="form-group">
+                                <input type="text" ng-model='newInvitationCodesAmount'>
+                            </p>
+                        </div>
+                        <div class="modal-footer">
+                            <button class="btn btn-default" add-bom="true" ng-csv="generateInvitationCodes()" lazy-load="true" csv-header='getCsvHeader()' csv-column-order="getCsvOrder()" filename="{{ csvFilename }}" field-separator="{{separator}}"
+                                decimal-separator="{{decimalSeparator}}" ng-click="clickFn()">确定</button>
+                            <button class="btn btn-primary" data-dismiss="modal">关闭</button>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -1362,7 +1521,7 @@
                         <div class="form-group">
                             <label class="col-sm-2 control-label">内容:</label>
                             <div class="col-sm-10">
-                                <textarea ng-model="wikiQuery.content"  class="form-control" rows=10 placeholder="wiki命令内容"></textarea>
+                                <textarea ng-model="wikiQuery.content" class="form-control" rows=10 placeholder="wiki命令内容"></textarea>
                             </div>
                         </div>
                         <div class="col-sm-offset-2">
@@ -1395,11 +1554,8 @@
                     </tbody>
                 </table>
                 <div class="pagination-box">
-                    <ul uib-pagination ng-change="queryWikiModule()"
-                        items-per-page='wikiPageSize' previous-text="{{ '上一页' | translate }}"
-                        next-text="{{ '下一页' | translate }}" total-items="wikicmdTotalItems"
-                        ng-model="wikiCurrentPage" max-size="5"
-                        class="pagination-sm" boundary-link-numbers="true">
+                    <ul uib-pagination ng-change="queryWikiModule()" items-per-page='wikiPageSize' previous-text="{{ '上一页' | translate }}" next-text="{{ '下一页' | translate }}"
+                        total-items="wikicmdTotalItems" ng-model="wikiCurrentPage" max-size="5" class="pagination-sm" boundary-link-numbers="true">
                     </ul>
                 </div>
             </div>
