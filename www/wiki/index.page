@@ -2,9 +2,10 @@
 <html lang="zh-cn">
 <head>
     <script>
-      /*force https*/
-      (location.protocol == 'http:'
-      && !/__http__for__debug__/.test(location.search))
+    /*force https*/
+    /__http__for__debug__/.test(location.search) && localStorage.setItem('__http__for__debug__', 'true');
+    (location.protocol == 'http:'
+    && !localStorage.getItem('__http__for__debug__'))
       && !/^(localhost|[0-9.]+)$/.test(location.hostname)
       && document.write('<meta http-equiv="refresh" content="0; url=' + location.href.replace(/^http:/, 'https:') + '" />');
     </script>
