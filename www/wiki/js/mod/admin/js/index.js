@@ -966,15 +966,16 @@ define([
                             checked = checked_code[$scope.files_checking]
                         }
 
-                        util.post(config.apiUrlPrefix + "admin/getFileList", {
-                            page: $scope.fileCurrentPage,
-                            pageSize: $scope.filePageSize,
+                        $http.post(`${config.storageApiPrifix}admin/files/search`, {
+                            offset: ($scope.fileCurrentPage - 1) * $scope.filePageSize,
+                            limit: $scope.filePageSize,
                             checked: checked,
-                        }, function (data) {
-                            data = data || {};
-                            $scope.file_list = data.file_list || [];
-                            $scope.fileTotalItems = data.total || 0;
-                        });
+                            order: [['updatedAt', 'DESC']]
+                        }).then(function (res) {
+                            res = res || {};
+                            $scope.file_list = res.data.data.rows || [];
+                            $scope.fileTotalItems = res.data.data.count || 0;
+                        })
                     }
 
                     $scope.change_file_type = function (type) {
@@ -986,11 +987,10 @@ define([
                     }
 
                     $scope.check_file = function (file, checked) {
-                        util.post(config.apiUrlPrefix + "admin/checkFile", {
-                            _id: file._id,
+                        $http.put(`${config.storageApiPrifix}admin/files/${file.id}`, {
                             checked: checked
-                        }, function (data) {
-                            file.checked = data.checked
+                        }).then(function (res) {
+                            file.checked = checked
                         })
                     }
 
@@ -1020,14 +1020,42 @@ define([
                         return filename
                     }
 
+                    function getDownloadUrl(file, callback) {
+                        if (!file.download_url) {
+                            $http.get(`${config.storageApiPrifix}admin/files/${file.id}/raw`)
+                                .then(function (res) {
+                                    file.download_url = res.data.data
+                                    callback(file)
+                                })
+                        } else {
+                            callback(file)
+                        }
+                    }
+
                     $scope.playVideo = function (file) {
-                        $scope.file_playing = file
-                        var videoUrl = $sce.trustAsResourceUrl(file.download_url);
+                        var play = function (file) {
+                            $scope.file_playing = file
+                            var videoUrl = $sce.trustAsResourceUrl(file.download_url);
 
-                        var iframe_html = '<iframe src="' + videoUrl + '"></iframe>'
-                        $scope.iframe_html = $sce.trustAsHtml(iframe_html)
+                            var iframe_html = '<iframe src="' + videoUrl + '"></iframe>'
+                            $scope.iframe_html = $sce.trustAsHtml(iframe_html)
 
-                        $(".video-modal").modal("show");
+                            $(".video-modal").modal("show");
+                        }
+                        getDownloadUrl(file, play)
+                    }
+
+                    $scope.downloadFile = function (file) {
+                        var download = function (file) {
+                            var a = document.createElement('a');
+                            var url = file.download_url
+                            url += ";attname=" + file.filename;
+                            a.href = url;
+                            a.target = "_blank";
+                            a.download = file.filename || "";
+                            a.click();
+                        }
+                        getDownloadUrl(file, download)
                     }
 
                     $scope.abledToPlay = function (file) {
@@ -1061,12 +1089,11 @@ define([
                             "theme": "danger",
                             "content": "确定删除文件吗？"
                         }, function () {
-                            util.post(config.apiUrlPrefix + "admin/deleteFile", {
-                                _id: file._id,
-                            }, function (data) {
-                                file.deleted = true
-                                $scope.fileTotalItems--
-                            })
+                            $http.delete(`${config.storageApiPrifix}admin/files/${file.id}`)
+                                .then(function (res) {
+                                    file.deleted = true
+                                    $scope.fileTotalItems--
+                                })
                         })
                     }
 
@@ -1222,8 +1249,8 @@ define([
                     // 获取邀请码列表
                     $scope.getInvitationCodes = function () {
                         $scope.selectMenuItem = "lessons"
-                        $http.get(config.lessonsApiPrefix + 'cdkey/list',{
-                            params: { 
+                        $http.get(config.lessonsApiPrefix + 'cdkey/list', {
+                            params: {
                                 pno: $scope.currentInvitationCodesPage,
                                 psize: $scope.InvitationCodesPageSize
                             },
@@ -1231,7 +1258,7 @@ define([
                             skipAuthorization: true
                         }).then(function (res) {
                             $scope.invitationCodes = res.data.data
-                            $scope.totalInvitationCodes =  res.data.page.totalCount
+                            $scope.totalInvitationCodes = res.data.page.totalCount
                         })
                     }
 
@@ -1245,8 +1272,8 @@ define([
                     }
 
                     $scope.csvFilename = "邀请码.csv"
-                    $scope.generateInvitationCodes = function() {
-                        return [{sn: 1, createTime: 3, key: 2, state: 4}]
+                    $scope.generateInvitationCodes = function () {
+                        return [{ sn: 1, createTime: 3, key: 2, state: 4 }]
                     }
 
                     $scope.getCsvHeader = function () {
@@ -1257,7 +1284,7 @@ define([
                         return ["sn", "key", 'createTime', 'state']
                     }
 
-                    $scope.clickFn = function() {
+                    $scope.clickFn = function () {
                         $(".invitationCodesModal").modal("hide")
                     }
 

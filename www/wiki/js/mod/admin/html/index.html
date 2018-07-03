@@ -1229,7 +1229,7 @@
                         <tr>
                             <th>ID</th>
                             <th>文件名</th>
-                            <th>上传用户</th>
+                            <th>上传用户ID</th>
                             <th>文件大小</th>
                             <th>上传日期</th>
                             <th>播放/查看</th>
@@ -1240,18 +1240,16 @@
                     </thead>
                     <tbody>
                         <tr ng-repeat="file in file_list" ng-hide="file.deleted">
-                            <td>{{file._id}}</td>
+                            <td>{{file.id}}</td>
                             <td title="{{file.filename}}">{{file_name_filter(file.filename)}}</td>
-                            <td>{{file.username}}</td>
+                            <td>{{file.userId}}</td>
                             <td>{{size_transfer(file.size)}}</td>
-                            <td>{{file.updateDate}}</td>
+                            <td>{{file.updatedAt}}</td>
                             <td>
                                 <span class="glyphicon glyphicon-play" aria-hidden="true" ng-click="playVideo(file)" ng-show="abledToPlay(file)"></span>
                             </td>
                             <td>
-                                <a ng-href="{{file.download_url+';attname='+file.filename}}" download="{{file.filename || " "}}">
-                                    <span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span>
-                                </a>
+                                <span class="glyphicon glyphicon-download-alt" aria-hidden="true" ng-click="downloadFile(file)"></span>
                             </td>
                             <td>
                                 <div ng-if="file.checked==0">未审核</div>
@@ -1469,7 +1467,8 @@
                             </p>
                         </div>
                         <div class="modal-footer">
-                            <button class="btn btn-default" add-bom="true" ng-csv="generateInvitationCodes()" lazy-load="true" csv-header='getCsvHeader()' csv-column-order="getCsvOrder()" filename="{{ csvFilename }}" field-separator="{{separator}}"
+                            <button class="btn btn-default" add-bom="true" ng-csv="generateInvitationCodes()" lazy-load="true" csv-header='getCsvHeader()'
+                                csv-column-order="getCsvOrder()" filename="{{ csvFilename }}" field-separator="{{separator}}"
                                 decimal-separator="{{decimalSeparator}}" ng-click="clickFn()">确定</button>
                             <button class="btn btn-primary" data-dismiss="modal">关闭</button>
                         </div>
