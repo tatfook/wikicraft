@@ -188,18 +188,18 @@ define([
                             $scope.userTotalItems = data.total || 0;
                         });
                     }
-                    
-                    $scope.getUsername = function(q) {
+
+                    $scope.getUsername = function (q) {
                         return $http.get(config.apiUrlPrefix + "admin/searchUsername", {
-                          params: {
-                            q: q,
-                          }
-                        }).then(function(response){
-                          return response.data.data.map(function(username){
-                            return username;
-                          });
+                            params: {
+                                q: q,
+                            }
+                        }).then(function (response) {
+                            return response.data.data.map(function (username) {
+                                return username;
+                            });
                         });
-                      };
+                    };
 
                     // 点击编辑用户
                     $scope.clickEditUser = function (user) {
@@ -825,9 +825,9 @@ define([
 
                     /********** 商品管理结束 **********/
 
-            $scope.getFileCheckList = function () {
-                $scope.selectMenuItem = "fileCheck";
-            }
+                    $scope.getFileCheckList = function () {
+                        $scope.selectMenuItem = "fileCheck";
+                    }
 
 
                     /********** 网站管理开始 **********/
@@ -1212,6 +1212,56 @@ define([
                     /********** 敏感词管理结束 **********/
 
 
+                    /********** Lessons邀请码管理 ********/
+
+                    $scope.InvitationCodesPageSize = 20
+                    $scope.totalInvitationCodes = 0
+                    $scope.currentInvitationCodesPage = 1
+                    $scope.newInvitationCodesAmount = 20
+
+                    // 获取邀请码列表
+                    $scope.getInvitationCodes = function () {
+                        $scope.selectMenuItem = "lessons"
+                        $http.get(config.lessonsApiPrefix + 'cdkey/list',{
+                            params: { 
+                                pno: $scope.currentInvitationCodesPage,
+                                psize: $scope.InvitationCodesPageSize
+                            },
+                            withCredentials: true,
+                            skipAuthorization: true
+                        }).then(function (res) {
+                            $scope.invitationCodes = res.data.data
+                            $scope.totalInvitationCodes =  res.data.page.totalCount
+                        })
+                    }
+
+                    $scope.invitationCodeStatus = {
+                        1: '未使用',
+                        2: '已使用'
+                    }
+
+                    $scope.clickGenInvitationCodes = function () {
+                        $(".invitationCodesModal").modal("show")
+                    }
+
+                    $scope.csvFilename = "邀请码.csv"
+                    $scope.generateInvitationCodes = function() {
+                        return [{sn: 1, createTime: 3, key: 2, state: 4}]
+                    }
+
+                    $scope.getCsvHeader = function () {
+                        return ['序号', '激活码', '生成日期', '使用状态']
+                    }
+
+                    $scope.getCsvOrder = function () {
+                        return ["sn", "key", 'createTime', 'state']
+                    }
+
+                    $scope.clickFn = function() {
+                        $(".invitationCodesModal").modal("hide")
+                    }
+
+                    /********** Lessons邀请码管理 ********/
 
                     /********** 在线统计|留存分析|新用户分析|支付情况|服务器监控|开始 **********/
                     $scope.serverCurrentPage = 1;
