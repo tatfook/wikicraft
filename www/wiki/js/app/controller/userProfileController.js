@@ -359,18 +359,19 @@ define(['app',
 		};
 
         //安全验证
-        $scope.bindPhone=function () {
-            $scope.errorMsg = "";
-			if ($scope.imageCode != $scope.rightImageCode) {
-				$scope.imageCodeErrMsg = $translate.instant("图片验证码错误");
-				return;
-			} else {
-				$scope.imageCodeErrMsg = "";
-			}
+    $scope.bindPhone=function () {
+      $scope.errorMsg = "";
+      // remove useless imageCode
+			// if ($scope.imageCode != $scope.rightImageCode) {
+			// 	$scope.imageCodeErrMsg = $translate.instant("图片验证码错误");
+			// 	return;
+			// } else {
+			// 	$scope.imageCodeErrMsg = "";
+			// }
 
 			if ($scope.wait > 0){
-                return;
-            }
+          return;
+      }
 
 			util.post(config.apiUrlPrefix + 'user/verifyCellphoneOne', {
 				cellphone:$scope.userPhone,
