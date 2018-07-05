@@ -1380,6 +1380,15 @@ function user:refuseLockedUser()
 	errors:raise(401, "您的帐号已被封禁")
 end
 
+function user:api_export() 
+	local limit = 1000000
+	local userDB = models.user:new()
+	userDB:db():find({_id={gt=0, limit=limit}}, resume)
+	local _, list = yield()
+
+	return list;
+end
+
 function user:api_test()
 	user:refuseLockedUser()
 end
