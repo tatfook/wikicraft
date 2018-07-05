@@ -930,6 +930,11 @@ define([], function () {
           "en": "Page Editor"
       },
       {
+        "_key": "网站编辑器",
+        "zh-cn": "网站编辑器",
+        "en": "Site Editor"
+      },
+      {
           "_key": "设置中心",
           "zh-cn": "设置中心",
           "en": "settings"
