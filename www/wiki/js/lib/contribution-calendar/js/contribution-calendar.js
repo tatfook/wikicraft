@@ -25,20 +25,19 @@
     var defaults = {
         year: new Date().getFullYear(),
         week: ["星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六"],
-        months: Array(12).join().split(',').map(function(x,i) {return (i+1) + '月'}),
-        monthChar: '月',
+        monthChars: Array(12).join().split(',').map(function(x,i) {return (i+1) + '月'}),
         step:5,
         stepColor:["#E8D8F8","#B5CdE6","#77A4D0","#3977AD"],
         defaultColor:"#EBEDF0",
         active: {},
         languageLocaleIsForGlobalUser: false
     };
-    var monthChar = defaults.monthChar;
     var languageLocaleIsForGlobalUser = defaults.languageLocaleIsForGlobalUser;
     var svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
     var year = defaults.year;
     var yearLen = 0;
-    var months = defaults.months;
+    var month = [];
+    var monthChars = defaults.monthChars;
     var week = defaults.week;
     var dateCount = defaults.active;
     var step=defaults.step;
@@ -93,7 +92,7 @@
             text.setAttribute("x", 30 + 52 * (i - 1));
             text.setAttribute("y", -10);
             text.setAttribute("class", "month");
-            var textNode = document.createTextNode(months[i-1]);
+            var textNode = document.createTextNode(monthChars[i-1]);
             text.appendChild(textNode);
             svg.appendChild(text);
         }
@@ -161,9 +160,9 @@
 
         week= languageLocaleIsForGlobalUser ? ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"] : week;
 
-        months = languageLocaleIsForGlobalUser
+        monthChars = languageLocaleIsForGlobalUser
           ? ["Jan", "Feb", "Mar", "Apr", "May", "June", "July", "Aug", "Sept", "Oct", "Nov", "Dec"]
-          : months
+          : monthChars
 
         if(options.active){
             dateCount=options.active;
