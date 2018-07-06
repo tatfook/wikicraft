@@ -16,8 +16,8 @@ include_once("./site_user.page")
 
 local convert = inherit(models.abstract.base, gettable("models.convert"))
 
-local coreService = KEEPWORK["config"]["default"]["coreService"]
-local baseUrl = coreService.baseUrl
+--local coreService = KEEPWORK["config"]["default"]["coreService"]
+--local baseUrl = coreService.baseUrl
 
 function post(tablename, data) 
 	local form = {
