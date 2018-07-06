@@ -7,6 +7,9 @@ Date: 2017/06/08
 
 
 include_once("./abstract/base.page")
+include_once("./convert.page")
+
+local convertDB = models.convert:new()
 
 local group = inherit(models.abstract.base, gettable("models.group"))
 group.db_name = "group"
@@ -26,8 +29,10 @@ function group:api_upsert(params)
 	end
 		
 	self:db():insertOne({["+username+groupname"]={params.username, params.groupname}}, params, resume)
+	local err, data = yield()
+	convertDB:api_groups(data)
 
-	return errors:wrap(yield())
+	return errors:wrap(err, data)
 end
 
 
@@ -38,6 +43,10 @@ function group:api_deleteByName(params)
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
 		
+	self:db():findOne({["+username+groupname"]={params.username, params.groupname}}, resume)
+	local _, data = yield()
+	convertDB:api_groups(data, true)
+
 	self:db():deleteOne({["+username+groupname"]={params.username, params.groupname}}, resume)
 
 	return errors:wrap(yield())

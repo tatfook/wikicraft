@@ -10,6 +10,9 @@ include_once("./abstract/base.page")
 include_once("./group.page")
 include_once("./site_group.page")
 include_once("./site_user.page")
+include_once("./convert.page")
+
+local convertDB = models.convert:new()
 
 local group_user = inherit(models.abstract.base, gettable("models.group_user"))
 group_user.db_name = "group_user"
@@ -46,8 +49,10 @@ function group_user:api_upsert(params)
 
 	params.level = params.level or const.SITE_PRIVILEGE_GUEST_LEVEL
 	self:db():insertOne({["+username+groupname+memberName"]={params.username, params.groupname, params.memberName}}, params, resume)
+	local err, data = yield()
+	convertDB:api_groupMembers(data)
 
-	return errors:wrap(yield())
+	return errors:wrap(err, data)
 end
 
 
@@ -71,6 +76,10 @@ function group_user:api_deleteMember(params)
 			})
 		end
 	end
+
+	self:db():findOne({["+username+groupname+memberName"]={params.username, params.groupname, params.memberName}}, resume)
+	local _, data = yield()
+	convertDB:api_groupMembers(data, true)
 
 	self:db():deleteOne({["+username+groupname+memberName"]={params.username, params.groupname, params.memberName}}, resume)
 

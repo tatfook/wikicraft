@@ -10,6 +10,9 @@ include_once("./abstract/base.page")
 include_once("./group_user.page")
 include_once("./site_user.page")
 include_once("./website.page")
+include_once("./convert.page")
+
+local convertDB = models.convert:new()
 
 local site_group = inherit(models.abstract.base, gettable("models.site_group"))
 site_group.db_name = "site_group"
@@ -40,6 +43,8 @@ function site_group:api_upsert(params)
 		models.site_user:api_addGroupUser(params)
 	end
 	
+	convertDB:api_siteGroups(siteGroup)
+
 	return errors:wrap(nil, siteGroup)
 end
 
@@ -49,6 +54,10 @@ function site_group:api_deleteByName(params)
 	if (not params.username) or (not params.sitename) or not params.groupUsername or (not params.groupname) then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
+
+	self:db():findOne({["+username+sitename+groupUsername+groupname"]={params.username, params.sitename, params.groupUsername, params.groupname}}, resume)
+	local _, data = yield()
+	convertDB:api_siteGroups(data, true)
 
 	self:db():deleteOne({["+username+sitename+groupUsername+groupname"]={params.username, params.sitename, params.groupUsername, params.groupname}}, resume)
 	yield()
@@ -66,6 +75,12 @@ function site_group:api_deleteBySitename(params)
 	params.username = getUsername()
 	if (not params.username) or (not params.sitename) then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+
+	self:db():find({["+username+sitename"]={params.username, params.sitename}}, resume)
+	local _, siteGroups = yield()
+	for _, siteGroup in ipairs(siteGroups or {}) do
+		convertDB:api_siteGroups(siteGroup, true)
 	end
 
 	self:db():delete({["+username+sitename"]={params.username, params.sitename}}, resume)
