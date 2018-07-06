@@ -1,0 +1,58 @@
+<?npl
+--[[
+Title: data migrate
+Author: wuxiangan
+Date: 2018/07/06
+]]
+
+include_once("./abstract/base.page")
+include_once("./user.page")
+include_once("./user_three_service.page")
+include_once("./website.page")
+include_once("./site_data_source.page")
+include_once("./group.page")
+include_once("./site_group.page")
+include_once("./site_user.page")
+
+local convert = inherit(models.abstract.base, gettable("models.convert"))
+
+local coreService = KEEPWORK["config"]["default"]["coreService"]
+local baseUrl = coreService.baseUrl
+
+function post(tablename, data) 
+	local form = {
+		tablename = tablename,
+		token = coreService.token,
+		data =data,
+	}
+	
+	System.os.GetUrl({
+		url = baseUrl .. "convert",
+		method = "POST",
+		form = params,
+		json = true,
+	}, resume)
+
+	local _, data = yield()
+	log(data)
+end
+
+function convert:api_users(data) 
+	post("users", data)
+end
+
+function convert:api_sites(data)
+	post("sites", data)
+end
+
+function convert:api_groups(data)
+	post("groups", data)
+end
+
+function convert:api_groupMembers(data) 
+	post("groupMembers", data)
+end
+
+function convert:api_siteGroups(data)
+	post("siteGroups", data)
+end

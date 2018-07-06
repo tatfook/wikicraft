@@ -172,7 +172,14 @@ function site_group:api_getBySitename(params)
 	return errors:wrap(yield())
 end
 
+function site_group:api_export()
+	local limit = 1000000
+	local siteGroupDB = models.site_group:new()
+	siteGroupDB:db():find({_id={gt=0, limit=limit}}, resume)
+	local _, list = yield()
 
+	return list;
+end
 
 
 

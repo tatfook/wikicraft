@@ -54,3 +54,12 @@ function group:api_deleteByUsername(params)
 
 	return errors:wrap(yield())
 end
+
+function group:api_export()
+	local limit = 1000000
+	local groupDB = models.group:new()
+	groupDB:db():find({_id={gt=0, limit=limit}}, resume)
+	local _, list = yield()
+
+	return list;
+end

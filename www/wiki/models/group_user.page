@@ -123,7 +123,14 @@ function group_user:api_getByMember(params)
 	return errors:wrap(nil, data)
 end
 
+function group_user:api_export() 
+	local limit = 1000000
+	local groupUserDB = models.group_user:new()
+	groupUserDB:db():find({_id={gt=0, limit=limit}}, resume)
+	local _, list = yield()
 
+	return list;
+end
 
 
 
