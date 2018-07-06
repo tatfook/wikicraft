@@ -32,6 +32,7 @@ local es = models.elasticsearch:new()
 local index = CURRENT_ENV .. "_kw_users"
 es:connect({index=index})
 
+local convertDB = models.convert:new();
 
 function user:ctor()
 	self:addfield("username", "string", false, 30)     -- 用户名  唯一不可改
@@ -205,6 +206,7 @@ function user:update(params)
 
 	self:db():updateOne({_id=query._id}, query, resume)
 	local err, user = yield()
+	convertDB:api_users(user)
 	user.password = nil
 
 	self:update_to_es(user)
@@ -265,6 +267,7 @@ function user:api_updateByName(params)
 
 	self:db():updateOne({["+username"]={username}}, params, resume)
 	local err, user = yield()
+	convertDB:api_users(user)
 	user.password = nil
 
 	self:update_to_es(user)
@@ -287,6 +290,7 @@ function user:api_updateUserInfo(params)
 
 	self:db():updateOne({["+username"]={username}}, params, resume)
 	local err, user = yield()
+	convertDB:api_users(user)
 	user.password = nil
 	self:update_to_es(user)
 
@@ -353,6 +357,7 @@ function user:api_verifyCellphoneTwo(params)
 		end
 		self:db():updateOne({["+username"]={username}}, {cellphone=cellphone}, resume)
 		local err, user = yield()
+		convertDB:api_users(user)
 		user.password = nil
 		return errors:wrap(err, user)
 	end
@@ -365,6 +370,7 @@ function user:api_verifyCellphoneTwo(params)
 		}
 		self:db():updateOne({["+username"]={username}}, {realNameInfo=realNameInfo}, resume)
 		local err, user = yield()
+		convertDB:api_users(user)
 		user.password = nil
 
 		return errors:wrap(err, user)
@@ -445,6 +451,7 @@ function user:api_verifyEmailTwo(params)
 
 	self:db():updateOne({["+username"]={username}}, {email=email}, resume)
 	local err, data = yield()
+	convertDB:api_users(data)
 
 	return errors:wrap(err)
 end
@@ -498,6 +505,7 @@ function user:api_findPwdTwo(params)
 	local password = self:encodePassword(params.password)
 	self:db():updateOne({["+email"]={params.email}}, {password=password}, resume)
 	local err, user = yield()
+	convertDB:api_users(user)
 	user.password = nil
 
 	return errors:wrap(err, user)
@@ -526,6 +534,7 @@ function user:api_changepw(params)
 
 	self:db():updateOne({["+username"]={username}}, {password=newpassword}, resume)
 	local err, user = yield()
+	convertDB:api_users(user)
 	user.password = nil
 
 	return errors:wrap(err, user)
@@ -723,8 +732,10 @@ function user:api_register(params)
 	request.username = userinfo.username
 	request.userid = userinfo._id
 
-	local siteDataSourceDB = models.site_data_source:new()
+	local convertDB = models.convert:new()
+	convertDB:api_users(userinfo)
 
+	local siteDataSourceDB = models.site_data_source:new()
 	userinfo.defaultSiteDataSource = siteDataSourceDB:api_getSiteDataSource({username=userinfo.username, sitename=userinfo.defaultDataSourceSitename}).data
 	userinfo.dataSource = siteDataSourceDB:api_getByUsername({username=params.username}).data
 

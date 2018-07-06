@@ -19,17 +19,24 @@ local convert = inherit(models.abstract.base, gettable("models.convert"))
 local coreService = KEEPWORK["config"]["default"]["coreService"]
 local baseUrl = coreService.baseUrl
 
-function post(tablename, data) 
+function post(tablename, data, isDelete) 
+	if not data then return end
+
 	local form = {
 		tablename = tablename,
 		token = coreService.token,
+		id = data._id,
 		data =data,
 	}
 	
+	local url = baseUrl .. "convert/data"
+
+	if isDelete then url = baseUrl .. "convert/deleteData" end
+
 	System.os.GetUrl({
-		url = baseUrl .. "convert",
+		url = url,
 		method = "POST",
-		form = params,
+		form = form,
 		json = true,
 	}, resume)
 
@@ -37,22 +44,30 @@ function post(tablename, data)
 	log(data)
 end
 
-function convert:api_users(data) 
-	post("users", data)
+function convert:api_users(data, isDelete) 
+	post("users", data, isDelete)
 end
 
-function convert:api_sites(data)
-	post("sites", data)
+function convert:api_usersByUsername(username, isDelete) 
+	local userDB = models.user:new()
+	userDB:db():findOne({["+username"]={username}}, resume)
+	local _, userinfo = yield()
+	post("users", userinfo, isDelete)
+
 end
 
-function convert:api_groups(data)
-	post("groups", data)
+function convert:api_sites(data, isDelete)
+	post("sites", data, isDelete)
 end
 
-function convert:api_groupMembers(data) 
-	post("groupMembers", data)
+function convert:api_groups(data, isDelete)
+	post("groups", data, isDelete)
 end
 
-function convert:api_siteGroups(data)
-	post("siteGroups", data)
+function convert:api_groupMembers(data, isDelete) 
+	post("groupMembers", data, isDelete)
+end
+
+function convert:api_siteGroups(data, isDelete)
+	post("siteGroups", data, isDelete)
 end

@@ -26,6 +26,7 @@ include_once("./site_group.page")
 include_once("./pages.page")
 include_once("./elasticsearch.page")
 include_once("./validators.page")
+include_once("./convert.page")
 
 NPL.load("(gl)script/ide/math/bit.lua")
 
@@ -39,6 +40,7 @@ local es = models.elasticsearch:new()
 local index = CURRENT_ENV .. "_kw_websites"
 es:connect({index=index})
 
+local convertDB = models.convert:new()
 
 function website:ctor()
 	self:addfield("name", "string", false, 30)
@@ -91,6 +93,7 @@ function website:api_create(params)
 
 	self:db():insertOne({["+username+name"]={params.username, params.name}}, params, resume)
 	local err, site = yield()
+	convertDB:api_sites(site)
 	self:insert_to_es(site)
 
 	return errors:wrap(err, site)
@@ -131,6 +134,7 @@ function website:api_createSite(params)
 
 	self:db():insertOne({["+username+name"] = {params.username, params.name}}, params, resume)
 	local _, site = yield()
+	convertDB:api_sites(site)
 	if not site then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
@@ -177,6 +181,7 @@ function website:api_upsert(params)
 
 	self:db():insertOne({["+username+name"] = {params.username, params.name}}, params, resume)
 	local _, site = yield()
+	convertDB:api_sites(site)
 
 	if not site then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
@@ -217,7 +222,8 @@ function website:api_setVisibility(params)
 
 	local siteDataSourceDB = models.site_data_source:new()
 	siteDataSourceDB:db():updateOne({["+username+sitename"]={params.username, params.sitename}}, {visibility=params.visibility}, resume)	
-	yield()
+	local _, site = yield()
+	convertDB:api_sites(site)
 
 	local pages = models.pages:new()
 	pages:update_visibility_to_es(params)
@@ -233,6 +239,7 @@ function website:deleteById(websiteId)
 		return errors:wrap(nil)
 	end
 
+	convertDB:api_sites(site, true)
 	self:delete_in_es(site)
 
 	--user_log("删除站点:" .. site.sitename)
@@ -375,6 +382,7 @@ function website:api_updateByName(params)
 	self:db():updateOne({["+username+name"]={params.username, sitename}}, params, resume)
 	local err, site = yield()
 	self:update_to_es(site)
+	convertDB:api_sites(site)
 
 	return errors:wrap(err, site)
 end
