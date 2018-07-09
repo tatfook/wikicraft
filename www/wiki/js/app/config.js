@@ -9,8 +9,8 @@
 	const ReleaseHost = "^release.keepwork.com$";
 	const ProdLessonsHost = 'lessons.keepwork.com'
 	const DevLessonsHost = 'lessons-stage.keepwork.com'
-	const ProdStorageHost = 'storage.keepwork.com'
-	const DevStorageHost = 'stage-storage.keepwork.com'
+	const ProdStorageHost = 'api.keepwork.com/storage'
+	const DevStorageHost = 'api-stage.keepwork.com/storage'
 	var wiki_config = window.wiki_config || {};
 	var localEnv = window.location.hostname.indexOf("localhost") >= 0 ? true : false;
 	var localVMEnv = localEnv && window.location.host != "localhost:63342";
@@ -211,7 +211,7 @@
 		}
 
 		config.lessonsApiPrefix = `https://${lessonsHost}/lessons/api/`
-		config.storageApiPrifix = `https://${storageHost}/api/v0/`;
+		config.storageApiPrifix = `https://${storageHost}/v0/`;
 		config.httpProto = window.location.origin.replace(/:.*$/, "");
 		config.apiUrlPrefix = config.httpProto + '://' + config.apiHost + '/api/wiki/models/';
 	}

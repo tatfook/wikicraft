@@ -1014,7 +1014,9 @@ define([
 
                     $scope.file_name_filter = function (filename) {
                         var len_limit = 30
-                        if (filename.length > len_limit) {
+                        if (!filename) {
+                            return 'null'
+                        } else if (filename.length > len_limit) {
                             filename = filename.slice(0, len_limit) + "......"
                         }
                         return filename
@@ -1241,10 +1243,11 @@ define([
 
                     /********** Lessons邀请码管理 ********/
 
+                    const default_amount = 20
                     $scope.InvitationCodesPageSize = 20
                     $scope.totalInvitationCodes = 0
                     $scope.currentInvitationCodesPage = 1
-                    $scope.newInvitationCodesAmount = 20
+                    $scope.newInvitationCodesAmount = default_amount
 
                     // 获取邀请码列表
                     $scope.getInvitationCodes = function () {
@@ -1272,16 +1275,23 @@ define([
                     }
 
                     $scope.csvFilename = "邀请码.csv"
+
                     $scope.generateInvitationCodes = function () {
-                        return [{ sn: 1, createTime: 3, key: 2, state: 4 }]
-                    }
-
-                    $scope.getCsvHeader = function () {
-                        return ['序号', '激活码', '生成日期', '使用状态']
-                    }
-
-                    $scope.getCsvOrder = function () {
-                        return ["sn", "key", 'createTime', 'state']
+                        var form = new FormData()
+                        form.append('number', $scope.newInvitationCodesAmount)
+                        $scope.newInvitationCodesAmount = default_amount
+                        return $http.post(config.lessonsApiPrefix + 'cdkey/build', form, {
+                            headers: { 'Content-Type': undefined },
+                            withCredentials: true,
+                            skipAuthorization: true,
+                        }).then(function (res) {
+                            console.log(res.data.data.length)
+                            return res.data.data.map(function (code) {
+                                return { code: code}
+                            })
+                        }, function (err) {
+                            return []
+                        })
                     }
 
                     $scope.clickFn = function () {
