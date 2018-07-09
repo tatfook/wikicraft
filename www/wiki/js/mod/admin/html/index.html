@@ -377,11 +377,11 @@
                                     <div class="panel-heading" ng-click='getSensitiveWords()'>敏感词管理</div>
                                 </div>
                             </li>
-                            <li>
+                            <!-- <li>
                                 <div ng-class='getStyleClass("lessons")'>
                                     <div class="panel-heading" ng-click='getInvitationCodes()'>Lessons邀请码管理</div>
                                 </div>
-                            </li>
+                            </li> -->
                         </ul>
                     </div>
                 </li>
@@ -1467,9 +1467,7 @@
                             </p>
                         </div>
                         <div class="modal-footer">
-                            <button class="btn btn-default" add-bom="true" ng-csv="generateInvitationCodes()" lazy-load="true" csv-header='getCsvHeader()'
-                                csv-column-order="getCsvOrder()" filename="{{ csvFilename }}" field-separator="{{separator}}"
-                                decimal-separator="{{decimalSeparator}}" ng-click="clickFn()">确定</button>
+                            <button class="btn btn-default" ng-csv="generateInvitationCodes()" filename="{{ csvFilename }}" ng-click="clickFn()">确定</button>
                             <button class="btn btn-primary" data-dismiss="modal">关闭</button>
                         </div>
                     </div>
