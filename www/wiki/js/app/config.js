@@ -37,11 +37,6 @@
     return locale
   })();
 
-  // set cookie for partners' website
-  // https://github.com/tatfook/keepwork/issues/1105
-  $.cookie('lang', /en/.test(languageLocale) ? 'en-US' : 'zh-CN', {path: '/', expires: 365});
-  $.cookie('locale', isGlobalVersion ? 'en-US' : 'zh-CN', {path: '/', expires: 365});
-
 	config = {
     // --------------------------------------前端配置 START----------------------------------------------
     env: getEnv(),
