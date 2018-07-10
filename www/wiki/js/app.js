@@ -24,6 +24,12 @@ app.config(['$controllerProvider', '$httpProvider', '$authProvider','$locationPr
   //$locationProvider.hashPrefix('!');
   //$locationProvider.html5Mode({enabled:true});
   // 提供动态注册控制接口
+
+  // set cookie for partners' website
+  // https://github.com/tatfook/keepwork/issues/1105
+  $.cookie('lang', /en/.test(config.languageLocale) ? 'en-US' : 'zh-CN', {path: '/', expires: 365});
+  $.cookie('locale', config.isGlobalVersion ? 'en-US' : 'zh-CN', {path: '/', expires: 365});
+
   app.registerController = function (name, constructor) {
     if (config.angularBootstrap) {
       $controllerProvider.register(name, constructor);
