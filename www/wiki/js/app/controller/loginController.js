@@ -61,7 +61,7 @@ define([
                     var redirectUrl = $.cookie("redirectUrl");
 
                     if(redirectUrl) {
-                        $.removeCookie("redirectUrl");
+                        $.removeCookie("redirectUrl", {path:'/', domain: config.hostname});
                         window.location.href = redirectUrl;
                     }
                     else {
@@ -117,7 +117,7 @@ define([
                         var redirectUrl = $.cookie("redirectUrl");
 
                         if(redirectUrl) {
-                            $.removeCookie("redirectUrl");
+                            $.removeCookie("redirectUrl", {path:'/', domain: config.hostname});
                             window.location.href = redirectUrl;
                         }
                         else {
