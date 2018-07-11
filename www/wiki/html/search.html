@@ -286,7 +286,7 @@
             </ul>
             <div class="input-group">
                 <div class="input-group-btn">
-                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{nowSearchRange || searchRange[0]}}
+                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{nowSearchRange || searchRange[0] | translate}}
                         <span class="caret"></span>
                     </button>
                     <ul class="dropdown-menu">
@@ -303,7 +303,7 @@
         </div>
         <div class="tab-content">
             <div role="tabpanel" class="tab-pane clearfix" ng-class="{true:'active'}[searchType == 'pageinfo']" id="pageinfo">
-                <h4 class="title">{{ "共" | translate }}{{totalItems || 0}}{{ "条页面：" | translate }}</h4>
+                <h4 ng-if="totalItems" class="title">{{ "共" | translate }}: {{totalItems}}</h4>
                 <div class="empty-box" ng-hide="searchResult.total > 0">
                     <span class="iconfont icon-sousuo"></span>
                     <p>{{ "抱歉！ ~没有搜索到" | translate }}
@@ -331,7 +331,7 @@
                 </div>
             </div>
             <div role="tabpanel" class="tab-pane clearfix" ng-class="{true:'active'}[searchType == 'userinfo']" id="userinfo">
-                <h4 class="title">{{ "共" | translate }}{{totalItems || 0}}名用户：</h4>
+                <h4 ng-if="totalItems" class="title">{{ "共" | translate }}: {{totalItems}}</h4>
                 <div class="empty-box" ng-hide="searchResult.total > 0">
                     <span class="iconfont icon-sousuo"></span>
                     <p>{{ "抱歉！ ~没有搜索到" | translate }}

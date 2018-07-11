@@ -23,6 +23,7 @@ define(['app',
         $scope.myPays = [];// code为0表示成功，isConsume为true时表示为消费，否则为收入
         $scope.introMaxUtf8Length = 1024;
         $scope.locationMaxUtf8Length = 256;
+        $scope.isGlobalVersion = config.isGlobalVersion;
         var sensitiveElems = [];
 
         function getResultCanvas(sourceCanvas) {
@@ -277,13 +278,13 @@ define(['app',
 			}
 			var email=$scope.userEmail? $scope.userEmail.trim() : "";
 			if(!email){
-				$scope.emailErrMsg="请输入需绑定的邮箱";
+				$scope.emailErrMsg=$translate.instant("请输入需绑定的邮箱");
 				return;
 			}
 
 			var reg=/^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
 			if(!reg.test(email)){
-				$scope.emailErrMsg="请输入正确的邮箱";
+				$scope.emailErrMsg=$translate.instant("请输入正确的邮箱");
 				return;
 			}
 
@@ -292,7 +293,7 @@ define(['app',
             }, function (result) {
                 // console.log(result);
                 if (result && result.username != $scope.user.username){
-                    $scope.emailErrMsg = "该邮箱已被绑定";
+                    $scope.emailErrMsg = $translate.instant("该邮箱已被绑定");
                     return;
                 }
                 showModalInit();
@@ -304,11 +305,11 @@ define(['app',
 		$scope.confirmPhoneBind = function() {
             $scope.errorMsg = "";
             if (!$scope.smsId){
-                $scope.errorMsg = "请先发送验证码！";
+                $scope.errorMsg = $translate.instant("请先发送验证码！");
                 return;
             }
             if (!$scope.smsCode){
-                $scope.errorMsg = "请填写验证码！";
+                $scope.errorMsg = $translate.instant("请填写验证码！");
                 return;
             }
 			util.post(config.apiUrlPrefix + "user/verifyCellphoneTwo", {

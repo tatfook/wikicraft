@@ -20,6 +20,7 @@ define([
         $scope.groups= []; // [{"name":"全体","userList":["username","username1","username2"]}];
 		$scope.groupUser = {};
         $scope.groupAuths =[];
+        $scope.isGlobalVersion = config.isGlobalVersion;
         $scope.authorities=[{level: 20, name: "浏览"},{level:40, name: "编辑"},{level:10, name: "拒绝"}];
 
 		var siteDataSource = undefined;

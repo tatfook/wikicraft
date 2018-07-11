@@ -34,7 +34,8 @@ define([
 
         //  创建网站
         $scope.goNewWebsitePage = function () {
-            util.html('#userCenterSubPage', newWebsiteHtmlContent);
+          location.pathname = '/wiki/wikieditor'
+          // util.html('#userCenterSubPage', newWebsiteHtmlContent);
         }
 
         // 编辑网站
