@@ -17,7 +17,7 @@ define([
         $scope.editorMode = wikiblock.editorMode
         $scope.downloadImg = $scope.imgsPath + 'down.png'
 
-        var token = $.cookie('token')
+        var token = localStorage.getItem('satellizer_token')
 
         initObj = {
           scope: $scope,
@@ -208,7 +208,7 @@ define([
               paramB = JSON.stringify(urlprotocol.paramB)
             } else if (typeof(urlprotocol.paramB) == 'string') {
               paramB = urlprotocol.paramB
-            }
+            } 
           }
 
           $scope.showModal = true

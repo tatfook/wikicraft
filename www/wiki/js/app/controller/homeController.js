@@ -30,7 +30,7 @@ define([
             storage.sessionStorageSetItem("siteshowParams", {siteshowType:'personal'});
             util.go("siteshow");
         }
-
+        
         function init() {
             // 获得网站统计信息
             // util.http("POST", config.apiUrlPrefix + "wikicraft/getStatics", {}, function (data) {
@@ -59,7 +59,7 @@ define([
             //        console.log("-------finish-----------");
             //    });
             // });
-			//Authenticate("facebook");
+			//Authenticate("facebook"); 
         };
 
         $scope.goRegisterPage = function () {
@@ -211,6 +211,7 @@ define([
                 return;
             }
             util.http("POST", config.apiUrlPrefix + 'user/login', params, function (data) {
+				//storage.sessionStorageSetItem("satellizer_token", data.token);
                 $auth.setToken(data.token);
                 Account.setUser(data.userinfo);
                 // console.log("登录成功");
