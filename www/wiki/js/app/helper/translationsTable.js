@@ -1097,7 +1097,7 @@ define([], function () {
       {
           "_key": "跳转个人首页",
           "zh-cn": "跳转个人首页",
-          "en": "Back to homepage"
+          "en": "Homepage"
       },
       {
           "_key": "完善账号信息",
@@ -1237,12 +1237,12 @@ define([], function () {
       {
           "_key": "马上编辑",
           "zh-cn": "马上编辑",
-          "en": "Edit immediately "
+          "en": "Edit"
       },
       {
           "_key": "马上配置",
           "zh-cn": "马上配置",
-          "en": "Immediate configuration"
+          "en": "Setting"
       },
       {
           "_key": "功能",
@@ -1797,12 +1797,12 @@ define([], function () {
       {
           "_key": "邮箱验证码：",
           "zh-cn": "邮箱验证码：",
-          "en": "Email verification code:"
+          "en": "Verify code:"
       },
       {
           "_key": "图片验证码：",
           "zh-cn": "图片验证码：",
-          "en": "Image verification code:"
+          "en": "Verify code:"
       },
       {
           "_key": "更多",
@@ -3012,7 +3012,7 @@ define([], function () {
       {
           "_key": "发送验证码",
           "zh-cn": "发送验证码",
-          "en": "Send confirmation code "
+          "en": "Send code"
       },
       {
           "_key": "邮箱解绑",

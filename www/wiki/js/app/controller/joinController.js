@@ -11,6 +11,11 @@ define([
     'text!html/join.html',
 ], function (app, util, storage, dataSource, sensitiveWord, htmlContent) {
     app.registerController('joinController', ['$scope', '$auth', '$interval', '$translate', 'Account', 'modal', 'Message', function ($scope, $auth, $interval, $translate, Account, modal, Message) {
+        var getUrlParam=function (param) {
+            var reg = new RegExp("(^|&)" + param + "=([^&]*)(&|$)"); //构造一个含有目标参数的正则表达式对象
+            var r = window.location.search.substr(1).match(reg);  //匹配目标参数
+            if (r != null) return r[2]; //返回参数值
+        }
         //$scope.errMsg = "用户名或密码错误";
         $scope.userThreeService = undefined;
         $scope.isModal = false;
@@ -215,12 +220,12 @@ define([
                   password: $scope.password ? $scope.password.trim() : "",
                   email: $scope.email ? $scope.email.trim() : ""
                 }
-  
+
                 if (!validateEmail(params.email)) {
                   $scope.emailErrMsg = $translate.instant("*请输入正确的邮箱");
                   return;
                 }
-  
+
               } else {
                 params = {
                     username: $scope.username ? $scope.username.trim() : "",
@@ -229,17 +234,17 @@ define([
                     smsId: $scope.smsId,
                     cellphone: $scope.cellphone
                 };
-  
+
                 if (!params.cellphone) {
                     $scope.cellphoneErrMsg = $translate.instant("*手机号不能为空");
                     return;
                 }
-  
+
                 if (!params.smsId) {
                     $scope.smsCodeErrMsg = $translate.instant("*请先发送验证码验证");
                     return;
                 }
-  
+
                 if (!params.smsCode) {
                     $scope.smsCodeErrMsg = $translate.instant("*验证码不能为空");
                     return;
@@ -433,7 +438,14 @@ define([
                     if ($scope.isModal) {
                         $scope.$close(data.data);
                     } else {
-                        util.go('/' + data.data.username);
+                        var redirectUrl = getUrlParam("redirect");
+
+                        if(redirectUrl) {
+                            window.location.href = redirectUrl;
+                        }
+                        else {
+                            util.go('/' + data.data.username);
+                        }
                     }
                 } else {
                     // 用户不存在 注册用户并携带data.data信息

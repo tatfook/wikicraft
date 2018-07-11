@@ -10,6 +10,11 @@ define([
     'text!html/login.html'
 ], function (app, jQuery, util, storage,  htmlContent) {
     app.registerController('loginController', ['$scope', '$auth', '$translate', 'Account', 'modal', function ($scope, $auth, $translate, Account, modal) {
+        var getUrlParam=function (param) {
+            var reg = new RegExp("(^|&)" + param + "=([^&]*)(&|$)"); //构造一个含有目标参数的正则表达式对象
+            var r = window.location.search.substr(1).match(reg);  //匹配目标参数
+            if (r != null) return r[2]; //返回参数值
+        }
         //$scope.errMsg = "用户名或密码错误";
         $scope.loginDomId = 'loginDomId-' + Date.now()
         $scope.isModal=false;
@@ -31,7 +36,7 @@ define([
         $scope.goRegisterPage = function () {
             util.go('/wiki/join');
         }
-        
+
         $scope.findPwd=function (isModal) {
             if(isModal){
                 $scope.$close("login");
@@ -58,7 +63,14 @@ define([
                 if ($scope.isModal) {
                     window.location.reload();
                 } else {
-                    util.go('/' + data.userinfo.username);
+                    var redirectUrl = getUrlParam("redirect");
+
+                    if(redirectUrl) {
+                        window.location.href = redirectUrl;
+                    }
+                    else {
+                        util.go('/' + data.userinfo.username);
+                    }
                 }
 
             }, function (error) {
@@ -106,7 +118,14 @@ define([
                     if ($scope.isModal) {
                         $scope.$close(data.data);
                     } else {
-                        util.go('/' + data.data.username);
+                        var redirectUrl = getUrlParam("redirect");
+
+                        if(redirectUrl) {
+                            window.location.href = redirectUrl;
+                        }
+                        else {
+                            util.go('/' + data.data.username);
+                        }
                     }
                 } else {
                     // 用户不存在 注册用户并携带data.data信息
