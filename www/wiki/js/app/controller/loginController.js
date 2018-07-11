@@ -58,7 +58,15 @@ define([
                 if ($scope.isModal) {
                     window.location.reload();
                 } else {
-                    util.go('/' + data.userinfo.username);
+                    var redirectUrl = $.cookie("redirectUrl");
+
+                    if(redirectUrl) {
+                        util.go(redirectUrl);
+                        $.removeCookie("redirectUrl");
+                    }
+                    else {
+                        util.go('/' + data.userinfo.username);
+                    }
                 }
 
             }, function (error) {

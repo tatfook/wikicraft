@@ -215,12 +215,12 @@ define([
                   password: $scope.password ? $scope.password.trim() : "",
                   email: $scope.email ? $scope.email.trim() : ""
                 }
-  
+
                 if (!validateEmail(params.email)) {
                   $scope.emailErrMsg = $translate.instant("*请输入正确的邮箱");
                   return;
                 }
-  
+
               } else {
                 params = {
                     username: $scope.username ? $scope.username.trim() : "",
@@ -229,17 +229,17 @@ define([
                     smsId: $scope.smsId,
                     cellphone: $scope.cellphone
                 };
-  
+
                 if (!params.cellphone) {
                     $scope.cellphoneErrMsg = $translate.instant("*手机号不能为空");
                     return;
                 }
-  
+
                 if (!params.smsId) {
                     $scope.smsCodeErrMsg = $translate.instant("*请先发送验证码验证");
                     return;
                 }
-  
+
                 if (!params.smsCode) {
                     $scope.smsCodeErrMsg = $translate.instant("*验证码不能为空");
                     return;
@@ -433,7 +433,15 @@ define([
                     if ($scope.isModal) {
                         $scope.$close(data.data);
                     } else {
-                        util.go('/' + data.data.username);
+                        var redirectUrl = $.cookie("redirectUrl");
+
+                        if(redirectUrl) {
+                            util.go(redirectUrl);
+                            $.removeCookie("redirectUrl");
+                        }
+                        else {
+                            util.go('/' + data.data.username);
+                        }
                     }
                 } else {
                     // 用户不存在 注册用户并携带data.data信息
