@@ -10,6 +10,11 @@ define([
     'text!html/login.html'
 ], function (app, jQuery, util, storage,  htmlContent) {
     app.registerController('loginController', ['$scope', '$auth', '$translate', 'Account', 'modal', function ($scope, $auth, $translate, Account, modal) {
+        var getUrlParam=function (param) {
+            var reg = new RegExp("(^|&)" + param + "=([^&]*)(&|$)"); //构造一个含有目标参数的正则表达式对象
+            var r = window.location.search.substr(1).match(reg);  //匹配目标参数
+            if (r != null) return r[2]; //返回参数值
+        }
         //$scope.errMsg = "用户名或密码错误";
         $scope.loginDomId = 'loginDomId-' + Date.now()
         $scope.isModal=false;
@@ -58,10 +63,9 @@ define([
                 if ($scope.isModal) {
                     window.location.reload();
                 } else {
-                    var redirectUrl = $.cookie("redirectUrl");
+                    var redirectUrl = getUrlParam("redirect");
 
                     if(redirectUrl) {
-                        $.removeCookie("redirectUrl", {path:'/', domain: config.hostname});
                         window.location.href = redirectUrl;
                     }
                     else {
@@ -114,10 +118,9 @@ define([
                     if ($scope.isModal) {
                         $scope.$close(data.data);
                     } else {
-                        var redirectUrl = $.cookie("redirectUrl");
+                        var redirectUrl = getUrlParam("redirect");
 
                         if(redirectUrl) {
-                            $.removeCookie("redirectUrl", {path:'/', domain: config.hostname});
                             window.location.href = redirectUrl;
                         }
                         else {

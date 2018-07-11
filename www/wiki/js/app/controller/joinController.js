@@ -11,6 +11,11 @@ define([
     'text!html/join.html',
 ], function (app, util, storage, dataSource, sensitiveWord, htmlContent) {
     app.registerController('joinController', ['$scope', '$auth', '$interval', '$translate', 'Account', 'modal', 'Message', function ($scope, $auth, $interval, $translate, Account, modal, Message) {
+        var getUrlParam=function (param) {
+            var reg = new RegExp("(^|&)" + param + "=([^&]*)(&|$)"); //构造一个含有目标参数的正则表达式对象
+            var r = window.location.search.substr(1).match(reg);  //匹配目标参数
+            if (r != null) return r[2]; //返回参数值
+        }
         //$scope.errMsg = "用户名或密码错误";
         $scope.userThreeService = undefined;
         $scope.isModal = false;
@@ -433,10 +438,9 @@ define([
                     if ($scope.isModal) {
                         $scope.$close(data.data);
                     } else {
-                        var redirectUrl = $.cookie("redirectUrl");
+                        var redirectUrl = getUrlParam("redirect");
 
                         if(redirectUrl) {
-                            $.removeCookie("redirectUrl", {path:'/', domain: config.hostname});
                             window.location.href = redirectUrl;
                         }
                         else {
