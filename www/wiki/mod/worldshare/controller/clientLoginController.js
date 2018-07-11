@@ -17,7 +17,6 @@ define([
         $scope.type = -1;
 
         if(token != undefined){
-            localStorage.setItem("satellizer_token",token);
             $scope.type = 1;
 
             $scope.$on("onUserProfile", function (event, newValue) {
