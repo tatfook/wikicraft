@@ -62,7 +62,7 @@ define([
 
                     if(redirectUrl) {
                         $.removeCookie("redirectUrl");
-                        util.go(redirectUrl);
+                        util.goUserSite(redirectUrl);
                     }
                     else {
                         util.go('/' + data.userinfo.username);
@@ -118,7 +118,7 @@ define([
 
                         if(redirectUrl) {
                             $.removeCookie("redirectUrl");
-                            util.go(redirectUrl);
+                            util.goUserSite(redirectUrl);
                         }
                         else {
                             util.go('/' + data.data.username);
