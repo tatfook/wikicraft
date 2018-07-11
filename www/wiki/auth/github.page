@@ -19,7 +19,8 @@ local params = {
 
 response:Begin()
 if not params.client_id then
-    return response:send_xml("keepwork.com认证")
+    --return response:send_xml("keepwork.com认证")
+	return response:send({token="token"})
 end
 -- Step 1. Exchange authorization code for access token.
 System.os.GetUrl({url = accessTokenUrl, qs = params }, resume)
