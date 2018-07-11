@@ -31,7 +31,7 @@ define([
         $scope.goRegisterPage = function () {
             util.go('/wiki/join');
         }
-        
+
         $scope.findPwd=function (isModal) {
             if(isModal){
                 $scope.$close("login");
@@ -106,7 +106,15 @@ define([
                     if ($scope.isModal) {
                         $scope.$close(data.data);
                     } else {
-                        util.go('/' + data.data.username);
+                        var redirectUrl = $.cookie("redirectUrl");
+
+                        if(redirectUrl) {
+                            util.go(redirectUrl);
+                            $.removeCookie("redirectUrl");
+                        }
+                        else {
+                            util.go('/' + data.data.username);
+                        }
                     }
                 } else {
                     // 用户不存在 注册用户并携带data.data信息
