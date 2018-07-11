@@ -436,8 +436,8 @@ define([
                         var redirectUrl = $.cookie("redirectUrl");
 
                         if(redirectUrl) {
-                            util.go(redirectUrl);
                             $.removeCookie("redirectUrl");
+                            util.go(redirectUrl);
                         }
                         else {
                             util.go('/' + data.data.username);
