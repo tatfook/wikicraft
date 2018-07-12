@@ -206,7 +206,7 @@
                 </div>
                 <div class="zhiding-icon" ng-show="isSelf">
                     <span class="stick-btn iconfont icon-zhiding1" ng-class="{true: 'cancel-stick-btn'}[params.type == 'stick' || site.isTop]"
-                        ng-show="params.type == 'created' || params.type == 'stick'" ng-click="toggleStickSite(site)" title="{{(params.type == 'stick' || site.isTop) ? '取消置顶' : '置顶'}}">
+                        ng-show="params.type == 'created' || params.type == 'stick'" ng-click="toggleStickSite(site)" title="{{(params.type == 'stick' || site.isTop) ? '取消置顶' : '置顶' | translate}}">
                     </span>
                 </div>
             </div>

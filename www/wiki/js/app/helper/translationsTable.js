@@ -22,7 +22,7 @@ define([], function () {
       {
           "_key": "我的资料",
           "zh-cn": "我的资料",
-          "en": "My Profile"
+          "en": "Profile"
       },
       {
           "_key": "账户安全",
@@ -32,22 +32,22 @@ define([], function () {
       {
           "_key": "我的动态",
           "zh-cn": "我的动态",
-          "en": "My activity "
+          "en": "activity "
       },
       {
           "_key": "我的关注",
           "zh-cn": "我的关注",
-          "en": "My following"
+          "en": "following"
       },
       {
           "_key": "我的历史",
           "zh-cn": "我的历史",
-          "en": "My history"
+          "en": "history"
       },
       {
           "_key": "我的粉丝",
           "zh-cn": "我的粉丝",
-          "en": "My fans"
+          "en": "followers"
       },
       {
           "_key": "实名认证",
@@ -67,7 +67,7 @@ define([], function () {
       {
           "_key": "邀请注册",
           "zh-cn": "邀请注册",
-          "en": "Invite for registration "
+          "en": "Invite Friends"
       },
       {
           "_key": "我的站点",
@@ -127,7 +127,7 @@ define([], function () {
       {
           "_key": "网站数量：",
           "zh-cn": "网站数量：",
-          "en": "Number of Websites: "
+          "en": "Total: "
       },
       {
           "_key": "我的网站",
@@ -252,7 +252,7 @@ define([], function () {
       {
           "_key": "暂无相关内容...",
           "zh-cn": "暂无相关内容...",
-          "en": "No related information is available."
+          "en": "No related information"
       },
       {
           "_key": "插入选中",
@@ -502,12 +502,12 @@ define([], function () {
       {
           "_key": "数据源设置",
           "zh-cn": "数据源设置",
-          "en": "Oracle JDBC"
+          "en": "Data Source"
       },
       {
           "_key": "域名管理",
           "zh-cn": "域名管理",
-          "en": "domain name management"
+          "en": "Domain Management"
       },
       {
           "_key": "权限管理",
@@ -522,7 +522,7 @@ define([], function () {
       {
           "_key": "站点图标：",
           "zh-cn": "站点图标：",
-          "en": "Site Icon:"
+          "en": "Logo:"
       },
       {
           "_key": "点击修改",
@@ -537,17 +537,17 @@ define([], function () {
       {
           "_key": "站点名称：",
           "zh-cn": "站点名称：",
-          "en": "Site name:"
+          "en": "Name:"
       },
       {
           "_key": "网站地址：",
           "zh-cn": "网站地址：",
-          "en": "Website address:"
+          "en": "Link:"
       },
       {
           "_key": "网站介绍：",
           "zh-cn": "网站介绍：",
-          "en": "Website introduction:"
+          "en": "Intro:"
       },
       {
           "_key": "本站标签：",
@@ -567,7 +567,7 @@ define([], function () {
       {
           "_key": "独立域名：",
           "zh-cn": "独立域名：",
-          "en": "Independent domain name:"
+          "en": "Independent domain:"
       },
       {
           "_key": "Cname转发：",
@@ -787,7 +787,7 @@ define([], function () {
       {
           "_key": "加入我们",
           "zh-cn": "加入我们",
-          "en": "Joinus"
+          "en": "Join Us"
       },
       {
           "_key": "网站统计",
@@ -797,7 +797,7 @@ define([], function () {
       {
           "_key": "更新信息",
           "zh-cn": "更新信息",
-          "en": "update information"
+          "en": "Change Log"
       },
       {
           "_key": "问题反馈",
@@ -807,7 +807,7 @@ define([], function () {
       {
           "_key": "投诉本页",
           "zh-cn": "投诉本页",
-          "en": "Complaint page"
+          "en": "Complaint"
       },
       {
           "_key": "粤ICP备14002196号-2",
@@ -1057,12 +1057,12 @@ define([], function () {
       {
           "_key": "好友email：",
           "zh-cn": "好友email：",
-          "en": "His/her Email:"
+          "en": "Email:"
       },
       {
           "_key": "邀 请",
           "zh-cn": "邀 请",
-          "en": "Invitation"
+          "en": "Send"
       },
       {
           "_key": "账户名",
@@ -1187,7 +1187,7 @@ define([], function () {
       {
           "_key": "新建网站",
           "zh-cn": "新建网站",
-          "en": "New websites"
+          "en": "New website"
       },
       {
           "_key": "选择功能模板：",
@@ -1247,7 +1247,7 @@ define([], function () {
       {
           "_key": "功能",
           "zh-cn": "功能",
-          "en": "function"
+          "en": "Features"
       },
       {
           "_key": "很抱歉！您访问的页面不存在...",
@@ -1532,7 +1532,7 @@ define([], function () {
       {
           "_key": "活动",
           "zh-cn": "活动",
-          "en": "activity"
+          "en": "Activities"
       },
       {
           "_key": "暂无活动",
@@ -1542,7 +1542,7 @@ define([], function () {
       {
           "_key": "关注的作者",
           "zh-cn": "关注的作者",
-          "en": "Authors following"
+          "en": "Following Authors"
       },
       {
           "_key": "喜欢的作者",
@@ -1602,12 +1602,12 @@ define([], function () {
       {
           "_key": "性别：",
           "zh-cn": "性别：",
-          "en": "Sex:"
+          "en": "Gender:"
       },
       {
           "_key": "位置：",
           "zh-cn": "位置：",
-          "en": "Position:"
+          "en": "Location:"
       },
       {
           "_key": "广东省",
@@ -1617,7 +1617,7 @@ define([], function () {
       {
           "_key": "个人简介：",
           "zh-cn": "个人简介：",
-          "en": "Personal info:"
+          "en": "Intro:"
       },
       {
           "_key": "位置字数超过限制。",
@@ -1642,7 +1642,7 @@ define([], function () {
       {
           "_key": "账号绑定",
           "zh-cn": "账号绑定",
-          "en": "Bind on Account"
+          "en": "Account Binding"
       },
       {
           "_key": "修改密码表单",
@@ -1662,7 +1662,7 @@ define([], function () {
       {
           "_key": "修 改",
           "zh-cn": "修 改",
-          "en": "Modification"
+          "en": "Save"
       },
       {
           "_key": "安全验证表单",
@@ -1702,27 +1702,27 @@ define([], function () {
       {
           "_key": "手机绑定：",
           "zh-cn": "手机绑定：",
-          "en": "Cell phone binding:"
+          "en": "Cell phone:"
       },
       {
           "_key": "QQ绑定：",
           "zh-cn": "QQ绑定：",
-          "en": "QQ binding:"
+          "en": "QQ:"
       },
       {
           "_key": "微信绑定：",
           "zh-cn": "微信绑定：",
-          "en": "WeChat bindings:"
+          "en": "WeChat:"
       },
       {
           "_key": "微博绑定：",
           "zh-cn": "微博绑定：",
-          "en": "Micro-blog bindings:"
+          "en": "Weibo:"
       },
       {
           "_key": "Github绑定：",
           "zh-cn": "Github绑定：",
-          "en": "Github binding:"
+          "en": "Github:"
       },
       {
           "_key": "作者",
@@ -1912,17 +1912,17 @@ define([], function () {
       {
           "_key": "站点名称",
           "zh-cn": "站点名称",
-          "en": "Site Name"
+          "en": "Name"
       },
       {
           "_key": "站点地址",
           "zh-cn": "站点地址",
-          "en": "Site address"
+          "en": "Link"
       },
       {
           "_key": "创建时间",
           "zh-cn": "创建时间",
-          "en": "create time"
+          "en": "Created At"
       },
       {
           "_key": "WIKI模块",
@@ -2322,12 +2322,12 @@ define([], function () {
       {
           "_key": "粉丝",
           "zh-cn": "粉丝",
-          "en": "Fans"
+          "en": "Followers"
       },
       {
           "_key": "profile_fans",
           "zh-cn": "粉丝",
-          "en": "Fans"
+          "en": "Followers"
       },
       {
           "_key": "恭喜您！",
@@ -2772,17 +2772,17 @@ define([], function () {
       {
           "_key": "抱歉！ ~没有搜索到",
           "zh-cn": "抱歉！ ~没有搜索到",
-          "en": "Sorry. No results for ~"
+          "en": "Sorry. No Results"
       },
       {
           "_key": "相关的页面",
           "zh-cn": "相关的页面",
-          "en": "Related pages"
+          "en": ""
       },
       {
           "_key": "相关的用户",
           "zh-cn": "相关的用户",
-          "en": "the relevant user"
+          "en": ""
       },
       {
           "_key": "您的VIP特权将在",
@@ -2833,6 +2833,16 @@ define([], function () {
           "_key": "强",
           "zh-cn": "强",
           "en": "strong"
+      },
+      {
+          "_key": "少",
+          "zh-cn": "少",
+          "en": "less"
+      },
+      {
+          "_key": "多",
+          "zh-cn": "多",
+          "en": "more"
       },
       {
           "_key": "查看更多活动",
@@ -3177,7 +3187,17 @@ define([], function () {
       {
           "_key": "置顶内容",
           "zh-cn": "置顶内容",
-          "en": "Stick websites"
+          "en": "Top"
+      },
+      {
+          "_key": "置顶",
+          "zh-cn": "置顶",
+          "en": "Top"
+      },
+      {
+          "_key": "取消置顶",
+          "zh-cn": "取消置顶",
+          "en": "Un-Top"
       },
       {
           "_key": "点赞",
@@ -3217,17 +3237,17 @@ define([], function () {
       {
           "_key": "上传封面",
           "zh-cn": "上传封面",
-          "en": "Upload Cover"
+          "en": "Upload"
       },
       {
           "_key": "作品名",
           "zh-cn": "作品名",
-          "en": "Work Name"
+          "en": "Name"
       },
       {
           "_key": "作品链接",
           "zh-cn": "作品链接",
-          "en": "Work Link"
+          "en": "Link"
       },
       {
           "_key": "作品简介",
@@ -3247,7 +3267,7 @@ define([], function () {
       {
           "_key": "技能名称",
           "zh-cn": "技能名称",
-          "en": "Skill Name"
+          "en": "Name"
       },
       {
           "_key": "熟练度",
@@ -3272,12 +3292,12 @@ define([], function () {
       {
           "_key": "简介",
           "zh-cn": "简介",
-          "en": "Introduction"
+          "en": "Intro"
       },
       {
           "_key": "展示网址",
           "zh-cn": "展示网址",
-          "en": "Showing Link"
+          "en": "Link"
       },
       {
           "_key": "开始时间",
@@ -3437,7 +3457,7 @@ define([], function () {
       {
           "_key": "个人信息",
           "zh-cn": "个人信息",
-          "en": "Personal info."
+          "en": "Profile"
       },
       {
           "_key": "网站",
@@ -3757,7 +3777,7 @@ define([], function () {
     {
       "_key": "请正确填写好友邮箱地址!!!",
       "zh-cn": "请正确填写好友邮箱地址!!!",
-      "en": "Please input a correct email"
+      "en": "Please enter a valid email."
     },
     {
       "_key": "邀请邮件已发送给",
@@ -3828,22 +3848,22 @@ define([], function () {
     {
       "_key": "两次新密码不一致!!!",
       "zh-cn": "两次新密码不一致!!!",
-      "en": "New passwords don't match"
+      "en": "Password confirmation doesn't match."
     },
     {
       "_key": "密码修改成功",
       "zh-cn": "密码修改成功",
-      "en": "Password is successfully changed."
+      "en": "Successfully modified."
     },
     {
       "_key": "修改成功",
       "zh-cn": "修改成功",
-      "en": "Successfully changed."
+      "en": "Successfully Changed."
     },
     {
       "_key": "修改失败",
       "zh-cn": "修改失败",
-      "en": "Update failed"
+      "en": "Modification faild."
     },
     {
       "_key": "请至少选择一个要下载的文件！",
@@ -3939,7 +3959,12 @@ define([], function () {
     {
       "_key": "创建站点",
       "zh-cn": "创建站点",
-      "en": "create website "
+      "en": "create website"
+    },
+    {
+      "_key": "删除站点",
+      "zh-cn": "删除站点",
+      "en": "delete website"
     },
     {
       "_key": "删除历史功能开发中",
@@ -4027,11 +4052,6 @@ define([], function () {
       "en": "Remove from favorites successfully. "
     },
     {
-      "_key": "置顶内容",
-      "zh-cn": "置顶内容",
-      "en": "Sticky to top"
-    },
-    {
       "_key": "创建的网站",
       "zh-cn": "创建的网站",
       "en": "My websites"
@@ -4044,7 +4064,42 @@ define([], function () {
     {
       "_key": "关注的网页",
       "zh-cn": "关注的网页",
-      "en": "Followed websites"
+      "en": "Following websites"
+    },
+    {
+      "_key": "至",
+      "zh-cn": "至",
+      "en": "to"
+    },
+    {
+      "_key": "请输入需绑定的邮箱",
+      "zh-cn": "请输入需绑定的邮箱",
+      "en": "Required"
+    },
+    {
+      "_key": "请输入正确的邮箱",
+      "zh-cn": "请输入正确的邮箱",
+      "en": "Invalid"
+    },
+    {
+      "_key": "该邮箱已被绑定",
+      "zh-cn": "该邮箱已被绑定",
+      "en": "The email is binded with another account"
+    },
+    {
+      "_key": "请先发送验证码！",
+      "zh-cn": "请先发送验证码！",
+      "en": "Send the code first!"
+    },
+    {
+      "_key": "请填写验证码！",
+      "zh-cn": "请填写验证码！",
+      "en": "Input the code!"
+    },
+    {
+      "_key": "重新发送",
+      "zh-cn": "重新发送",
+      "en": "Send code!"
     }
   ];
 
