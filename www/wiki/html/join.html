@@ -6,6 +6,7 @@
         background-color: #FAFAFA;
         box-shadow: 0 4px 30px 0 rgba(19,61,112,.35);
         padding: 40px 0 60px;
+        min-width: 455px;
     }
     .join-form p{
         margin: 0;
@@ -53,6 +54,10 @@
     }
     .otherLogin img{
         margin-bottom: 5px;
+    }
+    .otherLogin .title span {
+      background: #FAFAFA;
+      padding: 0 8px;
     }
     .otherLogin .title:before{
         content: "";
@@ -218,7 +223,7 @@
                                       false: 'btn-primary'
                                   }[registerCellPhoneSMSCodeWait>0]" ng-disabled="registerCellPhoneSMSCodeWait > 0"
                           ng-click="sendSMSCode()">
-                          {{(registerCellPhoneSMSCodeWait == 0) ? translate("发送验证码") : "重新发送(" + registerCellPhoneSMSCodeWait + "s)"}}
+                          {{(registerCellPhoneSMSCodeWait == 0) ? translate("发送验证码") : translate("重新发送") + "(" + registerCellPhoneSMSCodeWait + "s)"}}
                       </div>
                   </div>
               </div>
@@ -231,7 +236,7 @@
             </div>
             <a ng-click="register()" class="btn btn-primary btn-block btn-lg" ng-disabled="!agree" translate="注册"></a>
             <div class="otherLogin">
-                <div class="title" translate="直接使用以下账号登录"></div>
+                <div class="title"><span translate="直接使用以下账号登录"></span></div>
                 <div ng-if="!isGlobalVersion">
                   <a ng-click="qqLogin()">
                     <img ng-src="{{imgsPath+'icon/wiki_qq.png'}}" alt="">

@@ -37,6 +37,7 @@
 			'angular-toggle-switch': libPathPrefix + 'angular-toggle-switch/angular-toggle-switch.min',
 			'angular-ui-select': libPathPrefix + 'angular-ui-select/select.min',
 			'angular-sanitize': libPathPrefix + 'angular-sanitize/angular-sanitize.min',
+			'ng-csv': libPathPrefix + 'ng-csv/ng-csv.min',
 			'angular-translate': libPathPrefix + 'angular-translate/angular-translate.min',
 			'bootstrap': libPathPrefix + "bootstrap/js/bootstrap.min",
 			'bluebird': libPathPrefix + "bluebird/bluebird.min",
@@ -107,6 +108,9 @@
 			},
 			'angular-sanitize': {
 				deps: ['angular']
+			},
+			'ng-csv': {
+				deps: ['angular', 'angular-sanitize']
 			},
 			'angular-translate': {
 				deps: ['angular']

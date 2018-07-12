@@ -21,13 +21,13 @@ define(['app',
         $scope.userProfileItemList = [
             {contentType:"userProfile", subContentType:"myProfile", flag:'myProfile', name:'我的资料'},
             {contentType:"userProfile", subContentType:"accountSafe", flag:'accountSafe', name:'账户安全'},
-            {contentType:"userProfile", subContentType:"myTrends", flag:'myTrends', name:'我的动态'},
+            // {contentType:"userProfile", subContentType:"myTrends", flag:'myTrends', name:'我的动态'},
             {contentType:"userProfile", subContentType:"myCollection", flag:'myCollection', name:'我的关注'},
             {contentType:"userProfile", subContentType:"myHistory", flag:'myHistory', name:'我的历史'},
             {contentType:"userProfile", subContentType:"myFans", flag:'myFans', name:'我的粉丝'},
             !$scope.isGlobalVersion && {contentType:"userProfile", subContentType:"realName", flag:'realName', name:'实名认证'},
             // {contentType:"userProfile", subContentType:"myPay", flag:'myPay', name:'消费记录'},
-            {contentType:"userProfile", subContentType:"dataSource", flag:'dataSource', name:'数据源'},
+            !$scope.isGlobalVersion && {contentType:"userProfile", subContentType:"dataSource", flag:'dataSource', name:'数据源'},
             // {contentType:"userProfile", subContentType:"invite", flag:'invite', name:'邀请注册'},
         ].filter(function(x) {return x});
 

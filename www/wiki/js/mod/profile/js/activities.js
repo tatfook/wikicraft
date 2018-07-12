@@ -28,7 +28,9 @@ define([
                     }
 
                     $scope.trendsList = (data.trendsObj.trendsList || []).map(function(item) {
-                      item.desc = (item.desc||'').replace('创建站点', $translate.instant('创建站点'))
+                      item.desc = (item.desc||'').replace('创建站点', ' ' + $translate.instant('创建站点') + ' ')
+                      item.desc = (item.desc||'').replace('删除站点', ' ' + $translate.instant('删除站点') + ' ')
+                      item.desc = (item.desc||'').replace('关注', ' ' + $translate.instant('关注') + ' ')
                       return item
                     });
 
