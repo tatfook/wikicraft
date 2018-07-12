@@ -70,7 +70,7 @@ local err, userThreeService = yield()
 local username = getUsername()
 if username then
 	if (userThreeService and userThreeService.username and userThreeService.username ~= username) then
-		return response:send({error=0, message="账号已被绑定:" .. userThreeService.username})
+		return response:send({error=2, message="账号已被绑定:" .. userThreeService.username})
 	end
 
 	db.user_three_service:insertOne({["+serviceId+serviceName"]={serviceId, serviceName}}, {username=username, serviceId=serviceId, serviceName=serviceName, serviceUsername=serviceUsername}, resume)
