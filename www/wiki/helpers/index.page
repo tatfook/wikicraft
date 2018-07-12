@@ -41,6 +41,8 @@ function init_env()
 	else
 		CURRENT_ENV = "www"
 	end
+	
+	--log(CURRENT_ENV)
 end
 
 init_env()
