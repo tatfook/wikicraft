@@ -60,7 +60,9 @@ define([
 
         //删除网站
         $scope.deleteWebsite = function (site) {
-            $scope.deleteWebsiteConfirmMsg = "确定删除 " + (site.displayName || site.name) + " 网站？";
+            $scope.deleteWebsiteConfirmMsg = $translate.instant("Remove_Confirm_Msg", {
+              deleteItemName: (site.displayName || site.name)
+            })
             $scope.deleteWebsiteConfirmSite = site;
             $scope.deleteWebsiteWithGitlabData = false;
             // console.log(site);

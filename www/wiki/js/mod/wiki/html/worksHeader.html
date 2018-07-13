@@ -10,7 +10,7 @@
 				</div>
 				<div style="position: relative">
 					<div>
-						<div>作者：{{userinfo.username}}</div>
+						<div>{{ "作者：" | translate }}{{userinfo.username}}</div>
 						<div>页数：{{siteinfo.pageCount || 0}}</div>
 						<!--div>阅读：0</div-->
 						<div>收藏：{{siteinfo.favoriteCount || 0}}</div>
