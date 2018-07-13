@@ -449,7 +449,7 @@
                                     <span class="iconfont icon-paixuleft" ng-class="{true: 'active'}[order.expression == 'updateDate' && order.reverse == false]"></span>
                                     <span class="iconfont icon-paixuright" ng-class="{true: 'active'}[order.expression == 'updateDate' && order.reverse == true]"></span>
                                 </td>
-                                <td class="operate-column" translate="操作"></td>
+                                <td class="operate-column"></td>
                             </tr>
                         </thead>
                     </table>
@@ -508,7 +508,7 @@
                                     <span class="iconfont icon-paixuleft" ng-class="{true: 'active'}[order.expression == 'updateDate' && order.reverse == false]"></span>
                                     <span class="iconfont icon-paixuright" ng-class="{true: 'active'}[order.expression == 'updateDate' && order.reverse == true]"></span>
                                 </td>
-                                <td class="operate-column" translate="操作"></td>
+                                <td class="operate-column"></td>
                             </tr>
                         </thead>
                     </table>
@@ -528,7 +528,7 @@
                                     <td class="size-column hidden-xs" title="{{file.filesize || sizeTransfer(file)}}">
                                         {{file.filesize || sizeTransfer(file)}}
                                     </td>
-                                    <td class="type-column hidden-xs" title="{{file.status}}" ng-init="getFileStatus(file)">{{file.status}}</td>
+                                    <td class="type-column hidden-xs" title="{{file.status | translate}}" ng-init="getFileStatus(file)">{{file.status | translate}}</td>
                                     <td class="date-column hidden-xs" title="{{file.updateDate}}">{{file.updateDate}}</td>
                                     <td class="operate-column">
                                         <span title="更新" ng-click="updateFile(file)"><img ng-src="{{getImageUrl('icon/wiki_upload.png', imgsPath)}}" alt=""></span>
