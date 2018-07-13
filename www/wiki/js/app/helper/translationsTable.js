@@ -1727,7 +1727,12 @@ define([], function () {
       {
           "_key": "作者",
           "zh-cn": "作者",
-          "en": "author"
+          "en": "Author"
+      },
+      {
+          "_key": "说明",
+          "zh-cn": "说明",
+          "en": "Intro"
       },
       {
           "_key": "网站",
@@ -3055,6 +3060,26 @@ define([], function () {
           "en": "Updating"
       },
       {
+          "_key": "更新",
+          "zh-cn": "更新",
+          "en": "Update"
+      },
+      {
+          "_key": "重命名",
+          "zh-cn": "重命名",
+          "en": "Rename"
+      },
+      {
+          "_key": "下载",
+          "zh-cn": "下载",
+          "en": "Download"
+      },
+      {
+          "_key": "删除",
+          "zh-cn": "删除",
+          "en": "Remove"
+      },
+      {
           "_key": "共",
           "zh-cn": "共",
           "en": "Total"
@@ -4099,7 +4124,7 @@ define([], function () {
     {
       "_key": "重新发送",
       "zh-cn": "重新发送",
-      "en": "Send code!"
+      "en": "Send"
     }
   ];
 

@@ -221,7 +221,7 @@
                                     <div class="work-item">
                                         <div class="work-msg">
                                             <h4><a class="title" ng-click="goWorksPage(works)" title="{{works.worksTitle}}">{{works.worksTitle || "未命名"}}</a></h4>
-                                            <p>作者： <a ng-click="goUserIndexPage(works)">{{works.worksUsername || ""}}</a></p>
+                                            <p>{{ "作者：" | translate }} <a ng-click="goUserIndexPage(works)">{{works.worksUsername || ""}}</a></p>
                                         </div>
                                         <div class="btn btn-primary" ng-click="removeWorks(works)">移除</div>
                                     </div>
@@ -243,7 +243,7 @@
                 <div role="tabpanel" class="tab-pane org-notify" id="org-notify">
                     <div class="org-notify-item" ng-repeat="apply in applyList" ng-hide="apply.isDeleted">
                         <div>
-                            <p><a class="stress" ng-click="goWorksPage(apply)">标题：{{apply.worksTitle}} </a><a ng-click="goUserIndexPage(apply)"> 作者：{{apply.worksUsername}}</a></p>
+                            <p><a class="stress" ng-click="goWorksPage(apply)">标题：{{apply.worksTitle}} </a><a ng-click="goUserIndexPage(apply)"> {{ "作者：" | translate }}{{apply.worksUsername}}</a></p>
                             <div class="notify-work">
                                 <img ng-src="{{ apply.worksLogo || imgsPath+'wiki_cover.jpg'}}" alt="" class="photo">
                                 <div class="intro">
