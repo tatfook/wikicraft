@@ -1727,7 +1727,12 @@ define([], function () {
       {
           "_key": "作者",
           "zh-cn": "作者",
-          "en": "author"
+          "en": "Author"
+      },
+      {
+          "_key": "说明",
+          "zh-cn": "说明",
+          "en": "Intro"
       },
       {
           "_key": "网站",
@@ -4099,7 +4104,7 @@ define([], function () {
     {
       "_key": "重新发送",
       "zh-cn": "重新发送",
-      "en": "Send code!"
+      "en": "Send"
     }
   ];
 
