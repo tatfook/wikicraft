@@ -48,20 +48,20 @@ local err, userThreeService = yield()
 local username = getUsername()
 if username then
 	if (userThreeService and userThreeService.username and userThreeService.username ~= username) then
-		return response:send({error=2, message="账号已被绑定:" .. userThreeService.username})
+		return response:send({error=2, token="token", message="账号已被绑定:" .. userThreeService.username})
 	end
 
 	db.user_three_service:insertOne({["+serviceId+serviceName"]={serviceId, serviceName}}, {username=username, serviceId=serviceId, serviceName=serviceName, token=accessToken, serviceUsername=serviceUsername},resume)
 	yield()
 
-	return response:send({token = token, error=0, message="OK"})
+	return response:send({token = "token", error=0, message="OK"})
 end
 
 -- 没有绑定
 if not userThreeService then
 	db.user_three_service:insertOne({["+serviceId+serviceName"]={serviceId, serviceName}}, {serviceId=serviceId, serviceName=serviceName, token=accessToken, serviceUsername=serviceUsername}, resume)
 	yield()
-	return response:send({error=0, data={serviceId=serviceId, access_token=accessToken, serviceName=serviceName}, message="user not found"})
+	return response:send({error=0, token="token", data={serviceId=serviceId, access_token=accessToken, serviceName=serviceName}, message="user not found"})
 else
 	if not userThreeService.serviceUsername then
 		db.user_three_service:updateOne({["+serviceId+serviceName"]={serviceId, serviceName}}, {serviceUsername=serviceUsername}, resume)
@@ -70,14 +70,14 @@ else
 end
 
 if not userThreeService.username then
-	return response:send({error=0, data={serviceId=serviceId, access_token=accessToken, serviceName=serviceName}, message="user not bind"})
+	return response:send({error=0, token="token", data={serviceId=serviceId, access_token=accessToken, serviceName=serviceName}, message="user not found"})
 end
 
 db.user:findOne({["+username"]={userThreeService.username}}, resume)
 local err, userinfo = yield()
 
 if not userinfo then
-	return response:send({error=0, data={serviceId=serviceId, access_token=accessToken, serviceName=serviceName}, message="user not found"})
+	return response:send({error=0, token="token", data={serviceId=serviceId, access_token=accessToken, serviceName=serviceName}, message="user not found"})
 end
 
 local token = encodeJWT({userId=userinfo._id, username=userinfo.username})
