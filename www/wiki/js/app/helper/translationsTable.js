@@ -3060,6 +3060,26 @@ define([], function () {
           "en": "Updating"
       },
       {
+          "_key": "更新",
+          "zh-cn": "更新",
+          "en": "Update"
+      },
+      {
+          "_key": "重命名",
+          "zh-cn": "重命名",
+          "en": "Rename"
+      },
+      {
+          "_key": "下载",
+          "zh-cn": "下载",
+          "en": "Download"
+      },
+      {
+          "_key": "删除",
+          "zh-cn": "删除",
+          "en": "Remove"
+      },
+      {
           "_key": "共",
           "zh-cn": "共",
           "en": "Total"
