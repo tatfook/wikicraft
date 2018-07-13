@@ -954,3 +954,24 @@ function website:api_export()
 
 	return list;
 end
+
+function website:api_fixDisplayName(params)
+	local errMsg = util:check_script_password(params)
+	if errMsg then errors:raise(400, errMsg) end
+
+	local limit = 10000000
+	self:db():find({_id={gt=0, limit=limit}}, resume)
+	local err, websites = yield()
+
+	for i, website in ipairs(websites) do
+		if website.name == 'paracraft' then
+			self:db():updateOne({_id = website._id}, {
+				displayName = website.name,
+				sitename = website.name,
+			}, resume)
+			yield()
+		end
+	end
+
+	return errors:wrap()
+end
