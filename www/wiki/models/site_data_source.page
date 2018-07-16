@@ -130,12 +130,13 @@ end
 -- 创建一个gitlab项目
 function site_data_source:api_createProject(params)
 	local git_server_config = util:getGitServerConfig()
-	local token = git_server_config["token"]
 	local gitlabHost = git_server_config["host"]
 	local apiBaseUrl = "http://" .. gitlabHost .. "/api/v4"
-	if (not params.projectName) then
+	if (not params.token) or (not params.projectName) then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
+
+	local token = params.token
 
 	params.projectName = string.lower(params.projectName)
 
