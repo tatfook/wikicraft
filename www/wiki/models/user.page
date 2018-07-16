@@ -556,6 +556,22 @@ function user:api_setemail(params)
 	]]
 end
 
+function user:api_passwordVerify(params) 
+	local username = getUsername();
+	
+	if not username or not params.password then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+
+	local password = self:encodePassword(params.password)
+	self:db():findOne({["+username+password"]={string.lower(username), password}}, resume)
+	local err, userinfo = yield()
+	local ok = false
+	if userinfo then ok = true end
+
+	return errors:wrap(nil, ok)
+end
+
 -- 登录
 function user:api_login(params)
 	if (not params.username) or (not params.password) then
