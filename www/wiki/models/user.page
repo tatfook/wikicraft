@@ -101,6 +101,16 @@ function user:encodePassword(password)
 	return ParaMisc.md5(password or "")
 end
 
+-- return true if password is correct
+function user:verifyPassword(password)
+	assert(password, 'password required')
+	local hashedPassword = getUser().password
+	if self:encodePassword(password) == hashedPassword then
+		return true
+	end
+	return false
+end
+
 -- 发短信
 function user:api_sendSms(params)
 	local ip = getpeername()
@@ -376,7 +386,6 @@ function user:api_verifyCellphoneTwo(params)
 	return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 end
 
-
 -- 邮箱验证1
 function user:api_verifyEmailOne(params)
 	self:ensureAuthenticated()
@@ -447,6 +456,38 @@ function user:api_verifyEmailTwo(params)
 	end
 
 	self:db():updateOne({["+username"]={username}}, {email=email}, resume)
+	local err, data = yield()
+
+	return errors:wrap(err)
+end
+
+function user:api_unbindCellphone(params)
+	if not params.password then
+		errors:raise(400, 'password required')
+	end
+
+	if not self:verifyPassword(params.password) then
+		errors:raise(401, 'invalid password')
+	end
+
+	local user = getUser()
+	self:db():updateOne({_id = user._id}, {cellphone = ''}, resume)
+	local err, data = yield()
+
+	return errors:wrap(err)
+end
+
+function user:api_unbindEmail(params)
+	if not params.password then
+		errors:raise(400, 'password required')
+	end
+
+	if not self:verifyPassword(params.password) then
+		errors:raise(401, 'invalid password')
+	end
+
+	local user = getUser()
+	self:db():updateOne({_id = user._id}, {email = ''}, resume)
 	local err, data = yield()
 
 	return errors:wrap(err)
@@ -751,8 +792,8 @@ function user:api_register(params)
 	local threeService = params.threeService
 	if threeService and threeService.serviceId and threeService.serviceName then
 		local userThreeServiceDB = models.user_three_service:new()
-    threeService.userId = userinfo._id
-    threeService.username = userinfo.username
+	threeService.userId = userinfo._id
+	threeService.username = userinfo.username
 		userThreeServiceDB:api_upsert(threeService)
 	end
 
