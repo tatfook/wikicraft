@@ -363,9 +363,12 @@ function user:api_verifyCellphoneTwo(params)
 			cellphone = cellphone,
 			verified = true
 		}
+		log("----------------------verifyCellphoneTwo-------------------")
+		log(username);
 		self:db():updateOne({["+username"]={username}}, {realNameInfo=realNameInfo}, resume)
 		local err, user = yield()
-		user.password = nil
+		log(user)
+		--user.password = nil
 
 		return errors:wrap(err, user)
 	end
@@ -551,6 +554,22 @@ function user:api_setemail(params)
 	self:db():updateOne({_id=params._id}, {email=email}, resume)
 	return errors:wrap(yield())
 	]]
+end
+
+function user:api_passwordVerify(params) 
+	local username = getUsername();
+	
+	if not username or not params.password then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+
+	local password = self:encodePassword(params.password)
+	self:db():findOne({["+username+password"]={string.lower(username), password}}, resume)
+	local err, userinfo = yield()
+	local ok = false
+	if userinfo then ok = true end
+
+	return errors:wrap(nil, ok)
 end
 
 -- 登录
