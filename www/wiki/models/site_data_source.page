@@ -129,15 +129,19 @@ end
 
 -- 创建一个gitlab项目
 function site_data_source:api_createProject(params)
-	if (not params.apiBaseUrl) or (not params.token) or (not params.projectName) then
+	local git_server_config = util:getGitServerConfig()
+	local token = git_server_config["token"]
+	local gitlabHost = git_server_config["host"]
+	local apiBaseUrl = "http://" .. gitlabHost .. "/api/v4"
+	if (not params.projectName) then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
 
 	params.projectName = string.lower(params.projectName)
 
 	System.os.GetUrl({
-		url=params.apiBaseUrl .. "/projects",
-		headers={['PRIVATE-TOKEN'] = params.token},
+		url=apiBaseUrl .. "/projects",
+		headers={['PRIVATE-TOKEN'] = token},
 		method = "GET",
 		qs = {
 			search=params.projectName,
@@ -160,8 +164,8 @@ function site_data_source:api_createProject(params)
 
 	-- 不存创建项目
 	System.os.GetUrl({
-		url=params.apiBaseUrl .. "/projects",
-		headers={['PRIVATE-TOKEN'] = params.token},
+		url=apiBaseUrl .. "/projects",
+		headers={['PRIVATE-TOKEN'] = token},
 		method="POST",
 		form={name=params.projectName, request_access_enabled=true, visibility= params.visibility or "public"}
 	}, resume)
@@ -182,8 +186,8 @@ function site_data_source:api_createProject(params)
 	local hookUrl = "http://" .. hostname .. "/api/wiki/models/data_source/gitlabWebhook"
 
 	System.os.GetUrl({
-		url=params.apiBaseUrl .. "/projects/" .. tostring(project.id) .. "/hooks",
-		headers={['PRIVATE-TOKEN'] = params.token},
+		url=apiBaseUrl .. "/projects/" .. tostring(project.id) .. "/hooks",
+		headers={['PRIVATE-TOKEN'] = token},
 		method="POST",
 		form={push_events=true, enable_ssl_verification=false,  url=hookUrl},
 	},resume)
