@@ -1061,6 +1061,7 @@ define([
                     }
 
                     $scope.abledToPlay = function (file) {
+                        if (!file.filename) { return false }
                         var file_type = file.filename.split(".").pop().toLowerCase()
                         var abled_types = [
                             'avi', 'rmvb', 'rm', 'asf', 'divx',
