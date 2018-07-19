@@ -12,7 +12,7 @@ define([
     'controller/newWebsiteController',
     'controller/editWebsiteController',
 ], function (app, Promise, util, storage, dataSource, htmlContent, newWebsiteHtmlContent, editWebsiteHtmlContent) {
-    app.registerController('websiteController', ['$rootScope', '$scope', 'Account', function ($rootScope, $scope, Account) {
+    app.registerController('websiteController', ['$rootScope', '$scope', '$translate', 'Account', function ($rootScope, $scope, $translate, Account) {
         // console.log("websiteController");
         $scope.websites = [];
 
@@ -34,7 +34,8 @@ define([
 
         //  创建网站
         $scope.goNewWebsitePage = function () {
-            util.html('#userCenterSubPage', newWebsiteHtmlContent);
+          location.pathname = '/wiki/wikieditor'
+          // util.html('#userCenterSubPage', newWebsiteHtmlContent);
         }
 
         // 编辑网站
@@ -59,7 +60,9 @@ define([
 
         //删除网站
         $scope.deleteWebsite = function (site) {
-            $scope.deleteWebsiteConfirmMsg = "确定删除 " + (site.displayName || site.name) + " 网站？";
+            $scope.deleteWebsiteConfirmMsg = $translate.instant("Remove_Confirm_Msg", {
+              deleteItemName: (site.displayName || site.name)
+            })
             $scope.deleteWebsiteConfirmSite = site;
             $scope.deleteWebsiteWithGitlabData = false;
             // console.log(site);

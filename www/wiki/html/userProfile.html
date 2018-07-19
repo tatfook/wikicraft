@@ -498,7 +498,7 @@
                     <img id='userPortraitId' ng-src="{{ user.portrait || imgsPath + 'wiki_default_profile.jpg'}}" alt=""
                          style="width: 100%;height: 100%;">
                 </div>
-                <p class="change-profile">{{ "修改头像" | translate }}<input onchange="angular.element(this).scope().fileUpload(event)"
+                <p class="change-profile"><input onchange="angular.element(this).scope().fileUpload(event)"
                                                      type="file"></p>
                 <a id="finish" class="btn btn-primary sr-only" translate="确 定"></a>
             </div>
@@ -644,33 +644,37 @@
                                 <div class="btn btn-block btn-outline" ng-click="showBindPhone()" ng-show="isBind('phone')" translate="解绑"></div>
                             </div>
                         </div>
-                        <div class="form-group">
-                            <label for="phone" class="control-label col-sm-3" translate="QQ绑定："></label>
-                            <div class="col-sm-6">
-                                <p class="form-control">{{getServiceUsername("qq")}}</p>
+
+                        <div ng-if="!isGlobalVersion">
+                            <div class="form-group">
+                                <label for="phone" class="control-label col-sm-3" translate="QQ绑定："></label>
+                                <div class="col-sm-6">
+                                    <p class="form-control">{{getServiceUsername("qq")}}</p>
+                                </div>
+                                <div class="col-sm-3">
+                                    <div class="btn btn-block " ng-class="getBindServiceClass('qq')" ng-click="bindThreeService('qq')">{{isBindThreeService("qq") ? translate("解绑") : translate("绑定")}}</div>
+                                </div>
                             </div>
-                            <div class="col-sm-3">
-                                <div class="btn btn-block " ng-class="getBindServiceClass('qq')" ng-click="bindThreeService('qq')">{{isBindThreeService("qq") ? translate("解绑") : translate("绑定")}}</div>
+                            <div class="form-group">
+                                <label for="phone" class="control-label col-sm-3" translate="微信绑定："></label>
+                                <div class="col-sm-6">
+                                    <p class="form-control">{{getServiceUsername("weixin")}}</p>
+                                </div>
+                                <div class="col-sm-3">
+                                    <div class="btn btn-block" ng-class="getBindServiceClass('weixin')" ng-click="bindThreeService('weixin')">{{isBindThreeService("weixin") ? translate("解绑") : translate("绑定")}}</div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="phone" class="control-label col-sm-3" translate="微博绑定："></label>
+                                <div class="col-sm-6">
+                                    <p class="form-control">{{getServiceUsername("xinlangweibo")}}</p>
+                                </div>
+                                <div class="col-sm-3">
+                                    <div class="btn btn-block" ng-class="getBindServiceClass('xinlangweibo')" ng-click="bindThreeService('xinlangweibo')">{{isBindThreeService("xinlangweibo") ? translate("解绑") : translate("绑定")}}</div>
+                                </div>
                             </div>
                         </div>
-                        <div class="form-group">
-                            <label for="phone" class="control-label col-sm-3" translate="微信绑定："></label>
-                            <div class="col-sm-6">
-                                <p class="form-control">{{getServiceUsername("weixin")}}</p>
-                            </div>
-                            <div class="col-sm-3">
-                                <div class="btn btn-block" ng-class="getBindServiceClass('weixin')" ng-click="bindThreeService('weixin')">{{isBindThreeService("weixin") ? translate("解绑") : translate("绑定")}}</div>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label for="phone" class="control-label col-sm-3" translate="微博绑定："></label>
-                            <div class="col-sm-6">
-                                <p class="form-control">{{getServiceUsername("xinlangweibo")}}</p>
-                            </div>
-                            <div class="col-sm-3">
-                                <div class="btn btn-block" ng-class="getBindServiceClass('xinlangweibo')" ng-click="bindThreeService('xinlangweibo')">{{isBindThreeService("xinlangweibo") ? translate("解绑") : translate("绑定")}}</div>
-                            </div>
-                        </div>
+
                         <div class="form-group">
                             <label for="phone" class="control-label col-sm-3" translate="Github绑定："></label>
                             <div class="col-sm-6">
@@ -750,11 +754,11 @@
                                     <a ng-click="goUserPage(x.userinfo.username)">{{x.userinfo.displayName || x.userinfo.username}}</a>
                                     <!--<span class="pull-right info" translate="关注于2017-03-02"></span>-->
                                 </h4>
-                                <p>作者：{{x.userinfo.username}}</p>
-                                <p>说明：{{x.siteinfo.desc || translate("暂无说明")}}</p>
+                                <p>{{ "作者" | translate }}：{{x.userinfo.username}}</p>
+                                <p>{{ "说明" | translate }}：{{x.siteinfo.desc || translate("暂无说明")}}</p>
                                 <div class="col-md-12 info">
                                     <div class="col-md-6">
-                                        <img ng-src="{{imgsPath+'icon/wiki_pageview.png'}}" class="icon" alt="">{{ "浏览量" | translate }}{{x.userinfo.visitCount || 0}}
+                                        <img ng-src="{{imgsPath+'icon/wiki_pageview.png'}}" class="icon" alt="">{{x.userinfo.visitCount || 0}}
                                     </div>
                                     <div class="col-md-6">
                                         <span class="iconfont icon-dianzan text-danger"></span> {{x.userinfo.fansCount || 0}}
@@ -764,8 +768,8 @@
                         </div>
                     </div>
                     <div class="pagination-box" ng-show="userList.length > 0">
-                        <ul uib-pagination ng-change="collectionPageChanged()" items-per-page='pageSize' previous-text="上一页"
-                            next-text="下一页" total-items="totalItems" ng-model="currentPage" max-size="5"
+                        <ul uib-pagination ng-change="collectionPageChanged()" items-per-page='pageSize' previous-text="{{ '上一页' | translate }}"
+                            next-text="{{ '下一页' | translate }}" total-items="totalItems" ng-model="currentPage" max-size="5"
                             class="pagination-sm" boundary-link-numbers="true">
                         </ul>
                     </div>
@@ -783,11 +787,11 @@
                                     <a ng-click="goSitePage(x.siteinfo.username, x.siteinfo.name)">{{x.siteinfo.displayName || x.siteinfo.name || translate("站点名未知")}}</a>
                                     <!--<span class="pull-right info" translate="关注于2017-03-02"></span>-->
                                 </h4>
-                                <p>作者：{{x.siteinfo.username || translate("作者未知")}}</p>
-                                <p>说明：{{x.siteinfo.desc || translate("暂无简介")}}</p>
+                                <p>{{ "作者" | translate }}：{{x.siteinfo.username || translate("作者未知")}}</p>
+                                <p>{{ "说明" | translate }}：{{x.siteinfo.desc || translate("暂无简介")}}</p>
                                 <div class="col-md-12 info">
                                     <div class="col-md-6">
-                                        <img ng-src="{{imgsPath+'icon/wiki_pageview.png'}}" class="icon" alt="">{{ "浏览量" | translate }}{{x.siteinfo.visitCount || 0}}
+                                        <img ng-src="{{imgsPath+'icon/wiki_pageview.png'}}" class="icon" alt="">{{x.siteinfo.visitCount || 0}}
                                     </div>
                                     <div class="col-md-6">
                                         <span class="iconfont icon-dianzan text-danger"></span> {{x.siteinfo.favoriteCount || 0}}
@@ -797,8 +801,8 @@
                         </div>
                     </div>
                     <div class="pagination-box" ng-show="siteList.length > 0">
-                        <ul uib-pagination ng-change="collectionPageChanged()" items-per-page='pageSize' previous-text="上一页"
-                            next-text="下一页" total-items="totalItems" ng-model="currentPage" max-size="5"
+                        <ul uib-pagination ng-change="collectionPageChanged()" items-per-page='pageSize' previous-text="{{ '上一页' | translate }}"
+                            next-text="{{ '下一页' | translate }}" total-items="totalItems" ng-model="currentPage" max-size="5"
                             class="pagination-sm" boundary-link-numbers="true">
                         </ul>
                     </div>
@@ -821,11 +825,11 @@
                 <img ng-src="{{site.siteinfo.logoUrl || imgsPath + 'wiki_works.jpg'}}" alt="">
                 <div class="text">
                     <h4 class="ellipsis-1"><a href="{{site.url}}">{{site.siteinfo.name}}</a></h4>
-                    <p class="ellipsis-1"><a ng-href="{{'/'+site.siteinfo.username}}"></a>作者：{{site.siteinfo.displayName || site.siteinfo.username}}</p>
+                    <p class="ellipsis-1"><a ng-href="{{'/'+site.siteinfo.username}}"></a>{{"作者" | translate}}：{{site.siteinfo.displayName || site.siteinfo.username}}</p>
                     <!--<p class="ellipsis-1">页数：{{site.siteinfo.pageCount || 1}}</p>-->
                     <div class="col-md-12 info">
                         <div class="col-sm-6">
-                            <img ng-src="{{imgsPath+'icon/wiki_pageview.png'}}" class="icon" alt="">{{ "浏览量" | translate }}{{site.siteinfo.visitCount}}
+                            <img ng-src="{{imgsPath+'icon/wiki_pageview.png'}}" class="icon" alt="">{{site.siteinfo.visitCount}}
                         </div>
                         <div class="col-sm-6">
                             <span class="iconfont icon-dianzan text-danger"></span> {{site.siteinfo.favoriteCount}}
@@ -837,8 +841,8 @@
             </div>
         </div>
         <div class="pagination-box" ng-show="visitHistoryList.length > 0">
-            <ul uib-pagination ng-change="getUserVisitHistory()" items-per-page='pageSize' previous-text="上一页"
-                next-text="下一页" total-items="totalItems" ng-model="currentPage" max-size="5"
+            <ul uib-pagination ng-change="getUserVisitHistory()" items-per-page='pageSize' previous-text="{{ '上一页' | translate }}"
+                next-text="{{ '下一页' | translate }}" total-items="totalItems" ng-model="currentPage" max-size="5"
                 class="pagination-sm" boundary-link-numbers="true"></ul>
         </div>
     </div>
@@ -894,7 +898,7 @@
                                 }[realNameCellPhoneSMSCodeWait>0]"
                                 ng-disabled="realNameCellPhoneSMSCodeWait > 0"
                                 ng-click="sendRealNameCellPhoneSMSCode()"
-                            >{{(realNameCellPhoneSMSCodeWait == 0) ? translate("发送验证码") : "重新发送(" + realNameCellPhoneSMSCodeWait + "s)"}}</div>
+                            >{{(realNameCellPhoneSMSCodeWait == 0) ? translate("发送验证码") : translate("重新发送") +"(" + realNameCellPhoneSMSCodeWait + "s)"}}</div>
                         </div>
                         <div class="col-sm-9 col-sm-offset-3">
                             <p class="text-danger">{{errorMsg}}</p>
@@ -926,7 +930,7 @@
                     <label class="col-xs-2 control-label" translate="默认数据源："></label>
                     <div class="col-xs-7">
                         <select class="form-control" ng-model="defaultDataSourceName" ng-change="changeDefaultDataSource()">
-                            <option ng-repeat="x in dataSourceList" value="{{x.name}}">{{x.name || '内置GItlab'}}</option>
+                            <option ng-repeat="x in dataSourceList" value="{{x.name}}">{{(x.name || '内置gitlab') | translate}}</option>
                         </select>
                     </div>
                 </div>
@@ -1005,52 +1009,6 @@
         </div>
     </div>
 
-    <!--消费记录-->
-    <!--<div ng-show="showItem == 'myPay'" class="col-xs-12 main-content panel">-->
-    <!--<div class="panel-heading clearfix">-->
-    <!--<div style="float:left" translate="消费记录"></div>-->
-    <!--<div style="float:right">余额{{balance/100 || "0"}}元</div>-->
-    <!--</div>-->
-    <!--<div class="panel-body mypay-panel">-->
-    <!--<table class="table mypay-table">-->
-    <!--<tr ng-repeat="item in myPays">-->
-    <!--<td class="icon-time">-->
-    <!--<span class="icon iconfont" ng-class="{true:'icon-shangdian1', false: 'icon-xiaofeidaikuan'}[item.method == 'spend']"></span>-->
-    <!--<span class="time">{{item.create_date}}</span>-->
-    <!--</td>-->
-    <!--<td>{{item.subject}}</td>-->
-    <!--<td class="money">{{item.method == 'Spend' ? "-" : "+"}} &yen; {{item.price < 0 ? -item.price/100 : item.price/100}}</td>-->
-    <!--<td>{{payStatus[item.status]}}</td>-->
-    <!--&lt;!&ndash;<td ng-show="item.code == 0">兑换成功 <sapn class="iconfont icon-check-mark text-success"></sapn></td>-->
-    <!--<td ng-show="item.code != 0">兑换失败 <sapn class="text-danger">&times;</sapn></td>&ndash;&gt;-->
-    <!--</tr>-->
-    <!--</table>-->
-    <!--</div>-->
-    <!--</div>-->
-
-    <!--邀请注册-->
-    <!--<div ng-show="showItem == 'invite'" class="col-md-10 panel main-content">-->
-    <!--<div class="panel-heading">-->
-    <!--邀请注册-->
-    <!--</div>-->
-    <!--<div class="panel-body">-->
-    <!--<form class="form-horizontal" role="form">-->
-    <!--<div class="form-group sr-only form-group-lg">-->
-    <!--<legend translate="邀请注册表单"></legend>-->
-    <!--</div>-->
-    <!--<div class="form-group form-group-lg">-->
-    <!--<label for="email" class="control-label col-sm-2" translate="好友email："></label>-->
-    <!--<div class="col-sm-4">-->
-    <!--<input type="email" ng-model="friendMail" class="form-control">-->
-    <!--</div>-->
-    <!--<div class="col-sm-3">-->
-    <!--<div ng-click="inviteFriend()" class="btn btn-primary btn-md" translate="邀 请"></div>-->
-    <!--</div>-->
-    <!--</div>-->
-    <!--</form>-->
-    <!--</div>-->
-    <!--</div>-->
-
     <!--邮箱绑定弹窗-->
     <div class="modal  email-model" id="emailModal" tabindex="-1" role="dialog" aria-labelledby="emailModalLabel">
         <div class="modal-dialog" role="document">
@@ -1067,7 +1025,7 @@
                                 <input type="text" class="form-control" ng-model="emailVerifyCode">
                             </div>
                             <div class="col-sm-3 verify-btn">
-                                <div class="btn btn-block" ng-class="{true:'btn-default', false:'btn-primary'}[emailWait>0]" ng-disabled="wait > 0" ng-click="sendEmail(userEmail.trim())">{{(emailWait == 0) ? translate("发送验证码") : "重新发送(" + emailWait + "s)"}}</div>
+                                <div class="btn btn-block" ng-class="{true:'btn-default', false:'btn-primary'}[emailWait>0]" ng-disabled="wait > 0" ng-click="sendEmail(userEmail.trim())">{{(emailWait == 0) ? translate("发送验证码") : translate("重新发送") +"(" + emailWait + "s)"}}</div>
                             </div>
                             <div class="col-sm-9 col-sm-offset-3">
                                 <p class="text-danger">{{errorMsg}}</p>
@@ -1096,7 +1054,8 @@
                         <div class="form-group">
                             {{ "每个手机号码每天最多发送5条短信，超出将被锁定，第二天自动解除，请谨慎操作。" | translate }}<br/><br/>
                         </div>
-                        <div class="form-group form-group-lg">
+                        <!-- remove useless imageCode -->
+                        <!-- <div class="form-group form-group-lg">
                             <label class="control-label col-sm-3" translate="图片验证码："></label>
                             <div class="col-sm-6">
                                 <input type="text" class="form-control" ng-model="imageCode">
@@ -1108,14 +1067,14 @@
                             <div class="col-sm-9 col-sm-offset-3">
                                 <p class="text-danger">{{imageCodeErrMsg}}</p>
                             </div>
-                        </div>
+                        </div> -->
                         <div class="form-group form-group-lg">
                             <label class="control-label col-sm-3" translate="短信验证码："></label>
                             <div class="col-sm-6">
                                 <input type="text" class="form-control" ng-model="smsCode">
                             </div>
                             <div class="col-sm-3 verify-btn">
-                                <div class="btn btn-block" ng-class="{true:'btn-default', false:'btn-primary'}[wait>0]" ng-disabled="wait > 0" ng-click="bindPhone()">{{(wait == 0) ? translate("发送验证码") : "重新发送(" + wait + "s)"}}</div>
+                                <div class="btn btn-block" ng-class="{true:'btn-default', false:'btn-primary'}[wait>0]" ng-disabled="wait > 0" ng-click="bindPhone()">{{(wait == 0) ? translate("发送验证码") : translate("重新发送") +"(" + wait + "s)"}}</div>
                             </div>
                             <div class="col-sm-9 col-sm-offset-3">
                                 <p class="text-danger">{{errorMsg}}</p>

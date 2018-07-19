@@ -675,7 +675,7 @@ function website:api_visitWebsite(params)
 	
 	-- 更新作品的访问记录数
 	local websiteWorksModel = models.website_works:new()
-	websiteWorksModel:api_updateVisitCount({worksUrl = params.url})
+	websiteWorksModel:api_updateVisitCount({websiteId = params.websiteId, worksUrl = params.url})
 
 	return errors:wrap()
 end
@@ -726,7 +726,14 @@ function website:api_getDetailInfo(params)
 		end
 	end
 
-	self:api_visitWebsite(params)
+	if siteinfo then
+		self:api_visitWebsite({
+			username = params.username,
+			sitename = params.sitename,
+			url = params.url,
+			websiteId = siteinfo._id,
+		})
+	end
 
 	return errors:wrap(nil, {userinfo=userinfo, siteinfo=siteinfo})
 end
@@ -936,4 +943,35 @@ function website:wrap_search_result(result)
 
 	wrapped_result.hits = hits
 	return wrapped_result
+end
+
+
+function website:api_export() 
+	local limit = 1000000
+	local websiteDB = models.website:new()
+	websiteDB:db():find({_id={gt=0, limit=limit}}, resume)
+	local _, list = yield()
+
+	return list;
+end
+
+function website:api_fixDisplayName(params)
+	local errMsg = util:check_script_password(params)
+	if errMsg then errors:raise(400, errMsg) end
+
+	local limit = 10000000
+	self:db():find({_id={gt=0, limit=limit}}, resume)
+	local err, websites = yield()
+
+	for i, website in ipairs(websites) do
+		if website.name == 'paracraft' then
+			self:db():updateOne({_id = website._id}, {
+				displayName = website.name,
+				sitename = website.name,
+			}, resume)
+			yield()
+		end
+	end
+
+	return errors:wrap()
 end

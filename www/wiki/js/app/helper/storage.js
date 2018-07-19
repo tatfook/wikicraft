@@ -24,6 +24,7 @@ define([
     }
 
     var storage = {};
+    var onceStoragePrefix = '_onceStorage_'
     storage.localStorage = window.localStorage || fakeStorage;
     storage.sessionStorage = crossTabsMemoryStorage;
 
@@ -43,6 +44,17 @@ define([
 
     storage.localStorageRemoveItem = function (key) {
         storage.localStorage.removeItem(key);
+    }
+
+    storage.onceStorageSetItem = function (key, value) {
+      key = onceStoragePrefix + key
+      storage.localStorageSetItem(key, value)
+    }
+    storage.onceStorageGetItem = function (key, value) {
+      key = onceStoragePrefix + key
+      var result = storage.localStorageGetItem(key)
+      storage.localStorageRemoveItem(key)
+      return result
     }
 
     storage.localStorageClear = function () {

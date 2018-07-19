@@ -333,7 +333,7 @@
                 </div>
                 <div class="col-xs-4" ng-click="goEditorPage()">
                     <img ng-src="{{imgsPath + 'icon/wiki_editor.png'}}" alt="">
-                    <p translate="页面编辑器"></p>
+                    <p translate="网站编辑器"></p>
                 </div>
                 <!--<p class="help" ng-click="goHelpPage()"><span class="icon">?</span> 知识库</p>-->
             </div>
@@ -360,7 +360,7 @@
                                 <img ng-src="{{x.logoUrl || getImageUrl('wiki_cover.jpg',imgsPath)}}" alt="">
                                 <div class="text">
                                     <h4><a ng-click="goUserSite(x)">{{x.displayName || x.name}}</a></h4>
-                                    <p>作者：{{x.username}} </p>
+                                    <p>{{ "作者：" | translate }}{{x.username}} </p>
                                     <p class="ellipsis-1" title="{{x.desc}}">{{x.desc}}</p>
                                     <div class="col-md-12 info">
                                         <div class="col-md-6">
@@ -380,7 +380,7 @@
                                 <img ng-src="{{x.logoUrl || getImageUrl('wiki_cover.jpg',imgsPath)}}" alt="">
                                 <div class="text">
                                     <h4><a ng-click="goUserSite(x)">{{x.name}}</a></h4>
-                                    <p>作者：{{x.username}} </p>
+                                    <p>{{ "作者：" | translate }}{{x.username}} </p>
                                     <p class="ellipsis-1" title="{{x.desc}}">{{x.desc || translate("暂无简介")}}</p>
                                     <div class="col-md-12 info">
                                         <div class="col-md-6">
@@ -445,7 +445,7 @@
                                 <img ng-src="{{x.logoUrl || getImageUrl('wiki_cover.jpg',imgsPath)}}" alt="">
                                 <div class="text">
                                     <h4><a ng-click="goUserIndexPage(x.userinfo.username)">{{x.userinfo.displayName}}</a></h4>
-                                    <p>{{ "作者：" | translate }} <a class="text-muted" ng-click="goUserIndexPage(x.userinfo.username)">{{x.userinfo.username}}</a></p>
+                                    <p>{{ "{{ "作者：" | translate }}" | translate }} <a class="text-muted" ng-click="goUserIndexPage(x.userinfo.username)">{{x.userinfo.username}}</a></p>
                                     <p class="ellipsis-1" title="{{x.userinfo.desc}}">{{x.userinfo.desc || translate("暂无简介")}}</p>
                                     <div class="col-md-12 info">
                                         <div class="col-md-6">
@@ -465,7 +465,7 @@
                                 <img ng-src="{{x.logoUrl || getImageUrl('wiki_cover.jpg',imgsPath)}}" alt="">
                                 <div class="text">
                                     <h4><a ng-click="goUserSite(x)">{{x.name || translate("作品名未知")}}</a></h4>
-                                    <p>作者：{{x.username || translate("作者未知")}} </p>
+                                    <p>{{ "作者：" | translate }}{{x.username || translate("作者未知")}} </p>
                                     <p title="x.desc" class="ellipsis-1">{{x.desc || translate("暂无描述")}}</p>
                                     <div class="col-md-12 info">
                                         <div class="col-md-6">

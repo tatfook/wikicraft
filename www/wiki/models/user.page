@@ -22,6 +22,7 @@ include_once("./user_three_service.page")
 include_once("./pages_stars.page")
 include_once("./elasticsearch.page")
 include_once("./validators.page")
+include_once("./convert.page")
 
 local user = inherit(models.abstract.base, gettable("models.user"))
 user.db_name = "user"
@@ -98,6 +99,16 @@ end
 
 function user:encodePassword(password)
 	return ParaMisc.md5(password or "")
+end
+
+-- return true if password is correct
+function user:verifyPassword(password)
+	assert(password, 'password required')
+	local hashedPassword = getUser().password
+	if self:encodePassword(password) == hashedPassword then
+		return true
+	end
+	return false
 end
 
 -- 发短信
@@ -362,16 +373,18 @@ function user:api_verifyCellphoneTwo(params)
 			cellphone = cellphone,
 			verified = true
 		}
+		log("----------------------verifyCellphoneTwo-------------------")
+		log(username);
 		self:db():updateOne({["+username"]={username}}, {realNameInfo=realNameInfo}, resume)
 		local err, user = yield()
-		user.password = nil
+		log(user)
+		--user.password = nil
 
 		return errors:wrap(err, user)
 	end
 
 	return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 end
-
 
 -- 邮箱验证1
 function user:api_verifyEmailOne(params)
@@ -443,6 +456,38 @@ function user:api_verifyEmailTwo(params)
 	end
 
 	self:db():updateOne({["+username"]={username}}, {email=email}, resume)
+	local err, data = yield()
+
+	return errors:wrap(err)
+end
+
+function user:api_unbindCellphone(params)
+	if not params.password then
+		errors:raise(400, 'password required')
+	end
+
+	if not self:verifyPassword(params.password) then
+		errors:raise(401, 'invalid password')
+	end
+
+	local user = getUser()
+	self:db():updateOne({_id = user._id}, {cellphone = ''}, resume)
+	local err, data = yield()
+
+	return errors:wrap(err)
+end
+
+function user:api_unbindEmail(params)
+	if not params.password then
+		errors:raise(400, 'password required')
+	end
+
+	if not self:verifyPassword(params.password) then
+		errors:raise(401, 'invalid password')
+	end
+
+	local user = getUser()
+	self:db():updateOne({_id = user._id}, {email = ''}, resume)
 	local err, data = yield()
 
 	return errors:wrap(err)
@@ -552,6 +597,22 @@ function user:api_setemail(params)
 	]]
 end
 
+function user:api_passwordVerify(params) 
+	local username = getUsername();
+	
+	if not username or not params.password then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+
+	local password = self:encodePassword(params.password)
+	self:db():findOne({["+username+password"]={string.lower(username), password}}, resume)
+	local err, userinfo = yield()
+	local ok = false
+	if userinfo then ok = true end
+
+	return errors:wrap(nil, ok)
+end
+
 -- 登录
 function user:api_login(params)
 	if (not params.username) or (not params.password) then
@@ -616,7 +677,8 @@ function user:api_bindThreeService(params)
 	end
 	-- 用户存在则绑定
 	local userThreeServiceDB = models.user_three_service:new()
-	threeService.userId = userinfo._id
+  threeService.userId = userinfo._id
+  threeService.username = params.username
 	userThreeServiceDB:api_upsert(threeService)
 	userinfo.password = nil
 
@@ -730,7 +792,8 @@ function user:api_register(params)
 	local threeService = params.threeService
 	if threeService and threeService.serviceId and threeService.serviceName then
 		local userThreeServiceDB = models.user_three_service:new()
-		threeService.userId = userinfo._id
+	threeService.userId = userinfo._id
+	threeService.username = userinfo.username
 		userThreeServiceDB:api_upsert(threeService)
 	end
 
@@ -1167,6 +1230,10 @@ function user:api_getGitlabAccount(params)
 	return errors:wrap(nil, {username=dataSource.dataSourceUsername, password=dataSource.dataSourcePassword})
 end
 
+function user:api_tokeninfo(params) 
+	return getTokenInfo()
+end
+
 -- 用户是否登录
 function user:api_isLogin(params)
 	--log(request.headers, true)
@@ -1374,6 +1441,14 @@ function user:refuseLockedUser()
 	errors:raise(401, "您的帐号已被封禁")
 end
 
+function user:api_export() 
+	local limit = 1000000
+	local userDB = models.user:new()
+	userDB:db():find({_id={gt=0, limit=limit}}, resume)
+	local _, list = yield()
+
+	return list;
+end
 
 function user:api_test()
 	user:refuseLockedUser()

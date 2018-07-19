@@ -10,7 +10,7 @@ define([
     'text!wikimod/profile/html/contribution.html'
 ], function (app, util, htmlContent) {
     function registerController(wikiBlock) {
-        app.registerController("activenessCtrl", ['$scope',function ($scope) {
+        app.registerController("activenessCtrl", ['$scope', '$translate',function ($scope, $translate) {
             var init = function(userinfo){
                 var username = $scope.urlObj.username.toLowerCase();;
                 if (!username && userinfo && userinfo.username) {
@@ -28,7 +28,9 @@ define([
                     }
 
                     $scope.active = data.activeObj;
-                    contributionCalendar("contributeCalendar",$scope.active);
+                    var payload = $scope.active || {};
+                    payload.languageLocaleIsForGlobalUser = config.languageLocaleIsForGlobalUser;
+                    contributionCalendar("contributeCalendar", payload);
                 });
             }
             $scope.$watch('$viewContentLoaded', function () {

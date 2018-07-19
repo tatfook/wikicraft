@@ -41,6 +41,8 @@ function init_env()
 	else
 		CURRENT_ENV = "www"
 	end
+	
+	--log(CURRENT_ENV)
 end
 
 init_env()
@@ -58,7 +60,7 @@ WIKI_DB_PATH="database/www/"
 -- json web token  encode/decode
 function encodeJWT(payload, expire)
 	local secret = KEEPWORK["config"][CURRENT_ENV]["wiki"]["secret"]
-	return jwt.encode(payload, secret["token_secret"], nil, expire or secret["token_expire"] or 3600)
+	return jwt.encode(payload, secret["token_secret"], "HS256", expire or secret["token_expire"] or 3600)
 end
 
 function decodeJWT(token)
@@ -80,7 +82,7 @@ function setAuthCookie(token)
 end
 
 function getTokenInfo()
-	local authHeader = request:header('Authorization') 
+	local authHeader = request:header('Authorization') or request:header("authorization")
 	local token = request:get_cookie("token")
 	if authHeader then
 		token = authHeader:match("%s+(%S+)")
@@ -271,7 +273,7 @@ end
 function get_aho_corasick()
 	local result = mem_cache:get("aho_corasick")
 
-	if not t then
+	if not result then
 		local ac = KEEPWORK["aho_corasick"]
 		local words = load_sensitive_word()
 		result = ac.build(words)

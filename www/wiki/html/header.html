@@ -434,6 +434,9 @@
     }
 </style>
 <style>
+    .url-header{
+      display: none;
+    }
     .url-header .nav-bread-crumb {
         /* max-width: 230px; */
         /* white-space: nowrap; */
@@ -561,7 +564,7 @@
                             </a>
                             <div class="dropdown-menu dropdown-menu-center" aria-labelledby="dropdownMenu1">
                                 <h5 title="{{user.displayName || user.username}}" class="title">{{user.displayName || user.username}}</h5>
-                                <div class="level clearfix">
+                                <div ng-if="!isGlobalVersion" class="level clearfix">
                                     <p class="info clearfix">
                                         <span class="pull-left" translate="等级0"></span>
                                         <span class="pull-right">0/2536</span>
@@ -593,7 +596,7 @@
                                     <li>
                                         <a ng-click="goUserCenterPage('userProfile')" translate="设置中心"></a>
                                     </li>
-                                    <li>
+                                    <li ng-if="!isGlobalVersion">
                                         <a ng-click="goUserCenterPage('services', 'myVIP')">VIP</a>
                                     </li>
                                     <li>
@@ -605,9 +608,10 @@
                                 </div>
                             </div>
                         </li>
-                        <li class="dropdown">
-                            <a href="#" ng-click="clickMyTrends()" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">{{'动态' | translate}}(
-                                <span>{{trendsCount || 0}}</span>)</a>
+                        <!-- <li class="dropdown">
+                            <a href="#" ng-click="clickMyTrends()" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                              {{'动态' | translate}}(<span>{{trendsCount || 0}}</span>)
+                            </a>
                             <div class="dropdown-menu dropdown-menu-center news-dropdown-menu" aria-labelledby="dropdownMenu1">
                                 <div class="tab-box">
                                     <ul class="nav nav-tabs" role="tablist">
@@ -623,7 +627,6 @@
                                         </li>
                                     </ul>
                                 </div>
-                                <!-- Tab panes -->
                                 <div class="tab-content">
                                     <div role="tabpanel" class="tab-pane active" id="userTrends">
                                         <p class="info" translate="HEADER_ACTIVITIES_TIP" translate-values="{trendsCount: trendsCount}"></p>
@@ -635,7 +638,7 @@
                                     </div>
                                 </div>
                                 <div class="dropdown-footer" ng-click="goUserCenterPage('userProfile','myTrends')">
-                                    <a href="#">查看更多></a>
+                                    <a href="#">{{ "查看更多" | translate }}></a>
                                 </div>
                             </div>
                         </li>
@@ -649,7 +652,7 @@
                                     </li>
                                 </ul>
                                 <div class="dropdown-footer" ng-click="goUserCenterPage('userProfile','myCollection')">
-                                    <a href="#">查看更多></a>
+                                    <a href="#">{{ "查看更多" | translate }}></a>
                                 </div>
                             </div>
                         </li>
@@ -663,10 +666,10 @@
                                     </li>
                                 </ul>
                                 <div class="dropdown-footer" ng-click="goUserCenterPage('userProfile','myHistory')">
-                                    <a href="#">查看更多></a>
+                                    <a href="#">{{ "查看更多" | translate }}></a>
                                 </div>
                             </ul>
-                        </li>
+                        </li> -->
                     </ul>
                     <ul class="nav navbar-nav navbar-left" ng-show="isLogin">
                         <li ng-hide="isSearch" class="hidden-xs hidden-sm search-bar" ng-class="{active:stretch}">
@@ -686,45 +689,6 @@
                                 <span class="input-group-addon glyphicon glyphicon-search" ng-click="goSearchPage()"></span>
                             </div>
                         </li>
-                        <!--<li id="js-prev-container" class="nav-bread-crumb">-->
-                        <!--<ol id="js-prev-ellipsis" class="prev-ellipsis"><li>...</li></ol>-->
-                        <!--<ol id="js-prev-content" class="breadcrumb">-->
-                        <!--<li><a ng-click="goUserPage()">{{urlObj.username || ''}}</a></li>-->
-                        <!--<li class="dropdown" ng-show="urlObj.sitename">-->
-                        <!--<a href="#" ng-click="clickSiteList()" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"-->
-                        <!--aria-expanded="true">{{urlObj.sitename || ''}}</a>-->
-                        <!--<ul class="dropdown-menu nodot-dropdown" aria-labelledby="dropdownMenu1">-->
-                        <!--<li ng-repeat="site in userSiteList">-->
-                        <!--<a ng-click="selectSite(site)">{{site.name}}</a>-->
-                        <!--</li>-->
-                        <!--</ul>-->
-                        <!--</li>-->
-                        <!--<li class="dropdown" ng-show="urlObj.pagename">-->
-                        <!--<a href="#" ng-click="clickPageList()" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"-->
-                        <!--aria-expanded="true">{{urlObj.pagename || ''}}</a>-->
-                        <!--<ul class="dropdown-menu nodot-dropdown" aria-labelledby="dropdownMenu1">-->
-                        <!--<li ng-repeat="page in userSitePageList">-->
-                        <!--<a ng-click="selectPage(page)">{{page.pagename}}</a>-->
-                        <!--</li>-->
-                        <!--</ul>-->
-                        <!--</li>-->
-                        <!--</ol>-->
-                        <!--</li>-->
-                        <!-- <li class="icon" ng-show="isIconShow">
-                            <img ng-src="{{imgsPath+'icon/wiki_edit.png'}}" alt="" ng-click="goWikiEditorPage()">
-                        </li>
-                        <li class="icon dropdown share-dropdown" ng-show="isIconShow">
-                            <img class="dropdown-toggle" ng-src="{{imgsPath+'icon/wiki_share.png'}}" ng-click="clickShare()" alt="" data-toggle="dropdown"
-                                aria-haspopup="true" aria-expanded="true">
-                            <div class="dropdown-menu">
-                                <div class="social-share" data-title="{{tit}}"></div>
-                            </div>
-                        </li>
-                        <li class="icon collect-icon" ng-show="isIconShow">
-                            <i ng-show="isCollect" class="iconfont icon-dianzan active" ng-click="doWorksFavorite($event,false)" alt=""></i>
-                            <i ng-show="!isCollect" class="iconfont icon-dianzan" ng-click="doWorksFavorite($event,true)" alt=""></i>
-                            <span class="text-muted" ng-click="goFans()">{{userFansCount || 0}}</span>
-                        </li> -->
                         <li class="iconfont-icon" ng-click="goHomePage(true)">
                             <i class="iconfont icon-feature"></i>
                             <span translate="功能"></span>
@@ -733,43 +697,24 @@
                             <i class="iconfont icon-yingyongguanli"></i>
                             <span translate="应用中心"></span>
                         </li>
-                        <!-- <li class="iconfont-icon">
-                            <a href="http://keepwork.com/official/help/index">
-                                <i class="iconfont icon-bangzhu"></i>
-                                <span translate="帮助"></span>
-                            </a>
-                        </li> -->
-                        <li class="iconfont-icon">
+                        <li ng-if="!isGlobalVersion" class="iconfont-icon">
                             <a href="http://iicc.keepwork.com" target="_blank">
                                 <img class="iicc-logo" ng-src="{{getImageUrl('iicc_logo.png', imgsPath)}}" alt="">
                                 {{"国际智能创意大赛" | translate}}
                             </a>
                         </li>
-                        <!-- <li class=""><a href="http://para.keepwork.com" target="_blank">{{'paracraft' | translate}}</a></li> -->
                     </ul>
                     <ul class="nav navbar-nav navbar-left" ng-show="!isLogin">
-                        <!-- <li class="icon dropdown share-dropdown" ng-show="isIconShow">
-                            <img class="dropdown-toggle" ng-src="{{imgsPath+'icon/wiki_share.png'}}" ng-click="clickShare()" alt="" data-toggle="dropdown"
-                                aria-haspopup="true" aria-expanded="true">
-                            <div class="dropdown-menu">
-                                <div class="social-share" data-title="{{tit}}"></div>
-                            </div>
-                        </li> -->
                         <li class="iconfont-icon" ng-click="goHomePage(true)">
                             <i class="iconfont icon-feature"></i>{{"功能" | translate}}</li>
                         <li class="iconfont-icon" ng-click="goApps()">
                             <i class="iconfont icon-yingyongguanli"></i>{{"应用中心" | translate}}</li>
-                        <!-- <li class="iconfont-icon">
-                            <a href="http://keepwork.com/official/help/index">
-                                <i class="iconfont icon-bangzhu"></i>{{"帮助" | translate}}</a>
-                        </li> -->
-                        <li class="iconfont-icon">
+                        <li ng-if="!isGlobalVersion" class="iconfont-icon">
                             <a href="http://iicc.keepwork.com" target="_blank">
                                 <img class="iicc-logo" ng-src="{{getImageUrl('iicc_logo.png', imgsPath)}}" alt="">
                                 {{"国际智能创意大赛" | translate}}
                             </a>
                         </li>
-                        <!-- <li class=""><a href="http://para.keepwork.com" target="_blank">{{'paracraft' | translate}}</a></li> -->
                     </ul>
                     <ul class="nav navbar-nav navbar-right" ng-show="!isLogin">
                         <li ng-hide="isSearch" class="hidden-xs hidden-sm search-bar">
@@ -790,7 +735,7 @@
                                 <span class="input-group-addon glyphicon glyphicon-search" ng-click="goSearchPage()"></span>
                             </div>
                         </li>
-                        <li>
+                        <li ng-if="!isGlobalVersion">
                             <a ng-click="goVipPay()">VIP</a>
                         </li>
                         <li>
@@ -808,48 +753,11 @@
     </header>
 
     <div class="url-header container clearfix" ng-show="isIconShow || isUserPage">
-        <ul class="nav navbar-left">
-            <li id="js-prev-container" class="nav-bread-crumb">
-                <ol id="js-prev-ellipsis" class="prev-ellipsis">
-                    <li>...</li>
-                </ol>
-                <ol id="js-prev-content" class="breadcrumb">
-                    <li>
-                        <a href="http://keepwork.com" target="_blank">http://keepwork.com /</a>
-                    </li>
-                    <li>
-                        <a ng-click="goUserPage()">{{urlObj.username || ''}} /</a>
-                    </li>
-                    <li class="dropdown" ng-show="urlObj.sitename">
-                        <a href="javascript:void(0)" ng-click="clickSiteList()" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                            {{urlObj.sitename || ''}}
-                            <i class="iconfont icon-shouqi"></i>
-                        </a>
-                        <ul class="dropdown-menu nodot-dropdown pages-dropdrown" aria-labelledby="dropdownMenu1">
-                            <li ng-repeat="site in userSiteList">
-                                <a ng-click="selectSite(site)">{{site.name}}</a>
-                            </li>
-                        </ul>
-                    </li>
-                    <li class="dropdown" ng-repeat="pathItem in urlItemList track by $index" ng-hide="$index<3">
-                        <a href="javascript:void(0)" ng-click="clickPageList($index)" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                            {{pathItem}}
-                            <i class="iconfont icon-shouqi"></i>
-                        </a>
-                        <ul class="dropdown-menu nodot-dropdown pages-dropdrown" aria-labelledby="dropdownMenu1">
-                            <li ng-repeat="page in userSitePageList | orderBy: ['foldname', 'pagename']">
-                                <a ng-click="selectPage(page)">{{page.isFold ? page.foldname : page.pagename}}</a>
-                            </li>
-                        </ul>
-                    </li>
-                </ol>
-            </li>
-        </ul>
         <ul class="nav navbar-right" ng-class="{true: 'hidden-xs'}[!isLogin]">
             <li class="icon" ng-hide="isUserPage">
                 <img ng-src="{{imgsPath+'icon/wiki_edit.png'}}" alt="" ng-click="goWikiEditorPage()">
             </li>
-            <li class="icon dropdown share-dropdown">
+            <li class="icon dropdown share-dropdown" ng-if="!isGlobalVersion">
                 <img class="dropdown-toggle" ng-src="{{imgsPath+'icon/wiki_share.png'}}" ng-click="clickShare()" alt="" data-toggle="dropdown"
                     aria-haspopup="true" aria-expanded="true">
                 <div class="dropdown-menu">

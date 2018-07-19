@@ -423,7 +423,7 @@
                     <div class="search-zone clearfix">
                         <span class="hidden-xs" translate="或者在我的大文件中选择："></span>
                         <div class="searchbar pull-right">
-                            <input type="text" class="form-control" placeholder="搜索我的网盘" ng-model="searchName">
+                            <input type="text" class="form-control" placeholder="{{ '搜索我的网盘' | translate }}" ng-model="searchName">
                             <span class="glyphicon glyphicon-search"></span>
                         </div>
                     </div>
@@ -449,7 +449,7 @@
                                     <span class="iconfont icon-paixuleft" ng-class="{true: 'active'}[order.expression == 'updateDate' && order.reverse == false]"></span>
                                     <span class="iconfont icon-paixuright" ng-class="{true: 'active'}[order.expression == 'updateDate' && order.reverse == true]"></span>
                                 </td>
-                                <td class="operate-column" translate="操作"></td>
+                                <td class="operate-column"></td>
                             </tr>
                         </thead>
                     </table>
@@ -467,11 +467,11 @@
                                     <td class="size-column hidden-xs" title="{{file.filesize || sizeTransfer(file)}}">
                                         {{file.filesize || sizeTransfer(file)}}
                                     </td>
-                                    <td class="type-column hidden-xs" title="{{file.status}}" ng-init="getFileStatus(file)">{{file.status}}</td>
+                                    <td class="type-column hidden-xs" title="{{file.status | translate}}" ng-init="getFileStatus(file)">{{file.status | translate}}</td>
                                     <td class="date-column hidden-xs" title="{{file.updateDate}}">{{file.updateDate}}</td>
                                     <td class="operate-column">
-                                        <span title="拷贝链接" ng-click="insertBigfileUrl(file)"><img ng-src="{{getImageUrl('icon/wiki_bigfile_paste.png', imgsPath)}}" alt=""></span>
-                                        <span title="插入" ng-click="insertFile(file)"><img ng-src="{{getImageUrl('icon/wiki_insert.png', imgsPath)}}" alt=""></span>
+                                        <span title="{{'拷贝链接' | translate}}" ng-click="insertBigfileUrl(file)"><img ng-src="{{getImageUrl('icon/wiki_bigfile_paste.png', imgsPath)}}" alt=""></span>
+                                        <span title="{{'插入' | translate}}" ng-click="insertFile(file)"><img ng-src="{{getImageUrl('icon/wiki_insert.png', imgsPath)}}" alt=""></span>
                                     </td>
                                 </tr>
                             </tbody>
@@ -482,7 +482,7 @@
                 <div class="tab-pane clearfix" ng-class="{true:'active'}[!isModal]" role="tabpanel" id="fileManage">
                     <div class="only-search clearfix">
                         <div class="searchbar pull-right">
-                            <input type="text" class="form-control" placeholder="搜索我的网盘" ng-model="searchName">
+                            <input type="text" class="form-control" placeholder="{{ '搜索我的网盘' | translate }}" ng-model="searchName">
                             <span class="glyphicon glyphicon-search"></span>
                         </div>
                     </div>
@@ -508,7 +508,7 @@
                                     <span class="iconfont icon-paixuleft" ng-class="{true: 'active'}[order.expression == 'updateDate' && order.reverse == false]"></span>
                                     <span class="iconfont icon-paixuright" ng-class="{true: 'active'}[order.expression == 'updateDate' && order.reverse == true]"></span>
                                 </td>
-                                <td class="operate-column" translate="操作"></td>
+                                <td class="operate-column"></td>
                             </tr>
                         </thead>
                     </table>
@@ -528,14 +528,14 @@
                                     <td class="size-column hidden-xs" title="{{file.filesize || sizeTransfer(file)}}">
                                         {{file.filesize || sizeTransfer(file)}}
                                     </td>
-                                    <td class="type-column hidden-xs" title="{{file.status}}" ng-init="getFileStatus(file)">{{file.status}}</td>
+                                    <td class="type-column hidden-xs" title="{{file.status | translate}}" ng-init="getFileStatus(file)">{{file.status | translate}}</td>
                                     <td class="date-column hidden-xs" title="{{file.updateDate}}">{{file.updateDate}}</td>
                                     <td class="operate-column">
-                                        <span title="更新" ng-click="updateFile(file)"><img ng-src="{{getImageUrl('icon/wiki_upload.png', imgsPath)}}" alt=""></span>
-                                        <span title="重命名" ng-click="renameFile(file)"><img ng-src="{{getImageUrl('icon/wiki_edit_file.png', imgsPath)}}" alt=""></span>
-                                        <span title="下载" ng-click="downloadFile(file)"><img ng-src="{{getImageUrl('icon/wiki_download.png', imgsPath)}}" alt=""></span>
+                                        <span title="{{ '更新' | translate }}" ng-click="updateFile(file)"><img ng-src="{{getImageUrl('icon/wiki_upload.png', imgsPath)}}" alt=""></span>
+                                        <span title="{{ '重命名' | translate }}" ng-click="renameFile(file)"><img ng-src="{{getImageUrl('icon/wiki_edit_file.png', imgsPath)}}" alt=""></span>
+                                        <span title="{{ '下载' | translate }}" ng-click="downloadFile(file)"><img ng-src="{{getImageUrl('icon/wiki_download.png', imgsPath)}}" alt=""></span>
                                         <!--<a ng-href="{{file.file.download_url}}" target="_blank"><img ng-src="{{getImageUrl('icon/wiki_download.png', imgsPath)}}" alt=""></a>-->
-                                        <span title="删除" ng-click="deleteFile(file)"><img ng-src="{{getImageUrl('icon/wiki_delete.png', imgsPath)}}" alt=""></span>
+                                        <span title="{{ '删除' | translate }}" ng-click="deleteFile(file)"><img ng-src="{{getImageUrl('icon/wiki_delete.png', imgsPath)}}" alt=""></span>
                                     </td>
                                 </tr>
                             </tbody>
@@ -558,7 +558,7 @@
                         <span class="text-danger" ng-show="isUidErr" translate="出错了，请稍后重试"></span>
                         <p class="pull-right time" ng-hide="!uploadingFiles || uploadingFiles.length  < 1">
                             <span class="preview-time">
-                                预估完成时间:{{finishTime || translate("等待计算")}} (剩余 {{remainTime}})
+                                {{"预估完成时间" | translate}}:{{finishTime || translate("等待计算")}} ({{ '剩余' | translate }} {{remainTime}})
                             </span>
                         </p>
                     </div>

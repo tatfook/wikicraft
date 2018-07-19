@@ -286,12 +286,12 @@
             </ul>
             <div class="input-group">
                 <div class="input-group-btn">
-                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{nowSearchRange || searchRange[0]}}
+                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{nowSearchRange || searchRange[0] | translate}}
                         <span class="caret"></span>
                     </button>
                     <ul class="dropdown-menu">
                         <li ng-repeat="item in searchRange" ng-click="changeSearchRange(item)">
-                            <a>{{item}}</a>
+                            <a>{{item | translate}}</a>
                         </li>
                     </ul>
                 </div>
@@ -303,7 +303,7 @@
         </div>
         <div class="tab-content">
             <div role="tabpanel" class="tab-pane clearfix" ng-class="{true:'active'}[searchType == 'pageinfo']" id="pageinfo">
-                <h4 class="title">{{ "共" | translate }}{{totalItems || 0}}条页面：</h4>
+                <h4 ng-if="totalItems" class="title">{{ "共" | translate }}: {{totalItems}}</h4>
                 <div class="empty-box" ng-hide="searchResult.total > 0">
                     <span class="iconfont icon-sousuo"></span>
                     <p>{{ "抱歉！ ~没有搜索到" | translate }}
@@ -331,7 +331,7 @@
                 </div>
             </div>
             <div role="tabpanel" class="tab-pane clearfix" ng-class="{true:'active'}[searchType == 'userinfo']" id="userinfo">
-                <h4 class="title">{{ "共" | translate }}{{totalItems || 0}}名用户：</h4>
+                <h4 ng-if="totalItems" class="title">{{ "共" | translate }}: {{totalItems}}</h4>
                 <div class="empty-box" ng-hide="searchResult.total > 0">
                     <span class="iconfont icon-sousuo"></span>
                     <p>{{ "抱歉！ ~没有搜索到" | translate }}
@@ -352,10 +352,10 @@
                 </div>
             </div>
             <div role="tabpanel" class="tab-pane works clearfix" ng-class="{true:'active'}[searchType == 'siteinfo']" id="siteinfo">
-                <h4 class="title">{{ "共" | translate }}{{totalItems || 0}}个站点：</h4>
+                <h4 ng-if="totalItems" class="title">{{ "共" | translate }}: {{totalItems}}</h4>
                 <div class="empty-box" ng-hide="searchResult.total > 0">
                     <span class="iconfont icon-sousuo"></span>
-                    <p>抱歉！ ~没有搜索到 {{searchKeyword.length > 10 ? (searchKeyword | limitTo: 10 + '...') : searchKeyword}}{{ "相关的站点"
+                    <p>{{ "抱歉！ ~没有搜索到" | translate }} {{searchKeyword.length > 10 ? (searchKeyword | limitTo: 10 + '...') : searchKeyword}}{{ "相关的站点"
                         | translate }}</p>
                 </div>
                 <div class="content">
@@ -368,7 +368,7 @@
                             <p class="link">
                                 <a ng-href="{{'/' + item.username + '/' + item.sitename + '/index'}}">{{"/"+item.username+"/"+item.sitename+"/index"}}</a>
                             </p>
-                            <p class="search-result-content">{{item.desc || "暂无简介"}}</p>
+                            <p class="search-result-content">{{(item.desc || "暂无简介") | translate}}</p>
                             <p class="tags">
                                 <span ng-repeat="tag in item.tagsArr track by $index" ng-show="tag" ng-click="seachTag(tag)">{{tag}}</span>
                             </p>
@@ -384,7 +384,7 @@
             </div>
         </div>
         <div class="pagination-box" ng-show="totalItems > 0">
-            <ul uib-pagination ng-change="sitePageChanged()" items-per-page='pageSize' previous-text="上一页" next-text="下一页" total-items="totalItems"
+            <ul uib-pagination ng-change="sitePageChanged()" items-per-page='pageSize' previous-text="{{ '上一页' | translate }}" next-text="{{ '下一页' | translate }}" total-items="totalItems"
                 ng-model="currentPage" max-size="5" class="pagination-sm" boundary-link-numbers="true"></ul>
         </div>
     </div>

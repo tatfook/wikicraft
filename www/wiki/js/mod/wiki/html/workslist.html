@@ -255,7 +255,7 @@
                 <div class="msg">
                     <h4>{{x.name}}</h4>
                     <div class="clearfix work-msg">
-                        <div class="pull-left">作者：{{x.username}}</div>
+                        <div class="pull-left">{{ "作者：" | translate }}{{x.username}}</div>
                         <div class="pull-right">
                             <img ng-src="{{imgsPath+'personal_workslist_star_empty.png'}}" alt="">
                             <span>收藏 {{x.favoriteCount}}</span>
@@ -286,7 +286,7 @@
                 </a>
                 <div class="text clearfix">
                     <h4><a class="title"  href="{{works.worksUrl}}" target="_blank" title="{{works.worksTitle}}">{{works.worksTitle || "未命名"}}</a></h4>
-                    <p>作者： <a ng-click="goUserPage(works)">{{works.worksUsername}}</a></p>
+                    <p>{{ "作者：" | translate }} <a ng-click="goUserPage(works)">{{works.worksUsername}}</a></p>
                     <p class="pull-left info">
                         <span class="glyphicon glyphicon-eye-open"></span> 浏览量 <span>{{works.visitCount || 0}}</span>
                     </p>
@@ -301,7 +301,7 @@
     <div class="org-works-list container game-works-list" ng-show="modParams.moduleKind=='game'">
         <h1>{{modParams.title || "全部作品"}}</h1>
         <div class="navigation" ng-hide="modParams.pagination" ng-click="goMore(modParams)">
-            <a>查看更多</a>
+            <a>{{ "查看更多" | translate }}</a>
         </div>
         <div class="clearfix works">
             <div class="col-md-3 hover-slide col-sm-6 col-xs-10 col-xs-offset-1 col-sm-offset-0 col-lg-3" ng-repeat="works in worksList">
@@ -311,7 +311,7 @@
                 <div class="text clearfix">
                     <h4><a class="title" ng-click="goWorksPage(works)" title="{{works.worksName}}">{{works.worksName}}</a></h4>
                     <p>
-                        <a ng-click="goUserPage(works)">作者：{{works.worksUsername}}</a>
+                        <a ng-click="goUserPage(works)">{{ "作者：" | translate }}{{works.worksUsername}}</a>
                         <span class="info pull-right">
                             <span class="glyphicon glyphicon-eye-open"></span> {{works.visitCountText || "浏览量"}} <span>{{works.visitCount || 0}}</span>
                         </span>
@@ -320,8 +320,8 @@
             </div>
         </div>
         <div class="pagination-box" ng-show="modParams.pagination">
-            <ul uib-pagination ng-change="sitePageChanged()" items-per-page='pageSize' previous-text="上一页"
-                next-text="下一页" total-items="worksTotal" ng-model="currentPage" max-size="5"
+            <ul uib-pagination ng-change="sitePageChanged()" items-per-page='pageSize' previous-text="{{ '上一页' | translate }}"
+                next-text="{{ '下一页' | translate }}" total-items="worksTotal" ng-model="currentPage" max-size="5"
                 class="pagination-sm" boundary-link-numbers="true"></ul>
         </div>
     </div>
@@ -329,7 +329,7 @@
     <div class="org-works-list container game-works-list" ng-show="modParams.moduleKind=='gameStatic'">
         <h1>{{modParams.title || "全部作品"}}</h1>
         <div class="navigation">
-            <a href="{{modParams.moreLink}}">查看更多</a>
+            <a href="{{modParams.moreLink}}">{{ "查看更多" | translate }}</a>
         </div>
         <div class="clearfix works">
             <div class="col-md-3 hover-slide col-sm-6 col-xs-10 col-xs-offset-1 col-sm-offset-0 col-lg-3" ng-repeat="works in modParams.worksList">
@@ -339,7 +339,7 @@
                 <div class="text clearfix">
                     <h4><a class="title" ng-click="goWorksPage(works)" title="{{works.worksName}}">{{works.workName || "未命名"}}</a></h4>
                     <p>
-                        <a ng-click="goUserPage(works)">作者：{{works.worksUsername || "无名"}}</a>
+                        <a ng-click="goUserPage(works)">{{ "作者：" | translate }}{{works.worksUsername || "无名"}}</a>
                         <span class="info pull-right">
                             <span class="glyphicon glyphicon-eye-open"></span> {{works.visitCountText || "浏览量"}} <span>{{works.visitCount || 0}}</span>
                         </span>

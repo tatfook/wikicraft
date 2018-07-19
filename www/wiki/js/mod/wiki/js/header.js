@@ -8,7 +8,7 @@ define([
     // 使用闭包使模块重复独立使用
     function registerController(wikiblock) {
         // 个人主页头部控制器
-        app.registerController("headerController", ['$scope','Account','Message', function ($scope, Account, Message) {
+        app.registerController("headerController", ['$scope', '$translate', 'Account','Message', function ($scope, $translate, Account, Message) {
             $scope.imgsPath = config.wikiModPath + 'wiki/assets/imgs/';
             $scope.modParams = angular.copy(wikiblock.modParams || {});
             $scope.user = Account.getUser();
@@ -35,7 +35,7 @@ define([
                 };
 
                 util.http("POST", config.apiUrlPrefix + "user_favorite/favoriteUser", params, function (data) {
-                    Message.info("关注成功");
+                    Message.info($translate.instant("关注成功"));
                     // console.log(data);  // 申请成功
                 });
             }
@@ -66,7 +66,7 @@ define([
  "displayName":"姓名",
  "nameinfo":"职位",
  "name":"PingYin Or EnglishName",
- "bgUrl":"http://git.keepwork.com/gitlab_rls_kaitlyn/keepworkdatasource/raw/master/kaitlyn_images/img_1504170502765.jpeg",
+ "bgUrl":"https://git.keepwork.com/gitlab_rls_kaitlyn/keepworkdatasource/raw/master/kaitlyn_images/img_1504170502765.jpeg",
  "messages":[
  {
  "message":"信息1介绍介绍简介简介",
@@ -93,7 +93,7 @@ define([
  ```@wiki/js/header
  {
  "moduleKind":"personal3",
- "headerBg":"http://git.keepwork.com/gitlab_rls_kaitlyn/keepworkdatasource/raw/master/kaitlyn_images/img_1503653688101.jpeg",
+ "headerBg":"https://git.keepwork.com/gitlab_rls_kaitlyn/keepworkdatasource/raw/master/kaitlyn_images/img_1503653688101.jpeg",
  "profile":"http://keepwork.com/wiki/assets/imgs/wiki_default_profile.jpg",
  "displayName":"姓名",
  "nameinfo":"职位",

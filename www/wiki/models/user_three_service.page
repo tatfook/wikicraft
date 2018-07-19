@@ -8,6 +8,7 @@ Date: 2017/04/19
 
 include_once("./abstract/base.page")
 include_once("data_source.page")
+include_once("./user.page")
 
 local user_three_service = inherit(models.abstract.base, gettable("models.user_three_service"))
 user_three_service.db_name = "user_three_service"
@@ -30,6 +31,19 @@ function user_three_service:api_upsert(params)
 	self:db():insertOne({["+serviceId+serviceName"]={params.serviceId, params.serviceName}}, params, resume)
 	
 	return errors:wrap(yield())
+end
+
+function user_three_service:api_unbind(params)
+	if not params.password or not params.id then
+		errors:raise(400, 'password and id required')
+	end
+
+	local User = models.user:new()
+	if not User:verifyPassword(params.password) then
+		errors:raise(401, 'invalid password')
+	end
+
+	return self:api_deleteById(params)
 end
 
 -- 删除第三方服务

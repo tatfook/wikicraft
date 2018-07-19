@@ -34,7 +34,7 @@ function qiniu_files:api_upsert(params)
 	params.checked = 0
 	local user = getUser()
 	local username = user.username
-	if user.roleId >= const.USER_ROLE_SPECIAL then params.checked = 1 end
+	if util:isInTable(user.roleId, const.DONT_CHECK_WHOES_FILES) then params.checked = 1 end
 
 	if not params.username or not params.domain or not params.key or params.size < 0 or params.username ~= username then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
@@ -155,6 +155,21 @@ function qiniu_files:api_getDownloadUrlByKey(params)
 	download_url = download_url and download_url.download_url
 
 	return errors:wrap(nil, download_url or qiniuFiles.download_url)
+end
+
+-- export data
+function qiniu_files:api_export()
+	self:db():find({_id={gt=0, limit=1000000}}, resume)
+
+	local _, list = yield()
+	local userDB = models.user:new()
+	
+	for _, item in ipairs(list or {}) do
+		userDB:db():findOne({["+username"] = {item.username}}, resume)
+		local _, data = yield()
+		if data then item.userId = data._id end
+	end
+	return list
 end
 
 function qiniu_files:changeFilename(params)

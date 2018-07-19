@@ -228,8 +228,9 @@ function data_source:api_createInnerGitlab(params)
 		--params.confirm = false
 		params.skip_confirmation = true;
 
-		local adminToken = KEEPWORK["config"][CURRENT_ENV]["threeService"]["gitlab"]["token"]
-		local gitlabHost = KEEPWORK["config"][CURRENT_ENV]["threeService"]["gitlab"]["host"]
+	local git_server_config = util:getGitServerConfig()
+	local adminToken = git_server_config["token"]
+	local gitlabHost = git_server_config["host"]
 		local urlPrefix = "http://" .. gitlabHost .. "/api/v4"
 		local rawPrefix = "http://" .. gitlabHost
 
@@ -460,28 +461,25 @@ function data_source:api_githubLinkGitlab(params)
 	return errors:wrap()
 end
 
+function data_source:api_fixBaseUrl(params)
+	local errMsg = util:check_script_password(params)
+	if errMsg then errors:raise(404, errMsg) end
+	local GIT_CONFIG =  KEEPWORK["config"][CURRENT_ENV]["threeService"]["gitlab"]
+	local current_rawBaseUrl = format('http://%s', GIT_CONFIG['host'])
+	local current_apiBaseUrl = format('%s/api/v4', current_rawBaseUrl)
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+	self:db():find({_id={gt=-1, limit=9999999}}, resume)
+	local err, dataSources = yield()
+	for i, dataSource in pairs(dataSources) do
+		local data_to_update = {}
+		if dataSource.apiBaseUrl then
+			data_to_update.apiBaseUrl = current_apiBaseUrl
+		end
+		if dataSource.rawBaseUrl then
+			data_to_update.rawBaseUrl = current_rawBaseUrl
+		end
+		self:db():updateOne({_id = dataSource._id}, data_to_update, resume)
+		yield()
+	end
+	return errors:wrap(nil)
+end

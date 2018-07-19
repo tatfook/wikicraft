@@ -4,33 +4,39 @@
 
 define([
     'app',
+    'jquery',
     'helper/util',
     'helper/storage',
     'text!html/login.html'
-], function (app, util, storage,  htmlContent) {
-    app.registerController('loginController', ['$scope', '$auth', 'Account','modal', function ($scope, $auth, Account,modal) {
-        //$scope.errMsg = "用户名或密码错误";
-        $scope.isModal=false;
-		$scope.keepPassword = storage.localStorageGetItem("keepPassword");
-
-        function init() {
-            if ((!config.localEnv || config.localVMEnv) && window.location.pathname !="/wiki/login" && window.location.pathname !="/wiki/join"){
-                $scope.isModal=true;
-            }
+], function (app, jQuery, util, storage,  htmlContent) {
+    app.registerController('loginController', ['$scope', '$auth', '$translate', 'Account', 'modal', function ($scope, $auth, $translate, Account, modal) {
+        var getUrlParam=function (param) {
+            var reg = new RegExp("(^|&)" + param + "=([^&]*)(&|$)"); //构造一个含有目标参数的正则表达式对象
+            var r = window.location.search.substr(1).match(reg);  //匹配目标参数
+            if (r != null) return r[2]; //返回参数值
         }
+        //$scope.errMsg = "用户名或密码错误";
+        $scope.loginDomId = 'loginDomId-' + Date.now()
+        $scope.isModal=false;
+        $scope.isGlobalVersion = config.isGlobalVersion;
+        $scope.keepPassword = storage.localStorageGetItem("keepPassword");
 
-        $scope.$watch('$viewContentLoaded', init);
+        $scope.$watch('$viewContentLoaded', function() {
+          setTimeout(function() {
+            $scope.isModal = jQuery('#' + $scope.loginDomId).closest('.modal').length > 0
+          })
+        });
 
-		$scope.changeKeepPassword = function() {
-			//console.log($scope.keepPassword);
-			//Account.keepPassword($scope.keepPassword);
-			storage.localStorageSetItem("keepPassword", $scope.keepPassword);
-		}
+        $scope.changeKeepPassword = function() {
+          //console.log($scope.keepPassword);
+          //Account.keepPassword($scope.keepPassword);
+          storage.localStorageSetItem("keepPassword", $scope.keepPassword);
+        }
 
         $scope.goRegisterPage = function () {
             util.go('/wiki/join');
         }
-        
+
         $scope.findPwd=function (isModal) {
             if(isModal){
                 $scope.$close("login");
@@ -45,7 +51,7 @@ define([
                 password: util.stringTrim($scope.password),
             };
             if (!params.username || !params.password) {
-                $scope.errMsg = "用户名或密码错误";
+                $scope.errMsg = $translate.instant("用户名或密码错误");
                 $("#total-err").removeClass("visible-hidden");
                 return;
             }
@@ -57,7 +63,14 @@ define([
                 if ($scope.isModal) {
                     window.location.reload();
                 } else {
-                    util.go('/' + data.userinfo.username);
+                    var redirectUrl = getUrlParam("redirect");
+
+                    if(redirectUrl) {
+                        window.location.href = redirectUrl;
+                    }
+                    else {
+                        util.go('/' + data.userinfo.username);
+                    }
                 }
 
             }, function (error) {
@@ -86,6 +99,14 @@ define([
             Authenticate("github");
         }
 
+        $scope.facebookLogin = function () {
+          Authenticate("facebook");
+        }
+
+        $scope.googleLogin = function () {
+          Authenticate("google");
+        }
+
         $scope.cancel = function () {
             $scope.$dismiss();
         }
@@ -97,12 +118,20 @@ define([
                     if ($scope.isModal) {
                         $scope.$close(data.data);
                     } else {
-                        util.go('/' + data.data.username);
+                        var redirectUrl = getUrlParam("redirect");
+
+                        if(redirectUrl) {
+                            window.location.href = redirectUrl;
+                        }
+                        else {
+                            util.go('/' + data.data.username);
+                        }
                     }
                 } else {
                     // 用户不存在 注册用户并携带data.data信息
-                    storage.sessionStorageSetItem("userThreeService", data.data);
-                    util.go("/wiki/join");
+                    var userThreeServiceOnceToken = Date.now()
+                    storage.onceStorageSetItem("userThreeServiceOnceToken" + userThreeServiceOnceToken, data.data);
+                    util.go("/wiki/join?userThreeServiceOnceToken=" + userThreeServiceOnceToken);
                 }
             }, function (data) {
 

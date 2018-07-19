@@ -20,6 +20,7 @@ define([
         $scope.groups= []; // [{"name":"全体","userList":["username","username1","username2"]}];
 		$scope.groupUser = {};
         $scope.groupAuths =[];
+        $scope.isGlobalVersion = config.isGlobalVersion;
         $scope.authorities=[{level: 20, name: "浏览"},{level:40, name: "编辑"},{level:10, name: "拒绝"}];
 
 		var siteDataSource = undefined;
@@ -423,7 +424,7 @@ define([
                     return;
                 }
             }
-            util.post(config.apiUrlPrefix + 'data_source/get', {username:name, apiBaseUrl:siteDataSource.apiBaseUrl}, function(dataSourceUser) {
+            util.post(config.apiUrlPrefix + 'data_source/get', {username:name}, function(dataSourceUser) {
                 if (!dataSourceUser || dataSourceUser.length == 0) {
                     Message.info("用户不在此站点的数据源中, 不可添加!!!");
                     // console.log("数据源用户不存在");

@@ -20,6 +20,8 @@ define([
         $scope.translationUse = function (language) {
            $translate.use(language);
            window.localStorage.setItem('keepwork-language-locale', language);
+           config.languageLocale = language
+           $.cookie('lang', /en/.test(config.languageLocale) ? 'en-US' : 'zh-CN', {path: '/', expires: 365});
         }
 
         $scope.goHomePage = function () {

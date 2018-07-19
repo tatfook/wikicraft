@@ -12,9 +12,9 @@ define([
     'text!html/articles/featurelist.md',
 ], function (app, util, markdownwiki, storage, dataSource, htmlContent, featureListContent) {
     // 动态加载
-    app.controller('homeController', ['$scope', '$rootScope', '$auth', '$sce', 'Account', 'Message', function ($scope, $rootScope, $auth, $sce, Account, Message) {
+    app.controller('homeController', ['$scope', '$rootScope', '$auth', '$sce', '$translate', 'Account', 'Message', function ($scope, $rootScope, $auth, $sce, $translate, Account, Message) {
 		$scope.keepPassword = storage.localStorageGetItem("keepPassword");
-
+        $scope.isGlobalVersion = config.isGlobalVersion;
         $scope.goUserSite = function (site) {
             util.goUserSite('/' + site.username + '/' + site.name + '/index');
         }
@@ -59,6 +59,7 @@ define([
             //        console.log("-------finish-----------");
             //    });
             // });
+			//Authenticate("facebook"); 
         };
 
         $scope.goRegisterPage = function () {
@@ -233,7 +234,7 @@ define([
 
         function Authenticate(serviceName) {
             Account.authenticate(serviceName, function (data) {
-                //console.log(data);
+				//console.log(data);
                 if ($auth.isAuthenticated()) {
                     Account.setUser(data.data);
                     if ($scope.isModal) {
@@ -242,10 +243,9 @@ define([
                         util.goUserSite('/' + data.data.username);
                     }
                 } else {
-                    // 用户不存在 注册用户并携带data.data信息
-                    // TODO
-                    storage.sessionStorageSetItem("userThreeService", data.data);
-                    util.go("join");
+                    var userThreeServiceOnceToken = Date.now()
+                    storage.onceStorageSetItem("userThreeServiceOnceToken" + userThreeServiceOnceToken, data.data);
+                    util.go("/wiki/join?userThreeServiceOnceToken=" + userThreeServiceOnceToken);
                 }
             }, function (data) {
 

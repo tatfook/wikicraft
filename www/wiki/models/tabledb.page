@@ -14,7 +14,20 @@ tabledb.db_name = "tabledb"
 
 local defaultTableDB = db
 
+-- 管理员认证
+function tabledb:ensureAdmin()
+	local token = getTokenInfo()
+	if (not token) or (token.roleId ~= const.USER_ROLE_MANAGER and token.roleId ~= const.USER_ROLE_ADMINISTRATOR) then
+		response:status(401):send({ message = "无权限访问"})
+		exit()
+	end
+
+	return token
+end
+
 function tabledb:api_getTables(params)
+	self:ensureAdmin()
+
 	local tableNames = {}
 	local databaseDir = WIKI_DB_PATH
 	local files = commonlib.Files.Find(nil, databaseDir, 0, 500, "*.db", nil)
@@ -25,6 +38,7 @@ function tabledb:api_getTables(params)
 end
 
 function tabledb:api_getIndexes(params)
+	self:ensureAdmin()
 	if not params.tableName then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
@@ -58,6 +72,7 @@ end
 --end
 
 function tabledb:api_queryById(params)
+	self:ensureAdmin()
 	if not params.tableName or not params._id then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
@@ -69,6 +84,7 @@ function tabledb:api_queryById(params)
 end
 
 function tabledb:api_query(params)
+	self:ensureAdmin()
 	if not params.tableName then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
@@ -110,6 +126,7 @@ end
 
 
 function tabledb:api_upsert(params)
+	self:ensureAdmin()
 	if not params.tableName then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
@@ -142,6 +159,7 @@ function tabledb:api_upsert(params)
 end
 
 function tabledb:api_delete(params)
+	self:ensureAdmin()
 	if not params.tableName then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
@@ -151,9 +169,9 @@ function tabledb:api_delete(params)
 
 	local query, pageQuery, isAll = util:getQueryObj(record)
 
-	if isAll then
-		return errors:wrap(nil, {message="无法删除整张表"})
-	end
+	--if isAll then
+		--return errors:wrap(nil, {message="无法删除整张表"})
+	--end
 
     log(query)
 
@@ -179,6 +197,7 @@ end
 
 
 function tabledb:api_getIndexes(params)
+	self:ensureAdmin()
 	if not params.tableName then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
@@ -200,6 +219,7 @@ function tabledb:api_getIndexes(params)
 end
 
 function tabledb:api_deleteIndex(params)
+	self:ensureAdmin()
 	if not params.tableName  or not params.indexName then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end

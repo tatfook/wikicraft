@@ -244,7 +244,7 @@
             <li role="presentation">
                 <a href="#domain" aria-controls="domain" role="tab" data-toggle="tab" translate="域名管理"></a>
             </li>
-            <li role="presentation">
+            <li ng-if="!isGlobalVersion" role="presentation">
                 <a href="#permission" aria-controls="permission" role="tab" data-toggle="tab" translate="权限管理"></a>
             </li>
         </ul>
@@ -370,7 +370,7 @@
                                 <input type="text" class="form-control" id="cname" ng-model="domain" ng-disabled="!user.vipInfo.isValid">
                             </div>
                             <div class="btn btn-primary btn-add-cname col-sm-4" ng-disabled="!user.vipInfo.isValid || !domain" ng-click="addDomain()" translate="添加"></div>
-                            <div class="col-sm-12 text-danger" ng-hide="user.vipInfo.isValid">{{ "* 您还不是VIP，不能设置cname" | translate }} <a href="/wiki/vip" target="_blank" translate="成为VIP"></a></div>
+                            <div ng-if="!isGlobalVersion" class="col-sm-12 text-danger" ng-hide="user.vipInfo.isValid">{{ "* 您还不是VIP，不能设置cname" | translate }} <a href="/wiki/vip" target="_blank" translate="成为VIP"></a></div>
                             <div class="col-sm-12 cname-list">
                                 <div ng-show="!x.isDelete" ng-repeat="x in domainList" class="">
                                     <span>{{x.domain}}</span>

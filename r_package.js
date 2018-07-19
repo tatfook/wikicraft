@@ -68,6 +68,7 @@
         'bootstrap-treeview': 'lib/bootstrap-treeview/bootstrap-treeview.min',
         'botui': 'lib/botui/botui',
         'vue': 'lib/vue/vue.min',
+        'ng-csv': 'lib/ng-csv/ng-csv.min',
         //'github-api': 'lib/github-api/GitHub.bundle.min',
         //'cropper': 'lib/cropper/cropper.min',
         'cropper': 'empty:',

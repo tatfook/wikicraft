@@ -7,6 +7,12 @@
 (function () {
     const ProdHost = "^(test.)?keepwork.com$";
     const ReleaseHost = "^release.keepwork.com$";
+	const ProdLessonsHost = 'lessons.keepwork.com'
+	const RlsLessonsHost = 'lessons-release.keepwork.com'
+	const DevLessonsHost = 'lessons-stage.keepwork.com'
+	const ProdStorageHost = 'api.keepwork.com/storage'
+	const RlsStorageHost = 'api-release.keepwork.com/storage'
+	const DevStorageHost = 'api-stage.keepwork.com/storage'
 	var wiki_config = window.wiki_config || {};
 	var localEnv = window.location.hostname.indexOf("localhost") >= 0 ? true : false;
 	var localVMEnv = localEnv && window.location.host != "localhost:63342";
@@ -15,52 +21,81 @@
 	var envIndex = hostname.indexOf(".dev.keepwork.com");
 	if (!wiki_config.webroot && envIndex > 0) {
 		pathPrefix = '/' + hostname.substring(0, envIndex) + '/';
-    }
-    var getEnv = function(){
-        var prodExp = new RegExp(ProdHost);
-        var releaseExp = new RegExp(ReleaseHost);
-        if (prodExp.test(hostname)) {
-            return "prod";
-        }
-        if (releaseExp.test(hostname)) {
-            return "release";
-        }
-        return "develop";
-    }
-  var isGlobalVersion = wiki_config && wiki_config.locale == 'en_US'
+	}
+	var getEnv = function () {
+		var prodExp = new RegExp(ProdHost);
+		var releaseExp = new RegExp(ReleaseHost);
+		if (prodExp.test(hostname)) {
+			return "prod";
+		}
+		if (releaseExp.test(hostname)) {
+			return "release";
+		}
+		return "develop";
+	}
+	var isGlobalVersion = wiki_config && wiki_config.locale == 'en_US'
+
+	var languageLocale = (function () {
+		var browserLocale = (window.navigator.userLanguage || window.navigator.language);
+		browserLocale = (browserLocale && browserLocale.toLowerCase) ? browserLocale.toLowerCase() : browserLocale;
+		var locale = window.localStorage.getItem('keepwork-language-locale') || browserLocale || 'zh-cn';
+		locale = /^zh/.test(locale) ? 'zh-cn' : 'en';
+		return locale
+	})();
 
 	config = {
-    // --------------------------------------前端配置 START----------------------------------------------
-    env: getEnv(),
-    serverConfig: wiki_config,
-    isGlobalVersion: isGlobalVersion,
-		localEnv:localEnv,                                                                                         // 是否本地调试环境
-		localVMEnv:localVMEnv,                                                                                     // 本地虚拟机环境
-		hostname:wiki_config.hostname ? wiki_config.hostname.split(":")[0] : window.location.hostname,             // url中的hostname, 优先取服务端给过来的(cname转发，客户端获取不到真实的hostname)
-		officialDomainList:["keepwork.com", "qiankunew.com"],                                                      // 官方域名 因存在用户官方子域名和其它域名 故需记录
-		officialSubDomainList:[                                                                                    // 官方占用的子域名列表
-      "en.keepwork.com",
-      "git-en.keepwork.com",
-			"release.keepwork.com",
+		// --------------------------------------前端配置 START----------------------------------------------
+		env: getEnv(),
+		serverConfig: wiki_config,
+		isGlobalVersion: isGlobalVersion,
+		languageLocale: languageLocale,
+		languageLocaleIsForGlobalUser: languageLocale === 'en',
+		localEnv: localEnv,                                                                                         // 是否本地调试环境
+		localVMEnv: localVMEnv,                                                                                     // 本地虚拟机环境
+		hostname: wiki_config.hostname ? wiki_config.hostname.split(":")[0] : window.location.hostname,             // url中的hostname, 优先取服务端给过来的(cname转发，客户端获取不到真实的hostname)
+		keepworkOfficialGitHost: 'https://git.keepwork.com',
+		officialDomainList: ["keepwork.com", "qiankunew.com"],                                                      // 官方域名 因存在用户官方子域名和其它域名 故需记录
+		officialSubDomainList: [
 			"dev.keepwork.com",
-			"stage.keepwork.com",
 			"test.keepwork.com",
+
+			"stage.keepwork.com",
+			"lessons-stage.keepwork.com",
+			"release.keepwork.com",
+			// "keepwork.com"
+			"api-stage.keepwork.com",
+			"api-release.keepwork.com",
+			"api.keepwork.com",
+
+			"stage-en.keepwork.com",
+			"release-en.keepwork.com",
+			"en.keepwork.com",
+			"api-stage-en.keepwork.com",
+			"api-release-en.keepwork.com",
+			"api-en.keepwork.com",
+			"git-en.keepwork.com",
+
 			"dev.qiankunew.com",
 			"stage.qiankunew.com",
 			"test.qiankunew.com",
-			"wxa.keepwork.tk",
+			"wxa.keepwork.com",
 			"inside.keepwork.tk",
+
+			"stage-keepwork.tk",
+			"release-keepwork.tk",
+			"api.stage-keepwork.tk",
+			"api.release-keepwork.tk",
 		],
 		// 预加载模块列表
-		preloadModuleList:[
+		preloadModuleList: [
 			//'directive/directive', // 不支持打包 动态加载
 		],
 
 		// wiki 模块解析函数
-		wikiModuleRenderMap:{},
+		wikiModuleRenderMap: {},
 
 		// 网页后缀名
-		pageSuffixName:".md",
+		pageSuffixName: ".md",
 		pageStoreName: "sitepage",
 		// ----------------------------------------前端配置 END------------------------------------------
 
@@ -89,7 +124,7 @@
 		// html 路径
 		htmlPath: pathPrefix + 'html/',
 		cssPath: pathPrefix + 'assets/css/',
-		pageUrlPrefix:'/wiki/html/',
+		pageUrlPrefix: '/wiki/html/',
 
 		// api接口路径
 		//modulePageUrlPrefix:'/wiki/module',
@@ -97,28 +132,28 @@
 		// --------------------------------------路径配置 END----------------------------------------
 
 		// --------------------------------------后端配置 START------------------------------------
-		wikiConfig:wiki_config,
+		wikiConfig: wiki_config,
 		// bust version
 		bustVersion: wiki_config.bustVersion,
 
 		// --------------------------------------后端配置 END-------------------------------------
 
-		routeMap:{
+		routeMap: {
 			// wiki page
-			"/wiki/test":"controller/testController",
-			"/wiki/wikieditor":"controller/wikiEditorController"
+			"/wiki/test": "controller/testController",
+			"/wiki/wikieditor": "controller/wikiEditorController"
 		},
-		filterMap:{
-			"/wiki/iframeagent":[
+		filterMap: {
+			"/wiki/iframeagent": [
 
 			]
 		},
 		// 数据共享
-		shareMap:{
+		shareMap: {
 		}
 	};
 
-	config.isDebugEnv = function() {
+	config.isDebugEnv = function () {
 		if (config.isLocal()) {
 			return true;
 		}
@@ -127,31 +162,31 @@
 			return true;
 		}
 
-		if (window.location.hostname.indexOf("localhost") >=0 ) {
+		if (window.location.hostname.indexOf("localhost") >= 0) {
 			return true;
 		}
 		return false;
 	}
 	function filterIE() {
-        var b_name = navigator.appName;
-        var b_version = navigator.appVersion;
-        var version = b_version.split(";");
-        if (!version[1]){
-        	return;
+		var b_name = navigator.appName;
+		var b_version = navigator.appVersion;
+		var version = b_version.split(";");
+		if (!version[1]) {
+			return;
 		}
-        var trim_version = version[1].replace(/[ ]/g, "");
-        if (b_name == "Microsoft Internet Explorer") {
-            /*如果是IE6或者IE7*/
-            if (trim_version == "MSIE9.0" || trim_version == "MSIE8.0" || trim_version == "MSIE7.0" || trim_version == "MSIE6.0") {
-                // alert("IE浏览器版本过低，请到指定网站去下载相关版本");
+		var trim_version = version[1].replace(/[ ]/g, "");
+		if (b_name == "Microsoft Internet Explorer") {
+			/*如果是IE6或者IE7*/
+			if (trim_version == "MSIE9.0" || trim_version == "MSIE8.0" || trim_version == "MSIE7.0" || trim_version == "MSIE6.0") {
+				// alert("IE浏览器版本过低，请到指定网站去下载相关版本");
 				//然后跳到需要连接的下载网站
 				// console.log(window.location);
-				if (window.location.pathname !== "/wiki/browers"){
-					window.location.href="/wiki/browers";
+				if (window.location.pathname !== "/wiki/browers") {
+					window.location.href = "/wiki/browers";
 				}
-            }
-        }
-    }
+			}
+		}
+	}
 
 	function initConfig() {
 		var hostname = window.location.hostname;
@@ -170,6 +205,19 @@
 			//config.apiHost = "dev.keepwork.com"; // debug use
 		}
 
+		var lessonsHost = DevLessonsHost
+		var storageHost = DevStorageHost
+
+		if (config.env === 'prod') {
+			lessonsHost = ProdLessonsHost
+			storageHost = ProdStorageHost
+		} else if (config.env === 'release') {
+			lessonsHost = RlsLessonsHost
+			storageHost = RlsStorageHost
+		}
+
+		config.lessonsApiPrefix = `https://${lessonsHost}/lessons/api/`
+		config.storageApiPrifix = `https://${storageHost}/v0/`;
 		config.httpProto = window.location.origin.replace(/:.*$/, "");
 		config.apiUrlPrefix = config.httpProto + '://' + config.apiHost + '/api/wiki/models/';
 	}
@@ -179,7 +227,7 @@
 		hostname = hostname || window.location.hostname;
 		hostname = hostname.split(':')[0];
 
-        if (hostname.match(/^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$/)) {
+		if (hostname.match(/^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$/)) {
 			return true;
 		}
 
@@ -219,14 +267,14 @@
 		this.preloadModuleList.push(path);
 	}
 	// 注册过滤函数
-	config.registerFilter = function(path, func) {
+	config.registerFilter = function (path, func) {
 		var filterList = config.filterMap[path] || [];
 		filterList.push(func);
 		config.filterMap[path] = filterList;
 	}
 
 	// wikiMod渲染函数注册
-	config.setWikiModuleRender = function(moduleName, render) {
+	config.setWikiModuleRender = function (moduleName, render) {
 		this.wikiModuleRenderMap[moduleName] = render;
 	}
 
@@ -235,13 +283,13 @@
 		return this.wikiModuleRenderMap[moduleName];
 	}
 
-	config.getPage = function() {
+	config.getPage = function () {
 
 	}
 
-	config.loadMainContent = function(cb, errcb) {
+	config.loadMainContent = function (cb, errcb) {
 		var pathname = config.util.parseUrl().pagepath || window.location.pathname;
-		if(config.islocalWinEnv()) {
+		if (config.islocalWinEnv()) {
 			pathname = window.location.hash ? window.location.hash.substring(1) : '/';
 		}
 		// 为官网页面 则预先加载
@@ -258,7 +306,7 @@
 				pageurl = 'mod/' + paths[0] + '/controller/indexController';
 			}
 			config.mainContentType = "mod";
-		} else if(pathname.indexOf('/wiki/js/mod/') == 0) {
+		} else if (pathname.indexOf('/wiki/js/mod/') == 0) {
 			// wiki command mod
 			pageurl = 'wikimod' + pathname.substring('/wiki/js/mod'.length);
 			config.mainContentType = "wiki_mod";
@@ -280,7 +328,7 @@
 		// 启动angular
 		if (pageurl) {
 			require([pageurl], function (mainContent) {
-				if (typeof(mainContent) == "object") {
+				if (typeof (mainContent) == "object") {
 					config.mainContent = mainContent.render({});
 				} else {
 					config.mainContent = mainContent;
@@ -296,12 +344,12 @@
 
 	// 全局初始化
 	config.init = function (cb) {
-		require(config.preloadModuleList,function () {
+		require(config.preloadModuleList, function () {
 			cb && cb();
 		});
 	}
 
-    filterIE();
+	filterIE();
 	initConfig();
 
 	window.config = config;

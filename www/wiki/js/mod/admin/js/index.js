@@ -188,18 +188,18 @@ define([
                             $scope.userTotalItems = data.total || 0;
                         });
                     }
-                    
-                    $scope.getUsername = function(q) {
+
+                    $scope.getUsername = function (q) {
                         return $http.get(config.apiUrlPrefix + "admin/searchUsername", {
-                          params: {
-                            q: q,
-                          }
-                        }).then(function(response){
-                          return response.data.data.map(function(username){
-                            return username;
-                          });
+                            params: {
+                                q: q,
+                            }
+                        }).then(function (response) {
+                            return response.data.data.map(function (username) {
+                                return username;
+                            });
                         });
-                      };
+                    };
 
                     // 点击编辑用户
                     $scope.clickEditUser = function (user) {
@@ -825,9 +825,9 @@ define([
 
                     /********** 商品管理结束 **********/
 
-            $scope.getFileCheckList = function () {
-                $scope.selectMenuItem = "fileCheck";
-            }
+                    $scope.getFileCheckList = function () {
+                        $scope.selectMenuItem = "fileCheck";
+                    }
 
 
                     /********** 网站管理开始 **********/
@@ -966,15 +966,16 @@ define([
                             checked = checked_code[$scope.files_checking]
                         }
 
-                        util.post(config.apiUrlPrefix + "admin/getFileList", {
-                            page: $scope.fileCurrentPage,
-                            pageSize: $scope.filePageSize,
+                        $http.post(`${config.storageApiPrifix}admin/files/search`, {
+                            offset: ($scope.fileCurrentPage - 1) * $scope.filePageSize,
+                            limit: $scope.filePageSize,
                             checked: checked,
-                        }, function (data) {
-                            data = data || {};
-                            $scope.file_list = data.file_list || [];
-                            $scope.fileTotalItems = data.total || 0;
-                        });
+                            order: [['updatedAt', 'DESC']]
+                        }).then(function (res) {
+                            res = res || {};
+                            $scope.file_list = res.data.data.rows || [];
+                            $scope.fileTotalItems = res.data.data.count || 0;
+                        })
                     }
 
                     $scope.change_file_type = function (type) {
@@ -986,11 +987,10 @@ define([
                     }
 
                     $scope.check_file = function (file, checked) {
-                        util.post(config.apiUrlPrefix + "admin/checkFile", {
-                            _id: file._id,
+                        $http.put(`${config.storageApiPrifix}admin/files/${file.id}`, {
                             checked: checked
-                        }, function (data) {
-                            file.checked = data.checked
+                        }).then(function (res) {
+                            file.checked = checked
                         })
                     }
 
@@ -1014,23 +1014,54 @@ define([
 
                     $scope.file_name_filter = function (filename) {
                         var len_limit = 30
-                        if (filename.length > len_limit) {
+                        if (!filename) {
+                            return 'null'
+                        } else if (filename.length > len_limit) {
                             filename = filename.slice(0, len_limit) + "......"
                         }
                         return filename
                     }
 
+                    function getDownloadUrl(file, callback) {
+                        if (!file.download_url) {
+                            $http.get(`${config.storageApiPrifix}admin/files/${file.id}/raw`)
+                                .then(function (res) {
+                                    file.download_url = res.data.data
+                                    callback(file)
+                                })
+                        } else {
+                            callback(file)
+                        }
+                    }
+
                     $scope.playVideo = function (file) {
-                        $scope.file_playing = file
-                        var videoUrl = $sce.trustAsResourceUrl(file.download_url);
+                        var play = function (file) {
+                            $scope.file_playing = file
+                            var videoUrl = $sce.trustAsResourceUrl(file.download_url);
 
-                        var iframe_html = '<iframe src="' + videoUrl + '"></iframe>'
-                        $scope.iframe_html = $sce.trustAsHtml(iframe_html)
+                            var iframe_html = '<iframe src="' + videoUrl + '"></iframe>'
+                            $scope.iframe_html = $sce.trustAsHtml(iframe_html)
 
-                        $(".video-modal").modal("show");
+                            $(".video-modal").modal("show");
+                        }
+                        getDownloadUrl(file, play)
+                    }
+
+                    $scope.downloadFile = function (file) {
+                        var download = function (file) {
+                            var a = document.createElement('a');
+                            var url = file.download_url
+                            url += ";attname=" + file.filename;
+                            a.href = url;
+                            a.target = "_blank";
+                            a.download = file.filename || "";
+                            a.click();
+                        }
+                        getDownloadUrl(file, download)
                     }
 
                     $scope.abledToPlay = function (file) {
+                        if (!file.filename) { return false }
                         var file_type = file.filename.split(".").pop().toLowerCase()
                         var abled_types = [
                             'avi', 'rmvb', 'rm', 'asf', 'divx',
@@ -1061,12 +1092,11 @@ define([
                             "theme": "danger",
                             "content": "确定删除文件吗？"
                         }, function () {
-                            util.post(config.apiUrlPrefix + "admin/deleteFile", {
-                                _id: file._id,
-                            }, function (data) {
-                                file.deleted = true
-                                $scope.fileTotalItems--
-                            })
+                            $http.delete(`${config.storageApiPrifix}admin/files/${file.id}`)
+                                .then(function (res) {
+                                    file.deleted = true
+                                    $scope.fileTotalItems--
+                                })
                         })
                     }
 
@@ -1212,6 +1242,64 @@ define([
                     /********** 敏感词管理结束 **********/
 
 
+                    /********** Lessons邀请码管理 ********/
+
+                    const default_amount = 20
+                    $scope.InvitationCodesPageSize = 20
+                    $scope.totalInvitationCodes = 0
+                    $scope.currentInvitationCodesPage = 1
+                    $scope.newInvitationCodesAmount = default_amount
+
+                    // 获取邀请码列表
+                    $scope.getInvitationCodes = function () {
+                        $scope.selectMenuItem = "lessons"
+                        $http.get(config.lessonsApiPrefix + 'cdkey/list', {
+                            params: {
+                                pno: $scope.currentInvitationCodesPage,
+                                psize: $scope.InvitationCodesPageSize
+                            },
+                            withCredentials: true,
+                            skipAuthorization: true
+                        }).then(function (res) {
+                            $scope.invitationCodes = res.data.data
+                            $scope.totalInvitationCodes = res.data.page.totalCount
+                        })
+                    }
+
+                    $scope.invitationCodeStatus = {
+                        1: '未使用',
+                        2: '已使用'
+                    }
+
+                    $scope.clickGenInvitationCodes = function () {
+                        $(".invitationCodesModal").modal("show")
+                    }
+
+                    $scope.csvFilename = "邀请码.csv"
+
+                    $scope.generateInvitationCodes = function () {
+                        var form = new FormData()
+                        form.append('number', $scope.newInvitationCodesAmount)
+                        $scope.newInvitationCodesAmount = default_amount
+                        return $http.post(config.lessonsApiPrefix + 'cdkey/build', form, {
+                            headers: { 'Content-Type': undefined },
+                            withCredentials: true,
+                            skipAuthorization: true,
+                        }).then(function (res) {
+                            console.log(res.data.data.length)
+                            return res.data.data.map(function (code) {
+                                return { code: code}
+                            })
+                        }, function (err) {
+                            return []
+                        })
+                    }
+
+                    $scope.clickFn = function () {
+                        $(".invitationCodesModal").modal("hide")
+                    }
+
+                    /********** Lessons邀请码管理 ********/
 
                     /********** 在线统计|留存分析|新用户分析|支付情况|服务器监控|开始 **********/
                     $scope.serverCurrentPage = 1;

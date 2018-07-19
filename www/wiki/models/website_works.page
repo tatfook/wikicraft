@@ -24,6 +24,7 @@ es:connect({index=index})
 
 function website_works:ctor()
 	self:addfield("websiteId", "number")      -- 站点ID
+	self:addfield("userId", "number")       -- 作品作者
 	self:addfield("username", "string")       -- 作品作者
 	self:addfield("realname", "string")       -- 真实姓名
 	self:addfield("worksTitle", "string")     -- 作品标题
@@ -39,6 +40,8 @@ function website_works:ctor()
 	self:addfield("liveUrl", "string")        -- 生活照
 	self:addfield("visitCount", "number")     -- 作品浏览量
 	self:addfield("voteCount", "number")      -- 投票数
+	self:addfield("birthdate", "string")       -- 出生日期
+	self:addfield("location", "string")       -- 住址
 	--self:addfield("todayVoteCount", "string") -- 今日投票数  yyyy-MM-dd count
 	self:addfield("commentCount", "number")   -- 评论量
 	self:addfield("createDate", "string", false, 64)
@@ -49,6 +52,7 @@ end
 function website_works:insert_to_es(params)
 	local data = {
 		id = params._id,
+		worksId = tostring(params._id),
 		type = indexType,
 		websiteId = params.websiteId,
 		username = params.username,
@@ -86,6 +90,7 @@ function website_works:search(params)
 		return 
 	end
 
+	params.websiteId = tonumber(params.websiteId)
 	local order = params.order or {}
 	local keyword = "*" .. (params.keyword or "") .. "*"
 	local must = {
@@ -107,56 +112,95 @@ function website_works:search(params)
 							realname = keyword,
 						}
 					},
+					{
+						wildcard = {
+							worksId = keyword,
+						}
+					},
 				}
 			}
 		},
+		{
+			term = {
+				websiteId = params.websiteId,
+			}
+		},
+		{
+			term = {
+				worksState = const.WEBSITE_WORKS_STATE_NORMAL,
+			}
+		}
 	}
-
 	if params.awords then
 		must[#must+1] = {
 			match = {
-				awords = params.awords,
+				["awords.keyword"] = params.awords,
 			},
 		}
 	end
 
+	if params.worksFlag then
+		must[#must+1] = {
+			term = {
+				worksFlag = params.worksFlag,
+			}		
+		}
+	end
+
+	--if params.worksId then
+		--must[#must+1] = {
+			--term = {
+				--worksId = params.worksId,
+			--}		
+		--}
+	--end
+
+	local sort = {}
+	if order.createDate then
+		sort[#sort+1] = {
+			createDate= {
+				order = order.createDate or "desc", -- asc 
+			},
+		}
+	end
+
+	if order.visitCount then
+		sort[#sort+1] = {
+			visitCount= {
+				order = order.visitCount or "desc", -- asc 
+			},
+		}
+	end
+
+	if order.voteCount then
+		sort[#sort+1] = {
+			voteCount= {
+				order = order.voteCount or "desc", -- asc 
+			},
+		}
+	end
 	local body = {
 		query = {
 			bool = {
 				must = must,
-				filter = {
-					term = {
-						websiteId = tonumber(params.websiteId),
-						worksFlag = params.worksFlag,
-						awords = params.awords,
-					}
-				}
 			} 
 		},
-		sort = {
-			createDate= {
-				order = order.createDate or "desc", -- asc 
-			},
-			visitCount= {
-				order = order.visitCount or "desc",
-			},
-			voteCount = {
-				order = order.voteCount or "desc",
-			},
-		}
+		sort = sort,
 	}
 
-	body.size = params.size;
-	body.from = params.from;
+	body.size = tonumber(params.size);
+	body.from = tonumber(params.from);
 	
 	es:search({type=indexType, body=body}, resume)
 	local  err, data = yield()
+	--log(body)
+	--log(data)
 	return err, data.data
 end
 
 function website_works:api_search(params)
 	local err, data = self:search(params)
-	if not data then
+	if not data or not data.hits then
 		return errors:wrap(nil, {total=0, list={}})
 	end
 
@@ -167,12 +211,17 @@ function website_works:api_search(params)
 	local item = nil
 	for _, val in ipairs(items or {}) do
 		item = val._source
-		item.commentCount = commentModel:getCountByUrl(item.worksUrl)
+		item.commentCount = commentModel:getCountByUrl({url = item.worksUrl})
 		list[#list+1] = item
 	end
 	return errors:wrap(nil, {total=total, list=list})
 end
 
+function website_works:setWorksCommentCount(list) 
+	for _, item in ipairs(list or {}) do 
+		item.commentCount = commentModel:getCountByUrl({url = item.worksUrl})
+	end
+end
 -- 创建站点作品
 function website_works:api_upsert(params) 
 	local username = getUsername()
@@ -181,11 +230,13 @@ function website_works:api_upsert(params)
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
 
+	params.websiteId = tonumber(params.websiteId)
 	params.voteCount = nil
 	params.visitCount = nil
 	params.commentCount = nil
-	params.updateDate = ParaGlobal.GetDateFormat("yyyy-MM-dd")
+	params.updateDate = ParaGlobal.GetDateFormat("yyyy-MM-dd") .. " " .. ParaGlobal.GetTimeFormat("HH:mm:ss")
 	params.createDate = params.createDate or params.updateDate
+	--log(params)
 	
 	self:db():insertOne({["+websiteId+worksUrl"]={params.websiteId, params.worksUrl}}, params, resume)
 	local err, data = yield()
@@ -219,18 +270,20 @@ end
 
 -- 更新访问数量
 function website_works:api_updateVisitCount(params) 
-	if not params.worksUrl then
+	if not params.worksUrl or not params.websiteId then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
 
-	self:db():findOne({["+worksUrl"]={params.worksUrl}}, resume)
+	self:db():findOne({["+websiteId+worksUrl"]={params.websiteId, params.worksUrl}}, resume)
 	local _, data = yield()
 
 	if not data then return errors:wrap("记录未找到") end
 
 	data.visitCount = (data.visitCount or 0) + 1
 
-	self:db():updateOne({["+worksUrl"]={params.worksUrl}}, data, resume)
+	self:insert_to_es(data)
+
+	self:db():updateOne({["+websiteId+worksUrl"]={params.websiteId, params.worksUrl}}, data, resume)
 	return errors:wrap(yield())
 end
 
@@ -240,6 +293,7 @@ function website_works:api_vote(params)
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
 
+	params.websiteId = tonumber(params.websiteId)
 	self:db():findOne({["+websiteId+worksUrl"]={params.websiteId, params.worksUrl}}, resume)
 	local _, works = yield()
 	if not works then 
@@ -275,6 +329,7 @@ function website_works:api_deleteByWebsiteId(params)
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
 	
+	params.websiteId = tonumber(params.websiteId)
 	self:db():delete({["+websiteId"]={params.websiteId}}, resume)
 	
 	return errors:wrap(yield())
@@ -282,16 +337,41 @@ end
 
 -- 提交作品申请
 function website_works:api_submitWorksApply(params)
-	params.worksState = const.WEBSITE_WORKS_STATE_APPLY
+	local username = getUsername()
 
-	return self:api_upsert(params)
+	if username ~= params.username or (not params.websiteId) or (not params.worksUrl) then
+		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+	end
+
+	params.websiteId = tonumber(params.websiteId)
+	params.worksState = const.WEBSITE_WORKS_STATE_APPLY
+	params.voteCount = 0
+	params.visitCount = 0
+	params.commentCount = 0
+	params.updateDate = ParaGlobal.GetDateFormat("yyyy-MM-dd") .. " " .. ParaGlobal.GetTimeFormat("HH:mm:ss")
+	params.createDate = params.createDate or params.updateDate
+	--log(params)
+	
+	self:db():insertOne({["+websiteId+worksUrl"]={params.websiteId, params.worksUrl}}, params, resume)
+	local err, data = yield()
+	
+	self:insert_to_es(data)
+
+	return errors:wrap(err, data)
 end
 
 -- 同意作品申请
 function website_works:api_agreeWorksApply(params)
 	params.worksState = const.WEBSITE_WORKS_STATE_NORMAL
 	
-	return self:api_upsert(params) 
+	self:db():insertOne({["+websiteId+worksUrl"]={params.websiteId, params.worksUrl}}, {
+		worksState = const.WEBSITE_WORKS_STATE_NORMAL
+	}, resume)
+
+	local err, data = yield()
+	self:insert_to_es(data)
+
+	return errors:wrap(err, data)
 end
 
 -- 获取作品申请列表
@@ -300,12 +380,15 @@ function website_works:api_getApplyByWebsiteId(params)
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
 	
+	params.websiteId = tonumber(params.websiteId)
 	local skip, limit = util:pagination(params)
 	self:db():find({["+websiteId+worksState"] = {params.websiteId, const.WEBSITE_WORKS_STATE_APPLY, skip=skip, limit=limit}}, resume)
 	local _, worksList = yield()
 	
 	self:db():count({["+websiteId+worksState"] = {params.websiteId, const.WEBSITE_WORKS_STATE_APPLY}}, resume)
 	local _, total = yield()
+
+	self:setWorksCommentCount(worksList)
 
 	return errors:wrap(nil, {total=total, worksList=worksList})
 end
@@ -316,6 +399,7 @@ function website_works:api_getCountByWebsiteId(params)
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
 	
+	params.websiteId = tonumber(params.websiteId)
 	self:db():count({["+websiteId+worksState"] = {params.websiteId, const.WEBSITE_WORKS_STATE_NORMAL}}, resume)
 	
 	return errors:wrap(yield())
@@ -331,8 +415,11 @@ function website_works:api_getByWebsiteId(params)
 	local total = self:api_getCountByWebsiteId(params).data or 0	
 	local skip, limit = util:pagination(params)	
 
+	params.websiteId = tonumber(params.websiteId)
 	self:db():find({["+websiteId+worksState"]={params.websiteId, const.WEBSITE_WORKS_STATE_NORMAL, skip=skip, limit=limit}}, resume)
 	local _, worksList = yield()
+
+	self:setWorksCommentCount(worksList)
 
 	return errors:wrap(nil, {total=total, worksList=worksList})
 end
@@ -347,7 +434,11 @@ function website_works:api_getByUsername(params)
 	params.websiteId = tonumber(params.websiteId)
 	self:db():find({["+websiteId+username"] = {params.websiteId, username}}, resume)
 
-	return errors:wrap(yield())
+	local err, list = yield()
+
+	self:setWorksCommentCount(list)
+
+	return errors:wrap(err, list)
 end
 
 -- 获取单个用户的作品列表
@@ -360,7 +451,11 @@ function website_works:api_getNormalByUsername(params)
 	params.websiteId = tonumber(params.websiteId)
 	self:db():find({["+websiteId+worksState+username"] = {params.websiteId, const.WEBSITE_WORKS_STATE_NORMAL, username}}, resume)
 
-	return errors:wrap(yield())
+	local err, list = yield()
+
+	self:setWorksCommentCount(list)
+
+	return errors:wrap(err, list)
 end
 
 -- 获取单个用户的申请作品列表
@@ -373,7 +468,11 @@ function website_works:api_getApplyByUsername(params)
 	params.websiteId = tonumber(params.websiteId)
 	self:db():find({["+websiteId+worksState+username"] = {params.websiteId, const.WEBSITE_WORKS_STATE_APPLY, username}}, resume)
 
-	return errors:wrap(yield())
+	local err, list = yield()
+
+	self:setWorksCommentCount(list)
+
+	return errors:wrap(err, list)
 end
 
 -- 通过单个作品
@@ -384,7 +483,13 @@ function website_works:api_getByWorksUrl(params)
 	
 	self:db():findOne({["+websiteId+worksUrl"] = {params.websiteId, params.worksUrl}}, resume)
 	
-	return errors:wrap(yield())
+	local err, data = yield()
+
+	if data then
+		data.commentCount = commentModel:getCountByUrl({url = data.worksUrl})
+	end
+
+	return errors:wrap(err, data)
 end
 
 -- 获取作品列表通过url
@@ -399,6 +504,8 @@ function website_works:api_getByWorksUrlList(params)
 		local _, works = yield()
 		worksList[#worksList+1] = works
 	end
+
+	self:setWorksCommentCount(worksList)
 
 	return errors:wrap(nil, {total=#worksList, worksList=worksList})
 end
@@ -494,6 +601,8 @@ function website_works:api_getLatestByWebsiteId(params)
 	local query = {["+websiteId-createDate"]={params.websiteId, gt=startDate, skip=skip, limit=limit}}
 	local worksList = self:api_get(query).data
 	
+	self:setWorksCommentCount(worksList)
+
 	return errors:wrap(nil, {total=total, worksList=worksList})
 end
 

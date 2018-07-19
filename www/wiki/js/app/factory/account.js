@@ -184,9 +184,11 @@ define([
                 logout: function () {
                     // remove all token forcely
                     $.removeCookie('token');
-                    $.removeCookie('token', {path:'/', expires:365});
-                    $.removeCookie('token', {path:'/', expires:365, domain: config.hostname});
-                    $.removeCookie('token', {path:'/', expires:365, domain: '.' + config.hostname});
+                    $.removeCookie('token', {path:'/'});
+                    $.removeCookie('token', {domain: config.hostname});
+                    $.removeCookie('token', {domain: '.' + config.hostname});
+                    $.removeCookie('token', {path:'/', domain: config.hostname});
+                    $.removeCookie('token', {path:'/', domain: '.' + config.hostname});
                     $auth.logout();
                     this.send("onLogout", "");
                 },

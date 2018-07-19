@@ -156,7 +156,7 @@
             </a>
             <a class="item" href="/wiki/wikieditor" target="_blank">
                 <img ng-src="{{imgsPath + 'icon/wiki_editor.png'}}" alt="">
-                <span translate="页面编辑器">
+                <span translate="网站编辑器">
                 </span>
             </a>
         </div>
@@ -164,9 +164,9 @@
     <div class="container user-main-content">
         <div class="nav nav-tabs">
             <ul class="clearfix control-tabs-ul">
-                <li class="control-tabs-li" ng-class="{true:'active'}[showType === 'profile']" ng-click="tabTo('profile', $event)">个人信息</li>
-                <li class="control-tabs-li" ng-class="{true:'active'}[showType === 'site']" ng-click="tabTo('site', $event)">网站</li>
-                <li class="control-tabs-li" ng-class="{true:'active'}[showType === 'contact']" ng-click="tabTo('contact', $event)">社交</li>
+                <li class="control-tabs-li" ng-class="{true:'active'}[showType === 'profile']" ng-click="tabTo('profile', $event)">{{'个人信息' | translate}}</li>
+                <li class="control-tabs-li" ng-class="{true:'active'}[showType === 'site']" ng-click="tabTo('site', $event)">{{"网站" | translate}}</li>
+                <li class="control-tabs-li" ng-class="{true:'active'}[showType === 'contact']" ng-click="tabTo('contact', $event)">{{'社交' | translate}}</li>
             </ul>
         </div>
         <div class="content" id="profileMain">
