@@ -8,8 +8,10 @@
 	const ProdHost = "^keepwork.com$";
 	const ReleaseHost = "^release.keepwork.com$";
 	const ProdLessonsHost = 'lessons.keepwork.com'
+	const RlsLessonsHost = 'lessons-release.keepwork.com'
 	const DevLessonsHost = 'lessons-stage.keepwork.com'
 	const ProdStorageHost = 'api.keepwork.com/storage'
+	const RlsStorageHost = 'api-release.keepwork.com/storage'
 	const DevStorageHost = 'api-stage.keepwork.com/storage'
 	var wiki_config = window.wiki_config || {};
 	var localEnv = window.location.hostname.indexOf("localhost") >= 0 ? true : false;
@@ -208,6 +210,9 @@
 		if (config.env === 'prod') {
 			lessonsHost = ProdLessonsHost
 			storageHost = ProdStorageHost
+		} else if (config.env === 'release') {
+			lessonsHost = RlsLessonsHost
+			storageHost = RlsStorageHost
 		}
 
 		config.lessonsApiPrefix = `https://${lessonsHost}/lessons/api/`
