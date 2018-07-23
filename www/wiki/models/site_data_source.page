@@ -448,12 +448,15 @@ function site_data_source:api_changeDataSource(params)
 
 end
 
+function site_data_source:api_export(params) 
+	local errMsg = util:check_script_password(params)
+	if errMsg then errors:raise(404, errMsg) end
 
+	local limit = params.limit or 1000000
+	local offset = params.offset or 0
+	local userDB = models.user:new()
+	self:db():find({_id={gt=0, offset=offset, limit=limit}}, resume)
+	local err, list = yield()
 
-
-
-
-
-
-
-
+	return list;
+end
