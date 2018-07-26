@@ -5,6 +5,7 @@
 /* 程序配置模块 */
 
 (function () {
+  config = {};
 	const ProdHost = "^keepwork.com$";
 	const ReleaseHost = "^release.keepwork.com$";
 	const ProdLessonsHost = 'lessons.keepwork.com'
@@ -35,21 +36,42 @@
 	}
 	var isGlobalVersion = wiki_config && wiki_config.locale == 'en_US'
 
-	var languageLocale = (function () {
+  var toggleLanguageHandlers = []
+  var getLanguageLocale = function () {
 		var browserLocale = (window.navigator.userLanguage || window.navigator.language);
 		browserLocale = (browserLocale && browserLocale.toLowerCase) ? browserLocale.toLowerCase() : browserLocale;
 		var locale = window.localStorage.getItem('keepwork-language-locale') || browserLocale || 'zh-cn';
 		locale = /^zh/.test(locale) ? 'zh-cn' : 'en';
 		return locale
-	})();
+  }
+  let languageLocale = getLanguageLocale();
 
-	config = {
+  var toggleLanguage = function(language) {
+    window.localStorage.setItem('keepwork-language-locale', language);
+    $.cookie('lang', /en/.test(config.languageLocale) ? 'en-US' : 'zh-CN', {path: '/', expires: 365});
+
+    languageLocale = getLanguageLocale();
+    config.languageLocale = language
+    config.languageLocaleIsForGlobalUser = languageLocale === 'en'
+
+    toggleLanguageHandlers.forEach(function(handler) {
+      handler();
+    });
+  };
+
+  var addToggleLanguageHandler = function(handler) {
+    toggleLanguageHandlers.push(handler)
+  }
+
+	$.extend(config, {
 		// --------------------------------------前端配置 START----------------------------------------------
 		env: getEnv(),
 		serverConfig: wiki_config,
-		isGlobalVersion: isGlobalVersion,
+    isGlobalVersion: isGlobalVersion,
+    toggleLanguage: toggleLanguage,
 		languageLocale: languageLocale,
-		languageLocaleIsForGlobalUser: languageLocale === 'en',
+    languageLocaleIsForGlobalUser: languageLocale === 'en',
+    addToggleLanguageHandler: addToggleLanguageHandler,
 		localEnv: localEnv,                                                                                         // 是否本地调试环境
 		localVMEnv: localVMEnv,                                                                                     // 本地虚拟机环境
 		hostname: wiki_config.hostname ? wiki_config.hostname.split(":")[0] : window.location.hostname,             // url中的hostname, 优先取服务端给过来的(cname转发，客户端获取不到真实的hostname)
@@ -150,7 +172,7 @@
 		// 数据共享
 		shareMap: {
 		}
-	};
+	});
 
 	config.isDebugEnv = function () {
 		if (config.isLocal()) {
@@ -351,5 +373,5 @@
 	filterIE();
 	initConfig();
 
-	window.config = config;
+	config = config;
 })();
