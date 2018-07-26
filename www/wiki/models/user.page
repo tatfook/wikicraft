@@ -697,10 +697,12 @@ function user:api_register(params)
 	--   set realnameInfo
 
 	local realnameInfo = {}
+	local isBind = false
 
 	if (params.cellphone) then
 		if self:api_checkCellphone({cellphone=params.cellphone}).data == 0 then
-			return errors:wrap(errors:new("手机号已存在"))
+			isBind = true
+			--return errors:wrap(errors:new("手机号已存在"))
 		end
 
 		if (not params.smsId) or (not params.smsCode) then
@@ -754,13 +756,11 @@ function user:api_register(params)
 		return errors:wrap(errors:new("用户名已存在"))
 	end
 
-	-- 创建用户
-	self:db():insertOne({["+username"]={params.username}}, {
+	local userData = {
 		username = params.username,
 		displayName = params.username,
 		password = self:encodePassword(params.password),
 		email = params.email,
-		cellphone = params.cellphone,
 		realNameInfo = realNameInfo,
 		portrait = params.portrait,
 		joindate = ParaGlobal.GetDateFormat("yyyy-MM-dd"),
@@ -771,7 +771,13 @@ function user:api_register(params)
 		favoriteCount=0,
 		fansCount=0,
 		websiteCount=0,
-	}, resume)
+	}
+	if not isBind then
+		userData.cellphone = params.cellphone
+	end
+
+	-- 创建用户
+	self:db():insertOne({["+username"]={params.username}}, userData, resume)
 	local err, userinfo = yield();
 
 	if not userinfo then

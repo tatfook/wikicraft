@@ -9,6 +9,7 @@ Date: 2017/06/06
 include_once("./abstract/base.page")
 include_once("./user.page")
 include_once("./data_source.page")
+include_once("./website.page")
 
 local site_data_source = inherit(models.abstract.base, gettable("models.site_data_source"))
 site_data_source.db_name = "site_data_source"
@@ -129,15 +130,20 @@ end
 
 -- 创建一个gitlab项目
 function site_data_source:api_createProject(params)
-	if (not params.apiBaseUrl) or (not params.token) or (not params.projectName) then
+	local git_server_config = util:getGitServerConfig()
+	local gitlabHost = git_server_config["host"]
+	local apiBaseUrl = "http://" .. gitlabHost .. "/api/v4"
+	if (not params.token) or (not params.projectName) then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR)
 	end
+
+	local token = params.token
 
 	params.projectName = string.lower(params.projectName)
 
 	System.os.GetUrl({
-		url=params.apiBaseUrl .. "/projects",
-		headers={['PRIVATE-TOKEN'] = params.token},
+		url=apiBaseUrl .. "/projects",
+		headers={['PRIVATE-TOKEN'] = token},
 		method = "GET",
 		qs = {
 			search=params.projectName,
@@ -160,8 +166,8 @@ function site_data_source:api_createProject(params)
 
 	-- 不存创建项目
 	System.os.GetUrl({
-		url=params.apiBaseUrl .. "/projects",
-		headers={['PRIVATE-TOKEN'] = params.token},
+		url=apiBaseUrl .. "/projects",
+		headers={['PRIVATE-TOKEN'] = token},
 		method="POST",
 		form={name=params.projectName, request_access_enabled=true, visibility= params.visibility or "public"}
 	}, resume)
@@ -182,8 +188,8 @@ function site_data_source:api_createProject(params)
 	local hookUrl = "http://" .. hostname .. "/api/wiki/models/data_source/gitlabWebhook"
 
 	System.os.GetUrl({
-		url=params.apiBaseUrl .. "/projects/" .. tostring(project.id) .. "/hooks",
-		headers={['PRIVATE-TOKEN'] = params.token},
+		url=apiBaseUrl .. "/projects/" .. tostring(project.id) .. "/hooks",
+		headers={['PRIVATE-TOKEN'] = token},
 		method="POST",
 		form={push_events=true, enable_ssl_verification=false,  url=hookUrl},
 	},resume)
@@ -443,12 +449,23 @@ function site_data_source:api_changeDataSource(params)
 
 end
 
+function site_data_source:api_export(params) 
+	local errMsg = util:check_script_password(params)
+	if errMsg then errors:raise(404, errMsg) end
 
+	local limit = params.limit or 1000000
+	local offset = params.offset or 0
+	local userDB = models.user:new()
+	self:db():find({_id={gt=0, offset=offset, limit=limit}}, resume)
+	local err, list = yield()
 
+	local websiteDB = models.website:new():db()
+	for i, site_data_source in ipairs(list) do
+		websiteDB:findOne({["+name"] = {site_data_source.sitename}}, resume)
+		local err, website = yield()
+		website = website or {}
+		site_data_source.site_id = website._id
+	end
 
-
-
-
-
-
-
+	return list;
+end
