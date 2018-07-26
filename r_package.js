@@ -8,7 +8,7 @@
     baseUrl:'wiki/js',
     //name:'main',
     optimizeCss: 'standard',
-    removeCombined:true,
+    removeCombined:false,
     optimizeAllPluginResources: true,  // text 插件配置
 	skipDirOptimize: true,
     modules:[

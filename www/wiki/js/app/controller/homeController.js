@@ -10,7 +10,8 @@ define([
     'helper/dataSource',
     'text!html/home.html',
     'text!html/articles/featurelist.md',
-], function (app, util, markdownwiki, storage, dataSource, htmlContent, featureListContent) {
+    'text!html/articles/featurelist_en.md',
+], function (app, util, markdownwiki, storage, dataSource, htmlContent, featureListContent, featureListContentEN) {
     // 动态加载
     app.controller('homeController', ['$scope', '$rootScope', '$auth', '$sce', '$translate', 'Account', 'Message', function ($scope, $rootScope, $auth, $sce, $translate, Account, Message) {
 		$scope.keepPassword = storage.localStorageGetItem("keepPassword");
@@ -30,7 +31,7 @@ define([
             storage.sessionStorageSetItem("siteshowParams", {siteshowType:'personal'});
             util.go("siteshow");
         }
-        
+
         function init() {
             // 获得网站统计信息
             // util.http("POST", config.apiUrlPrefix + "wikicraft/getStatics", {}, function (data) {
@@ -47,13 +48,8 @@ define([
 
             $scope.isFeature = storage.sessionStorageGetItem("isFeature") || false;
             storage.sessionStorageRemoveItem('isFeature');
-            var md = markdownwiki({breaks: true, isMainMd:true});
-            // var featureListContent = featureListContent;
-            var mdContent = md.render(featureListContent);
-            util.onViewContentLoadedByContainerId("#__UserSitePageContent__", function (params) {
-                util.html('#_featureList_', mdContent, $scope);
-            }, $scope);
 
+            updateHomeContentMarkdown();
             // Account.getUser(function (userinfo) {
             //    createTutorialSite(userinfo, function () {
             //        console.log("-------finish-----------");
@@ -61,6 +57,20 @@ define([
             // });
 			//Authenticate("facebook"); 
         };
+
+        function updateHomeContentMarkdown() {
+          var md = markdownwiki({breaks: true, isMainMd:true});
+          // var featureListContent = featureListContent;
+          var homeContentMarkdown = !config.languageLocaleIsForGlobalUser ? featureListContent : featureListContentEN;
+          var mdContent = md.render(homeContentMarkdown);
+          !window._featureList_
+            ? util.onViewContentLoadedByContainerId("#__UserSitePageContent__", function (params) {
+                util.html('#_featureList_', mdContent, $scope);
+            }, $scope)
+            : util.html('#_featureList_', mdContent, $scope)
+        }
+
+        config.addToggleLanguageHandler(updateHomeContentMarkdown)
 
         $scope.goRegisterPage = function () {
             storage.sessionStorageRemoveItem('userThreeService');

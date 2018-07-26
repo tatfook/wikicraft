@@ -65,7 +65,7 @@ KeepWork中文名为一网乾坤，它是一个集成了众多创作工具的个
 
 - **数据源使用Git存储**：代码级版本控制，记录所有版本， 数据可溯源不会丢失
 
-- **数据源可配置**：支持github, gitlab或任何企业或个人假设的私有Git云作为第三方数据源。
+- **数据源可配置**：支持github, gitlab或任何企业或个人架设的私有Git云作为第三方数据源。
 
 - **数据源文件CDN加速**：我们提供的免费内置数据源支持所有历史版本的CDN加速。在国内和国外有数万加速节点。
 
@@ -172,7 +172,7 @@ Neural Parallel Language(NPL)语言是一个开源的高性能的通用脚本语
 - 正在构建基于NPL的专业CAD模型库和算法库。
 
 
-[了解更多NPLCAD…](http://keepwork.com/intro/keepwork/NPLCAD)
+[了解更多NPL CAD…](http://keepwork.com/intro/keepwork/NPLCAD)
 
 
 
