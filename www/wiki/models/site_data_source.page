@@ -9,6 +9,7 @@ Date: 2017/06/06
 include_once("./abstract/base.page")
 include_once("./user.page")
 include_once("./data_source.page")
+include_once("./website.page")
 
 local site_data_source = inherit(models.abstract.base, gettable("models.site_data_source"))
 site_data_source.db_name = "site_data_source"
@@ -457,6 +458,14 @@ function site_data_source:api_export(params)
 	local userDB = models.user:new()
 	self:db():find({_id={gt=0, offset=offset, limit=limit}}, resume)
 	local err, list = yield()
+
+	local websiteDB = models.website:new():db()
+	for i, site_data_source in ipairs(list) do
+		websiteDB:findOne({["+name"] = {site_data_source.sitename}}, resume)
+		local err, website = yield()
+		website = website or {}
+		site_data_source.site_id = website._id
+	end
 
 	return list;
 end
