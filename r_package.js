@@ -10,7 +10,7 @@
     optimizeCss: 'standard',
     removeCombined:true,
     optimizeAllPluginResources: true,  // text 插件配置
-	skipDirOptimize: true,
+	  skipDirOptimize: true,
     modules:[
         {
             name:'main',
@@ -57,6 +57,7 @@
     paths:{
         'jquery': 'lib/jquery/jquery.min',
         'jquery-cookie': 'lib/jquery-cookie/jquery.cookie',
+        'qrcode': 'lib/qrcode/qrcode.min',
         'angular': 'lib/angular/angular.min',
         'angular-ui-bootstrap': 'lib/angular-ui-bootstrap/ui-bootstrap-tpls',
         'angular-toggle-switch': 'lib/angular-toggle-switch/angular-toggle-switch.min',
@@ -75,15 +76,15 @@
         'markdown-it':'lib/markdown-it/markdown-it.min',
         'highlight': 'lib/highlight/highlight.pack',
         'js-base64': 'lib/js-base64/base64.min',
-		'js-base32': 'lib/js-base32/base32.min',
+		    'js-base32': 'lib/js-base32/base32.min',
         'text': 'lib/requirejs/text',
         'domReady': 'lib/requirejs/domReady',
-		'jquery-sharejs': 'lib/sharejs/js/jquery.share.min',// 社交分享
-		'contribution-calendar': 'lib/contribution-calendar/js/contribution-calendar.min',//类github活动记录
-		'to-markdown': 'lib/to-markdown/to-markdown',
-		'wangEditor': 'lib/wangEditor/js/wangEditor',
-		'pingpp': 'lib/pingpp-js/dist/pingpp',
-		'plupload': "lib/qiniu/plupload.full.min",
+        'jquery-sharejs': 'lib/sharejs/js/jquery.share.min',// 社交分享
+        'contribution-calendar': 'lib/contribution-calendar/js/contribution-calendar.min',//类github活动记录
+        'to-markdown': 'lib/to-markdown/to-markdown',
+        'wangEditor': 'lib/wangEditor/js/wangEditor',
+        'pingpp': 'lib/pingpp-js/dist/pingpp',
+        'plupload': "lib/qiniu/plupload.full.min",
         //'qiniu': "lib/qiniu/qiniu.min",
         'qiniu': "empty:",
         'bluebird': "empty:",
@@ -104,9 +105,9 @@
         'helper': 'app/helper',
         // html dir
         'html': '../html',
-		'css': '../assets/css',
+        'css': '../assets/css',
 
-		'helper/sensitiveWord':"empty:"
+        'helper/sensitiveWord':"empty:"
     },
     shim: {
         'angular': {

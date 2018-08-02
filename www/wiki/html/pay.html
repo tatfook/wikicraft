@@ -359,8 +359,7 @@
             padding: 23px;
         }
 
-        .pay-main .wechat-pay-qrcode .wechat-qrcode img{
-            display: inline;
+        .pay-main .wechat-pay-qrcode .wechat-qrcode #qrcode{
             width: 200px;
             height: 200px;
         }
@@ -393,7 +392,7 @@
             box-shadow: 1px 1px 1px #ccc;
         }
 
-        .pay-main .alipay-pay-qrcode .qrcode-info > img{
+        .pay-main .alipay-pay-qrcode .qrcode-info #qrcode{
             width: 168px;
             width: 168px;
         }
@@ -515,7 +514,8 @@
                         ￥{{goods.price}}
                     </div>
                     <div class="qrcode-info">
-                        <img ng-src="http://qr.topscan.com/api.php?m=0&text={{qr_url}}">
+                        <div id="qrcode"></div>
+                        <!-- <img ng-src="http://qr.topscan.com/api.php?m=0&text={{qr_url}}"> -->
                         <div class="alipay-scan clearfix">
                             <img class="alipay-scan-img" src="/wiki/assets/imgs/alipay_scan.png" alt="扫一扫标识" />
                             <div class="alipay-scan-info">
@@ -538,7 +538,8 @@
                         {{ "支付金额：" | translate }} <span>￥{{goods.price}}</span> {{ "元" | translate }}
                     </div>
                     <div class="wechat-qrcode">
-                        <img ng-src="http://qr.topscan.com/api.php?m=0&text={{qr_url}}">
+                        <div id="qrcode"></div>
+                        <!-- <img ng-src="http://qr.topscan.com/api.php?m=0&text={{qr_url}}"> -->
                     </div>
                 </div>
                 <div ng-if="page == 'success'" class="pay-success clearfix">

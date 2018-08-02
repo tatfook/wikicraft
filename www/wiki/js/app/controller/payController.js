@@ -8,6 +8,7 @@ define([
     'helper/storage',
     'pingpp',
     'markdown-it',
+    'qrcode',
     'text!html/pay.html',
 ], function (app, util, storage, pingpp, markdownit, htmlContent) {
     app.registerController("payController", ['$scope', 'Account', 'modal', '$rootScope', '$http', function ($scope, Account, modal, $rootScope, $http) {
@@ -117,6 +118,9 @@ define([
                 }
 
                 if (!validate || !bAppExist || !$scope.goods.price ) {
+                    console.log(!validate)
+                    console.log(!bAppExist)
+                    console.log(!$scope.goods.price)
                     alert("参数错误");
                     return;
                 }
@@ -446,6 +450,18 @@ define([
                 $('#hot-service').html(html);
             },
             function (response) {});
+
+            var qrcode = new QRCode(document.getElementById("qrcode"), {
+              width: 200,
+              height: 200
+            });
+        
+            function makeCode() {
+              if (!$scope.qr_url) {
+                return;
+              }
+              qrcode.makeCode($scope.qr_url);
+            };
         }
 
         $scope.$watch("$viewContentLoaded", init);
