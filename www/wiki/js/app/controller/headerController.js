@@ -68,7 +68,7 @@ define([
         var initPageInfo = function(){
             var url = pageDetail.pathname;
             var visitor = $scope.user && $scope.user.username || "";
-            if (!url.startsWith("/wiki/")) {
+            if (!(url.indexOf("/wiki/") === 0)) {
                 util.get(config.apiUrlPrefix + "pages/getDetail", {
                     url: url,
                     visitor: visitor
