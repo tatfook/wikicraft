@@ -237,8 +237,9 @@
 			storageHost = RlsStorageHost
 		}
 
-		config.lessonsApiPrefix = `https://${lessonsHost}/lessons/api/`
-		config.storageApiPrifix = `https://${storageHost}/v0/`;
+		config.lessonsApiPrefix = "https://" + lessonsHost + "/lessons/api/"
+    config.storageApiPrifix = "https://" + storageHost + "/v0/";
+    
 		config.httpProto = window.location.origin.replace(/:.*$/, "");
 		config.apiUrlPrefix = config.httpProto + '://' + config.apiHost + '/api/wiki/models/';
 	}
