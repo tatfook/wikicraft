@@ -70,6 +70,7 @@
 			// 'echarts-radar': libPathPrefix + "echarts/echarts-radar",
 			'echarts-radar': libPathPrefix + "echarts/echarts-radar.min",
 			//'html2canvas': libPathPrefix + 'html2canvas/html2canvas.min',
+			'qrcode': libPathPrefix + "qrcode/qrcode.min",
 
 			'vue': libPathPrefix + 'vue/vue.min',
 			'botui': libPathPrefix + 'botui/botui',

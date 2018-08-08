@@ -1307,7 +1307,7 @@ define([], function () {
       {
           "_key": "支付宝充值",
           "zh-cn": "支付宝充值",
-          "en": "Top up money to your Alipay account"
+          "en": "Alipay payment"
       },
       {
           "_key": "Keepwork 账号：",
@@ -2747,12 +2747,12 @@ define([], function () {
       {
           "_key": "打开手机支付宝",
           "zh-cn": "打开手机支付宝",
-          "en": "Open your mobile Alipay account "
+          "en": "Open Alipay"
       },
       {
           "_key": "扫一扫继续付款",
           "zh-cn": "扫一扫继续付款",
-          "en": "Scan and continue to pay "
+          "en": "Scan to pay "
       },
       {
           "_key": "支付金额：",
