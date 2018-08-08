@@ -13,7 +13,7 @@ define([
 ], function (app, mdconf, htmlContent, addCertificationModalHtmlContent, util) {
     function registerController(wikiBlock) {
         app.registerController("certificationCtrl", ['$rootScope', '$scope', '$uibModal', '$translate', 'Account', 'modal', function ($rootScope, $scope, $uibModal, $translate, Account, modal) {
-            const modCmd = "```@profile/js/certifications";
+            var modCmd = "```@profile/js/certifications";
             var thisInBlockIndex;
             var thisContainerId;
 			wikiBlock.init({

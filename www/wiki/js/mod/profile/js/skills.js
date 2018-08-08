@@ -14,7 +14,7 @@ define([
 ], function (app, htmlContent, addSkillModalHtmlContent, mdconf, util, echartsRadar) {
     function registerController(wikiBlock) {
         app.registerController("skillCtrl", ['$rootScope', '$scope', '$uibModal', '$translate', 'Message', 'Account', 'modal', function ($rootScope, $scope, $uibModal, $translate, Message, Account, modal) {
-            const modCmd = "```@profile/js/skills";
+            var modCmd = "```@profile/js/skills";
             var thisInBlockIndex;
             var thisContainerId;
             $scope.skillsDetail = [];
@@ -271,7 +271,7 @@ define([
         }]);
 
         app.registerController("addSkillModalCtrl", ['$rootScope', '$scope', '$uibModalInstance', '$translate', 'Account', 'modal', function ($rootScope, $scope, $uibModalInstance, $translate, Account, modal) {
-            const SkillNameMaxLen = 10;
+            var SkillNameMaxLen = 10;
             $scope.addingSkill = $scope.addingSkill || {};
             $scope.cancel = function(){
                 $uibModalInstance.dismiss("cancel");

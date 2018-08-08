@@ -2261,8 +2261,8 @@ define([
 
 			// 文件上传
 			$scope.cmd_file_upload = function(fileObj, cb) {//{{{
-                const UpperLimit = 10 * 1024 * 1024; // 大于10M上传到七牛
-                const BrowerUpperLimit = 1 * 1024 * 1024 * 1024; // 大于1GB提示
+                var UpperLimit = 10 * 1024 * 1024; // 大于10M上传到七牛
+                var BrowerUpperLimit = 1 * 1024 * 1024 * 1024; // 大于1GB提示
                 var currentDataSource = getCurrentDataSource();
                 if (!currentDataSource) {
 					Message.info("无法获取数据源信息，稍后重试....");

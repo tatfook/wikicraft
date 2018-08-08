@@ -12,8 +12,8 @@ define([
 ], function (app, util, mdconf, htmlContent) {
     function registerController(wikiBlock) {
         app.registerController("pageTagsCtrl", ['$rootScope', '$scope', 'Message', 'Account', function ($rootScope, $scope, Message, Account) {
-            const modCmd = "```@page/js/tags";
-            const MaxTagsCount = 5;
+            var modCmd = "```@page/js/tags";
+            var MaxTagsCount = 5;
             $scope.maxTagsCount = MaxTagsCount;
             var thisInBlockIndex;
             var thisContainerId;
