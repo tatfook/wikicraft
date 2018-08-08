@@ -6,14 +6,14 @@
 
 (function () {
   config = {};
-	const ProdHost = "^keepwork.com$";
-	const ReleaseHost = "^release.keepwork.com$";
-	const ProdLessonsHost = 'lessons.keepwork.com'
-	const RlsLessonsHost = 'lessons-release.keepwork.com'
-	const DevLessonsHost = 'lessons-stage.keepwork.com'
-	const ProdStorageHost = 'api.keepwork.com/storage'
-	const RlsStorageHost = 'api-release.keepwork.com/storage'
-	const DevStorageHost = 'api-stage.keepwork.com/storage'
+	var ProdHost = "^keepwork.com$";
+	var ReleaseHost = "^release.keepwork.com$";
+	var ProdLessonsHost = 'lessons.keepwork.com'
+	var RlsLessonsHost = 'lessons-release.keepwork.com'
+	var DevLessonsHost = 'lessons-stage.keepwork.com'
+	var ProdStorageHost = 'api.keepwork.com/storage'
+	var RlsStorageHost = 'api-release.keepwork.com/storage'
+	var DevStorageHost = 'api-stage.keepwork.com/storage'
 	var wiki_config = window.wiki_config || {};
 	var localEnv = window.location.hostname.indexOf("localhost") >= 0 ? true : false;
 	var localVMEnv = localEnv && window.location.host != "localhost:63342";
