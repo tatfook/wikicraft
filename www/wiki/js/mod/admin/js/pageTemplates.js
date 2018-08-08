@@ -9,7 +9,7 @@ define([
     'text!wikimod/admin/html/pageTemplates.html',
     'js-base64',
 ], function (app, util, storage, markdownit, htmlContent) {
-    const GITLAB = {
+    var GITLAB = {
         "API_BASE_URL": "https://git.keepwork.com/api/v4",
         "FILE_PATH": "official%2Ftemplate%2FpageTemplateConfig%2Emd",// 模板配置保存页面 official/template/webTemplateConfig
         "REF": "master",

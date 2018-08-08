@@ -15,8 +15,8 @@ define([
         //console.log("headerController");
         //$scope.isLogin = Account.isAuthenticated();
         $scope.isGlobalVersion = config.isGlobalVersion;
-        const SearchRangeText = ["全部内容", "当前站点", "我的网站"];
-        const FoldPostfix = "/";
+        var SearchRangeText = ["全部内容", "当前站点", "我的网站"];
+        var FoldPostfix = "/";
         $scope.urlObj = {};
         $scope.isIconShow = !util.isOfficialPage();
         var pageDetail = util.parseUrl();

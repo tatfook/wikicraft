@@ -14,8 +14,8 @@ define([
 		var uid = undefined; 
 		var isUploading = false;
 		var selectCount = 0;
-        const biteToG = 1024*1024*1024;
-        const ErrFilenamePatt = new RegExp('^[^\\\\/\*\?\|\<\>\:\"]+$');
+        var biteToG = 1024*1024*1024;
+        var ErrFilenamePatt = new RegExp('^[^\\\\/\*\?\|\<\>\:\"]+$');
         $scope.selectedType = "图片";
         $scope.order = {
             "expression": "updateDate",
@@ -866,10 +866,10 @@ define([
 
 
         $scope.getIconClass = function (file) {
-            const ImgReg = /^image\/+/;
-            const VideoReg = /^video\/+/;
-            const AudioReg = /^audio\/+/;
-            const PdfReg = /^application\/pdf$/;
+            var ImgReg = /^image\/+/;
+            var VideoReg = /^video\/+/;
+            var AudioReg = /^audio\/+/;
+            var PdfReg = /^application\/pdf$/;
             var type = file.type;
 
             if (ImgReg.test(type)){

@@ -9,8 +9,8 @@ define([
    	'text!html/search.html'
 ], function (app, util, storage, htmlContent) {
     app.controller('searchController', ['$scope', '$location', '$sce', '$translate', 'Account','Message', 'modal', function ($scope, $location, $sce, $translate, Account, Message, modal) {
-        const tagSplitRegexp = /\[([^\]]+)\]/;
-        const SearchRangeText = ["全部内容", "当前站点", "我的网站"];
+        var tagSplitRegexp = /\[([^\]]+)\]/;
+        var SearchRangeText = ["全部内容", "当前站点", "我的网站"];
         $scope.totalItems = 0;
         $scope.currentPage = 1;
         $scope.pageSize = 12;

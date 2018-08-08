@@ -17,8 +17,8 @@ define([
 	//console.log("load userController file");
 
 	app.registerController('userController', ['$rootScope', '$scope', '$timeout', '$translate', 'Account', 'Message', 'modal', function ($rootScope, $scope, $timeout, $translate, Account, Message, modal) {
-		const UserSystemProjectName = "keepworkdatasource";
-		const ProfileDataFileName = "profile.md";
+		var UserSystemProjectName = "keepworkdatasource";
+		var ProfileDataFileName = "profile.md";
 		var topBlockList = [], subBlockList = [];
 		var topMdContent;
 		var userDataSource;
