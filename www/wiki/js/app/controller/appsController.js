@@ -178,7 +178,7 @@ define(['app', 'helper/util', 'text!html/apps.html'], function (app, util, htmlC
         ];
 
         var filterDataForGlobalVersion = function(list) {
-          let result = list.filter(function(item) {
+          var result = list.filter(function(item) {
             return item.globalVisible
           }).map(function(item) {
             if (item.apps && item.apps.length) {

@@ -5,6 +5,10 @@
 /* 程序配置模块 */
 
 (function () {
+  if (!window.location.origin) {
+    window.location.origin = location.protocol + '//' + location.host;
+  }
+
   config = {};
 	var ProdHost = "^keepwork.com$";
 	var ReleaseHost = "^release.keepwork.com$";
@@ -33,18 +37,18 @@
 			return "release";
 		}
 		return "develop";
-	}
-	var isGlobalVersion = wiki_config && wiki_config.locale == 'en_US'
+	};
+	var isGlobalVersion = wiki_config && wiki_config.locale == 'en_US';
 
-  var toggleLanguageHandlers = []
+  var toggleLanguageHandlers = [];
   var getLanguageLocale = function () {
 		var browserLocale = (window.navigator.userLanguage || window.navigator.language);
 		browserLocale = (browserLocale && browserLocale.toLowerCase) ? browserLocale.toLowerCase() : browserLocale;
 		var locale = window.localStorage.getItem('keepwork-language-locale') || browserLocale || 'zh-cn';
 		locale = /^zh/.test(locale) ? 'zh-cn' : 'en';
 		return locale
-  }
-  let languageLocale = getLanguageLocale();
+  };
+  var languageLocale = getLanguageLocale();
 
   var toggleLanguage = function(language) {
     window.localStorage.setItem('keepwork-language-locale', language);
@@ -61,7 +65,7 @@
 
   var addToggleLanguageHandler = function(handler) {
     toggleLanguageHandlers.push(handler)
-  }
+  };
 
 	$.extend(config, {
 		// --------------------------------------前端配置 START----------------------------------------------
