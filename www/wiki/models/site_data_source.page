@@ -467,7 +467,7 @@ function site_data_source:api_export(params)
 		website = website or {}
 		site_data_source.site_id = website._id
 
-		data_sourceDB:findOne({["+username"] = {params.username}}, resume)
+		data_sourceDB:findOne({["+username"] = {site_data_source.username}}, resume)
 		local err, data_source = yield()
 		data_source = data_source or {}
 		site_data_source.account_id = data_source.dataSourceUserId
