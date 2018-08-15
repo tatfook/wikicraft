@@ -13,7 +13,7 @@ define([
         }
 
         app.registerController("permissionController", ["$scope", "Account", "modal", function ($scope, Account, modal) {
-            const maxShowHeight = 500;
+            var maxShowHeight = 500;
             var containerId,
                 container,
                 containerHeight;

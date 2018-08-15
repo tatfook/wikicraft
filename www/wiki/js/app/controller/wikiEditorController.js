@@ -657,7 +657,7 @@ define([
 					if (!page.username || !page.sitename || !page.pagename || !page.url) {
 						return;
 					}
-					
+
 					//console.log(page);
 
                     var serverPage = getPageByUrl(page.url);
@@ -733,7 +733,7 @@ define([
 
                 // 获取他人站点列表
                 fnList.push(function (finish) {
-					var urlObj = storage.sessionStorageGetItem('urlObj'); 
+					var urlObj = storage.sessionStorageGetItem('urlObj');
 					//console.log(urlObj);
 					if (urlObj && $scope.user && $scope.user.username != urlObj.username && urlObj.sitename) {
 						util.post(config.apiUrlPrefix + 'website/getWithDataSourceByName', {
@@ -747,7 +747,7 @@ define([
 									setSite(data);
 								}
 							}
-							
+
                             finish && finish();
                         }, finish);
                     } else {
@@ -810,7 +810,7 @@ define([
 				if (!siteinfo) {
 					return "myTree";
 				}
-			
+
 				if (siteinfo.isEditable) {
 					return "#editableTree";
 				} else if (siteinfo.isReadable) {
@@ -862,7 +862,7 @@ define([
 				siteDataSource.getLastCommitId(function(lastCommitId){
 					siteDataSource.setLastCommitId(lastCommitId);
 					util.post(config.apiUrlPrefix + "site_data_source/updateLastCommitIdByName", {
-						username:page.username, 
+						username:page.username,
 						sitename:page.sitename,
 						lastCommitId:lastCommitId,
 					}, undefined, undefined, false);
@@ -885,27 +885,27 @@ define([
 					page_name:page.pagename,
 					pageinfo:page,
 				};
-				
+
 				// 私有项目不提交
                 //var site = getCurrentSite(page.username, page.sitename);
                 //if (site && site.visibility == "private") {
 					//params.visibility = "private";
-					//return; 
+					//return;
                 //}
 
 				util.post(config.apiUrlPrefix + "elastic_search/submitPageinfo", params);
 
 				//var url = "http://221.0.111.131:19001/Application/kwupsert";
-				//util.ajax({    
-                    //type: "POST",                   
-                    //url: url,  
-                    //data: obj, 
-                    //success: function(result) {     
-                        //console.log(result);            
-                    //},         
-                    //error: function(response) {     
-                    //},         
-                //});  
+				//util.ajax({
+                    //type: "POST",
+                    //url: url,
+                    //data: obj,
+                    //success: function(result) {
+                        //console.log(result);
+                    //},
+                    //error: function(response) {
+                    //},
+                //});
 			}//}}}
 
 			// 生成页面快照
@@ -1228,7 +1228,7 @@ define([
                             return;
                         }
 						if (currentPage.url != page.url) {
-							return ;	
+							return ;
 						}
 
 						var moduleEditorParams = config.shareMap.moduleEditorParams;
@@ -1338,7 +1338,7 @@ define([
                         },
                         onNodeCollapsed: function (event, data) {
                             //console.log("node collapsed", data.pageNode.url);
-							
+
                             treeNodeMap[data.pageNode.url] = data;
                             if (!isFirstCollapsedAll) {
                                 delete treeNodeExpandedMap[data.pageNode.url];
@@ -1382,7 +1382,7 @@ define([
 
 					$('#readableTree').treeview(readableTree);
 					$('#readableTree').treeview('collapseAll', {silent: false});
-					
+
 					//console.log(treeNodeMap);
                     isFirstCollapsedAll = false;
                     for (var key in treeNodeExpandedMap) {
@@ -1551,7 +1551,7 @@ define([
                             currentSite = getCurrentSite();
                             initTree();
                             util.post(config.apiUrlPrefix + "pages/insert", {
-                                url: currentPage.url 
+                                url: currentPage.url
                             }, function(data){
                                 console.log(data);
                             }, function(err){
@@ -1611,7 +1611,7 @@ define([
                     //     controller: "pageCtrl",
                     // }).result.then(function (provider) {
                     //     //console.log(provider);
-                    //     if (provider == "page") 
+                    //     if (provider == "page")
                     //         //console.log(currentPage);
                     //         allPageMap[currentPage.url] = currentPage;
                     //         allWebstePageContent[currentPage.url] = editor.getValue();
@@ -1722,7 +1722,7 @@ define([
             };//}}}
 
             $scope.cmd_saveAll = function () {//{{{
-                var tempCurrentPage=currentPage; 
+                var tempCurrentPage=currentPage;
 				var fnList = [];
 				var callback = undefined;
                 for (url in $scope.opens){
@@ -1746,7 +1746,7 @@ define([
 					initTree();
 					currentPage=tempCurrentPage;
 				}
-				
+
 				util.batchRun(fnList, function(){
                     callback();
                     // console.log("全部保存结束");
@@ -2261,8 +2261,8 @@ define([
 
 			// 文件上传
 			$scope.cmd_file_upload = function(fileObj, cb) {//{{{
-                const UpperLimit = 10 * 1024 * 1024; // 大于10M上传到七牛
-                const BrowerUpperLimit = 1 * 1024 * 1024 * 1024; // 大于1GB提示
+                var UpperLimit = 10 * 1024 * 1024; // 大于10M上传到七牛
+                var BrowerUpperLimit = 1 * 1024 * 1024 * 1024; // 大于1GB提示
                 var currentDataSource = getCurrentDataSource();
                 if (!currentDataSource) {
 					Message.info("无法获取数据源信息，稍后重试....");
@@ -2271,7 +2271,7 @@ define([
                 var qiniuBack;
 
 				var path = fileObj.name;
-				
+
 				var initQiniu = function () {
 				    if (qiniuBack){
 				        return;
@@ -2424,14 +2424,14 @@ define([
                                 var data = dropFiles[fileObj.name];
                                 line_keyword_nofocus(dropFiles[fileObj.name].insertLinum, "**已选择使用上传工具上传 "+fileObj.name+"。**", 0);
                                 if (isBigfileModalShow) {
-                                    $rootScope.$broadcast(msg, data); 
+                                    $rootScope.$broadcast(msg, data);
                                     return;
                                 }
                                 $scope.cmd_bigfile();
-                                
+
                                 bigfileModal.opened.then(function() {
                                     isBigfileModalShow = true;
-                                    $rootScope.$broadcast(msg, data); 
+                                    $rootScope.$broadcast(msg, data);
 
                                     confirmFilesQue.filter(function(file) {
                                         line_keyword_nofocus(dropFiles[file.name].insertLinum, "**已选择使用上传工具上传 "+file.name+"。**", 0);
@@ -2453,13 +2453,13 @@ define([
                             var editorToQiniu = function(fileObj) {
                                 // console.log("正在上传到七牛");
                                 $scope.storeInfoByte.used += fileObj.size || 0;
-                            
+
                                 if ($scope.storeInfoByte.used > $scope.storeInfoByte.total){
                                     $scope.storeInfoByte.used -= fileObj.size || 0;
                                     line_keyword_nofocus(dropFiles[fileObj.name].insertLinum, "**网盘容量不足,"+fileObj.name+" 文件上传失败**", 0);
                                     return;
                                 }
-    
+
                                 qiniuUpload(fileObj);
                                 if (confirmFilesQue.length > 0) {
                                     confirmFun(confirmFilesQue[0]);
@@ -2514,7 +2514,7 @@ define([
                                     isBigfileModalShow = false;
                                     isConfirmDialogShow = false;
                                     stop(fileObj);
-                                }); 
+                                });
                             }
 
                             if (fileObj.size > BrowerUpperLimit) {
@@ -2528,7 +2528,7 @@ define([
                                     confirmFilesQue.push(fileObj);
                                     return;
                                 }
-                                
+
                                 isConfirmDialogShow = true;
                                 confirmFun(fileObj);
                             }else {

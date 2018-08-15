@@ -12,7 +12,7 @@ define([
     'controller/editWebsiteController',
 ], function (app, util, storage, sensitiveWord, markdownit, htmlContent, editWebsiteHtmlContent) {
     var controller = ['$rootScope','$scope', '$sce', 'Account', 'Message', function ($rootScope, $scope, $sce, Account, Message) {
-        const GITLAB = {
+        var GITLAB = {
             "API_BASE_URL": config.keepworkOfficialGitHost + "/api/v4",
             "FILE_PATH": "official%2Ftemplate%2FwebTemplateConfig%2Emd",// 网站模板配置保存路径
             "REF": "master",
@@ -81,7 +81,7 @@ define([
                                 }
                             })(i));
                         }
-    
+
                         util.sequenceRun(fnList, undefined, function(){
                             config.loading.hideLoading();
                             cb && cb();

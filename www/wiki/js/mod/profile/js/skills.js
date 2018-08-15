@@ -1,11 +1,11 @@
 /*
- * @Author: ZhangKaitlyn 
+ * @Author: ZhangKaitlyn
  * @Date: 2018-01-19
  * @Last Modified by: none
  * @Last Modified time: 2018-03-08 16:49:13
  */
 define([
-    'app', 
+    'app',
     'text!wikimod/profile/html/skills.html',
     'text!wikimod/profile/html/modalTemplate/addSkillModal.html',
     'helper/mdconf',
@@ -14,7 +14,7 @@ define([
 ], function (app, htmlContent, addSkillModalHtmlContent, mdconf, util, echartsRadar) {
     function registerController(wikiBlock) {
         app.registerController("skillCtrl", ['$rootScope', '$scope', '$uibModal', '$translate', 'Message', 'Account', 'modal', function ($rootScope, $scope, $uibModal, $translate, Message, Account, modal) {
-            const modCmd = "```@profile/js/skills";
+            var modCmd = "```@profile/js/skills";
             var thisInBlockIndex;
             var thisContainerId;
             $scope.skillsDetail = [];
@@ -33,7 +33,7 @@ define([
                     }
                 }
             });
-            
+
             var getSkillLikeStatus = function(){
                 $scope.skills.map(function(skill, index){
                     var visitor = ($scope.user && $scope.user.username) || "";
@@ -54,7 +54,7 @@ define([
             $scope.skills = util.arrayFrom($scope.params.skills);
             getSkillLikeStatus();
             $scope.editing = false;
-            
+
             // 获取当前模块的index和containerId
             var getBlockIndex = function(){
                 if (thisInBlockIndex >= 0) {
@@ -84,7 +84,7 @@ define([
             }
 
             var updateSkill = function(skill, type){
-                type = (type == 'update') ? type : 'insert'; 
+                type = (type == 'update') ? type : 'insert';
                 util.post(config.apiUrlPrefix + 'skills/' + type, {
                     username: $scope.userinfo.username,
                     title: skill.title,
@@ -135,7 +135,7 @@ define([
                         Message.danger(act + "失败，请稍后重试");
                         return;
                     }
-                    $scope.skillsDetail[skill.title] = data; 
+                    $scope.skillsDetail[skill.title] = data;
                     var act = data.liked ? "点赞" : "取消点赞";
                     Message.info(act + "成功！");
                 })
@@ -217,7 +217,7 @@ define([
                                 backgroundColor: '#999',
                                 borderRadius: 3,
                                 padding: [3, 5],
-                                fontSize:"20px" 
+                                fontSize:"20px"
                            }
                         },
                         indicator: indicator,
@@ -252,12 +252,12 @@ define([
                 };
 
                 radarEchartsObj && radarEchartsObj.dispose && radarEchartsObj.dispose();
-    
+
                 var radarContainer = document.getElementById("skillRadar");
                 radarEchartsObj = echartsRadar.init(radarContainer);
                 radarEchartsObj.setOption(option);
-    
-            }            
+
+            }
 
             $rootScope.$on("onLogout", function(e) {
                 if ($scope.editing) {
@@ -266,12 +266,12 @@ define([
                     });
                 }
             })
-    
+
             $scope.$watch('$viewContentLoaded', initRadar);
         }]);
 
         app.registerController("addSkillModalCtrl", ['$rootScope', '$scope', '$uibModalInstance', '$translate', 'Account', 'modal', function ($rootScope, $scope, $uibModalInstance, $translate, Account, modal) {
-            const SkillNameMaxLen = 10;
+            var SkillNameMaxLen = 10;
             $scope.addingSkill = $scope.addingSkill || {};
             $scope.cancel = function(){
                 $uibModalInstance.dismiss("cancel");
@@ -310,7 +310,7 @@ define([
                     'key': 'level',
                     'value': $translate.instant('熟练度')
                 }];
-                var requiredResult = isRequiredEmptyAttr(requiredAttrs); 
+                var requiredResult = isRequiredEmptyAttr(requiredAttrs);
                 if (requiredResult.boolResult) {
                     $scope.errMsg = requiredResult.attr + $translate.instant("不可为空");
                     return;
@@ -337,7 +337,7 @@ define([
                         $scope.errMsg = $translate.instant("该技能已存在");
                         return;
                     }
-                    
+
                     $uibModalInstance.close($scope.addingSkill);
                 });
             }

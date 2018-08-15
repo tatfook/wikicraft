@@ -5,14 +5,12 @@
 /* 程序配置模块 */
 
 (function () {
-	const ProdHost = "^keepwork.com$";
-	const ReleaseHost = "^release.keepwork.com$";
-	const ProdLessonsHost = 'lessons.keepwork.com'
-	const RlsLessonsHost = 'lessons-release.keepwork.com'
-	const DevLessonsHost = 'lessons-stage.keepwork.com'
-	const ProdStorageHost = 'api.keepwork.com/storage'
-	const RlsStorageHost = 'api-release.keepwork.com/storage'
-	const DevStorageHost = 'api-stage.keepwork.com/storage'
+	var ProdLessonsHost = 'lessons.keepwork.com';
+	var RlsLessonsHost = 'lessons-release.keepwork.com';
+	var DevLessonsHost = 'lessons-stage.keepwork.com';
+	var ProdStorageHost = 'api.keepwork.com/storage';
+	var RlsStorageHost = 'api-release.keepwork.com/storage';
+	var DevStorageHost = 'api-stage.keepwork.com/storage';
 	var wiki_config = window.wiki_config || {};
 	var localEnv = window.location.hostname.indexOf("localhost") >= 0 ? true : false;
 	var localVMEnv = localEnv && window.location.host != "localhost:63342";
@@ -23,8 +21,8 @@
 		pathPrefix = '/' + hostname.substring(0, envIndex) + '/';
 	}
 	var getEnv = function () {
-		var prodExp = new RegExp(ProdHost);
-		var releaseExp = new RegExp(ReleaseHost);
+		var prodExp = /^keepwork.com$/;
+		var releaseExp = /^release.keepwork.com$/;
 		if (prodExp.test(hostname)) {
 			return "prod";
 		}
@@ -33,14 +31,14 @@
 		}
 		return "develop";
 	}
-	var isGlobalVersion = wiki_config && wiki_config.locale == 'en_US'
+	var isGlobalVersion = wiki_config && wiki_config.locale == 'en_US';
 
 	var languageLocale = (function () {
 		var browserLocale = (window.navigator.userLanguage || window.navigator.language);
 		browserLocale = (browserLocale && browserLocale.toLowerCase) ? browserLocale.toLowerCase() : browserLocale;
 		var locale = window.localStorage.getItem('keepwork-language-locale') || browserLocale || 'zh-cn';
 		locale = /^zh/.test(locale) ? 'zh-cn' : 'en';
-		return locale
+		return locale;
 	})();
 
 	config = {
@@ -50,12 +48,12 @@
 		isGlobalVersion: isGlobalVersion,
 		languageLocale: languageLocale,
 		languageLocaleIsForGlobalUser: languageLocale === 'en',
-		localEnv: localEnv,                                                                                         // 是否本地调试环境
-		localVMEnv: localVMEnv,                                                                                     // 本地虚拟机环境
-		hostname: wiki_config.hostname ? wiki_config.hostname.split(":")[0] : window.location.hostname,             // url中的hostname, 优先取服务端给过来的(cname转发，客户端获取不到真实的hostname)
+		localEnv: localEnv, // 是否本地调试环境
+		localVMEnv: localVMEnv, // 本地虚拟机环境
+		hostname: wiki_config.hostname ? wiki_config.hostname.split(":")[0] : window.location.hostname, // url中的hostname, 优先取服务端给过来的(cname转发，客户端获取不到真实的hostname)
 		keepworkOfficialGitHost: 'https://git.keepwork.com',
-		officialDomainList: ["keepwork.com", "qiankunew.com"],                                                      // 官方域名 因存在用户官方子域名和其它域名 故需记录
-		officialSubDomainList: [                                                                                    // 官方占用的子域名列表
+		officialDomainList: ["keepwork.com", "qiankunew.com"], // 官方域名 因存在用户官方子域名和其它域名 故需记录
+		officialSubDomainList: [ // 官方占用的子域名列表
 			"dev.keepwork.com",
 			"test.keepwork.com",
 
@@ -99,7 +97,7 @@
 		// ----------------------------------------前端配置 END------------------------------------------
 
 		//------------------------------------------路径配置 START-----------------------------------------
-		frontEndRouteUrl: (localEnv && !localVMEnv) ? (pathPrefix + 'index.html') : '/',  // 当使用前端路由时使用的url
+		frontEndRouteUrl: (localEnv && !localVMEnv) ? (pathPrefix + 'index.html') : '/', // 当使用前端路由时使用的url
 		// 路径配置 BEGIN
 		pathPrefix: pathPrefix,
 		// 图片路径
@@ -115,7 +113,7 @@
 		jsAppFactoryPath: pathPrefix + 'js/app/factory',
 		jsAppHelperPath: pathPrefix + 'js/app/helper',
 		//jsLibPath: pathPrefix + 'js/lib',
-		jsLibPath: '/wiki/' + 'js/lib',  // 库路径写死 避免前后多次重复缓存库
+		jsLibPath: '/wiki/' + 'js/lib', // 库路径写死 避免前后多次重复缓存库
 
 		modPath: pathPrefix + 'mod',
 		wikiModPath: pathPrefix + 'js/mod/',
@@ -148,8 +146,7 @@
 			]
 		},
 		// 数据共享
-		shareMap: {
-		}
+		shareMap: {}
 	};
 
 	config.isDebugEnv = function () {
@@ -166,6 +163,7 @@
 		}
 		return false;
 	}
+
 	function filterIE() {
 		var b_name = navigator.appName;
 		var b_version = navigator.appVersion;
@@ -204,20 +202,24 @@
 			//config.apiHost = "dev.keepwork.com"; // debug use
 		}
 
-		var lessonsHost = DevLessonsHost
-		var storageHost = DevStorageHost
+		var lessonsHost = DevLessonsHost;
+		var storageHost = DevStorageHost;
 
 		if (config.env === 'prod') {
-			lessonsHost = ProdLessonsHost
-			storageHost = ProdStorageHost
+			lessonsHost = ProdLessonsHost;
+			storageHost = ProdStorageHost;
 		} else if (config.env === 'release') {
-			lessonsHost = RlsLessonsHost
-			storageHost = RlsStorageHost
+			lessonsHost = RlsLessonsHost;
+			storageHost = RlsStorageHost;
 		}
 
-		config.lessonsApiPrefix = `https://${lessonsHost}/lessons/api/`
-		config.storageApiPrifix = `https://${storageHost}/v0/`;
+		if (!window.location.origin) {
+			window.location.origin = window.location.protocol + "//" + window.location.hostname + (window.location.port ? ':' + window.location.port: '');
+		}
+
 		config.httpProto = window.location.origin.replace(/:.*$/, "");
+		config.lessonsApiPrefix = config.httpProto + '://' + lessonsHost + '/lessons/api/';
+		config.storageApiPrifix = config.httpProto + '://' + storageHost + '/v0/';
 		config.apiUrlPrefix = config.httpProto + '://' + config.apiHost + '/api/wiki/models/';
 	}
 
@@ -254,7 +256,7 @@
 
 	// local window env
 	config.islocalWinEnv = function () {
-		return localEnv && !localVMEnv
+		return localEnv && !localVMEnv;
 	}
 
 	// local VM env
@@ -320,7 +322,7 @@
 
 		rawPathname = rawPathname.toLowerCase();
 		if (config.routeMap[rawPathname]) {
-			pageurl = config.routeMap[rawPathname];  // 优先配置路由
+			pageurl = config.routeMap[rawPathname]; // 优先配置路由
 		}
 
 		//console.log(pageurl, config.mainContentType);

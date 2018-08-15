@@ -13,7 +13,7 @@ define([
 ], function (app, htmlContent, addExperienceModalHtmlContent, mdconf, util) {
     function registerController(wikiBlock) {
         app.registerController("experienceCtrl", ['$rootScope', '$scope', '$uibModal', '$translate', 'Account', 'modal', function ($rootScope, $scope, $uibModal, $translate, Account, modal) {
-            const modCmd = "```@profile/js/experiences";
+            var modCmd = "```@profile/js/experiences";
             var thisInBlockIndex;
             var thisContainerId;
 			wikiBlock.init({
