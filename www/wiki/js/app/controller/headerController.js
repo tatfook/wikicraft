@@ -169,7 +169,7 @@ define([
         $scope.clickPageList = function (index) {
             if ($scope.urlObj.username == "wiki")
                 return;
-            
+
             var userDataSource = dataSource.getUserDataSource($scope.urlObj.username)
             var currentDataSource = userDataSource && userDataSource.getDataSourceBySitename($rootScope.siteinfo.name);
             if (!currentDataSource) {
@@ -181,7 +181,7 @@ define([
             var path = selectPath.join("/");
             var pagesObj = {};
             currentDataSource.getTree({
-                path:path, 
+                path:path,
                 recursive: true,
                 isShowLoading: true
             }, function (data) {
@@ -212,12 +212,12 @@ define([
                         }
                         return false;
                     }
-                    
+
                     page.index = pageIndex ++;
                     pagesObj[page.foldname || page.pagename] = page;
                     return true;
                 });
-                
+
                 conflictPages.forEach(function(conflictPage){
                     $scope.userSitePageList[conflictPage.index] = conflictPage.pageDetail;
                 });
@@ -239,7 +239,7 @@ define([
         $scope.goUserSite = function (site) {
             util.goUserSite('/' + site.username + '/' + site.name + '/index');
         }
-        
+
         $scope.goUserPage = function () {
             util.goUserSite('/' + $scope.urlObj.username);
         }
@@ -406,7 +406,7 @@ define([
 				//}
 			//});
         };
-        
+
         $scope.clickShare=function () {
             if ($scope.user){
                 $scope.tit = $scope.user.displayName;

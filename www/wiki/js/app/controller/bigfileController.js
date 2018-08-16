@@ -11,7 +11,7 @@ define([
         var qiniuBack;
         var uploadTotalSecond = 0;
         var fileUploadTime = 0;
-		var uid = undefined; 
+		var uid = undefined;
 		var isUploading = false;
 		var selectCount = 0;
         var biteToG = 1024*1024*1024;
@@ -674,7 +674,7 @@ define([
             $("#activeUpload").tab("show");
             $scope.initQiniu("isUpdating");
         };
-        
+
         var removeAllTags = function (str) {
             return str.replace(/<\/?(\w+)\s*[\w\W]*?>/g, '').replace(/^&nbsp;|&nbsp;$/g, '');
         };
@@ -912,7 +912,7 @@ define([
                 }, 500);
                 return;
             }
-            
+
             if (isAdded(file)) {
                 return;
             }

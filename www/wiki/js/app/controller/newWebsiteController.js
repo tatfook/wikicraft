@@ -81,7 +81,7 @@ define([
                                 }
                             })(i));
                         }
-    
+
                         util.sequenceRun(fnList, undefined, function(){
                             config.loading.hideLoading();
                             cb && cb();

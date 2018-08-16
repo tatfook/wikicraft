@@ -65,6 +65,24 @@ define(['app',
             util.go("vip");
         };
 
+        $scope.getVipStatus = function() {
+            if(
+                !$scope.user ||
+                !$scope.user.vipInfo ||
+                !$scope.user.vipInfo.endDate
+            ) {
+                return false;
+            }
+            
+            var endDateTime = new Date($scope.user.vipInfo.endDate);
+            
+            if (Date.now() > endDateTime) {
+                return false;
+            } else {
+                return true;
+            }
+        }
+
         $scope.$on('userCenterSubContentType', function (event, item) {
             if (item == 'orders')
                 $scope.clickOrders();
