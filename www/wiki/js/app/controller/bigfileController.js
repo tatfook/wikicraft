@@ -11,11 +11,11 @@ define([
         var qiniuBack;
         var uploadTotalSecond = 0;
         var fileUploadTime = 0;
-		var uid = undefined; 
+		var uid = undefined;
 		var isUploading = false;
 		var selectCount = 0;
-        const biteToG = 1024*1024*1024;
-        const ErrFilenamePatt = new RegExp('^[^\\\\/\*\?\|\<\>\:\"]+$');
+        var biteToG = 1024*1024*1024;
+        var ErrFilenamePatt = new RegExp('^[^\\\\/\*\?\|\<\>\:\"]+$');
         $scope.selectedType = "图片";
         $scope.order = {
             "expression": "updateDate",
@@ -674,7 +674,7 @@ define([
             $("#activeUpload").tab("show");
             $scope.initQiniu("isUpdating");
         };
-        
+
         var removeAllTags = function (str) {
             return str.replace(/<\/?(\w+)\s*[\w\W]*?>/g, '').replace(/^&nbsp;|&nbsp;$/g, '');
         };
@@ -866,10 +866,10 @@ define([
 
 
         $scope.getIconClass = function (file) {
-            const ImgReg = /^image\/+/;
-            const VideoReg = /^video\/+/;
-            const AudioReg = /^audio\/+/;
-            const PdfReg = /^application\/pdf$/;
+            var ImgReg = /^image\/+/;
+            var VideoReg = /^video\/+/;
+            var AudioReg = /^audio\/+/;
+            var PdfReg = /^application\/pdf$/;
             var type = file.type;
 
             if (ImgReg.test(type)){
@@ -912,7 +912,7 @@ define([
                 }, 500);
                 return;
             }
-            
+
             if (isAdded(file)) {
                 return;
             }

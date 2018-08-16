@@ -460,11 +460,17 @@ function site_data_source:api_export(params)
 	local err, list = yield()
 
 	local websiteDB = models.website:new():db()
+	local data_sourceDB = models.data_source:new():db()
 	for i, site_data_source in ipairs(list) do
 		websiteDB:findOne({["+name"] = {site_data_source.sitename}}, resume)
 		local err, website = yield()
 		website = website or {}
 		site_data_source.site_id = website._id
+
+		data_sourceDB:findOne({["+username"] = {site_data_source.username}}, resume)
+		local err, data_source = yield()
+		data_source = data_source or {}
+		site_data_source.account_id = data_source.dataSourceUserId
 	end
 
 	return list;

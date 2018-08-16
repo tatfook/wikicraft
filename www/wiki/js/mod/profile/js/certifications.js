@@ -1,19 +1,19 @@
 /*
- * @Author: ZhangKaitlyn 
+ * @Author: ZhangKaitlyn
  * @Date: 2018-01-19
  * @Last Modified by: none
  * @Last Modified time: 2018-02-27 17:40:45
  */
 define([
     'app',
-    'helper/mdconf', 
+    'helper/mdconf',
     'text!wikimod/profile/html/certifications.html',
     'text!wikimod/profile/html/modalTemplate/addCertificationsModal.html',
     'helper/util',
 ], function (app, mdconf, htmlContent, addCertificationModalHtmlContent, util) {
     function registerController(wikiBlock) {
         app.registerController("certificationCtrl", ['$rootScope', '$scope', '$uibModal', '$translate', 'Account', 'modal', function ($rootScope, $scope, $uibModal, $translate, Account, modal) {
-            const modCmd = "```@profile/js/certifications";
+            var modCmd = "```@profile/js/certifications";
             var thisInBlockIndex;
             var thisContainerId;
 			wikiBlock.init({
@@ -31,7 +31,7 @@ define([
                     }
                 }
             });
-            
+
             $scope.certifications = util.arrayFrom($scope.params.certifications);
             $scope.editing = false;
 
@@ -175,7 +175,7 @@ define([
                     'key': 'getDate',
                     'value': $translate.instant('获得时间')
                 }];
-                var requiredResult = isRequiredEmptyAttr(requiredAttrs); 
+                var requiredResult = isRequiredEmptyAttr(requiredAttrs);
                 if (requiredResult.boolResult) {
                     $scope.errMsg = requiredResult.attr + $translate.instant("不可为空");
                     result.getDate = getDateTemp;

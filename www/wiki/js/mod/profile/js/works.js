@@ -14,9 +14,9 @@ define([
 ], function (app, util, mdconf, htmlContent, addWorkModalHtmlContent) {
     function registerController(wikiBlock) {
         app.registerController("worksCtrl", ['$rootScope', '$scope','$uibModal', '$translate', 'Account', 'modal', function ($rootScope, $scope, $uibModal, $translate, Account, modal) {
-            const modCmd = "```@profile/js/works";
-            const LocationOrigin = window.location.origin;
-            const LocationReg = new RegExp(LocationOrigin);
+            var modCmd = "```@profile/js/works";
+            var LocationOrigin = window.location.origin;
+            var LocationReg = new RegExp(LocationOrigin);
             var thisInBlockIndex;
             var thisContainerId;
 			wikiBlock.init({
@@ -171,8 +171,8 @@ define([
         }]);
 
         app.registerController("addWorkModalCtrl", ['$rootScope', '$scope','$uibModal', '$uibModalInstance', '$translate', 'Account', 'modal', function ($rootScope, $scope, $uibModal, $uibModalInstance, $translate, Account, modal) {
-            const LocationOrigin = window.location.origin;
-            const UserInputFlag = -1;
+            var LocationOrigin = window.location.origin;
+            var UserInputFlag = -1;
             $scope.addingWork = $scope.addingWork || {};
             $scope.linkList = [];
             $scope.cancel = function(){

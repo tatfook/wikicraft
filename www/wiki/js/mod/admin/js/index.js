@@ -944,7 +944,7 @@ define([
 
 
                     /********** 文件审核开始 **********/
-                    const biteToG = 1024 * 1024 * 1024
+                    var biteToG = 1024 * 1024 * 1024
 
                     $scope.fileCurrentPage = 1;
                     $scope.filePageSize = 15;
@@ -1244,7 +1244,7 @@ define([
 
                     /********** Lessons邀请码管理 ********/
 
-                    const default_amount = 20
+                    var default_amount = 20
                     $scope.InvitationCodesPageSize = 20
                     $scope.totalInvitationCodes = 0
                     $scope.currentInvitationCodesPage = 1

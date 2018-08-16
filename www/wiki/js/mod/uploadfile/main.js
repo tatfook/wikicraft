@@ -155,31 +155,31 @@ define([
             $scope.uploadgitlab=(function(){ 
             	$("#uploadgite").html("");
             	Account.getUser(function(userinfo) {
-	            	let count = 0;    //用来统计输出上传位置的个数
-	            	let checkNum = 0; //用来统计选中的个数
-	                let user = userinfo.username;
+	            	var count = 0;    //用来统计输出上传位置的个数
+	            	var checkNum = 0; //用来统计选中的个数
+	                var user = userinfo.username;
 	                if (user == null) {
 	                    alert("请先登录账户再操作！");
 	                }
-		            let node = document.getElementsByName("Checkbox1"); 
-	                for(let i = 0;i < node.length; i++){
+		            var node = document.getElementsByName("Checkbox1"); 
+	                for(var i = 0;i < node.length; i++){
 	                 	// console.log(i,node[i].checked);
 		                if(node[i].checked){                     //选中的单选框
-		                    let URL = node[i].nextSibling.innerHTML;  //获取URL 
-		                    let pagename = getDataName(URL);
-						 	let type = getFileName(URL); 
-						 	let image = 1; 
+		                    var URL = node[i].nextSibling.innerHTML;  //获取URL 
+		                    var pagename = getDataName(URL);
+						 	var type = getFileName(URL); 
+						 	var image = 1; 
 						 	checkNum =  checkNum + 1;
 						 	/*
 		                       第一种：md文件的上传
 						 	*/
 						 	if (type == "md"){
-						 	    let text = httpGet(URL);
-		                        let filecontent = text;   //文件内容
+						 	    var text = httpGet(URL);
+		                        var filecontent = text;   //文件内容
 			                    filecontent = Base64.encode(filecontent);
-							    let filename = pagename;  //文件名
+							    var filename = pagename;  //文件名
 							    // console.log("md文件名："+filename);
-							    let dsInst = dataSource.getDataSource(user);   //站点名留空
+							    var dsInst = dataSource.getDataSource(user);   //站点名留空
 							    // console.log("需要上传的md文件："+dsInst);
 							    dsInst.uploadFile({
 							        path:filename,
@@ -200,7 +200,7 @@ define([
 									sleep(2000);
 							    },function(){
 							    	//失败重传
-									for(let num=0;num<3;num++){
+									for(var num=0;num<3;num++){
 								    	dsInst.uploadFile({
 									        path:filename,
 									        content:filecontent,
@@ -235,22 +235,22 @@ define([
 		                       第二种:图像文件的上传
 		                    */
 						 	else if (type == "png" || type == "jpg" || type == "bmp" || type == "gif" || type == "jpeg" || type == "tiff" ) {
-		                        let request = new XMLHttpRequest();
+		                        var request = new XMLHttpRequest();
 								request.open('GET', URL, true);
 								request.responseType = 'blob';
 							    request.onload = function() {
 								    // console.log('request loaded.');
-								    let reader = new FileReader();
+								    var reader = new FileReader();
 								    // console.log('request.response',request.response);
 								    reader.readAsDataURL(request.response);
 		                            reader.onload =  function(e) {
 								 	    // console.log('reader loaded.');
-									    let num = e.target.result;
+									    var num = e.target.result;
 							            image = num;
-							            let filecontent = image;   //文件内容
-								        let filename = pagename;  //文件名
+							            var filecontent = image;   //文件内容
+								        var filename = pagename;  //文件名
 								        // console.log("图片文件名："+filename);
-								        let dsInst = dataSource.getDataSource(user);   //站点名留空
+								        var dsInst = dataSource.getDataSource(user);   //站点名留空
 								        // console.log("需要上传的图片："+dsInst);
 								        dsInst.uploadFile({
 								     		path:filename,
@@ -270,7 +270,7 @@ define([
 												"<li>" + "上传位置: " + url);
 								    	         sleep(2000);
 								    	},function(){
-									        for(let num=0;num<3;num++){       //文件重传三次
+									        for(var num=0;num<3;num++){       //文件重传三次
 									            dsInst.uploadFile({
 										            path:filename,
 								     		        content:filecontent,
@@ -313,7 +313,7 @@ define([
 		    }); //end uploadgitlab()
             
             $(document).on('click','.link',function(){
-				let url = $(this).html();
+				var url = $(this).html();
 				$(".link").attr("href",url);
 			});
 			
@@ -336,30 +336,30 @@ define([
 			}
 
 	        function getBase64FromImageUrl(url) {
-		        let img = new Image();
+		        var img = new Image();
 		        img.setAttribute('crossOrigin', 'anonymous');
 		        img.onload = function() {
-		            let canvas = document.createElement("canvas");
+		            var canvas = document.createElement("canvas");
 		            canvas.width =this.width;
 		            canvas.height =this.height;
-		            let ctx = canvas.getContext("2d");
+		            var ctx = canvas.getContext("2d");
 		            ctx.drawImage(this, 0, 0);
-		            let dataURL = canvas.toDataURL("image/png");
+		            var dataURL = canvas.toDataURL("image/png");
 		            // console.log("图像的文件流"+dataURL);
 		            alert(dataURL.replace(/^data:image\/(png|jpg);base64,/, ""));
 		        };
 		        img.src = url;
-		        let output = document.getElementById("right");  
+		        var output = document.getElementById("right");  
 			    output.innerHTML = '<img style="padding: 0 10px;" width="400px" src="'+ img.src +'" />';
 		    }
 
 	        function getFileName(fileName){//通过第一种方式获取文件类型
-		        let pos=fileName.lastIndexOf(".");//查找最后一个.位置
+		        var pos=fileName.lastIndexOf(".");//查找最后一个.位置
 		        return fileName.substring(pos+1); //截取最后一个.位置到字符长度，也就是截取文件格式
 		    }
 
 		    function getDataName(fileName){//通过第一种方式获取文件名
-		        let pos=fileName.lastIndexOf("/");//查找最后一个\的位置
+		        var pos=fileName.lastIndexOf("/");//查找最后一个\的位置
 		        return fileName.substring(pos+1); //截取最后一个\位置到字符长度，也就是截取文件名 
 		    }
 
