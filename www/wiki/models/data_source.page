@@ -497,7 +497,9 @@ function data_source:api_export(params)
 	for i, dataSource in ipairs(list) do
 		userDB:findOne({['+username']={dataSource.username}}, resume)
 		local err, user = yield()
-		dataSource.user_id = user._id
+		if user then
+			dataSource.user_id = user._id
+		end
 	end
 	return list;
 end
