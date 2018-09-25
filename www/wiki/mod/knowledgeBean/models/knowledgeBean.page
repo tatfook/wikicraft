@@ -1,0 +1,33 @@
+<?npl
+--[[
+Title: knowledge bean api
+Author(s): big
+Date: 2018.9.25
+Place: Foshan
+Desc: knowledge bean api
+Api Example:
+/api/mod/knowledgeBean/models/knowledgeBean/... (models api)
+]]
+
+include_once(WIKI_ROOT .. "models/abstract/multi_user_base.page")
+include_once(WIKI_ROOT .. "models/goods.page")
+
+local knowledgeBean = inherit(models.abstract.multi_user_base, gettable("models.knowledgeBean"))
+
+knowledgeBean.db_name = 'knowledgeBean'
+knowledgeBean.exchangeRate = 10 --RMB to Knowledge bean
+
+local goods = models.goods:new();
+
+function knowledgeBean:ctor()
+
+end
+
+function knowledgeBean:get()
+  return {hello = 'world!!'}
+end
+
+function knowledgeBean:api_getGoodsList()
+  return {}
+end
+
