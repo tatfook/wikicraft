@@ -1,0 +1,115 @@
+<style>
+  body {
+    background-color: #f2f2f2;
+  }
+
+  .knowledge-bean {
+    padding: 10px 0;
+  }
+
+  .knowledge-bean > .container {
+    background-color: white;
+  }
+
+  .knowledge-bean > .container > .row > .title {
+    border-bottom: solid 1px #f2f2f2;
+    padding-bottom: 10px;
+  }
+
+  .knowledge-bean > .container .info {
+    padding: 10px 15px;
+  }
+
+  .knowledge-bean > .container .info .head > img{
+    width: 100%;
+  }
+</style>
+
+<div class="knowledge-bean" ng-controller="knowledgeBeanController">
+  <div class="container">
+    <div class="row">
+      <div class="col-xs-12 col-sm-12 title">
+        <h2>使用知识豆兑换《魔法哈奇》中的物品</h2>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-xs-12 col-sm-10 info">
+        <div class="row">
+          <div class="col-xs-12 col-sm-12">
+            <h4>你的知识豆：300知识豆 如何获得？</h4>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-xs-12 col-sm-3">
+            <div class="head">
+              <img src="/wiki/assets/imgs/default_portrait.png?bust=1537881437">
+              <div>
+                testv2
+              </div>
+            </div>
+          </div>
+          <div class="col-xs-12 col-sm-5">
+            <form>
+              <div class="form-group">
+                <label>Keepwork 账号</label>
+                <input type="text" class="form-control" placeholder="Keepwork 账号">
+              </div>
+              <div class="form-group">
+                <label>数字账号</label>
+                <input type="text" class="form-control" placeholder="数字账号">
+              </div>
+            </form>
+          </div>
+        </div>
+        <hr>
+        <div class="row">
+          <div class="col-xs-12 col-sm-12">
+            <h4>请选择兑换物品：</h4>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-xs-12 col-sm-3" ng-repeat="(key, value) in getGoodsList()">
+            <div>
+              <img class="img-rounded" alt="140x140" style="width: 140px; height: 140px;"
+                src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9InllcyI/PjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB3aWR0aD0iMTQwIiBoZWlnaHQ9IjE0MCIgdmlld0JveD0iMCAwIDE0MCAxNDAiIHByZXNlcnZlQXNwZWN0UmF0aW89Im5vbmUiPjwhLS0KU291cmNlIFVSTDogaG9sZGVyLmpzLzE0MHgxNDAKQ3JlYXRlZCB3aXRoIEhvbGRlci5qcyAyLjYuMC4KTGVhcm4gbW9yZSBhdCBodHRwOi8vaG9sZGVyanMuY29tCihjKSAyMDEyLTIwMTUgSXZhbiBNYWxvcGluc2t5IC0gaHR0cDovL2ltc2t5LmNvCi0tPjxkZWZzPjxzdHlsZSB0eXBlPSJ0ZXh0L2NzcyI+PCFbQ0RBVEFbI2hvbGRlcl8xNjYxMGU1NTQ1ZSB0ZXh0IHsgZmlsbDojQUFBQUFBO2ZvbnQtd2VpZ2h0OmJvbGQ7Zm9udC1mYW1pbHk6QXJpYWwsIEhlbHZldGljYSwgT3BlbiBTYW5zLCBzYW5zLXNlcmlmLCBtb25vc3BhY2U7Zm9udC1zaXplOjEwcHQgfSBdXT48L3N0eWxlPjwvZGVmcz48ZyBpZD0iaG9sZGVyXzE2NjEwZTU1NDVlIj48cmVjdCB3aWR0aD0iMTQwIiBoZWlnaHQ9IjE0MCIgZmlsbD0iI0VFRUVFRSIvPjxnPjx0ZXh0IHg9IjQ0LjA1NDY4NzUiIHk9Ijc0LjUiPjE0MHgxNDA8L3RleHQ+PC9nPjwvZz48L3N2Zz4="
+                data-holder-rendered="true" />
+            </div>
+            <div>
+              能量石碎片（1天）
+            </div>
+            <div>
+              单价：10知识豆
+            </div>
+            <div class="row">
+              <div class="col-lg-6">
+                数量：
+                <div class="input-group">
+                  <span class="input-group-btn">
+                    <button class="btn btn-default" type="button">-</button>
+                  </span>
+                  <input type="text" class="form-control" placeholder="2">
+                  <span class="input-group-btn">
+                    <button class="btn btn-default" type="button">+</button>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-xs-12 col-sm-12">
+            <h4><sub>总价：</sub>20知识豆</h4>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-xs-12 col-sm-3">
+            <button ng-click="recharge()" class="btn btn-info btn-block">充值</button>
+          </div>
+        </div>
+      </div>
+      <div class="hidden-xs col-sm-2">
+        魔法哈奇广告
+      </div>
+    </div>
+  </div>
+</div>

@@ -31,3 +31,19 @@ function knowledgeBean:api_getGoodsList()
   return {}
 end
 
+function knowledgeBean:api_getUserBeans()
+
+end
+
+function knowledgeBean:api_recharge()
+
+end
+
+function knowledgeBean:api_spend()
+
+end
+
+function knowledgeBean:api_order()
+
+end
+

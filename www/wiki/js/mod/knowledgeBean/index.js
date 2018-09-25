@@ -9,7 +9,7 @@
  define([
   'app',
   'helper/util',
-  'text!knowledgeBean.html'
+  'text!index.html'
  ], function(app, util, html) {
   'use strict';
 

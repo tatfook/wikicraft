@@ -22,6 +22,8 @@ function goods:ctor()
 	self:addfield("body","string",false);
 	-- product price
 	self:addfield("price","number",false);
+	-- product knowledge bean price
+	self:addfield("bean","number",false);
 	-- min
 	self:addfield("min_buy_count","number",false);
 	-- max can be sale
