@@ -1,0 +1,105 @@
+<?npl
+--[[
+Title: knowledge bean api
+Author(s): big
+Date: 2018.9.25
+Place: Foshan
+Desc: knowledge bean api
+Api Example:
+/api/mod/knowledgeBean/models/knowledgeBean/... (models api)
+]]
+
+include_once(WIKI_ROOT .. "models/abstract/multi_user_base.page")
+include_once(WIKI_ROOT .. "models/goods.page")
+include_once(WIKI_ROOT .. "models/oauth_app.page")
+include_once("./orderNumber.page")
+
+local order = inherit(models.abstract.multi_user_base, gettable("models.knowledgeBean.order"))
+
+order.db_name = 'knowledge_bean_order'
+order.showList = {"魔法豆"}
+
+local goods = models.goods:new()
+local oauth_app = models.oauth_app:new()
+local orderNumber = models.knowledgeBean.orderNumber:new()
+
+function order:ctor()
+  self:addfield('buyGoodsList', 'table', true)
+end
+
+function order:get()
+  return {hello = 'world!!'}
+end
+
+function order:api_getGoodsList()
+  local goodsList = commonlib.Array:new()
+
+  for key, item in ipairs(self.showList) do
+    local currentGoods = goods:getGoodsBySubject(item)
+
+    if currentGoods then
+      goodsList:push_back(currentGoods)
+    end
+  end
+
+  return errors:wrap(nil, goodsList)
+end
+
+function order:api_getUserBeans()
+  return 300
+end
+
+-- buy haqi goods
+-- We will try to buy haqi goods. If haqi server return success msg, we will deduct user beans otherwise will not.
+function order:api_spend(params)
+  local err, query = self:validateQuery(params)
+
+  if not query.buyGoodsList then
+    return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+  end
+
+  local buyGoodsList = query.buyGoodsList
+
+  self:addOrder(buyGoodsList)
+  self:handleBuy(buyGoodsList)
+  log(buyGoodsList, true)
+  -- log(oauth_app:getByAppName('魔法哈奇'), true)
+  -- if 
+end
+
+function order:handleBuy(buyGoodsList)
+  if type(buyGoodsList) ~= 'table' then
+    return false
+  end
+
+  for key, item in ipairs(buyGoodsList) do
+    log(item, true)
+    -- goods:getGoodsById()
+  end
+
+end
+
+function order:addOrder(buyGoodsList)
+  local orderNo = orderNumber:getOrder()
+  local username = self:getUsername()
+
+  local order = {
+    username = username,
+    orderNo = orderNo,
+    status = false,
+    buyGoodsList = buyGoodsList
+  }
+
+  log(order, true)
+  -- self:db():inertOne()
+end
+
+function order:modifyOrder()
+
+end
+
+function order:getOrder()
+
+end
+
+

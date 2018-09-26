@@ -18,17 +18,36 @@
   app.registerController('knowledgeBeanController', [
     '$scope',
     function($scope) {
-      $scope.RECHARGEPAGE = 'RECHARGEPAGE'
+      $scope.SPENDPAGE = 'SPENDPAGE'
       $scope.LOADINGPAGE = 'LOADINGPAGE'
 
-      $scope.page = $scope.RECHARGEPAGE
+      $scope.page = $scope.SPENDPAGE
       $scope.myKnowledgeBean = 300
       $scope.spendKnowledgeBean = 21
       $scope.goodsList = []
 
-      $scope.recharge = function() {
+      $scope.spend = function() {
         // $scope.page = $scope.LOADINGPAGE
-        console.log($scope.goodsList)
+        var buyGoodsList = []
+
+        for (var x in $scope.goodsList) {
+          var currentGoods = $scope.goodsList[x]
+
+          if (currentGoods.buyCount && currentGoods.buyCount > 0) {
+            buyGoodsList[buyGoodsList.length] = {
+              goodsId: currentGoods._id,
+              buyCount: currentGoods.buyCount
+            }
+          }
+        }
+
+        function handleSpend(data) {
+          
+        }
+
+        var url = baseUrl + '/spend'
+
+        util.post(url, { buyGoodsList: buyGoodsList }, handleSpend, function() {}, false)
       }
 
       $scope.getGoodsList = function() {

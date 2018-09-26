@@ -33,7 +33,7 @@
       </div>
     </div>
     <div class="row">
-      <div ng-if="page === RECHARGEPAGE" class="col-xs-12 col-sm-10 info">
+      <div ng-if="page === SPENDPAGE" class="col-xs-12 col-sm-10 info">
         <div class="row">
           <div class="col-xs-12 col-sm-12">
             <h4>你的知识豆：{{myKnowledgeBean}} 知识豆 <a href="http://keepwork.com" target="_blank">如何获得？</a></h4>
@@ -68,7 +68,7 @@
         <div class="row">
           <div class="col-xs-12 col-sm-3" ng-repeat="item in goodsList">
             <div>
-              <img class="img-rounded" alt="140x140" style="width: 140px; height: 140px;" ng-src="{{item.thumbnail}}"
+              <img class="img-rounded" style="width: 140px; height: 140px;" ng-src="{{item.thumbnail}}"
                 data-holder-rendered="true" />
             </div>
             <div>
@@ -100,7 +100,7 @@
         </div>
         <div class="row">
           <div class="col-xs-12 col-sm-3">
-            <button ng-click="recharge()" class="btn btn-info btn-block">充值</button>
+            <button ng-click="spend()" class="btn btn-info btn-block">充值</button>
           </div>
         </div>
       </div>
