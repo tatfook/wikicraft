@@ -3375,6 +3375,11 @@ define([], function () {
           "en": "IICC"
       },
       {
+          "_key": "Paracraft 编程学习",
+          "zh-cn": "Paracraft 编程学习",
+          "en": "Paracraft"
+      },
+      {
           "_key": "登录账号（推荐email或手机号）",
           "zh-cn": "登录账号（推荐email或手机号）",
           "en": "Account (email or mobile phone number)"
