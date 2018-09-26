@@ -24,6 +24,8 @@ function goods:ctor()
 	self:addfield("price","number",false);
 	-- product knowledge bean price
 	self:addfield("bean","number",false);
+	-- product thumbnail
+	self:addfield("thumbnail","string",false);
 	-- min
 	self:addfield("min_buy_count","number",false);
 	-- max can be sale
@@ -74,22 +76,24 @@ function goods:api_addGoods(params)	             --Goods添加数据
 
 	self:db():insertOne(
 	{	
-		app_goods_id      = query.app_goods_id,    --管理员自定义
-		body              = query.body,
-		subject           = query.subject,   --商品名称
-		price             = query.price, --价格
-		app_name          = query.app_name,  --第三方oauth账号  
-		default_buy_count = query.default_buy_count,   --购买数量
-		is_on_sale        = query.is_on_sale,    --销售状态再卖的
-		create_date       = goods:getNow(),   --生成时间 无需填写  后台生成
-		additional_field  = query.additional_field, --该项为table
-		exchange_rate     = query.exchange_rate,
-		min_buy_count     = query.min_buy_count,
-		max_buy_count     = query.max_buy_count,
-		default_buy_count = query.default_buy_count,
+		app_goods_id      = query.app_goods_id or 0, --管理员自定义
+		body              = query.body or '',
+		subject           = query.subject or '', --商品名称
+		price             = query.price or 0, --价格
+		bean    					= query.bean or '', --知识豆
+		thumbnail         = query.thumbnail or '', --产品图片
+		app_name          = query.app_name or '', --第三方oauth账号  
+		default_buy_count = query.default_buy_count or 0, --购买数量
+		is_on_sale        = query.is_on_sale or 0, --销售状态再卖的
+		create_date       = goods:getNow(), --生成时间 无需填写 后台生成
+		additional_field  = query.additional_field or {}, --该项为table
+		exchange_rate     = query.exchange_rate or 0,
+		min_buy_count     = query.min_buy_count or 0,
+		max_buy_count     = query.max_buy_count or 0,
+		default_buy_count = query.default_buy_count or 0,
 	}, resume);
 	local err, data = yield();
-	
+
 	local goodsId = {
 		goods_id = data._id,
 	}
@@ -124,18 +128,20 @@ function goods:api_modifyGoods(params)     --Goods修改
 	end
 
 	local modifyGoodsParams = {
-		app_goods_id      = query.app_goods_id,    --管理员自定义
-		body              = query.body,
-		subject           = query.subject,   --商品名称
-		price             = query.price, --价格
-		app_name          = query.app_name,  --第三方oauth账号  
-		default_buy_count = query.default_buy_count,   --购买数量
-		is_on_sale        = query.is_on_sale,    --销售状态再卖的
-		additional_field  = query.additional_field, --该项为table
-		exchange_rate     = query.exchange_rate,
-		min_buy_count     = query.min_buy_count,
-		max_buy_count     = query.max_buy_count,
-		default_buy_count = query.default_buy_count,
+		app_goods_id      = query.app_goods_id or 0, --管理员自定义
+		body              = query.body or '',
+		subject           = query.subject or '', --商品名称
+		price             = query.price or 0, --价格
+		bean							= query.bean or '', --知识豆
+		thumbnail         = query.thumbnail or '', --产品图片
+		app_name          = query.app_name or '', --第三方oauth账号  
+		default_buy_count = query.default_buy_count or 0, --购买数量
+		is_on_sale        = query.is_on_sale or 0, --销售状态再卖的
+		additional_field  = query.additional_field or {}, --该项为table
+		exchange_rate     = query.exchange_rate or 0,
+		min_buy_count     = query.min_buy_count or 0,
+		max_buy_count     = query.max_buy_count or 0,
+		default_buy_count = query.default_buy_count or 0,
 	} 
 	self:db():updateOne({goods_id = query.goods_id}, modifyGoodsParams, resume);
 	local err, data = yield();
@@ -147,6 +153,17 @@ function goods:api_modifyGoods(params)     --Goods修改
 		return errors:wrap(errors.SERVER_INNER_ERROR);
 	end
 
+end
+
+function goods:getGoodsBySubject(subject)
+	if not subject then
+		return false
+	end
+
+	self:db():findOne({subject = subject}, resume)
+	local err, query = yield()
+
+	return query
 end
 
 function goods:api_getOne(params) -- 单个获取
@@ -199,9 +216,8 @@ end
 function goods:api_goodsList(params)--Goods查找
 	local err, query = self:validateQuery(params);
 
-	
 	self:db():find({["-create_date"] = {gt=-1, limit = query.limit, skip = query.skip}},resume);
-	
+
 	local err, data = yield();
 	
 	if not err then	
