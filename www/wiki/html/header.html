@@ -703,6 +703,12 @@
                                 {{"国际智能创意大赛" | translate}}
                             </a>
                         </li>
+                        <li ng-if="!isGlobalVersion" class="iconfont-icon">
+                          <a href="https://keepwork.com/official/paracraft/index" target="_blank">
+                              <img class="iicc-logo" ng-src="{{getImageUrl('paracraft_logo.png', imgsPath)}}" alt="">
+                              {{"Paracraft 编程学习" | translate}}
+                          </a>
+                      </li>
                     </ul>
                     <ul class="nav navbar-nav navbar-left" ng-show="!isLogin">
                         <li class="iconfont-icon" ng-click="goHomePage(true)">
