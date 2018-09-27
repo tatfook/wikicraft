@@ -23,6 +23,7 @@ order.showList = {"魔法豆"}
 local goods = models.goods:new()
 local oauth_app = models.oauth_app:new()
 local orderNumber = models.knowledgeBean.orderNumber:new()
+local beans = models.knowledgeBean.beans:new()
 
 function order:ctor()
   self:addfield('buyGoodsList', 'table', true)
@@ -54,21 +55,21 @@ function order:api_spend(params)
   end
 
   local buyGoodsList = query.buyGoodsList
-  local newOrder = self:addOrder(buyGoodsList)
+  
+  self.newOrder = self:addOrder(buyGoodsList)
 
-  if not newOrder then
+  if not self.newOrder then
     return errors:wrap(errors.SERVER_INNER_ERROR)
   end
 
-  if self:handleBuy(buyGoodsList) then
-
+  if not self:handleBuy(buyGoodsList) then
+    return errors:wrap("充值失败，请确保知识豆充足")
   end
 
-  return errors:wrap(newOrder)
+  return errors:wrap(self.newOrder)
 end
 
 function order:handleBuy(buyGoodsList)
-  log('from handle buy', true)
   self.index = self.index and self.index + 1 or 1
 
   if type(buyGoodsList) ~= 'table' then
@@ -85,7 +86,7 @@ function order:handleBuy(buyGoodsList)
 
   local curGoodsInfo = goods:getGoodsById(curGoods['goodsId'])
 
-  if not curGoodsInfo and curGoodsInfo.app_name then
+  if not curGoodsInfo or not curGoodsInfo.app_name then
     return false
   end
 
@@ -98,6 +99,7 @@ function order:handleBuy(buyGoodsList)
       return false
     end
   else
+    -- update order status
     return true
   end
 end
@@ -105,39 +107,51 @@ end
 function order:buyGoods(curGoods, curGoodsInfo)
   local oauthAppInfo = oauth_app:getByAppName(curGoodsInfo.app_name)
 
-  if oauthAppInfo then
+  if not oauthAppInfo then
     return false
   end
 
-  local url = oauthAppInfo.payCallbackUrl;
+  local url = oauthAppInfo.payCallbackUrl
+  local total = curGoods.buyCount * curGoodsInfo.bean
+  local curBeans = beans:getUserBeans()
 
-  log('----------------')
-  log(url, true)
-  log(curGoodsInfo, true)
+  if total > curBeans then
+    return false
+  end
 
-  -- apiParams.url = 'Pay'
-  -- apiParams.gsid = tostring(query.app_goods_id)
-  -- apiParams.count = tostring(toFen/100 * 10)
-  -- apiParams.money = tostring(toFen)
-  -- apiParams.method = "1"
-  -- apiParams.orderno = tostring(trade_no)
-  -- apiParams.from = "0"
-  -- apiParams.price = payInfo.price
-  -- apiParams.username = payInfo.username
+  local apiParams = {}
+  apiParams.url = 'Pay'
+  apiParams.gsid = tostring(curGoodsInfo.app_goods_id)
+  apiParams.count = tostring(curGoods.buyCount)
+  apiParams.money = tostring(total)
+  apiParams.method = "1"
+  apiParams.orderno = tostring(curGoods.goodsNo)
+  apiParams.from = "0"
+  apiParams.price = tostring(curGoodsInfo.bean)
+  apiParams.username = self:getUsername() or ''
 
-  -- url = url .. "?";
+  url = url .. "?";
 
-  -- for key,value in pairs(apiParams or {}) do
-  --   url = url .. key .. "=" .. value .. "&";
-  -- end
+  for key,value in pairs(apiParams or {}) do
+    url = url .. key .. "=" .. value .. "&";
+  end
 
-  -- url = string.sub(url, 1, -2);
-
+  url = string.sub(url, 1, -2);
+  ParaEngine.Sleep(2)
 	-- local err, data = self:http("GET", url, {});
+  local data = true
 
-	-- if(not chargeObject) then
-	-- 	return errors:wrap(errors.SERVER_INNER_ERROR);
-	-- end
+  if not data then
+    return false
+  end
+
+  if not beans:spendBeans(total, curGoodsInfo.subject) then
+    return false
+  end
+
+  -- update goods status
+
+  return true
 end
 
 function order:addOrder(buyGoodsList)
@@ -150,6 +164,7 @@ function order:addOrder(buyGoodsList)
 
   for key, item in ipairs(buyGoodsList) do
     item.goodsNo = format("%s%s", orderNo, key)
+    item.status = false
   end
 
   local order = {
