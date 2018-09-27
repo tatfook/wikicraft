@@ -14,8 +14,8 @@ local orderNumber = inherit(models.abstract.multi_user_base, gettable("models.kn
 orderNumber.db_name = 'knowledge_bean_order_number'
 
 function orderNumber:getOrder()
-  self:db():insertOne({},resume);
+  self:db():insertOne({},resume)
 
-	local err, response = yield();
-	return ParaGlobal.GetDateFormat("yyyyMMdd") .. response._id;
+	local err, response = yield()
+	return format("3%s%s", ParaGlobal.GetDateFormat("yyyyMMdd"), response._id)
 end

@@ -13,7 +13,7 @@
  ], function(app, util, html) {
   'use strict';
 
-  var baseUrl = config.httpProto + '://' + config.apiHost + '/api/mod/knowledgeBean/models/knowledgeBean'
+  var baseUrl = config.httpProto + '://' + config.apiHost + '/api/mod/knowledgeBean/models/'
 
   app.registerController('knowledgeBeanController', [
     '$scope',
@@ -22,8 +22,8 @@
       $scope.LOADINGPAGE = 'LOADINGPAGE'
 
       $scope.page = $scope.SPENDPAGE
-      $scope.myKnowledgeBean = 300
-      $scope.spendKnowledgeBean = 21
+      $scope.myKnowledgeBean = 0
+      $scope.spendKnowledgeBean = 0
       $scope.goodsList = []
 
       $scope.spend = function() {
@@ -41,17 +41,22 @@
           }
         }
 
+        if (buyGoodsList.length === 0) {
+          alert("没有选择任何物品")
+          return false
+        }
+
         function handleSpend(data) {
           
         }
 
-        var url = baseUrl + '/spend'
+        var url = baseUrl + 'order/spend'
 
         util.post(url, { buyGoodsList: buyGoodsList }, handleSpend, function() {}, false)
       }
 
       $scope.getGoodsList = function() {
-        var url = baseUrl + '/getGoodsList'
+        var url = baseUrl + 'order/getGoodsList'
 
         function handleGoodsList(data) {
           if (Array.isArray(data)) {
@@ -107,6 +112,20 @@
         $scope.haqiNum = queryArgs.haqiNum || ''
 
         $scope.getGoodsList()
+
+        var getBeansUrl = baseUrl + 'beans/getUserBeans'
+
+        util.get(
+          getBeansUrl,
+          {},
+          function(data) {
+            if (data && data.beans) {
+              $scope.myKnowledgeBean = data.beans
+            }
+          },
+          function() {},
+          false
+        )
       }
 
       $scope.$watch('$viewContentLoaded', init)

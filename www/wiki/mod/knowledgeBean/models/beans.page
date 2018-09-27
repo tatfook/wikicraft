@@ -1,0 +1,105 @@
+<?npl
+--[[
+Title: knowledge bean api
+Author(s): big
+Date: 2018.9.25
+Place: Foshan
+Desc: knowledge bean api
+Api Example:
+/api/mod/knowledgeBean/models/order/... (models api)
+]]
+
+include_once(WIKI_ROOT .. "models/abstract/multi_user_base.page")
+include_once(WIKI_ROOT .. "models/goods.page")
+include_once(WIKI_ROOT .. "models/oauth_app.page")
+
+local beans = inherit(models.abstract.multi_user_base, gettable("models.knowledgeBean.beans"))
+
+function beans:ctor()
+  self:addfield('cost', 'number', false)
+end
+
+function beans:getLessonApi()
+  if KEEPWORK and KEEPWORK['config'] and
+     KEEPWORK['config'][CURRENT_ENV] and
+     KEEPWORK['config'][CURRENT_ENV]['lessonApi']
+  then
+    return KEEPWORK['config'][CURRENT_ENV]['lessonApi']
+  end
+
+  return ''
+end
+
+function beans:api_getUserBeans()
+  self:ensureAuthenticated()
+
+  local beans = self:getUserBeans()
+
+  if beans then
+    return errors:wrap(nil, {beans = beans})
+  else
+    return errors:wrap(nil, {beans = 0})
+  end
+end
+
+function beans:getUserBeans()
+  local url = format("%s%s", self:getLessonApi(), 'users')
+  local token = self:getUserToken()
+
+  local headers = {
+		Authorization = format("Bearer %s", token),
+		["content-type"] = "application/json",
+  }
+
+  local err, responseData = self:http("GET", url, {}, headers)
+
+  if type(responseData) == 'table' and
+     type(responseData.data) == 'table' and
+     type(responseData.data.bean) == 'number'
+  then
+    return responseData.data.bean
+  else
+    return false
+  end
+end
+
+function beans:api_spendBeans(params)
+  local err, query = self:validateQuery(params)
+
+  if not query or type(query.cost) ~= 'number' then
+    return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+  end
+
+  if (self:spendBeans(query.cost)) then
+    return errors:wrap(errors.SUCCESS)
+  else
+    return errors:wrap("余额不足")
+  end
+end
+
+function beans:spendBeans(cost, desc)
+  if type(cost) ~= 'number' then
+    return false
+  end
+
+  local token = self:getUserToken()
+  local url = format("%s%s", self:getLessonApi(), 'users/expense')
+
+  local headers = {
+		Authorization = format("Bearer %s", token),
+		["content-type"] = "application/json",
+  }
+
+  local params = {
+    bean = cost,
+    description = desc or "no description"
+  }
+
+  local err, responseData = self:http("GET", url, params, headers)
+
+  if err == 200 then
+    return true
+  else
+    return false
+  end
+end

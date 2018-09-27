@@ -7,7 +7,6 @@ Date: 2017/06/08
 
 
 include_once("./abstract/base.page")
--- include_once("./oauth_user.page")
 include_once("./user.page")
 
 local oauth_app = inherit(models.abstract.base, gettable("models.oauth_app"))
@@ -127,11 +126,6 @@ function oauth_app:create(params) -- /api/wiki/models/oauth_app/new POST
 	local reg4 = '^(https://)[%w_]+%.%w+.+$'
 	local reg5 = '^(ftp://)[%w_]+%.%w+.+$'
 
-	--判断appName格式是否正确/只能输入英文
-	-- if(not string.find(query.appName,reg1)) then
-	-- 	return errors:wrap(errors.REQUEST_PARAMS_ERROR);
-	-- end
-
 	--判断appName是否为中文/英文
 	if(not string.find(query.appName,reg1)) then
 		if(not string.find(query.appName,reg2))then
@@ -236,11 +230,6 @@ function oauth_app:update(params) -- /api/wiki/models/oauth_app/ PUT
 	local reg3 = '^(http://)[%w_]+%.%w+.+$'
 	local reg4 = '^(https://)[%w_]+%.%w+.+$'
 	local reg5 = '^(ftp://)[%w_]+%.%w+.+$'
-	
-	--判断appName格式是否正确/只能输入英文
-	-- if(not string.find(query.appName,reg1)) then
-	-- 	return errors:wrap(errors.REQUEST_PARAMS_ERROR);
-	-- end
 
 	--判断appName是否为中文/英文
 	if(not string.find(query.appName,reg1)) then
@@ -257,28 +246,6 @@ function oauth_app:update(params) -- /api/wiki/models/oauth_app/ PUT
 	else
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR);
 	end
-	
-	--判断redirectUrl格式是否正确
-	-- if(query.redirectUrl ~= nil)then
-	-- 	if(not string.find(query.redirectUrl, reg3))then
-	-- 		if(not string.find(query.redirectUrl, reg4))then
-	-- 			if(not string.find(query.redirectUrl, reg5))then
-	-- 				return errors:wrap(errors.REQUEST_PARAMS_ERROR);
-	-- 			end
-	-- 		end
-	-- 	end
-	-- end
-	
-	--判断payCallbackUrl格式是否正确
-	-- if(query.payCallbackUrl ~= nil)then
-	-- 	if(not string.find(query.payCallbackUrl, reg3))then
-	-- 		if(not string.find(query.payCallbackUrl, reg4))then
-	-- 			if(not string.find(query.payCallbackUrl, reg5))then
-	-- 				return errors:wrap(errors.REQUEST_PARAMS_ERROR);
-	-- 			end
-	-- 		end
-	-- 	end
-	-- end
 
 	-- 判断是否存在clientId
 	self:db():findOne({clientId = query.clientId}, resume);

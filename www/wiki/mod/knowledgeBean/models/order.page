@@ -13,6 +13,7 @@ include_once(WIKI_ROOT .. "models/abstract/multi_user_base.page")
 include_once(WIKI_ROOT .. "models/goods.page")
 include_once(WIKI_ROOT .. "models/oauth_app.page")
 include_once("./orderNumber.page")
+include_once("./beans.page")
 
 local order = inherit(models.abstract.multi_user_base, gettable("models.knowledgeBean.order"))
 
@@ -25,10 +26,6 @@ local orderNumber = models.knowledgeBean.orderNumber:new()
 
 function order:ctor()
   self:addfield('buyGoodsList', 'table', true)
-end
-
-function order:get()
-  return {hello = 'world!!'}
 end
 
 function order:api_getGoodsList()
@@ -45,13 +42,11 @@ function order:api_getGoodsList()
   return errors:wrap(nil, goodsList)
 end
 
-function order:api_getUserBeans()
-  return 300
-end
-
 -- buy haqi goods
 -- We will try to buy haqi goods. If haqi server return success msg, we will deduct user beans otherwise will not.
 function order:api_spend(params)
+  self:ensureAuthenticated()
+
   local err, query = self:validateQuery(params)
 
   if not query.buyGoodsList then
@@ -59,29 +54,103 @@ function order:api_spend(params)
   end
 
   local buyGoodsList = query.buyGoodsList
+  local newOrder = self:addOrder(buyGoodsList)
 
-  self:addOrder(buyGoodsList)
-  self:handleBuy(buyGoodsList)
-  log(buyGoodsList, true)
-  -- log(oauth_app:getByAppName('魔法哈奇'), true)
-  -- if 
+  if not newOrder then
+    return errors:wrap(errors.SERVER_INNER_ERROR)
+  end
+
+  if self:handleBuy(buyGoodsList) then
+
+  end
+
+  return errors:wrap(newOrder)
 end
 
 function order:handleBuy(buyGoodsList)
+  log('from handle buy', true)
+  self.index = self.index and self.index + 1 or 1
+
   if type(buyGoodsList) ~= 'table' then
+    self.index = nil
     return false
   end
 
-  for key, item in ipairs(buyGoodsList) do
-    log(item, true)
-    -- goods:getGoodsById()
+  local curGoods = buyGoodsList[self.index]
+
+  if not curGoods or type(curGoods['goodsId']) ~= 'number' then
+    self.index = nil
+    return false
   end
 
+  local curGoodsInfo = goods:getGoodsById(curGoods['goodsId'])
+
+  if not curGoodsInfo and curGoodsInfo.app_name then
+    return false
+  end
+
+  if not self:buyGoods(curGoods, curGoodsInfo) then
+    return false
+  end
+
+  if buyGoodsList[#buyGoodsList + 1] then
+    if not self:handleBuy(buyGoodsList) then
+      return false
+    end
+  else
+    return true
+  end
+end
+
+function order:buyGoods(curGoods, curGoodsInfo)
+  local oauthAppInfo = oauth_app:getByAppName(curGoodsInfo.app_name)
+
+  if oauthAppInfo then
+    return false
+  end
+
+  local url = oauthAppInfo.payCallbackUrl;
+
+  log('----------------')
+  log(url, true)
+  log(curGoodsInfo, true)
+
+  -- apiParams.url = 'Pay'
+  -- apiParams.gsid = tostring(query.app_goods_id)
+  -- apiParams.count = tostring(toFen/100 * 10)
+  -- apiParams.money = tostring(toFen)
+  -- apiParams.method = "1"
+  -- apiParams.orderno = tostring(trade_no)
+  -- apiParams.from = "0"
+  -- apiParams.price = payInfo.price
+  -- apiParams.username = payInfo.username
+
+  -- url = url .. "?";
+
+  -- for key,value in pairs(apiParams or {}) do
+  --   url = url .. key .. "=" .. value .. "&";
+  -- end
+
+  -- url = string.sub(url, 1, -2);
+
+	-- local err, data = self:http("GET", url, {});
+
+	-- if(not chargeObject) then
+	-- 	return errors:wrap(errors.SERVER_INNER_ERROR);
+	-- end
 end
 
 function order:addOrder(buyGoodsList)
   local orderNo = orderNumber:getOrder()
   local username = self:getUsername()
+
+  if not username then
+    return false
+  end
+
+  for key, item in ipairs(buyGoodsList) do
+    item.goodsNo = format("%s%s", orderNo, key)
+  end
 
   local order = {
     username = username,
@@ -90,8 +159,14 @@ function order:addOrder(buyGoodsList)
     buyGoodsList = buyGoodsList
   }
 
-  log(order, true)
-  -- self:db():inertOne()
+  self:db():insertOne(order, resume)
+  local err, result = yield()
+
+  if not err and result then
+    return order
+  else
+    return false
+  end
 end
 
 function order:modifyOrder()
