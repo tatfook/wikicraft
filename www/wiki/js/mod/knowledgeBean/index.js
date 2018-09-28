@@ -187,12 +187,9 @@
               controller: 'loginController',
               size: 'lg',
               backdrop: true
-            }, function (result) {
-                // console.log(result);
-                // nowPage.replaceSelection(login.content);
-            }, function (result) {
-                // console.log(result);
-            });
+            }, 
+            function (result) { }, 
+            function (result) { });
           }
         }, 0)
       }
