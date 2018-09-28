@@ -1,0 +1,21 @@
+<?npl
+--[[
+Title: generate knowledge bean order number api
+Author(s): big
+Date: 2018.9.26
+Place: Foshan
+Desc: knowledge bean order number api
+Api Example:
+/api/mod/knowledgeBean/models/knowledgeBean/... (models api)
+]]
+
+local orderNumber = inherit(models.abstract.multi_user_base, gettable("models.knowledgeBean.orderNumber"))
+
+orderNumber.db_name = 'knowledge_bean_order_number'
+
+function orderNumber:getOrder()
+  self:db():insertOne({},resume)
+
+	local err, response = yield()
+	return format("3%s%s", ParaGlobal.GetDateFormat("yyyyMMdd"), response._id)
+end

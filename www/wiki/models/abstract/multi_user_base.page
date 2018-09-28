@@ -17,6 +17,21 @@ function multi_user_base:ctor()
 	self:addfield("userid", "number", false);
 end
 
+function multi_user_base:getUserToken()
+	local authHeader = request:header('Authorization') or request:header("authorization")
+	local token = request:get_cookie("token")
+
+	if authHeader then
+		token = authHeader:match("%s+(%S+)")
+	end
+
+	if not token then
+		return ""
+	end
+
+	return token
+end
+
 function multi_user_base:getUsername()
 	local tokenInfo = getTokenInfo();
 	

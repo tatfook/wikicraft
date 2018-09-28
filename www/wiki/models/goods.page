@@ -4,258 +4,287 @@ Title: goods
 Author: big
 Date: 2017/7/11
 ]]
+include_once("./abstract/multi_user_base.page")
+include_once("./user.page")
 
-include_once("./abstract/multi_user_base.page");
-include_once("./user.page");
-
-local goods = inherit(models.abstract.multi_user_base, gettable("models.goods"));
-goods.db_name = "goods";
+local goods = inherit(models.abstract.multi_user_base, gettable("models.goods"))
+goods.db_name = "goods"
 
 function goods:ctor()
-	-- goods id
-	self:addfield("goods_id","number",false);
-	-- the third party goods id
-	self:addfield("app_goods_id","number",false);
-	-- product name
-	self:addfield("subject","string",false);
-	-- product introduce
-	self:addfield("body","string",false);
-	-- product price
-	self:addfield("price","number",false);
-	-- min
-	self:addfield("min_buy_count","number",false);
-	-- max can be sale
-	self:addfield("max_buy_count","number",false);
-	-- the thrid party name
-	self:addfield("app_name","string",false);
-	-- if product on sale is 1 otherwise 0;
-	self:addfield("is_on_sale","number",false);
-	-- product create date
-	self:addfield("create_date","string",false);
-	-- additional_field
-	self:addfield("additional_field","table",false);
-	-- exchange_rate
-	self:addfield("exchange_rate","number",false);
-	-- default_buy_count
-	self:addfield("default_buy_count","number",false);
-	-- Flip limit
-	self:addfield("limit","number",false);
-	-- Flip skip
-	self:addfield("skip","number",false);
+  -- goods id
+  self:addfield("goods_id", "number", false)
+  -- the third party goods id
+  self:addfield("app_goods_id", "number", false)
+  -- product name
+  self:addfield("subject", "string", false)
+  -- product introduce
+  self:addfield("body", "string", false)
+  -- product price
+  self:addfield("price", "number", false)
+  -- product knowledge bean price
+  self:addfield("bean", "number", false)
+  -- product thumbnail
+  self:addfield("thumbnail", "string", false)
+  -- min
+  self:addfield("min_buy_count", "number", false)
+  -- max can be sale
+  self:addfield("max_buy_count", "number", false)
+  -- the thrid party name
+  self:addfield("app_name", "string", false)
+  -- if product on sale is 1 otherwise 0;
+  self:addfield("is_on_sale", "number", false)
+  -- product create date
+  self:addfield("create_date", "string", false)
+  -- additional_field
+  self:addfield("additional_field", "table", false)
+  -- exchange_rate
+  self:addfield("exchange_rate", "number", false)
+  -- default_buy_count
+  self:addfield("default_buy_count", "number", false)
+  -- Flip limit
+  self:addfield("limit", "number", false)
+  -- Flip skip
+  self:addfield("skip", "number", false)
 end
 
 function goods:api_getAppGoodsInfo(params)
-	local err, query = self:validateQuery(params);
+  local err, query = self:validateQuery(params)
 
-	if(not query.app_goods_id) then
-		return errors:wrap(errors.REQUEST_PARAMS_ERROR);
-	end
+  if (not query.app_goods_id) then
+    return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+  end
 
-	self:db():findOne({["+app_goods_id+app_name"] = {query.app_goods_id,query.app_name}}, resume)
-	local err, data = yield();
+  self:db():findOne({["+app_goods_id+app_name"] = {query.app_goods_id, query.app_name}}, resume)
+  local err, data = yield()
 
-	if(not err and data)then
-		response:status(200);
-		return errors:wrap(nil, data);
-	else
-		response:status(404);
-		return errors:wrap(errors.NOT_FOUND);
-	end
+  if (not err and data) then
+    response:status(200)
+    return errors:wrap(nil, data)
+  else
+    response:status(404)
+    return errors:wrap(errors.NOT_FOUND)
+  end
 end
 
-function goods:api_addGoods(params)	             --Goods添加数据
-	local err, query = self:validateQuery(params);
+function goods:api_addGoods(params) --Goods添加数据
+  local err, query = self:validateQuery(params)
 
-	if(not query or not next(query)) then
-		return errors:wrap(errors.REQUEST_PARAMS_ERROR);
-	end
+  if (not query or not next(query)) then
+    return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+  end
 
-	self:db():insertOne(
-	{	
-		app_goods_id      = query.app_goods_id,    --管理员自定义
-		body              = query.body,
-		subject           = query.subject,   --商品名称
-		price             = query.price, --价格
-		app_name          = query.app_name,  --第三方oauth账号  
-		default_buy_count = query.default_buy_count,   --购买数量
-		is_on_sale        = query.is_on_sale,    --销售状态再卖的
-		create_date       = goods:getNow(),   --生成时间 无需填写  后台生成
-		additional_field  = query.additional_field, --该项为table
-		exchange_rate     = query.exchange_rate,
-		min_buy_count     = query.min_buy_count,
-		max_buy_count     = query.max_buy_count,
-		default_buy_count = query.default_buy_count,
-	}, resume);
-	local err, data = yield();
-	
-	local goodsId = {
-		goods_id = data._id,
-	}
-	self:db():updateOne({_id = data._id}, goodsId, resume);
-	local err, data = yield();
+  self:db():insertOne(
+    {
+      app_goods_id = query.app_goods_id or 0, --管理员自定义
+      body = query.body or "",
+      subject = query.subject or "", --商品名称
+      price = query.price or 0, --价格
+      bean = query.bean or "", --知识豆
+      thumbnail = query.thumbnail or "", --产品图片
+      app_name = query.app_name or "", --第三方oauth账号
+      default_buy_count = query.default_buy_count or 0, --购买数量
+      is_on_sale = query.is_on_sale or 0, --销售状态再卖的
+      create_date = goods:getNow(), --生成时间 无需填写 后台生成
+      additional_field = query.additional_field or {}, --该项为table
+      exchange_rate = query.exchange_rate or 0,
+      min_buy_count = query.min_buy_count or 0,
+      max_buy_count = query.max_buy_count or 0,
+      default_buy_count = query.default_buy_count or 0
+    },
+    resume
+  )
+  local err, data = yield()
 
-	if(not err and data) then
-		response:status(200);
-		return errors:wrap(errors.SUCCESS);
-	end
+  local goodsId = {
+    goods_id = data._id
+  }
+  self:db():updateOne({_id = data._id}, goodsId, resume)
+  local err, data = yield()
 
-	return errors:wrap(errors.SERVER_INNER_ERROR);
-	
+  if (not err and data) then
+    response:status(200)
+    return errors:wrap(errors.SUCCESS)
+  end
+
+  return errors:wrap(errors.SERVER_INNER_ERROR)
 end
 
-function goods:api_modifyGoods(params)     --Goods修改
-	local err, query = self:validateQuery(params);
+function goods:api_modifyGoods(params) --Goods修改
+  local err, query = self:validateQuery(params)
 
-	if(not query.goods_id) then
-		return errors:wrap(errors.REQUEST_PARAMS_ERROR);
-	end
+  if (not query.goods_id) then
+    return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+  end
 
-	self:db():findOne({goods_id = query.goods_id}, resume);
-	local err, data = yield();
+  self:db():findOne({goods_id = query.goods_id}, resume)
+  local err, data = yield()
 
-	if(err) then
-		return errors:wrap(errors.SERVER_INNER_ERROR);
-	end
+  if (err) then
+    return errors:wrap(errors.SERVER_INNER_ERROR)
+  end
 
-	if(not data) then
-		return errors:wrap(errors.REQUEST_PARAMS_ERROR);
-	end
+  if (not data) then
+    return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+  end
 
-	local modifyGoodsParams = {
-		app_goods_id      = query.app_goods_id,    --管理员自定义
-		body              = query.body,
-		subject           = query.subject,   --商品名称
-		price             = query.price, --价格
-		app_name          = query.app_name,  --第三方oauth账号  
-		default_buy_count = query.default_buy_count,   --购买数量
-		is_on_sale        = query.is_on_sale,    --销售状态再卖的
-		additional_field  = query.additional_field, --该项为table
-		exchange_rate     = query.exchange_rate,
-		min_buy_count     = query.min_buy_count,
-		max_buy_count     = query.max_buy_count,
-		default_buy_count = query.default_buy_count,
-	} 
-	self:db():updateOne({goods_id = query.goods_id}, modifyGoodsParams, resume);
-	local err, data = yield();
+  local modifyGoodsParams = {
+    app_goods_id = query.app_goods_id or 0, --管理员自定义
+    body = query.body or "",
+    subject = query.subject or "", --商品名称
+    price = query.price or 0, --价格
+    bean = query.bean or "", --知识豆
+    thumbnail = query.thumbnail or "", --产品图片
+    app_name = query.app_name or "", --第三方oauth账号
+    default_buy_count = query.default_buy_count or 0, --购买数量
+    is_on_sale = query.is_on_sale or 0, --销售状态再卖的
+    additional_field = query.additional_field or {}, --该项为table
+    exchange_rate = query.exchange_rate or 0,
+    min_buy_count = query.min_buy_count or 0,
+    max_buy_count = query.max_buy_count or 0,
+    default_buy_count = query.default_buy_count or 0
+  }
+  self:db():updateOne({goods_id = query.goods_id}, modifyGoodsParams, resume)
+  local err, data = yield()
 
-	if(not err and data) then
-		response:status(200);
-		return errors:wrap(errors.SUCCESS);
-	else
-		return errors:wrap(errors.SERVER_INNER_ERROR);
-	end
+  if (not err and data) then
+    response:status(200)
+    return errors:wrap(errors.SUCCESS)
+  else
+    return errors:wrap(errors.SERVER_INNER_ERROR)
+  end
+end
 
+function goods:getGoodsBySubject(subject)
+  if not subject then
+    return false
+  end
+
+  self:db():findOne({subject = subject}, resume)
+  local err, query = yield()
+
+  return query
 end
 
 function goods:api_getOne(params) -- 单个获取
-	local err, query = self:validateQuery(params);
+  local err, query = self:validateQuery(params)
 
-	if(not query.goods_id) then
-		return errors:wrap(errors.REQUEST_PARAMS_ERROR);
-	end
+  if (not query.goods_id) then
+    return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+  end
 
-	self:db():findOne({goods_id = query.goods_id}, resume);
-	local err, data = yield();
+  local currentGoods = self:getGoodsById(query.goods_id)
 
-	if(not err) then
-		response:status(200);
-		return errors:wrap(nil, data);
-	else
-		return errors:wrap(errors.SERVER_INNER_ERROR);
-	end
+  if currentGoods then
+    response:status(200)
+    return errors:wrap(nil, currentGoods)
+  else
+    return errors:wrap(errors.SERVER_INNER_ERROR)
+  end
 end
 
-function goods:api_deleteGoods(params)   --Goods删除
-	local err,query = self:validateQuery(params);
-	
-	if(not query or not next(query)) then
-		return errors:wrap(errors.REQUEST_PARAMS_ERROR);
-	end
-	
-	self:db():findOne({goods_id = query.goods_id}, resume);
-	local err, data = yield();
-	
-	if(err) then
-		return errors:wrap(errors.SERVER_INNER_ERROR);
-	end
+function goods:getGoodsById(id)
+  if type(id) ~= 'number' then
+    return false
+  end
 
-	if(not data) then
-		return errors:wrap(errors.REQUEST_PARAMS_ERROR);
-	end
-	
-	self:db():deleteOne({goods_id = query.goods_id}, resume);
-	local err, data = yield();
+  self:db():findOne({goods_id = id}, resume)
+  local err, data = yield()
 
-	if(not err) then
-		response:status(200);
-		return errors:wrap(errors.SUCCESS);
-	else
-		return errors:wrap(errors.SERVER_INNER_ERROR);
-	end
+  if (not err) then
+    return data
+  else
+    return false
+  end
 end
 
-function goods:api_goodsList(params)--Goods查找
-	local err, query = self:validateQuery(params);
+function goods:api_deleteGoods(params) --Goods删除
+  local err, query = self:validateQuery(params)
 
-	
-	self:db():find({["-create_date"] = {gt=-1, limit = query.limit, skip = query.skip}},resume);
-	
-	local err, data = yield();
-	
-	if not err then	
-		return errors:wrap(nil, data);
-	else
-		return errors:wrap(errors.SERVER_INNER_ERROR);
-	end	
+  if (not query or not next(query)) then
+    return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+  end
+
+  self:db():findOne({goods_id = query.goods_id}, resume)
+  local err, data = yield()
+
+  if (err) then
+    return errors:wrap(errors.SERVER_INNER_ERROR)
+  end
+
+  if (not data) then
+    return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+  end
+
+  self:db():deleteOne({goods_id = query.goods_id}, resume)
+  local err, data = yield()
+
+  if (not err) then
+    response:status(200)
+    return errors:wrap(errors.SUCCESS)
+  else
+    return errors:wrap(errors.SERVER_INNER_ERROR)
+  end
 end
 
-function goods:api_count()--总数
+function goods:api_goodsList(params) --Goods查找
+  local err, query = self:validateQuery(params)
 
-	self:db():find({}, resume);
+  self:db():find({["-create_date"] = {gt = -1, limit = query.limit, skip = query.skip}}, resume)
 
-	local err, data = yield();
+  local err, data = yield()
 
-	if(not err) then
-		response:status(200);
-		return errors:wrap(nil, #data);
-	else
-		return errors:wrap(errors.SERVER_INNER_ERROR);
-	end
+  if not err then
+    return errors:wrap(nil, data)
+  else
+    return errors:wrap(errors.SERVER_INNER_ERROR)
+  end
 end
 
+function goods:api_count() --总数
+  self:db():find({}, resume)
+
+  local err, data = yield()
+
+  if (not err) then
+    response:status(200)
+    return errors:wrap(nil, #data)
+  else
+    return errors:wrap(errors.SERVER_INNER_ERROR)
+  end
+end
 
 function goods:getNow()
-	return ParaGlobal.GetDateFormat("yyyy-MM-dd") .. " " .. ParaGlobal.GetTimeFormat("HH:mm:ss");
+  return ParaGlobal.GetDateFormat("yyyy-MM-dd") .. " " .. ParaGlobal.GetTimeFormat("HH:mm:ss")
 end
 
-	--[[local ret1 = '%d'			--数字
-	local ret2 = '%p'   		--标点字符
-	local ret3 = '%s'			--空白字符
-	local ret4 = '[\176-\254]'	--中文
-	local ret5 = '%a'			--英文字母
+--[[local ret1 = '%d'			--数字
+  local ret2 = '%p'   		--标点字符
+  local ret3 = '%s'			--空白字符
+  local ret4 = '[\176-\254]'	--中文
+  local ret5 = '%a'			--英文字母
 
-	if(not string.find(query.app_goods_id,ret1)) then
-		if(not string.find(query.app_goods_id,ret4)) then
-			return errors:wrap(errors.REQUEST_PARAMS_ERROR);
-		end
-	end
+  if(not string.find(query.app_goods_id,ret1)) then
+    if(not string.find(query.app_goods_id,ret4)) then
+      return errors:wrap(errors.REQUEST_PARAMS_ERROR);
+    end
+  end
 
-	if(not string.find(query.subject,ret1)) then
-		if(not string.find(query.subject,ret4)) then
-			if(not string.find(query.subject,ret5)) then
-				return errors:wrap(errors.REQUEST_PARAMS_ERROR);
-			end
-		end
-	end
+  if(not string.find(query.subject,ret1)) then
+    if(not string.find(query.subject,ret4)) then
+      if(not string.find(query.subject,ret5)) then
+        return errors:wrap(errors.REQUEST_PARAMS_ERROR);
+      end
+    end
+  end
 
-	if(not string.find(query.price,ret1))then
-		return errors:wrap(errors.REQUEST_PARAMS_ERROR);
-	end
-	
-	if(not string.find(query.app_name,ret1))then
-		if(not string.find(query.app_name,ret4))then
-			if(not string.find(query.app_name,ret5))then
-				return errors:wrap(errors.REQUEST_PARAMS_ERROR);
-			end
-		end
-	end]]
+  if(not string.find(query.price,ret1))then
+    return errors:wrap(errors.REQUEST_PARAMS_ERROR);
+  end
+  
+  if(not string.find(query.app_name,ret1))then
+    if(not string.find(query.app_name,ret4))then
+      if(not string.find(query.app_name,ret5))then
+        return errors:wrap(errors.REQUEST_PARAMS_ERROR);
+      end
+    end
+  end]]

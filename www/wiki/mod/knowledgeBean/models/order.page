@@ -1,0 +1,254 @@
+<?npl
+--[[
+Title: knowledge bean api
+Author(s): big
+Date: 2018.9.25
+Place: Foshan
+Desc: knowledge bean api
+Api Example:
+/api/mod/knowledgeBean/models/knowledgeBean/... (models api)
+]]
+
+include_once(WIKI_ROOT .. "models/abstract/multi_user_base.page")
+include_once(WIKI_ROOT .. "models/goods.page")
+include_once(WIKI_ROOT .. "models/oauth_app.page")
+include_once("./orderNumber.page")
+include_once("./beans.page")
+
+local order = inherit(models.abstract.multi_user_base, gettable("models.knowledgeBean.order"))
+
+order.db_name = 'knowledge_bean_order'
+order.showList = {"魔法豆"}
+
+local goods = models.goods:new()
+local oauth_app = models.oauth_app:new()
+local orderNumber = models.knowledgeBean.orderNumber:new()
+local beans = models.knowledgeBean.beans:new()
+
+function order:ctor()
+  self:addfield('buyGoodsList', 'table', true)
+end
+
+function order:api_getGoodsList()
+  local goodsList = commonlib.Array:new()
+
+  for key, item in ipairs(self.showList) do
+    local currentGoods = goods:getGoodsBySubject(item)
+
+    if currentGoods then
+      goodsList:push_back(currentGoods)
+    end
+  end
+
+  return errors:wrap(nil, goodsList)
+end
+
+-- buy haqi goods
+-- We will try to buy haqi goods. If haqi server return success msg, we will deduct user beans otherwise will not.
+function order:api_spend(params)
+  self:ensureAuthenticated()
+
+  local err, query = self:validateQuery(params)
+
+  if not query.buyGoodsList then
+    return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+  end
+
+  self.buyGoodsList = query.buyGoodsList
+  self.newOrder = self:addOrder()
+
+  if not self.newOrder then
+    return errors:wrap(errors.SERVER_INNER_ERROR)
+  end
+
+  if not self:checkOrderBeans() then
+    return errors:wrap("知识豆不足")
+  end
+
+  if not self:handleBuy() then
+    return errors:wrap("充值失败，请确保知识豆充足")
+  end
+
+  return errors:wrap(self.newOrder)
+end
+
+function order:checkOrderBeans()
+  if not self.buyGoodsList then
+    return false
+  end
+
+  local curBeans = beans:getUserBeans()
+  local orderBeans = 0
+
+  for key, items in ipairs(self.buyGoodsList) do
+    if items.goodsId then
+      curGoodsInfo = goods:getGoodsById(items.goodsId)
+
+      if curGoodsInfo and curGoodsInfo.bean then
+        orderBeans = orderBeans + tonumber(curGoodsInfo.bean)
+      end
+    end
+  end
+
+  if orderBeans > curBeans then
+    return false
+  else
+    return true
+  end
+end
+
+function order:handleBuy()
+  self.index = self.index and self.index + 1 or 1
+
+  if type(self.buyGoodsList) ~= 'table' then
+    self.index = nil
+    return false
+  end
+
+  local curGoods = self.buyGoodsList[self.index]
+
+  if not curGoods or type(curGoods['goodsId']) ~= 'number' then
+    self.index = nil
+    return false
+  end
+
+  local curGoodsInfo = goods:getGoodsById(curGoods['goodsId'])
+
+  if not curGoodsInfo or not curGoodsInfo.app_name then
+    return false
+  end
+
+  if not self:buyGoods(curGoods, curGoodsInfo) then
+    return false
+  end
+
+  if self.buyGoodsList[#self.buyGoodsList + 1] then
+    if not self:handleBuy() then
+      return false
+    end
+  else
+    -- update order status
+    self.newOrder.status = true
+
+    if self:modifyOrder(self.newOrder) then
+      return true
+    else
+      return false
+    end
+  end
+end
+
+function order:buyGoods(curGoods, curGoodsInfo)
+  local oauthAppInfo = oauth_app:getByAppName(curGoodsInfo.app_name)
+
+  if not oauthAppInfo then
+    return false
+  end
+
+  local url = oauthAppInfo.payCallbackUrl
+  local total = curGoods.buyCount * curGoodsInfo.bean
+  local curBeans = beans:getUserBeans()
+
+  if total > curBeans then
+    return false
+  end
+
+  local apiParams = {}
+  apiParams.url = 'Pay'
+  apiParams.gsid = tostring(curGoodsInfo.app_goods_id)
+  apiParams.count = tostring(curGoods.buyCount)
+  apiParams.money = tostring(total)
+  apiParams.method = "1"
+  apiParams.orderno = tostring(curGoods.goodsNo)
+  apiParams.from = "0"
+  apiParams.price = tostring(curGoodsInfo.bean)
+  apiParams.username = self:getUsername() or ''
+
+  url = format("%s?", url)
+
+  for key,value in pairs(apiParams or {}) do
+    url = format("%s%s=%s&", url, key, "=", value, "&")
+  end
+
+  url = string.sub(url, 1, -2);
+  ParaEngine.Sleep(2)
+	-- local err, data = self:http("GET", url, {});
+  local data = true
+
+  if not data then
+    return false
+  end
+
+  if not beans:spendBeans(total, curGoodsInfo.subject) then
+    return false
+  end
+
+  -- update goods status
+  if not self.newOrder or not self.newOrder.buyGoodsList then
+    return false
+  end
+
+  curGoods.status = true
+
+  if self:modifyOrder(self.newOrder) then
+    return true
+  else
+    return false
+  end
+end
+
+function order:addOrder()
+  local orderNo = orderNumber:getOrder()
+  local username = self:getUsername()
+
+  if not username then
+    return false
+  end
+
+  if not self.buyGoodsList then
+    return false
+  end
+
+  for key, item in ipairs(self.buyGoodsList) do
+    item.goodsNo = format("%s%s", orderNo, key)
+    item.status = false
+  end
+
+  local order = {
+    username = username,
+    orderNo = orderNo,
+    status = false,
+    buyGoodsList = self.buyGoodsList
+  }
+
+  self:db():insertOne(order, resume)
+  local err, result = yield()
+
+  if not err and result then
+    return order
+  else
+    return false
+  end
+end
+
+function order:modifyOrder(order)
+  if not order or not order.orderNo then
+    return false
+  end
+
+  self:db():updateOne({orderNo = order.orderNo}, order, resume)
+
+  local err, data = yield()
+
+  if not err and data then
+    return true
+  else
+    return false
+  end
+end
+
+function order:getOrder()
+
+end
+
+

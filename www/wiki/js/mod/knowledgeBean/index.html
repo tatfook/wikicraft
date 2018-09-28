@@ -1,0 +1,115 @@
+<style>
+  body {
+    background-color: #f2f2f2;
+  }
+
+  .knowledge-bean {
+    padding: 10px 0;
+  }
+
+  .knowledge-bean > .container {
+    background-color: white;
+  }
+
+  .knowledge-bean > .container > .row > .title {
+    border-bottom: solid 1px #f2f2f2;
+    padding-bottom: 10px;
+  }
+
+  .knowledge-bean > .container .info {
+    padding: 10px 15px;
+  }
+
+  .knowledge-bean > .container .info .head > img{
+    width: 100%;
+  }
+</style>
+
+<div class="knowledge-bean" ng-controller="knowledgeBeanController">
+  <div class="container">
+    <div class="row">
+      <div class="col-xs-12 col-sm-12 title">
+        <h2>使用知识豆兑换《魔法哈奇》中的物品</h2>
+      </div>
+    </div>
+    <div class="row">
+      <div ng-if="page === SPENDPAGE" class="col-xs-12 col-sm-10 info">
+        <div class="row">
+          <div class="col-xs-12 col-sm-12">
+            <h4>你的知识豆：{{myKnowledgeBean}} 知识豆 <a href="http://keepwork.com" target="_blank">如何获得？</a></h4>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-xs-12 col-sm-3">
+            <div class="head">
+              <img src="/wiki/assets/imgs/default_portrait.png?bust=1537881437">
+              <div>{{username}}</div>
+            </div>
+          </div>
+          <div class="col-xs-12 col-sm-5">
+            <form>
+              <div class="form-group">
+                <label>Keepwork 账号</label>
+                <input type="text" class="form-control" ng-model="username" placeholder="Keepwork 账号">
+              </div>
+              <div class="form-group">
+                <label>数字账号</label>
+                <input type="text" class="form-control" ng-model="haqiNum" placeholder="数字账号">
+              </div>
+            </form>
+          </div>
+        </div>
+        <hr>
+        <div class="row">
+          <div class="col-xs-12 col-sm-12">
+            <h4>请选择兑换物品：</h4>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-xs-12 col-sm-3" ng-repeat="item in goodsList">
+            <div>
+              <img class="img-rounded" style="width: 140px; height: 140px;" ng-src="{{item.thumbnail}}"
+                data-holder-rendered="true" />
+            </div>
+            <div>
+              {{item['subject']}}
+            </div>
+            <div>
+              单价：{{item['bean']}}知识豆
+            </div>
+            <div class="row">
+              <div class="col-lg-6">
+                数量：
+                <div class="input-group">
+                  <span class="input-group-btn">
+                    <button class="btn btn-default" ng-click="minus(item)" type="button">-</button>
+                  </span>
+                  <input type="text" class="form-control" style="width:50px;" ng-value="getCurrentBuyCount(item)" placeholder="0">
+                  <span class="input-group-btn">
+                    <button class="btn btn-default" ng-click="plus(item)" type="button">+</button>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-xs-12 col-sm-12">
+            <h4><sub>总价：</sub>{{getSpendKnowledgeBean()}}知识豆</h4>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-xs-12 col-sm-3">
+            <button ng-click="spend()" class="btn btn-info btn-block">充值</button>
+          </div>
+        </div>
+      </div>
+      <div ng-if="page === LOADINGPAGE" class="col-xs-12 col-sm-10">
+        LOADING.....
+      </div>
+      <div class="hidden-xs col-sm-2">
+        魔法哈奇广告
+      </div>
+    </div>
+  </div>
+</div>
