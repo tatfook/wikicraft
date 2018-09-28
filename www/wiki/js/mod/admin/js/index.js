@@ -605,46 +605,6 @@ define([
                     $scope.goodsAdd = function () {
                         var goodsAddUrl = config.apiUrlPrefix + "goods/addGoods";
 
-                        var reg1 = /^[A-Za-z]+$/;
-                        var reg2 = /^[\u4E00-\u9FA5A-Za-z0-9]+$/;
-                        var reg3 = /^[\u4E00-\u9FA5A-Za-z0-9_]+$/;
-                        var reg4 = /^[1-9]\d*$/;
-                        var reg5 = /^[0-9]*$/;
-
-
-                        if (!reg3.test($scope.goodsParams.subject)) {
-                            return alert("商品名称请使用正确的格式");
-                        };
-
-                        if (!reg3.test($scope.goodsParams.app_goods_id)) {
-                            return alert("第三方ID请使用正确的格式");
-                        };
-
-                        if (!reg4.test($scope.goodsParams.price)) {
-                            return alert("价格请输入正确数字");
-                        };
-
-                        if (!reg4.test($scope.goodsParams.exchange_rate)) {
-                            return alert("汇率请输入正确数字");
-                        };
-
-                        if (!reg3.test($scope.goodsParams.app_name)) {
-                            return alert("第三方交易账号请输入正确的格式");
-                        };
-
-                        if (!reg5.test($scope.goodsParams.app_goods_id)) {
-                            return alert("第三方id仅可输入数字");
-                        };
-
-                        if (!reg4.test($scope.goodsParams.min_buy_count)) {
-                            return alert("请输入正确的最少购买数量");
-                        };
-
-                        if (!reg4.test($scope.goodsParams.max_buy_count)) {
-                            return alert("请输入正确的最大购买数量");
-                        };
-
-
                         $scope.goodsParams.additional_field = $scope.goodsMan;
                         var params = {
                             "subject": $scope.goodsParams.subject || '',
@@ -676,52 +636,6 @@ define([
                     //商品信息修改
                     $scope.goodsModify = function () {
                         var goodsModifyUrl = config.apiUrlPrefix + "goods/modifyGoods";
-
-                        var reg1 = /^[A-Za-z]+$/;
-                        var reg2 = /^[\u4E00-\u9FA5A-Za-z0-9]+$/;
-                        var reg3 = /^[\u4E00-\u9FA5A-Za-z0-9_]+$/;
-                        var reg4 = /^[1-9]\d*$/;
-                        var reg5 = /^[0-9]*$/;
-
-                        var reg1 = /^[A-Za-z]+$/;
-                        var reg2 = /^[\u4E00-\u9FA5A-Za-z0-9]+$/;
-                        var reg3 = /^[\u4E00-\u9FA5A-Za-z0-9_]+$/;
-                        var reg4 = /^[1-9]\d*$/;
-                        var reg5 = /^[0-9]*$/;
-
-
-                        if (!reg3.test($scope.goodsParams.subject)) {
-                            return alert("商品名称请使用正确的格式");
-                        };
-
-                        if (!reg3.test($scope.goodsParams.app_goods_id)) {
-                            return alert("第三方ID请使用正确的格式");
-                        };
-
-                        if (!reg4.test($scope.goodsParams.price)) {
-                            return alert("价格请输入正确数字");
-                        };
-
-                        if (!reg4.test($scope.goodsParams.exchange_rate)) {
-                            return alert("汇率请输入正确数字");
-                        };
-
-                        if (!reg3.test($scope.goodsParams.app_name)) {
-                            return alert("第三方交易账号请输入正确的格式");
-                        };
-
-                        if (!reg4.test($scope.goodsParams.app_goods_id)) {
-                            return alert("第三方id仅可输入数字");
-                        };
-
-                        if (!reg4.test($scope.goodsParams.min_buy_count)) {
-                            return alert("请输入正确的最少购买数量");
-                        };
-
-                        if (!reg4.test($scope.goodsParams.max_buy_count)) {
-                            return alert("请输入正确的最大购买数量");
-                        };
-
 
                         $scope.goodsParams.additional_field = $scope.goodsMan.concat($scope.goodsParams.additional_field);
 

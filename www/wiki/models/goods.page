@@ -143,6 +143,7 @@ function goods:api_modifyGoods(params) --Goods修改
     max_buy_count = query.max_buy_count or 0,
     default_buy_count = query.default_buy_count or 0
   }
+
   self:db():updateOne({goods_id = query.goods_id}, modifyGoodsParams, resume)
   local err, data = yield()
 

@@ -163,7 +163,7 @@
               <script type="text/ng-template" id="get-beans-desc">
                 <div class="get-beans-desc">
                   <div class="get-beans-desc--title">如何获得知识豆？</div>
-                  <div class="get-beans-desc--content">每个课程学习完成均可获得10知识豆的奖励，知识豆可都换哈奇装备</div>
+                  <div class="get-beans-desc--content">每个课程学习完成均可获得10知识豆的奖励，知识豆可兑换哈奇装备</div>
                 </div>
               </script>
             </h4>
@@ -172,7 +172,7 @@
         <div class="row">
           <div class="col-xs-12 col-sm-3">
             <div class="head">
-              <img class="img-circle img-thumbnail" src="/wiki/assets/imgs/default_portrait.png?bust=1537881437">
+              <img class="img-circle img-thumbnail" ng-src="{{getThumbnail(userThumbnail)}}">
               <div class="head-username">{{username}}</div>
             </div>
           </div>
@@ -246,7 +246,7 @@
         LOADING.....
       </div>
       <div class="hidden-xs col-sm-2">
-        魔法哈奇广告
+        <!-- 魔法哈奇广告 -->
       </div>
     </div>
   </div>
