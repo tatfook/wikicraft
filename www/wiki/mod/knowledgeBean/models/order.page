@@ -18,7 +18,7 @@ include_once("./beans.page")
 local order = inherit(models.abstract.multi_user_base, gettable("models.knowledgeBean.order"))
 
 order.db_name = 'knowledge_bean_order'
-order.showList = {"魔法豆"}
+order.showList = {"魔法豆","魔法哈奇2"}
 
 local goods = models.goods:new()
 local oauth_app = models.oauth_app:new()

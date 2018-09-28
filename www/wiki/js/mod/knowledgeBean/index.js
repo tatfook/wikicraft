@@ -17,7 +17,9 @@
 
   app.registerController('knowledgeBeanController', [
     '$scope',
-    function($scope) {
+    'Account',
+    'modal',
+    function($scope, Account, modal) {
       $scope.SPENDPAGE = 'SPENDPAGE'
       $scope.LOADINGPAGE = 'LOADINGPAGE'
 
@@ -25,6 +27,23 @@
       $scope.myKnowledgeBean = 0
       $scope.spendKnowledgeBean = 0
       $scope.goodsList = []
+      $scope.selectGoodsIndex = 0
+
+      $scope.isActiveGoods = function(index) {
+        if ($scope.selectGoodsIndex == index) {
+          return true
+        } else {
+          return false
+        }
+      }
+
+      $scope.selectGoodsInfo = function() {
+        if ($scope.goodsList[$scope.selectGoodsIndex]) {
+          return $scope.goodsList[$scope.selectGoodsIndex]
+        } else {
+          return false
+        }
+      }
 
       $scope.spend = function() {
         // $scope.page = $scope.LOADINGPAGE
@@ -67,27 +86,49 @@
         util.post(url, {}, handleGoodsList, function() {}, false)
       }
 
-      $scope.getCurrentBuyCount = function(item) {
-        return item.buyCount || 0
+      $scope.getCurrentBuyCount = function() {
+        var selectGoodsInfo = $scope.selectGoodsInfo()
+
+        if (!selectGoodsInfo) {
+          return 0
+        }
+
+        if (!selectGoodsInfo.buyCount || typeof(selectGoodsInfo.buyCount) != 'number') {
+          selectGoodsInfo.buyCount = 0
+        } 
+
+        return selectGoodsInfo.buyCount
       }
 
-      $scope.minus = function(item) {
-        if (!item.buyCount || typeof(item.buyCount) != 'number') {
-          item.buyCount = 0
+      $scope.minus = function() {
+        var selectGoodsInfo = $scope.selectGoodsInfo()
+
+        if (!selectGoodsInfo) {
+          return false
+        }
+
+        if (!selectGoodsInfo.buyCount || typeof(selectGoodsInfo.buyCount) != 'number') {
+          selectGoodsInfo.buyCount = 0
         } else {
-          if (item.buyCount < 1) {
-            item.buyCount = 0
+          if (selectGoodsInfo.buyCount < 1) {
+            selectGoodsInfo.buyCount = 0
           } else {
-            item.buyCount = item.buyCount - 1
+            selectGoodsInfo.buyCount = selectGoodsInfo.buyCount - 1
           }
         }
       }
 
-      $scope.plus = function(item) {
-        if (!item.buyCount || typeof(item.buyCount) != 'number') {
-          item.buyCount = 1
+      $scope.plus = function() {
+        var selectGoodsInfo = $scope.selectGoodsInfo()
+
+        if (!selectGoodsInfo) {
+          return false
+        }
+
+        if (!selectGoodsInfo.buyCount || typeof(selectGoodsInfo.buyCount) != 'number') {
+          selectGoodsInfo.buyCount = 1
         } else {
-          item.buyCount = item.buyCount + 1
+          selectGoodsInfo.buyCount = selectGoodsInfo.buyCount + 1
         }
       }
 
@@ -105,14 +146,11 @@
         return spendKnowledgeBean
       }
 
-      function init() {
-        var queryArgs = util.getQueryObject()
+      $scope.selectGoods = function(index) {
+        $scope.selectGoodsIndex = index
+      }
 
-        $scope.username = queryArgs.username || ''
-        $scope.haqiNum = queryArgs.haqiNum || ''
-
-        $scope.getGoodsList()
-
+      $scope.getBeansCount = function() {
         var getBeansUrl = baseUrl + 'beans/getUserBeans'
 
         util.get(
@@ -126,6 +164,31 @@
           function() {},
           false
         )
+      }
+
+      $scope.getUsername = function() {
+        setTimeout(function() {
+          if (Account.isAuthenticated() && Account.user) {
+            $scope.username = Account.user.username
+          } else {
+            modal('controller/loginController', {
+              controller: 'loginController',
+              size: 'lg',
+              backdrop: true
+            }, function (result) {
+                // console.log(result);
+                // nowPage.replaceSelection(login.content);
+            }, function (result) {
+                // console.log(result);
+            });
+          }
+        }, 0)
+      }
+
+      function init() {
+        $scope.getGoodsList()
+        $scope.getBeansCount()
+        $scope.getUsername()
       }
 
       $scope.$watch('$viewContentLoaded', init)
