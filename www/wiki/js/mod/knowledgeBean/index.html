@@ -184,7 +184,9 @@
               </div>
               <div class="form-group">
                 <label>数字账号</label>
-                <input type="text" class="form-control" ng-model="haqiNum" placeholder="数字账号">
+                <select class="form-control" ng-model="selectHaqiUser.text">
+                  <option ng-value="{{item}}" ng-repeat="(index, item) in haqiUsers">{{item}}</option>
+                </select>
               </div>
             </form>
           </div>

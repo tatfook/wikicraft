@@ -28,6 +28,8 @@
       $scope.spendKnowledgeBean = 0
       $scope.goodsList = []
       $scope.selectGoodsIndex = 0
+      $scope.selectHaqiUser = {}
+      $scope.haqiUsers = []
 
       $scope.isActiveGoods = function(index) {
         if ($scope.selectGoodsIndex == index) {
@@ -46,7 +48,11 @@
       }
 
       $scope.spend = function() {
-        // $scope.page = $scope.LOADINGPAGE
+        if (!$scope.selectHaqiUser.text) {
+          alert("没有选择数字账号")
+          return false
+        }
+
         var buyGoodsList = []
 
         for (var x in $scope.goodsList) {
@@ -66,12 +72,18 @@
         }
 
         function handleSpend(data) {
-          
+          if (data && data.status === true) {
+            alert("购买成功！")
+          } else {
+            alert("购买失败！")
+          }
+
+          location.reload()
         }
 
         var url = baseUrl + 'order/spend'
 
-        util.post(url, { buyGoodsList: buyGoodsList }, handleSpend, function() {}, false)
+        util.post(url, { buyGoodsList: buyGoodsList, selectHaqiUser: String($scope.selectHaqiUser.text || '') }, handleSpend, function() {}, false)
       }
 
       $scope.getGoodsList = function() {
@@ -185,10 +197,25 @@
         }, 0)
       }
 
+      $scope.getHaqiUsers = function () {
+        var getHaqiUsersUrl = baseUrl + 'haqi/getUsers'
+
+        util.get(
+          getHaqiUsersUrl,
+          {},
+          function (data) {
+            $scope.haqiUsers = data
+          },
+          function() {},
+          false
+        )
+      }
+
       function init() {
         $scope.getGoodsList()
         $scope.getBeansCount()
         $scope.getUsername()
+        $scope.getHaqiUsers()
       }
 
       $scope.$watch('$viewContentLoaded', init)

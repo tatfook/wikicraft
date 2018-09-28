@@ -14,19 +14,22 @@ include_once(WIKI_ROOT .. "models/goods.page")
 include_once(WIKI_ROOT .. "models/oauth_app.page")
 include_once("./orderNumber.page")
 include_once("./beans.page")
+include_once("./haqi.page")
 
 local order = inherit(models.abstract.multi_user_base, gettable("models.knowledgeBean.order"))
 
 order.db_name = 'knowledge_bean_order'
-order.showList = {"魔法豆","魔法哈奇2"}
+order.showList = {"能量碎片石（1天）","丰厚仙豆口袋（绑定）","激战魔珠","捕鱼达人套餐","尤诺的雪地车（7天）"}
 
 local goods = models.goods:new()
 local oauth_app = models.oauth_app:new()
 local orderNumber = models.knowledgeBean.orderNumber:new()
 local beans = models.knowledgeBean.beans:new()
+local haqi = models.knowledgeBean.haqi:new()
 
 function order:ctor()
   self:addfield('buyGoodsList', 'table', true)
+  self:addfield('selectHaqiUser', 'string', true)
 end
 
 function order:api_getGoodsList()
@@ -48,12 +51,33 @@ end
 function order:api_spend(params)
   self:ensureAuthenticated()
 
+  local username = self:getUsername()
+
+  if not username then
+    return errors:wrap("校验用户失败")
+  end
+
+  local haqiUserList = haqi:getUsers(username)
+
+  if not haqiUserList then
+    return errors:wrap("获取哈奇用户列表失败")
+  end
+
   local err, query = self:validateQuery(params)
 
   if not query.buyGoodsList then
     return errors:wrap(errors.REQUEST_PARAMS_ERROR)
   end
 
+  if not query.selectHaqiUser then
+    return errors:wrap(errors.REQUEST_PARAMS_ERROR)
+  end
+
+  if not self:checkSelectHaqiUser(haqiUserList, query.selectHaqiUser) then
+    return errors:wrap("非法操作")
+  end
+
+  self.selectHaqiUser = query.selectHaqiUser
   self.buyGoodsList = query.buyGoodsList
   self.newOrder = self:addOrder()
 
@@ -69,7 +93,20 @@ function order:api_spend(params)
     return errors:wrap("充值失败，请确保知识豆充足")
   end
 
-  return errors:wrap(self.newOrder)
+  return errors:wrap(nil, self.newOrder)
+end
+
+function order:checkSelectHaqiUser(haqiUserList, selectHaqiUser)
+  local beExist = false
+
+  for key, item in ipairs(haqiUserList) do
+    if item == selectHaqiUser then
+      beExist = true
+      break
+    end
+  end
+
+  return beExist
 end
 
 function order:checkOrderBeans()
@@ -145,7 +182,7 @@ function order:buyGoods(curGoods, curGoodsInfo)
     return false
   end
 
-  local url = oauthAppInfo.payCallbackUrl
+  local url = oauthAppInfo.payCallbackUrl or ''
   local total = curGoods.buyCount * curGoodsInfo.bean
   local curBeans = beans:getUserBeans()
 
@@ -163,19 +200,19 @@ function order:buyGoods(curGoods, curGoodsInfo)
   apiParams.from = "0"
   apiParams.price = tostring(curGoodsInfo.bean)
   apiParams.username = self:getUsername() or ''
+  apiParams.user_nid = self.selectHaqiUser
 
   url = format("%s?", url)
 
   for key,value in pairs(apiParams or {}) do
-    url = format("%s%s=%s&", url, key, "=", value, "&")
+    url = format("%s%s=%s&", url, key, value)
   end
 
   url = string.sub(url, 1, -2);
-  ParaEngine.Sleep(2)
-	-- local err, data = self:http("GET", url, {});
-  local data = true
 
-  if not data then
+	local err, data = self:http("GET", url);
+
+  if err or not data then
     return false
   end
 
