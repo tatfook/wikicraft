@@ -30,12 +30,21 @@
       $scope.selectGoodsIndex = 0
       $scope.selectHaqiUser = {}
       $scope.haqiUsers = []
+      $scope.userThumbnail = ''
 
       $scope.isActiveGoods = function(index) {
         if ($scope.selectGoodsIndex == index) {
           return true
         } else {
           return false
+        }
+      }
+
+      $scope.getThumbnail = function(url) {
+        if (url) {
+          return url
+        } else {
+          return '/wiki/assets/imgs/default_portrait.png'
         }
       }
 
@@ -182,6 +191,7 @@
         setTimeout(function() {
           if (Account.isAuthenticated() && Account.user) {
             $scope.username = Account.user.username
+            $scope.userThumbnail = Account.user.portrait
           } else {
             modal('controller/loginController', {
               controller: 'loginController',
