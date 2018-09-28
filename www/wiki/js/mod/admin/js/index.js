@@ -381,13 +381,13 @@ define([
                         //     return alert("payCallbackUrl请使用正确的格式");
                         // };
 
-                        if (!reg3.test($scope.oauthParams.appName)) {
-                            return alert("app名称只能输入英文");
-                        }
+                        // if (!reg3.test($scope.oauthParams.appName)) {
+                        //     return alert("app名称只能输入英文");
+                        // }
 
-                        if (!reg4.test($scope.oauthParams.company)) {
-                            return alert("公司名称只能输入英文和汉字");
-                        }
+                        // if (!reg4.test($scope.oauthParams.company)) {
+                        //     return alert("公司名称只能输入英文和汉字");
+                        // }
 
                         var params = {
                             "appName": $scope.oauthParams.appName,
@@ -468,13 +468,13 @@ define([
                         //     return alert("payCallbackUrl请使用正确的格式");
                         // };
 
-                        if (!reg3.test($scope.oauthParams.appName)) {
-                            return alert("app名称只能输入英文");
-                        }
+                        // if (!reg3.test($scope.oauthParams.appName)) {
+                        //     return alert("app名称只能输入英文");
+                        // }
 
-                        if (!reg4.test($scope.oauthParams.company)) {
-                            return alert("公司名称只能输入英文和汉字");
-                        }
+                        // if (!reg4.test($scope.oauthParams.company)) {
+                        //     return alert("公司名称只能输入英文和汉字");
+                        // }
 
                         var params = {
                             "appName": $scope.oauthParams.appName,
@@ -533,7 +533,7 @@ define([
                     $scope.goodsData = [];
                     $scope.goodsParams = {};
 
-                    $scope.getGoodmnagerList = function () {
+                    $scope.getGoodMangerList = function () {
                         $scope.selectMenuItem = "goodsManager";
                         $scope.getGoods();
                         $scope.listGoodsCount();
@@ -647,17 +647,19 @@ define([
 
                         $scope.goodsParams.additional_field = $scope.goodsMan;
                         var params = {
-                            "subject": $scope.goodsParams.subject,
-                            "app_goods_id": $scope.goodsParams.app_goods_id,
-                            "body": $scope.goodsParams.body,
-                            "price": $scope.goodsParams.price,
-                            "default_buy_count": $scope.goodsParams.default_buy_count,
-                            "exchange_rate": $scope.goodsParams.exchange_rate,
-                            "min_buy_count": $scope.goodsParams.min_buy_count,
-                            "max_buy_count": $scope.goodsParams.max_buy_count,
-                            "app_name": $scope.goodsParams.app_name,
-                            "is_on_sale": $scope.goodsParams.is_on_sale,
-                            "additional_field": $scope.goodsParams.additional_field,
+                            "subject": $scope.goodsParams.subject || '',
+                            "app_goods_id": $scope.goodsParams.app_goods_id || 0,
+                            "thumbnail": $scope.goodsParams.thumbnail || '',
+                            "body": $scope.goodsParams.body || '',
+                            "price": $scope.goodsParams.price || 0,
+                            "bean": $scope.goodsParams.bean || 0,
+                            "default_buy_count": $scope.goodsParams.default_buy_count || 0,
+                            "exchange_rate": $scope.goodsParams.exchange_rate || 0,
+                            "min_buy_count": $scope.goodsParams.min_buy_count || 0,
+                            "max_buy_count": $scope.goodsParams.max_buy_count || 0,
+                            "app_name": $scope.goodsParams.app_name || '',
+                            "is_on_sale": $scope.goodsParams.is_on_sale || 0,
+                            "additional_field": $scope.goodsParams.additional_field || [],
                         }
                         util.post(goodsAddUrl, params, function (data) {
                             alert("添加成功！");
@@ -723,19 +725,25 @@ define([
 
                         $scope.goodsParams.additional_field = $scope.goodsMan.concat($scope.goodsParams.additional_field);
 
+                        if (!$scope.goodsParams.goods_id) {
+                            return false
+                        }
+
                         var params = {
                             "goods_id": $scope.goodsParams.goods_id,
-                            "subject": $scope.goodsParams.subject,
-                            "app_goods_id": $scope.goodsParams.app_goods_id,
-                            "body": $scope.goodsParams.body,
-                            "price": $scope.goodsParams.price,
-                            "exchange_rate": $scope.goodsParams.exchange_rate,
-                            "default_buy_count": $scope.goodsParams.default_buy_count,
-                            "min_buy_count": $scope.goodsParams.min_buy_count,
-                            "max_buy_count": $scope.goodsParams.max_buy_count,
-                            "app_name": $scope.goodsParams.app_name,
-                            "is_on_sale": $scope.goodsParams.is_on_sale,
-                            "additional_field": $scope.goodsParams.additional_field,
+                            "subject": $scope.goodsParams.subject || '',
+                            "app_goods_id": $scope.goodsParams.app_goods_id || 0,
+                            "thumbnail": $scope.goodsParams.thumbnail || '',
+                            "body": $scope.goodsParams.body || '',
+                            "price": $scope.goodsParams.price || 0,
+                            "bean": $scope.goodsParams.bean || 0,
+                            "default_buy_count": $scope.goodsParams.default_buy_count || 0,
+                            "exchange_rate": $scope.goodsParams.exchange_rate || 0,
+                            "min_buy_count": $scope.goodsParams.min_buy_count || 0,
+                            "max_buy_count": $scope.goodsParams.max_buy_count || 0,
+                            "app_name": $scope.goodsParams.app_name || '',
+                            "is_on_sale": $scope.goodsParams.is_on_sale || 0,
+                            "additional_field": $scope.goodsParams.additional_field || [],
                         }
                         util.post(goodsModifyUrl, params, function (data) {
                             alert("修改成功！");
@@ -762,6 +770,7 @@ define([
                                 $scope.goodsParams.app_goods_id = data.app_goods_id;
                                 $scope.goodsParams.body = data.body;
                                 $scope.goodsParams.price = data.price;
+                                $scope.goodsParams.bean = data.bean || 0;
                                 $scope.goodsParams.default_buy_count = data.default_buy_count;
                                 $scope.goodsParams.exchange_rate = data.exchange_rate;
                                 $scope.goodsParams.min_buy_count = data.min_buy_count;
@@ -772,7 +781,6 @@ define([
                             }
                         })
                     }
-
 
                     //商品信息删除
                     $scope.deleteGoodsRecord = function (goods_id) {

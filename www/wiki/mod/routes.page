@@ -1,7 +1,7 @@
 <?npl
 --[[
 Title: routing wiki module page/api request
-Author: LiXizhi
+Author(s): LiXizhi, big
 Date: 2016/10/27
 Desc: redirect AJAX URL to model functions
 Reference: http://guides.rubyonrails.org/routing.html
@@ -10,112 +10,133 @@ Reference: http://guides.rubyonrails.org/routing.html
 /api/mod/[name]/models/[modelname] --> wiki/mod/[name]/models/[modelname].page (models api)
 /api/mod/[name]/[modelname] --> wiki/mod/[name]/models/[modelname].page (page ajax)
 ]]
-local path = pagename() or "";
-local modname, isAPI;
-isAPI, modname, path = path:match("^/?(%w+)/mod/([^/]+)(.*)");
+local path = pagename() or ""
+
+local isAPI, modname, path = path:match("^/?(%w+)/mod/([^/]+)(.*)")
+local modelname, params = path:match("^/?models/([%w_]+)/?(.*)")
+
 if(not modname) then
-	return
+	return false
 end
 
 -- this is for hosting wikicraft project in a different folder than webroot such as in NPL code wiki.
-MOD_WEBROOT = WIKI_WEBROOT.."mod/"..modname .. "/";
-MOD_ROOT = dirname(__FILE__)..modname.."/";
+MOD_WEBROOT = WIKI_WEBROOT .. "mod/" .. modname .. "/"
+MOD_ROOT = dirname(__FILE__) .. modname .. "/"
 
 if(isAPI == "api") then	
 	-- Allow for cross-domain requests (from the frontend). 
-	--send_origin_headers();
-	addheader('Access-Control-Allow-Origin','*');  -- debug use
-	--addheader('Access-Control-Allow-Credentials', 'true');  -- debug use
-	addheader('Access-Control-Allow-Methods',"OPTIONS, GET, POST, PUT, DELETE");  -- debug use
-	addheader("Access-Control-Allow-Headers", "Origin, No-Cache, X-Requested-With, If-Modified-Since, Pragma, Last-Modified, Cache-Control, Expires, Content-Type, X-E4M-With, Authorization"); -- debug use
+	-- send_origin_headers()
+	addheader('Access-Control-Allow-Origin','*')  -- debug use
+	-- addheader('Access-Control-Allow-Credentials', 'true')  -- debug use
+	addheader('Access-Control-Allow-Methods',"OPTIONS, GET, POST, PUT, DELETE")  -- debug use
+	addheader("Access-Control-Allow-Headers", "Origin, No-Cache, X-Requested-With, If-Modified-Since, Pragma, Last-Modified, Cache-Control, Expires, Content-Type, X-E4M-With, Authorization") -- debug use
 	addheader('Access-Control-Expose-Headers', 'Date')
-	addheader( 'Content-Type', 'text/html'); 
-	addheader( 'X-Robots-Tag', 'noindex'); 
-	send_nosniff_header();
-	nocache_headers();	
+	addheader('Content-Type', 'text/html')
+	addheader('X-Robots-Tag', 'noindex')
+	send_nosniff_header()
+	nocache_headers()
 
 	-- debug use start
 	if request:GetMethod() == "OPTIONS" then
-		return response:send("OPTIONS", true);
+		return response:send("OPTIONS", true)
 	end
 
-	local modelname, params = path:match("^/?models/([%w_]+)/?(.*)")
 	if(modelname) then
-		local modelfilename = MOD_ROOT.."models/"..modelname..".page";
+		local modelfilename = MOD_ROOT .. "models/" .. modelname .. ".page"
+
 		if(not file_exists(modelfilename)) then
-			return response:status(404):send({message="invalid model"});
-		end
-		include_once(modelfilename);
-		
-		local model = models and models[modelname];
-		if(not model) then
-			return response:status(404):send({message="model not found"});
-		else
-			model = model:new();
+			return response:status(404):send({message="invalid model"})
 		end
 
-		local func_name = params and params:match("^(%w+)");
+		include_once(modelfilename)
+
+		local model
+
+		if modname == 'knowledgeBean' then
+			model = models and models[modname][modelname]
+		else
+			model = models and models[modelname]
+		end
+
+		if(not model) then
+			return response:status(404):send({message="model not found"})
+		else
+			model = model:new()
+		end
+
+		local func_name = params and params:match("^(%w+)")
+
 		if(func_name) then
 			if(func_name == "new") then
 				if(model.create) then
-					local result = model:create(request:getparams());
-					return response:send(result, true);
+					local result = model:create(request:getparams())
+					return response:send(result, true)
 				end
 			else
-				local name = "api_"..func_name;
+				local name = "api_" .. func_name
 				if(model[name]) then
 					local result = model[name](model, request:getparams())
-					return response:send(result, true);
+					return response:send(result, true)
 				end
 			end
 		end
 
 		-- redirect CRUD URL to method in model.
-		local req_method = request:GetMethod();
+		local req_method = request:GetMethod()
+
 		if(req_method == "GET" or req_method == "POST") then
 			if(model.get) then
-				local result = model:get(request:getparams());
-				return response:send(result, true);
+				local result = model:get(request:getparams())
+				return response:send(result, true)
 			end
 		elseif(req_method == "PUT") then
 			if(model.update) then
-				local result = model:update(request:getparams());
-				return response:send(result, true);
+				local result = model:update(request:getparams())
+				return response:send(result, true)
 			end
 		elseif(req_method == "DELETE") then
 			if(model.delete) then
-				local result = model:delete(request:getparams());
-				return response:send(result, true);
+				local result = model:delete(request:getparams())
+				return response:send(result, true)
 			end
 		end
 	else
 		-- only allow ajax in wiki folder
-		path = path:match("^/?([^/]*)");
+		path = path:match("^/?([^/]*)")
+
 		if(not path or path == "") then
-			path = "index";
+			path = "index"
 		end
-		local filename = MOD_ROOT.."pages/"..path..".page";
+
+		local filename = MOD_ROOT .. "pages/" .. path .. ".page"
+
 		if(file_exists(filename)) then
-			include(filename);
+			include(filename)
 		else
-			echo("invalid path");
+			echo("invalid path")
 		end
 	end
-	return;
+
+	return true
 else
 	-- dynamic page has no cache headers
-	response:nocache_headers();
+	response:nocache_headers()
 end
 
-path = path:match("^/?([^/]*)");
-if(not path or path == "") then
-	path = "index";
-end
-local filename = MOD_ROOT.."pages/"..path..".page";
-if(file_exists(filename)) then
-	echo("<script>window.skipClientWiki = true;</script>")
-	echo(format("<script>window.MOD_WEBROOT = \"%s\";</script>", MOD_WEBROOT));
-	include(filename);
-end
+-- This code not use be keepwork, so I comment it
+
+-- path = path:match("^/?([^/]*)")
+
+-- if(not path or path == "") then
+-- 	path = "index"
+-- end
+
+-- local filename = MOD_ROOT.."pages/"..path..".page"
+
+-- if(file_exists(filename)) then
+-- 	echo("<script>window.skipClientWiki = true;</script>")
+-- 	echo(format("<script>window.MOD_WEBROOT = \"%s\";</script>", MOD_WEBROOT));
+-- 	include(filename);
+-- end
 ?>
 

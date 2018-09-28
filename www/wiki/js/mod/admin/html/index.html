@@ -255,8 +255,22 @@
         overflow: hidden;
     }
 
-    .goods {
+    .goods-container {
+        width: 100%;
+        overflow-x: scroll;
+    }
+
+    .goods-container > .goods {
+        width: 2000px;
+    }
+
+    .goods-container .goods {
         text-align: center;
+    }
+
+    .goods-container .goods .thumbnail {
+        width: 80px;
+        height: 80px;
     }
 
     .delGoodsMan {
@@ -344,7 +358,7 @@
                             </li>
                             <li>
                                 <div ng-class='getStyleClass("goodsManager")'>
-                                    <div class="panel-heading" ng-click='getGoodmnagerList()'>商品管理</div>
+                                    <div class="panel-heading" ng-click='getGoodMangerList()'>商品管理</div>
                                 </div>
                             </li>
                             <li>
@@ -626,73 +640,87 @@
             <!--商品管理-->
             <div ng-show='selectMenuItem=="goodsManager"'>
                 <button type="button" class="btn btn-primary oauth-button" data-toggle="modal" data-target=".additionalField" ng-click="clickGoodsToggle(2)">添加商品信息</button>
-                <table class="table table-bordered goods">
-                    <tr>
-                        <td>
-                            <strong>商品名称</strong>
-                        </td>
-                        <td>
-                            <strong>第三方商品ID</strong>
-                        </td>
-                        <td>
-                            <strong>商品ID</strong>
-                        </td>
-                        <td>
-                            <strong>商品详情</strong>
-                        </td>
-                        <td>
-                            <strong>价格</strong>
-                        </td>
-                        <td>
-                            <strong>汇率</strong>
-                        </td>
-                        <td>
-                            <strong>默认购买数量</strong>
-                        </td>
-                        <td>
-                            <strong>最少购买数量</strong>
-                        </td>
-                        <td>
-                            <strong>最大购买数量</strong>
-                        </td>
-                        <td>
-                            <strong>第三方oauth账号</strong>
-                        </td>
-                        <td>
-                            <strong>销售状态</strong>
-                        </td>
-                        <td>
-                            <strong>additional_field</strong>
-                        </td>
-                        <td>
-                            <strong>操作</strong>
-                        </td>
-                        <td>
-                            <strong>修改时间</strong>
-                        </td>
-                    </tr>
-                    <tr ng-repeat="item in goodsData">
-                        <td>{{item.subject}}</td>
-                        <td>{{item.app_goods_id}}</td>
-                        <td>{{item._id}}</td>
-                        <td>{{item.body}}</td>
-                        <td>{{item.price}}</td>
-                        <td>{{item.exchange_rate}}</td>
-                        <td>{{item.default_buy_count}}</td>
-                        <td>{{item.min_buy_count}}</td>
-                        <td>{{item.max_buy_count}}</td>
-                        <td>{{item.app_name}}</td>
-                        <td>{{item.is_on_sale==1?"是":"否"}}</td>
-                        <td>
-                            <button class="btn btn-default" type="button" ng-click="additionalfieldSee(item)">查看详情</button>
-                        </td>
-                        <td>
-                            <button type="button" class="btn btn-default" data-toggle="modal" data-target=".additionalField" ng-click="clickGoodsToggle(3, item)">修改</button>&nbsp;
-                            <button class="btn btn-default" type="submit" ng-click="deleteGoodsRecord(item.goods_id)">删除</button>
-                        </td>
-                        <td>{{item.create_date}}</td>
-                    </tr>
-                </table>
+                <div class="goods-container">
+                    <table class="table table-bordered goods">
+                        <tr>
+                            <td>
+                                <strong>商品名称</strong>
+                            </td>
+                            <td>
+                                <strong>第三方商品ID</strong>
+                            </td>
+                            <td>
+                                <strong>商品ID</strong>
+                            </td>
+                            <td>
+                                <strong>图片</strong>
+                            </td>
+                            <td>
+                                <strong>商品详情</strong>
+                            </td>
+                            <td>
+                                <strong>价格</strong>
+                            </td>
+                            <td>
+                                <strong>知识豆</strong>
+                            </td>
+                            <td>
+                                <strong>汇率</strong>
+                            </td>
+                            <td>
+                                <strong>默认购买数量</strong>
+                            </td>
+                            <td>
+                                <strong>最少购买数量</strong>
+                            </td>
+                            <td>
+                                <strong>最大购买数量</strong>
+                            </td>
+                            <td>
+                                <strong>第三方oauth账号</strong>
+                            </td>
+                            <td>
+                                <strong>销售状态</strong>
+                            </td>
+                            <td>
+                                <strong>additional_field</strong>
+                            </td>
+                            <td>
+                                <strong>操作</strong>
+                            </td>
+                            <td>
+                                <strong>修改时间</strong>
+                            </td>
+                        </tr>
+                        <tr ng-repeat="item in goodsData">
+                            <td>{{item.subject}}</td>
+                            <td>{{item.app_goods_id}}</td>
+                            <td>{{item._id}}</td>
+                            <td>
+                                <a ng-href="{{item.thumbnail}}" target="_blank">
+                                    <img class="thumbnail" ng-src="{{item.thumbnail}}" alt="查看原图"/>
+                                </a>
+                            </td>
+                            <td>{{item.body}}</td>
+                            <td>{{item.price}}</td>
+                            <td>{{item.bean}}</td>
+                            <td>{{item.exchange_rate}}</td>
+                            <td>{{item.default_buy_count}}</td>
+                            <td>{{item.min_buy_count}}</td>
+                            <td>{{item.max_buy_count}}</td>
+                            <td>{{item.app_name}}</td>
+                            <td>{{item.is_on_sale==1?"是":"否"}}</td>
+                            <td>
+                                <button class="btn btn-default" type="button" ng-click="additionalfieldSee(item)">查看详情</button>
+                            </td>
+                            <td>
+                                <button type="button" class="btn btn-default" data-toggle="modal" data-target=".additionalField" ng-click="clickGoodsToggle(3, item)">修改</button>&nbsp;
+                                <button class="btn btn-default" type="submit" ng-click="deleteGoodsRecord(item.goods_id)">删除</button>
+                            </td>
+                            <td>{{item.create_date}}</td>
+                        </tr>
+                    </table>
+                </div>
                 <!-- additional_field -->
                 <div class="modal additionalField" tabindex="-1" role="dialog" data-backdrop="static" aria-labelledby="myModalLabel">
                     <div class="modal-dialog" role="document">
@@ -711,62 +739,74 @@
                                     <!-- 添加商品 -->
                                     <div ng-if="goodsVar == 2">
                                         <div class="form-group">
-                                            <label class="col-sm-2 control-label">subject/商品名称</label>
+                                            <label class="col-sm-2 control-label">商品名称</label>
                                             <div class="col-sm-10">
-                                                <input type="test" class="form-control goods-control" ng-model="goodsParams.subject" placeholder="可输入中文/英文/数字或混合输入">
+                                                <input type="text" class="form-control goods-control" ng-model="goodsParams.subject" placeholder="商品名称">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">商品图片</label>
+                                            <div class="col-sm-10">
+                                                <input type="text" class="form-control goods-control" ng-model="goodsParams.thumbnail" placeholder="商品图片">
                                             </div>
                                         </div>
                                         <div class="form-group">
                                             <label class="col-sm-2 control-label">商品详情</label>
                                             <div class="col-sm-10">
-                                                <input type="test" class="form-control goods-control" ng-model="goodsParams.body" placeholder="无限制">
+                                                <input type="text" class="form-control goods-control" ng-model="goodsParams.body" placeholder="商品详情">
                                             </div>
                                         </div>
                                         <div class="form-group">
                                             <label class="col-sm-2 control-label">默认购买数量</label>
                                             <div class="col-sm-10">
-                                                <input type="test" class="form-control goods-control" ng-model="goodsParams.default_buy_count" placeholder="非零正整数">
+                                                <input type="text" class="form-control goods-control" ng-model="goodsParams.default_buy_count" placeholder="默认购买数量">
                                             </div>
                                         </div>
                                         <div class="form-group">
                                             <label class="col-sm-2 control-label">最少购买数量</label>
                                             <div class="col-sm-10">
-                                                <input type="test" class="form-control goods-control" ng-model="goodsParams.min_buy_count" placeholder="非零正整数">
+                                                <input type="text" class="form-control goods-control" ng-model="goodsParams.min_buy_count" placeholder="最少购买数量">
                                             </div>
                                         </div>
                                         <div class="form-group">
                                             <label class="col-sm-2 control-label">最大购买数量</label>
                                             <div class="col-sm-10">
-                                                <input type="test" class="form-control goods-control" ng-model="goodsParams.max_buy_count" placeholder="非零正整数">
+                                                <input type="text" class="form-control goods-control" ng-model="goodsParams.max_buy_count" placeholder="最大购买数量">
                                             </div>
                                         </div>
                                         <div class="form-group">
                                             <label class="col-sm-2 control-label">汇率</label>
                                             <div class="col-sm-10">
-                                                <input type="test" class="form-control goods-control" ng-model="goodsParams.exchange_rate" placeholder="非零正整数">
+                                                <input type="text" class="form-control goods-control" ng-model="goodsParams.exchange_rate" placeholder="汇率">
                                             </div>
                                         </div>
                                         <div class="form-group">
-                                            <label class="col-sm-2 control-label">price/价格</label>
+                                            <label class="col-sm-2 control-label">价格</label>
                                             <div class="col-sm-10">
-                                                <input type="test" class="form-control goods-control" ng-model="goodsParams.price" placeholder="非零正整数">
+                                                <input type="text" class="form-control goods-control" ng-model="goodsParams.price" placeholder="价格">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">知识豆</label>
+                                            <div class="col-sm-10">
+                                                <input type="number" class="form-control goods-control" ng-model="goodsParams.bean" placeholder="知识豆">
                                             </div>
                                         </div>
                                         <div class="form-group">
                                             <label class="col-sm-2 control-label">app_name</label>
                                             <div class="col-sm-10">
-                                                <input type="test" class="form-control goods-control" ng-model="goodsParams.app_name" placeholder="可输入中文/英文/数字或混合输入">
+                                                <input type="text" class="form-control goods-control" ng-model="goodsParams.app_name" placeholder="app_name">
                                             </div>
                                         </div>
                                         <div class="form-group">
                                             <label class="col-sm-2 control-label">app_goods_id</label>
                                             <div class="col-sm-10">
-                                                <input type="test" class="form-control goods-control" ng-model="goodsParams.app_goods_id" placeholder="仅可输入数字">
+                                                <input type="text" class="form-control goods-control" ng-model="goodsParams.app_goods_id" placeholder="app_goods_id">
                                             </div>
                                         </div>
                                         <div class="form-group">
                                             <div class="col-sm-offset-2 col-sm-10">
-                                                <label class="col-sm-2 control-label">is_on_sale</label>
+                                                <label class="col-sm-2 control-label">是否在售</label>
                                                 <div class="checkbox">
                                                     <label>
                                                         <input name="goods_is_on_sale" type="radio" ng-model="goodsParams.is_on_sale" ng-value=1> 是
@@ -781,19 +821,19 @@
                                             <div class="form-group">
                                                 <label for="inputEmail3" class="col-sm-2 control-label">name</label>
                                                 <div class="col-sm-10">
-                                                    <input type="test" class="form-control goods-control" ng-model="x.name" id="inputEmail3" placeholder="暂无限制，未知所需">
+                                                    <input type="text" class="form-control goods-control" ng-model="x.name" placeholder="name">
                                                 </div>
                                             </div>
                                             <div class="form-group">
                                                 <label for="inputEmail3" class="col-sm-2 control-label">displayName</label>
                                                 <div class="col-sm-10">
-                                                    <input type="test" class="form-control goods-control" id="inputEmail3" ng-model="x.displayName" placeholder="暂无限制，未知所需">
+                                                    <input type="text" class="form-control goods-control" ng-model="x.displayName" placeholder="displayName">
                                                 </div>
                                             </div>
                                             <div class="form-group">
                                                 <label for="inputEmail3" class="col-sm-2 control-label">desc</label>
                                                 <div class="col-sm-10">
-                                                    <input type="test" class="form-control goods-control" id="inputEmail3" ng-model="x.desc" placeholder="暂无限制，未知所需">
+                                                    <input type="text" class="form-control goods-control" ng-model="x.desc" placeholder="desc">
                                                 </div>
                                             </div>
                                             <div class="form-group">
@@ -801,10 +841,10 @@
                                                     <label for="inputEmail3" class="col-sm-2 control-label">required</label>
                                                     <div class="checkbox">
                                                         <label>
-                                                            <input type="radio" id="changeName" ng-model="x.required" ng-value=1> 是
+                                                            <input type="radio" ng-model="x.required" ng-value=1> 是
                                                         </label>
                                                         <label>
-                                                            <input type="radio" id="changeName" ng-model="x.required" ng-value=0> 否
+                                                            <input type="radio" ng-model="x.required" ng-value=0> 否
                                                         </label>
                                                     </div>
                                                 </div>
@@ -818,62 +858,74 @@
                                     <!-- 修改商品信息 -->
                                     <div ng-if="goodsVar == 3">
                                         <div class="form-group">
-                                            <label for="inputEmail3" class="col-sm-2 control-label">subject/商品名称</label>
+                                            <label for="inputEmail3" class="col-sm-2 control-label">商品名称</label>
                                             <div class="col-sm-10">
-                                                <input type="test" class="form-control goods-control" id="inputEmail3" ng-model="goodsParams.subject" placeholder="可输入中文/英文/数字或混合输入">
+                                                <input type="text" class="form-control goods-control" ng-model="goodsParams.subject" placeholder="可输入中文/英文/数字或混合输入">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">商品图片</label>
+                                            <div class="col-sm-10">
+                                                <input type="text" class="form-control goods-control" ng-model="goodsParams.thumbnail" placeholder="商品图片">
                                             </div>
                                         </div>
                                         <div class="form-group">
                                             <label for="inputEmail3" class="col-sm-2 control-label">商品详情</label>
                                             <div class="col-sm-10">
-                                                <input type="test" class="form-control goods-control" id="inputEmail3" ng-model="goodsParams.body" placeholder="无限制">
+                                                <input type="text" class="form-control goods-control" ng-model="goodsParams.body" placeholder="商品详情">
                                             </div>
                                         </div>
                                         <div class="form-group">
                                             <label for="inputEmail3" class="col-sm-2 control-label">默认购买数量</label>
                                             <div class="col-sm-10">
-                                                <input type="test" class="form-control goods-control" id="inputEmail3" ng-model="goodsParams.default_buy_count" placeholder="非零正整数">
+                                                <input type="text" class="form-control goods-control" ng-model="goodsParams.default_buy_count" placeholder="默认购买数量">
                                             </div>
                                         </div>
                                         <div class="form-group">
                                             <label class="col-sm-2 control-label">最少购买数量</label>
                                             <div class="col-sm-10">
-                                                <input type="test" class="form-control goods-control" ng-model="goodsParams.min_buy_count" placeholder="非零正整数">
+                                                <input type="text" class="form-control goods-control" ng-model="goodsParams.min_buy_count" placeholder="最少购买数量">
                                             </div>
                                         </div>
                                         <div class="form-group">
                                             <label class="col-sm-2 control-label">最大购买数量</label>
                                             <div class="col-sm-10">
-                                                <input type="test" class="form-control goods-control" ng-model="goodsParams.max_buy_count" placeholder="非零正整数">
+                                                <input type="text" class="form-control goods-control" ng-model="goodsParams.max_buy_count" placeholder="最大购买数量">
                                             </div>
                                         </div>
                                         <div class="form-group">
-                                            <label for="inputEmail3" class="col-sm-2 control-label">price/价格</label>
+                                            <label for="inputEmail3" class="col-sm-2 control-label">价格</label>
                                             <div class="col-sm-10">
-                                                <input type="test" class="form-control goods-control" id="inputEmail3" ng-model="goodsParams.price" placeholder="非零正整数">
+                                                <input type="text" class="form-control goods-control" ng-model="goodsParams.price" placeholder="价格">
                                             </div>
                                         </div>
                                         <div class="form-group">
                                             <label class="col-sm-2 control-label">汇率</label>
                                             <div class="col-sm-10">
-                                                <input type="test" class="form-control goods-control" ng-model="goodsParams.exchange_rate" placeholder="非零正整数">
+                                                <input type="text" class="form-control goods-control" ng-model="goodsParams.exchange_rate" placeholder="汇率">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">知识豆</label>
+                                            <div class="col-sm-10">
+                                                <input type="number" class="form-control goods-control" ng-model="goodsParams.bean" placeholder="知识豆">
                                             </div>
                                         </div>
                                         <div class="form-group">
                                             <label for="inputEmail3" class="col-sm-2 control-label">app_name</label>
                                             <div class="col-sm-10">
-                                                <input type="test" class="form-control goods-control" id="inputEmail3" ng-model="goodsParams.app_name" placeholder="可输入中文/英文/数字或混合输入">
+                                                <input type="text" class="form-control goods-control" ng-model="goodsParams.app_name" placeholder="app_name">
                                             </div>
                                         </div>
                                         <div class="form-group">
                                             <label for="inputEmail3" class="col-sm-2 control-label">app_goods_id</label>
                                             <div class="col-sm-10">
-                                                <input type="test" class="form-control goods-control" id="inputEmail3" ng-model="goodsParams.app_goods_id" placeholder="仅可输入数字">
+                                                <input type="text" class="form-control goods-control" ng-model="goodsParams.app_goods_id" placeholder="app_goods_id">
                                             </div>
                                         </div>
                                         <div class="form-group">
                                             <div class="col-sm-offset-2 col-sm-10">
-                                                <label for="inputEmail3" class="col-sm-2 control-label">is_on_sale</label>
+                                                <label for="inputEmail3" class="col-sm-2 control-label">是否在售</label>
                                                 <div class="checkbox">
                                                     <label>
                                                         <input name="goods_is_on_sale" type="radio" ng-model="goodsParams.is_on_sale" ng-value=1> 是
@@ -888,19 +940,19 @@
                                             <div class="form-group">
                                                 <label for="inputEmail3" class="col-sm-2 control-label">name</label>
                                                 <div class="col-sm-10">
-                                                    <input type="test" class="form-control goods-control" id="inputEmail3" ng-model="x.name" placeholder="暂无限制，未知所需">
+                                                    <input type="text" class="form-control goods-control" ng-model="x.name" placeholder="name">
                                                 </div>
                                             </div>
                                             <div class="form-group">
                                                 <label for="inputEmail3" class="col-sm-2 control-label">displayName</label>
                                                 <div class="col-sm-10">
-                                                    <input type="test" class="form-control goods-control" id="inputEmail3" ng-model="x.displayName" placeholder="暂无限制，未知所需">
+                                                    <input type="text" class="form-control goods-control" ng-model="x.displayName" placeholder="displayName">
                                                 </div>
                                             </div>
                                             <div class="form-group">
                                                 <label for="inputEmail3" class="col-sm-2 control-label">desc</label>
                                                 <div class="col-sm-10">
-                                                    <input type="test" class="form-control goods-control" id="inputEmail3" ng-model="x.desc" placeholder="暂无限制，未知所需">
+                                                    <input type="text" class="form-control goods-control" ng-model="x.desc" placeholder="desc">
                                                 </div>
                                             </div>
                                             <div class="form-group">
@@ -908,10 +960,10 @@
                                                     <label for="inputEmail3" class="col-sm-2 control-label">required</label>
                                                     <div class="checkbox">
                                                         <label>
-                                                            <input type="radio" id="changeName" ng-model="x.required" ng-value=1> 是
+                                                            <input type="radio" ng-model="x.required" ng-value=1> 是
                                                         </label>
                                                         <label>
-                                                            <input type="radio" id="changeName" ng-model="x.required" ng-value=0> 否
+                                                            <input type="radio" ng-model="x.required" ng-value=0> 否
                                                         </label>
                                                     </div>
                                                 </div>
@@ -924,19 +976,19 @@
                                             <div class="form-group">
                                                 <label for="inputEmail3" class="col-sm-2 control-label">name</label>
                                                 <div class="col-sm-10">
-                                                    <input type="test" class="form-control goods-control" ng-model="x.name" id="inputEmail3" placeholder="暂无限制，未知所需">
+                                                    <input type="text" class="form-control goods-control" ng-model="x.name" placeholder="name">
                                                 </div>
                                             </div>
                                             <div class="form-group">
                                                 <label for="inputEmail3" class="col-sm-2 control-label">displayName</label>
                                                 <div class="col-sm-10">
-                                                    <input type="test" class="form-control goods-control" id="inputEmail3" ng-model="x.displayName" placeholder="暂无限制，未知所需">
+                                                    <input type="text" class="form-control goods-control" ng-model="x.displayName" placeholder="displayName">
                                                 </div>
                                             </div>
                                             <div class="form-group">
                                                 <label for="inputEmail3" class="col-sm-2 control-label">desc</label>
                                                 <div class="col-sm-10">
-                                                    <input type="test" class="form-control goods-control" id="inputEmail3" ng-model="x.desc" placeholder="暂无限制，未知所需">
+                                                    <input type="text" class="form-control goods-control" ng-model="x.desc" placeholder="desc">
                                                 </div>
                                             </div>
                                             <div class="form-group">

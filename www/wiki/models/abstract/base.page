@@ -247,3 +247,19 @@ function base:update(params)
 		return data;
 	end
 end
+
+function base:http(method, url, params, headers)
+	if(not headers) then
+		headers = {};
+	end
+
+	System.os.GetUrl({
+		url     = url,
+		headers = headers,
+		form    = params,
+		method  = method,
+		json    = true,
+	},resume);
+
+	return yield();
+end

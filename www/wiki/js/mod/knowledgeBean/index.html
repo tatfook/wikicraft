@@ -1,0 +1,253 @@
+<style>
+  body {
+    background-color: #f2f2f2;
+  }
+
+  .knowledge-bean {
+    padding: 10px 0;
+  }
+
+  .knowledge-bean > .container {
+    background-color: white;
+  }
+
+  .knowledge-bean > .container hr {
+    margin-top: 110px;
+    margin-bottom: 20px;
+  }
+
+  @media (min-width: 768px) {
+    .knowledge-bean > .container {
+      padding-left: 62px;
+      padding-right: 62px;
+      padding-bottom: 110px;
+    }
+  }
+
+  .knowledge-bean > .container > .row .title {
+    border-bottom: solid 1px #f2f2f2;
+    padding-top: 60px;
+    padding-bottom: 20px;
+    margin: 0;
+    color: #333333;
+  }
+
+  .knowledge-bean > .container .beans-info {
+    padding-top: 20px;
+    padding-bottom: 66px;
+    color: #909090;
+    margin: 0px;
+  }
+
+  .knowledge-bean > .container .beans-info .get-beans {
+    color: #409efe;
+    margin-left: 33px;
+  }
+
+  .knowledge-bean > .container .beans-info .get-beans-popover {
+    max-width: unset;
+  }
+
+  .knowledge-bean > .container .beans-info .get-beans-desc {
+    padding: 16px;
+    font-size: 15px;
+  }
+
+  .knowledge-bean > .container .beans-info .get-beans-desc--title {
+    color: #000000;
+    font-weight: 500;
+    margin-bottom: 20px;
+  }
+
+  .knowledge-bean > .container .beans-info .get-beans-desc--content {
+    color: #808080;
+  }
+
+  .knowledge-bean > .container .head {
+    text-align: center;
+  }
+
+  @media (min-width: 768px) {
+    .knowledge-bean > .container .head {
+      padding-right: 20%;
+      border-right: solid 1px #d2d2d2;
+    }
+  }
+
+  .knowledge-bean > .container .head .head-username {
+    margin-top: 10px;
+  }
+
+  .knowledge-bean > .container .head > img{
+    width: 100%;
+  }
+
+  .knowledge-bean > .container .select-goods-desc {
+    color: #808080;
+    margin: 0;
+    margin-bottom: 25px;
+  }
+
+  .knowledge-bean > .container .goods-list .item {
+    font-size: 13px;
+    color: #959595;
+    text-align: center;
+  }
+
+  .knowledge-bean > .container .goods-list .item .item-thumbnail {
+    width: 52px;
+    height: 52px;
+    margin-bottom: 17px;
+    border-radius: 10px;
+  }
+
+  .knowledge-bean > .container .goods-list .item .item-thumbnail.active {
+    border: solid 2px #10c55b;
+  }
+
+  .knowledge-bean > .container .item-input {
+    display: flex;
+    align-items: center;
+    margin-top: 40px;
+    margin-bottom: 40px;
+  }
+
+  .knowledge-bean > .container .item-input .input-desc {
+    font-size: 15px;
+  }
+
+  .knowledge-bean > .container .item-input .input-controller input {
+    width:50px;
+    color: #10c55b;
+    text-align: center;
+    font-weight: 500;
+  }
+
+  .knowledge-bean > .container .item-input .input-controller .input-group {
+    width: 118px;
+  }
+
+  .knowledge-bean > .container .total {
+    font-size: 16px;
+    color: #808080;
+    margin-bottom: 20px;
+  }
+
+  .knowledge-bean > .container .spend {
+    height: 40px;
+    border: none;
+    background-color: #409efe;
+  }
+</style>
+
+<div class="knowledge-bean" ng-controller="knowledgeBeanController">
+  <div class="container">
+    <div class="row">
+      <div class="col-xs-12 col-sm-12">
+          <h2 class="title">使用知识豆兑换《魔法哈奇》中的物品</h2>
+      </div>
+    </div>
+    <div class="row">
+      <div ng-if="page === SPENDPAGE" class="col-xs-12 col-sm-10">
+        <div class="row">
+          <div class="col-xs-12 col-sm-12">
+            <h4 class="beans-info">
+              你的知识豆：{{myKnowledgeBean}} 知识豆
+              <a class="get-beans"
+                 uib-popover-template="'get-beans-desc'"
+                 popover-class="get-beans-popover"
+                 popover-trigger="'mouseenter'"
+                 popover-placement="bottom-left" >
+                 如何获得？
+              </a>
+              <script type="text/ng-template" id="get-beans-desc">
+                <div class="get-beans-desc">
+                  <div class="get-beans-desc--title">如何获得知识豆？</div>
+                  <div class="get-beans-desc--content">每个课程学习完成均可获得10知识豆的奖励，知识豆可都换哈奇装备</div>
+                </div>
+              </script>
+            </h4>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-xs-12 col-sm-3">
+            <div class="head">
+              <img class="img-circle img-thumbnail" src="/wiki/assets/imgs/default_portrait.png?bust=1537881437">
+              <div class="head-username">{{username}}</div>
+            </div>
+          </div>
+          <div class="col-xs-12 col-sm-5">
+            <form>
+              <div class="form-group">
+                <label>Keepwork 账号</label>
+                <input type="text" class="form-control" ng-model="username" placeholder="Keepwork 账号" disabled="disabled">
+              </div>
+              <div class="form-group">
+                <label>数字账号</label>
+                <select class="form-control" ng-model="selectHaqiUser.text">
+                  <option ng-value="{{item}}" ng-repeat="(index, item) in haqiUsers">{{item}}</option>
+                </select>
+              </div>
+            </form>
+          </div>
+        </div>
+        <hr>
+        <div class="row">
+          <div class="col-xs-12 col-sm-12">
+            <h4 class="select-goods-desc">请选择兑换物品：</h4>
+          </div>
+        </div>
+        <div class="row goods-list">
+          <div class="col-xs-12 col-sm-2 item" ng-repeat="(index, item) in goodsList">
+            <div ng-click="selectGoods(index)">
+              <img class="item-thumbnail"
+                   ng-class="{'active':isActiveGoods(index)}"
+                   ng-src="{{item.thumbnail}}"
+                   data-holder-rendered="true" />
+            </div>
+            <div>
+              {{item['subject']}}
+            </div>
+            <div>
+              单价：{{item['bean']}}知识豆
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-xd-12 col-sm-12">
+            <div class="item-input">
+              <div class="input-desc">数量：</div>
+              <div class="input-controller">
+                <div class="input-group">
+                  <span class="input-group-btn">
+                    <button class="btn btn-default" ng-click="minus()" type="button">-</button>
+                  </span>
+                  <input type="text" class="form-control" ng-value="getCurrentBuyCount()" placeholder="0" disabled="disabled">
+                  <span class="input-group-btn">
+                    <button class="btn btn-default" ng-click="plus()" type="button">+</button>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-xs-12 col-sm-12 total">
+            总价：<b>{{getSpendKnowledgeBean()}}知识豆</b>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-xs-12 col-sm-3">
+            <button ng-click="spend()" class="btn btn-info btn-block spend">立即兑换</button>
+          </div>
+        </div>
+      </div>
+      <div ng-if="page === LOADINGPAGE" class="col-xs-12 col-sm-10">
+        LOADING.....
+      </div>
+      <div class="hidden-xs col-sm-2">
+        魔法哈奇广告
+      </div>
+    </div>
+  </div>
+</div>
