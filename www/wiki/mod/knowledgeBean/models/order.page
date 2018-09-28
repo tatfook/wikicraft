@@ -54,30 +54,58 @@ function order:api_spend(params)
     return errors:wrap(errors.REQUEST_PARAMS_ERROR)
   end
 
-  local buyGoodsList = query.buyGoodsList
-  
-  self.newOrder = self:addOrder(buyGoodsList)
+  self.buyGoodsList = query.buyGoodsList
+  self.newOrder = self:addOrder()
 
   if not self.newOrder then
     return errors:wrap(errors.SERVER_INNER_ERROR)
   end
 
-  if not self:handleBuy(buyGoodsList) then
+  if not self:checkOrderBeans() then
+    return errors:wrap("知识豆不足")
+  end
+
+  if not self:handleBuy() then
     return errors:wrap("充值失败，请确保知识豆充足")
   end
 
   return errors:wrap(self.newOrder)
 end
 
-function order:handleBuy(buyGoodsList)
+function order:checkOrderBeans()
+  if not self.buyGoodsList then
+    return false
+  end
+
+  local curBeans = beans:getUserBeans()
+  local orderBeans = 0
+
+  for key, items in ipairs(self.buyGoodsList) do
+    if items.goodsId then
+      curGoodsInfo = goods:getGoodsById(items.goodsId)
+
+      if curGoodsInfo and curGoodsInfo.bean then
+        orderBeans = orderBeans + tonumber(curGoodsInfo.bean)
+      end
+    end
+  end
+
+  if orderBeans > curBeans then
+    return false
+  else
+    return true
+  end
+end
+
+function order:handleBuy()
   self.index = self.index and self.index + 1 or 1
 
-  if type(buyGoodsList) ~= 'table' then
+  if type(self.buyGoodsList) ~= 'table' then
     self.index = nil
     return false
   end
 
-  local curGoods = buyGoodsList[self.index]
+  local curGoods = self.buyGoodsList[self.index]
 
   if not curGoods or type(curGoods['goodsId']) ~= 'number' then
     self.index = nil
@@ -94,13 +122,19 @@ function order:handleBuy(buyGoodsList)
     return false
   end
 
-  if buyGoodsList[#buyGoodsList + 1] then
-    if not self:handleBuy(buyGoodsList) then
+  if self.buyGoodsList[#self.buyGoodsList + 1] then
+    if not self:handleBuy() then
       return false
     end
   else
     -- update order status
-    return true
+    self.newOrder.status = true
+
+    if self:modifyOrder(self.newOrder) then
+      return true
+    else
+      return false
+    end
   end
 end
 
@@ -130,10 +164,10 @@ function order:buyGoods(curGoods, curGoodsInfo)
   apiParams.price = tostring(curGoodsInfo.bean)
   apiParams.username = self:getUsername() or ''
 
-  url = url .. "?";
+  url = format("%s?", url)
 
   for key,value in pairs(apiParams or {}) do
-    url = url .. key .. "=" .. value .. "&";
+    url = format("%s%s=%s&", url, key, "=", value, "&")
   end
 
   url = string.sub(url, 1, -2);
@@ -150,11 +184,20 @@ function order:buyGoods(curGoods, curGoodsInfo)
   end
 
   -- update goods status
+  if not self.newOrder or not self.newOrder.buyGoodsList then
+    return false
+  end
 
-  return true
+  curGoods.status = true
+
+  if self:modifyOrder(self.newOrder) then
+    return true
+  else
+    return false
+  end
 end
 
-function order:addOrder(buyGoodsList)
+function order:addOrder()
   local orderNo = orderNumber:getOrder()
   local username = self:getUsername()
 
@@ -162,7 +205,11 @@ function order:addOrder(buyGoodsList)
     return false
   end
 
-  for key, item in ipairs(buyGoodsList) do
+  if not self.buyGoodsList then
+    return false
+  end
+
+  for key, item in ipairs(self.buyGoodsList) do
     item.goodsNo = format("%s%s", orderNo, key)
     item.status = false
   end
@@ -171,7 +218,7 @@ function order:addOrder(buyGoodsList)
     username = username,
     orderNo = orderNo,
     status = false,
-    buyGoodsList = buyGoodsList
+    buyGoodsList = self.buyGoodsList
   }
 
   self:db():insertOne(order, resume)
@@ -184,8 +231,20 @@ function order:addOrder(buyGoodsList)
   end
 end
 
-function order:modifyOrder()
+function order:modifyOrder(order)
+  if not order or not order.orderNo then
+    return false
+  end
 
+  self:db():updateOne({orderNo = order.orderNo}, order, resume)
+
+  local err, data = yield()
+
+  if not err and data then
+    return true
+  else
+    return false
+  end
 end
 
 function order:getOrder()
