@@ -113,7 +113,7 @@
             if ($scope.goodsList && $scope.goodsList.length > 0) {
               $scope.goodsList[0].buyCount = 1
 
-              if ($scope.getSpendKnowledgeBean() >= $scope.myKnowledgeBean) {
+              if ($scope.getSpendKnowledgeBean() > $scope.myKnowledgeBean) {
                 $scope.goodsList[0].buyCount = 0
               }
             }
@@ -168,7 +168,7 @@
           selectGoodsInfo.buyCount = selectGoodsInfo.buyCount + 1
         }
 
-        if ($scope.getSpendKnowledgeBean() >= $scope.myKnowledgeBean) {
+        if ($scope.getSpendKnowledgeBean() > $scope.myKnowledgeBean) {
           return selectGoodsInfo.buyCount = selectGoodsInfo.buyCount - 1
         }
       }
@@ -218,7 +218,7 @@
 
         $scope.goodsList[$scope.selectGoodsIndex].buyCount = 1
 
-        if ($scope.getSpendKnowledgeBean() >= $scope.myKnowledgeBean) {
+        if ($scope.getSpendKnowledgeBean() > $scope.myKnowledgeBean) {
           $scope.goodsList[$scope.selectGoodsIndex].buyCount = 0
         }
       }
