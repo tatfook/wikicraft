@@ -64,8 +64,12 @@ function haqi:getUsers(username)
 
   local err, responseData = self:http('GET', url)
 
-  if not err and responseData and responseData.nidlist then
-    local nidlist = responseData.nidlist
+  if not err and
+     responseData and
+     responseData.data then
+
+    local i, j = string.find(responseData.data, 'nidlist=\".+\"')
+    local nidlist = string.sub(responseData.data, i + 9, j - 1)
 
     if type(nidlist) ~= "string" then
       return false
