@@ -216,7 +216,7 @@ function order:buyGoods(curGoods, curGoodsInfo)
     return false
   end
 
-  if not beans:spendBeans(total, curGoodsInfo.subject) then
+  if not beans:spendBeans(total, format("%s X %s", curGoodsInfo.subject or "", curGoods.buyCount or 0)) then
     return false
   end
 
