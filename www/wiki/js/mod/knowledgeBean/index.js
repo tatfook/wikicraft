@@ -162,14 +162,14 @@
           return false
         }
 
-        if ($scope.getSpendKnowledgeBean() >= $scope.myKnowledgeBean) {
-          return false
-        }
-
         if (!selectGoodsInfo.buyCount || typeof(selectGoodsInfo.buyCount) != 'number') {
           selectGoodsInfo.buyCount = 1
         } else {
           selectGoodsInfo.buyCount = selectGoodsInfo.buyCount + 1
+        }
+
+        if ($scope.getSpendKnowledgeBean() >= $scope.myKnowledgeBean) {
+          return selectGoodsInfo.buyCount = selectGoodsInfo.buyCount - 1
         }
       }
 
