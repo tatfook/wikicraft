@@ -64,7 +64,7 @@ function haqi:getUsers(username)
 
   local err, responseData = self:http('GET', url)
 
-  if not err and
+  if err == 200 and
      responseData and
      responseData.data then
 
