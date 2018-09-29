@@ -542,9 +542,7 @@ define([
                     //商品管理判断是否为添加/修改/查看详情
                     $scope.clickGoodsToggle = function (params, item) {
                         $scope.goodsVar = params;
-                        /*if(params == 1){
-                            $scope.getOneGoodsInfo(item);
-                        }*/
+
                         if (params == 2) {
                             $scope.goodsParams = {};
                             $scope.goodsMan = [];
@@ -680,6 +678,7 @@ define([
                         util.post(getOneGoodsUrl, { goods_id: item.goods_id }, function (data) {
                             if (data) {
                                 $scope.goodsParams.subject = data.subject;
+                                $scope.goodsParams.thumbnail = data.thumbnail;
                                 $scope.goodsParams.goods_id = data.goods_id;
                                 $scope.goodsParams.app_goods_id = data.app_goods_id;
                                 $scope.goodsParams.body = data.body;

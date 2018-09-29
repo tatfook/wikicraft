@@ -19,7 +19,7 @@ include_once("./haqi.page")
 local order = inherit(models.abstract.multi_user_base, gettable("models.knowledgeBean.order"))
 
 order.db_name = 'knowledge_bean_order'
-order.showList = {"能量碎片石（1天）","丰厚仙豆口袋（绑定）","激战魔珠","尤诺的雪地车（7天）"} -- "捕鱼达人套餐"
+order.showList = {"能量碎片石（1天）","丰厚仙豆口袋（绑定）","激战魔珠","捕鱼达人套餐","尤诺的雪地车（7天）"}
 
 local goods = models.goods:new()
 local oauth_app = models.oauth_app:new()
