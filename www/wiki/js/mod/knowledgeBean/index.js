@@ -109,14 +109,7 @@
         function handleGoodsList(data) {
           if (Array.isArray(data)) {
             $scope.goodsList = data
-
-            if ($scope.goodsList && $scope.goodsList.length > 0) {
-              $scope.goodsList[0].buyCount = 1
-
-              if ($scope.getSpendKnowledgeBean() > $scope.myKnowledgeBean) {
-                $scope.goodsList[0].buyCount = 0
-              }
-            }
+            $scope.updateInitSelectGoods()
           }
         }
 
@@ -232,11 +225,27 @@
           function(data) {
             if (data && data.beans) {
               $scope.myKnowledgeBean = data.beans || 0
+              $scope.updateInitSelectGoods()
             }
           },
           function() {},
           false
         )
+      }
+
+      $scope.updateInitSelectGoods = function() {
+        $scope.updateInitSelectGoods.times = $scope.updateInitSelectGoods.times ? $scope.updateInitSelectGoods.times + 1 : 1
+        // when getBeansCount and getGoodsList finish, it will be execute
+
+        if ($scope.updateInitSelectGoods.times == 2) {
+          if ($scope.goodsList && $scope.goodsList.length > 0) {
+            $scope.goodsList[0].buyCount = 1
+  
+            if ($scope.getSpendKnowledgeBean() > $scope.myKnowledgeBean) {
+              $scope.goodsList[0].buyCount = 0
+            }
+          }
+        }
       }
 
       $scope.getUsername = function() {
