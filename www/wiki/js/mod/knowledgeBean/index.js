@@ -80,6 +80,8 @@
           return false
         }
 
+        $scope.page = $scope.LOADINGPAGE
+
         function handleSpend(data) {
           if (data && data.status === true) {
             alert("购买成功！")
@@ -90,9 +92,15 @@
           location.reload()
         }
 
+        function handleSpendFail() {
+          alert("购买失败！")
+
+          location.reload()
+        }
+
         var url = baseUrl + 'order/spend'
 
-        util.post(url, { buyGoodsList: buyGoodsList, selectHaqiUser: String($scope.selectHaqiUser.text || '') }, handleSpend, function() {}, false)
+        util.post(url, { buyGoodsList: buyGoodsList, selectHaqiUser: String($scope.selectHaqiUser.text || '') }, handleSpend, handleSpendFail, false)
       }
 
       $scope.getGoodsList = function() {
