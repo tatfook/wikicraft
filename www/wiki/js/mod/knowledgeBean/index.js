@@ -28,7 +28,7 @@
       $scope.spendKnowledgeBean = 0
       $scope.goodsList = []
       $scope.selectGoodsIndex = 0
-      $scope.selectHaqiUser = {}
+      $scope.selectHaqiUser = { text: "请选择"}
       $scope.haqiUsers = []
       $scope.userThumbnail = ''
 
@@ -57,7 +57,7 @@
       }
 
       $scope.spend = function() {
-        if (!$scope.selectHaqiUser.text) {
+        if (!$scope.selectHaqiUser.text || $scope.selectHaqiUser.text == "请选择") {
           alert("没有选择数字账号")
           return false
         }
@@ -85,11 +85,11 @@
         function handleSpend(data) {
           if (data && data.status === true) {
             alert("购买成功！")
+            location.href = '/l/#/student/bean'
           } else {
             alert("购买失败！")
+            location.reload()
           }
-
-          location.reload()
         }
 
         function handleSpendFail() {
@@ -196,20 +196,18 @@
       }
 
       $scope.getUsername = function() {
-        setTimeout(function() {
-          if (Account.isAuthenticated() && Account.user) {
-            $scope.username = Account.user.username
-            $scope.userThumbnail = Account.user.portrait
-          } else {
-            modal('controller/loginController', {
-              controller: 'loginController',
-              size: 'lg',
-              backdrop: true
-            }, 
-            function (result) { }, 
-            function (result) { });
-          }
-        }, 0)
+        if (Account.isAuthenticated() && Account.user) {
+          $scope.username = Account.user.username
+          $scope.userThumbnail = Account.user.portrait
+        } else {
+          modal('controller/loginController', {
+            controller: 'loginController',
+            size: 'lg',
+            backdrop: true
+          }, 
+          function (result) { }, 
+          function (result) { });
+        }
       }
 
       $scope.getHaqiUsers = function () {
