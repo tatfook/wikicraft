@@ -212,7 +212,7 @@ function order:buyGoods(curGoods, curGoodsInfo)
 
 	local err, data = self:http("GET", url);
 
-  if err or not data then
+  if err ~= 200 or not data then
     return false
   end
 
