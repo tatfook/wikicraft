@@ -85,11 +85,11 @@
         function handleSpend(data) {
           if (data && data.status === true) {
             alert("购买成功！")
-            location.href = '/l/#/student/bean'
           } else {
             alert("购买失败！")
-            location.reload()
           }
+
+          location.reload()
         }
 
         function handleSpendFail() {
@@ -109,6 +109,14 @@
         function handleGoodsList(data) {
           if (Array.isArray(data)) {
             $scope.goodsList = data
+
+            if ($scope.goodsList && $scope.goodsList.length > 0) {
+              $scope.goodsList[0].buyCount = 1
+
+              if ($scope.getSpendKnowledgeBean() >= $scope.myKnowledgeBean) {
+                $scope.goodsList[0].buyCount = 0
+              }
+            }
           }
         }
 
@@ -154,10 +162,28 @@
           return false
         }
 
+        if ($scope.getSpendKnowledgeBean() >= $scope.myKnowledgeBean) {
+          return false
+        }
+
         if (!selectGoodsInfo.buyCount || typeof(selectGoodsInfo.buyCount) != 'number') {
           selectGoodsInfo.buyCount = 1
         } else {
           selectGoodsInfo.buyCount = selectGoodsInfo.buyCount + 1
+        }
+      }
+
+      $scope.isShowWarning = function() {
+        var selectGoodsInfo = $scope.selectGoodsInfo()
+        
+        if (!selectGoodsInfo || !selectGoodsInfo.subject) {
+          return false
+        }
+
+        if (selectGoodsInfo.subject == '捕鱼达人套餐') {
+          return true
+        } else {
+          return false
         }
       }
 
@@ -177,6 +203,24 @@
 
       $scope.selectGoods = function(index) {
         $scope.selectGoodsIndex = index
+
+        if(!Array.isArray($scope.goodsList)){
+          return false
+        }
+
+        for (var x in $scope.goodsList) {
+          var item = $scope.goodsList[x]
+
+          if(item) {
+            item.buyCount = 0
+          }
+        }
+
+        $scope.goodsList[$scope.selectGoodsIndex].buyCount = 1
+
+        if ($scope.getSpendKnowledgeBean() >= $scope.myKnowledgeBean) {
+          $scope.goodsList[$scope.selectGoodsIndex].buyCount = 0
+        }
       }
 
       $scope.getBeansCount = function() {
@@ -187,7 +231,7 @@
           {},
           function(data) {
             if (data && data.beans) {
-              $scope.myKnowledgeBean = data.beans
+              $scope.myKnowledgeBean = data.beans || 0
             }
           },
           function() {},
@@ -200,6 +244,8 @@
           $scope.username = Account.user.username
           $scope.userThumbnail = Account.user.portrait
         } else {
+          $scope.isShowModal = true
+
           modal('controller/loginController', {
             controller: 'loginController',
             size: 'lg',
@@ -228,6 +274,11 @@
         $scope.getGoodsList()
         $scope.getBeansCount()
         $scope.getUsername()
+
+        if (!$scope.isShowModal) {
+          setTimeout($scope.getUsername, 200)
+        }
+
         $scope.getHaqiUsers()
       }
 
