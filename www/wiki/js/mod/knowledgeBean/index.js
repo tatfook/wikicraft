@@ -259,8 +259,9 @@
         }
       }
 
-      $scope.getUsername = function() {
+      function getUsername() {
         var cookie = document.cookie.split(";")
+        var token = ''
 
         for (var item in cookie) {
           var curCookie = cookie[item]
@@ -272,7 +273,7 @@
           var currentItem = curCookie.replace(/ /g, '')
 
           if(currentItem.substring(0, 6) == "token=") {
-            this.token = currentItem.substring(6)
+            token = currentItem.substring(6)
           }
         }
 
@@ -286,11 +287,17 @@
           function (result) { });
         }
 
-        if (!this.token) {
+        if (!token) {
           showModal()
+          return false
         }
 
         if (!Account || !Account.user || !Account.user.username || !Account.user.portrait) {
+          setTimeout(
+            function() {
+              $scope.$apply(getUsername)
+            }, 500
+          )
           return false
         }
 
@@ -315,8 +322,14 @@
       function init() {
         $scope.getGoodsList()
         $scope.getBeansCount()
-        $scope.getUsername()
         $scope.getHaqiUsers()
+
+        setTimeout(
+          function() {
+            $scope.$apply(getUsername)
+          },
+          0
+        )
       }
 
       $scope.$watch('$viewContentLoaded', init)
