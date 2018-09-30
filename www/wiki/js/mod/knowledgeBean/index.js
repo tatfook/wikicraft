@@ -260,12 +260,23 @@
       }
 
       $scope.getUsername = function() {
-        if ($rootScope.isLogin && Account.user) {
-          $scope.username = Account.user.username
-          $scope.userThumbnail = Account.user.portrait
-        } else {
-          $scope.isShowModal = true
+        var cookie = document.cookie.split(";")
 
+        for (var item in cookie) {
+          var curCookie = cookie[item]
+
+          if (typeof(curCookie) != 'string') {
+            return false
+          }
+
+          var currentItem = curCookie.replace(/ /g, '')
+
+          if(currentItem.substring(0, 6) == "token=") {
+            this.token = currentItem.substring(6)
+          }
+        }
+
+        function showModal() {
           modal('controller/loginController', {
             controller: 'loginController',
             size: 'lg',
@@ -274,6 +285,32 @@
           function (result) { }, 
           function (result) { });
         }
+
+        if (!this.token) {
+          showModal()
+        }
+
+        var url = config.apiUrlPrefix + 'user'
+
+        $.ajax({
+          type: 'GET',
+          timeout: 10,
+          headers: {
+              'Authorization': 'Bearer ' + this.token
+          },
+          url: url,
+          success: function(response) {
+            if (response && response.username && response.portrait) {
+              $scope.username = response.username
+              $scope.userThumbnail = response.portrait
+            } else {
+              showModal()
+            }
+          },
+          error: function(){
+            showModal()
+          }
+        })
       }
 
       $scope.getHaqiUsers = function () {
