@@ -85,16 +85,16 @@
 
         function handleSpend(data) {
           if (data && data.status === true) {
-            alert("购买成功！")
+            alert("兑换成功！")
           } else {
-            alert("购买失败！")
+            alert("兑换失败！")
           }
 
           location.reload()
         }
 
         function handleSpendFail() {
-          alert("购买失败！")
+          alert("兑换失败！")
 
           location.reload()
         }
@@ -172,7 +172,7 @@
 
         if ($scope.getSpendKnowledgeBean() > $scope.myKnowledgeBean) {
           selectGoodsInfo.buyCount = selectGoodsInfo.buyCount - 1
-          alert("您的知识豆不足以购买更多的道具")
+          alert("您的知识豆不足以兑换更多的道具")
           return false
         }
       }
