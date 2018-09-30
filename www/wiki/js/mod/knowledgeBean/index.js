@@ -290,27 +290,12 @@
           showModal()
         }
 
-        var url = config.apiUrlPrefix + 'user/getProfile'
+        if (!Account || !Account.user || !Account.user.username || !Account.user.portrait) {
+          return false
+        }
 
-        $.ajax({
-          type: 'GET',
-          timeout: 10,
-          headers: {
-              'Authorization': 'Bearer ' + this.token
-          },
-          url: url,
-          success: function(response) {
-            if (response && response.data && response.data.username && response.data.portrait) {
-              $scope.username = response.data.username
-              $scope.userThumbnail = response.data.portrait
-            } else {
-              showModal()
-            }
-          },
-          error: function(){
-            showModal()
-          }
-        })
+        $scope.username = Account.user.username
+        $scope.userThumbnail = Account.user.portrait
       }
 
       $scope.getHaqiUsers = function () {
