@@ -290,7 +290,7 @@
           showModal()
         }
 
-        var url = config.apiUrlPrefix + 'user'
+        var url = config.apiUrlPrefix + 'user/getProfile'
 
         $.ajax({
           type: 'GET',
@@ -300,9 +300,9 @@
           },
           url: url,
           success: function(response) {
-            if (response && response.username && response.portrait) {
-              $scope.username = response.username
-              $scope.userThumbnail = response.portrait
+            if (response && response.data && response.data.username && response.data.portrait) {
+              $scope.username = response.data.username
+              $scope.userThumbnail = response.data.portrait
             } else {
               showModal()
             }
