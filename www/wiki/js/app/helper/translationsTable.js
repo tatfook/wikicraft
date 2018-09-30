@@ -3375,6 +3375,11 @@ define([], function () {
           "en": "IICC"
       },
       {
+        "_key": "创意时报",
+        "zh-cn": "创意时报",
+        "en": "Creativity Times"
+      },
+      {
           "_key": "Paracraft 编程学习",
           "zh-cn": "Paracraft 编程学习",
           "en": "Paracraft"
