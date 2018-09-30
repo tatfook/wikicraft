@@ -103,6 +103,14 @@
         util.post(url, { buyGoodsList: buyGoodsList, selectHaqiUser: String($scope.selectHaqiUser.text || '') }, handleSpend, handleSpendFail, false)
       }
 
+      $scope.isDisableSpend = function() {
+        if ($scope.getCurrentBuyCount() === 0 || $scope.selectHaqiUser.text == "请选择") {
+          return 'disabled'
+        } else {
+          return ''
+        }
+      }
+
       $scope.getGoodsList = function() {
         var url = baseUrl + 'order/getGoodsList'
 
@@ -162,7 +170,9 @@
         }
 
         if ($scope.getSpendKnowledgeBean() > $scope.myKnowledgeBean) {
-          return selectGoodsInfo.buyCount = selectGoodsInfo.buyCount - 1
+          selectGoodsInfo.buyCount = selectGoodsInfo.buyCount - 1
+          alert("您的知识豆不足以购买更多的道具")
+          return false
         }
       }
 
