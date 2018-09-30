@@ -16,10 +16,11 @@
   var baseUrl = config.httpProto + '://' + config.apiHost + '/api/mod/knowledgeBean/models/'
 
   app.registerController('knowledgeBeanController', [
+    '$rootScope',
     '$scope',
     'Account',
     'modal',
-    function($scope, Account, modal) {
+    function($rootScope, $scope, Account, modal) {
       $scope.SPENDPAGE = 'SPENDPAGE'
       $scope.LOADINGPAGE = 'LOADINGPAGE'
 
@@ -259,7 +260,7 @@
       }
 
       $scope.getUsername = function() {
-        if (Account.isAuthenticated() && Account.user) {
+        if ($rootScope.isLogin && Account.user) {
           $scope.username = Account.user.username
           $scope.userThumbnail = Account.user.portrait
         } else {
@@ -293,11 +294,6 @@
         $scope.getGoodsList()
         $scope.getBeansCount()
         $scope.getUsername()
-
-        if (!$scope.isShowModal) {
-          setTimeout($scope.getUsername, 200)
-        }
-
         $scope.getHaqiUsers()
       }
 
