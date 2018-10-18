@@ -465,22 +465,6 @@ function pay:validate(appGoodsInfo, query)
 	return validate;
 end
 
-function pay:http(method, url, params, headers)
-	if(not headers) then
-		headers = {};
-	end
-
-	System.os.GetUrl({
-		url     = url,
-		headers = headers,
-		form    = params,
-		method  = method,
-		json    = true,
-	},resume);
-
-	return yield();
-end
-
 function pay:getNow()
 	return ParaGlobal.GetDateFormat("yyyy-MM-dd") .. " " .. ParaGlobal.GetTimeFormat("HH:mm:ss");
 end

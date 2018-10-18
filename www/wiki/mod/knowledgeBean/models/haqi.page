@@ -1,0 +1,84 @@
+<?npl
+--[[
+Title: proxy haqi serer api
+Author(s): big
+Date: 2018.9.28
+Place: Foshan
+Desc: proxy haqi serer api
+Api Example:
+/api/mod/knowledgeBean/models/order/... (models api)
+]]
+
+include_once(WIKI_ROOT .. "models/abstract/multi_user_base.page")
+include_once(WIKI_ROOT .. "models/oauth_app.page")
+
+local haqi = inherit(models.abstract.multi_user_base, gettable("models.knowledgeBean.haqi"))
+
+haqi.app_name = "魔法哈奇"
+
+local oauth_app = models.oauth_app:new()
+
+function haqi:ctor()
+end
+
+function haqi:getApi()
+  local appInfo = oauth_app:getByAppName(self.app_name)
+
+  if not appInfo or not appInfo.payCallbackUrl then
+    return false
+  end
+
+  return appInfo.payCallbackUrl
+end
+
+function haqi:api_getUsers()
+  self:ensureAuthenticated()
+
+  local username = self:getUsername()
+
+  if not username then
+    return errors:wrap("校验用户失败")
+  end
+
+  local userList = self:getUsers(username)
+
+  if userList then
+    return errors:wrap(nil, userList)
+  else
+    return errors:wrap(errors.NOT_FOUND)
+  end
+end
+
+function haqi:getUsers(username)
+  if not username then
+    return false
+  end
+
+  local url = self:getApi()
+
+  if not url then
+    return false
+  end
+
+  url = format("%s?url=querynid&platid=7&user_oid=%s", url, username)
+
+  local err, responseData = self:http('GET', url)
+
+  if err == 200 and
+     responseData and
+     responseData.data then
+
+    local i, j = string.find(responseData.data, 'nidlist=\".+\"')
+    local nidlist = string.sub(responseData.data, i + 9, j - 1)
+
+    if type(nidlist) ~= "string" then
+      return false
+    end
+
+    local nidlistArray = commonlib.split(nidlist, ",")
+
+    return nidlistArray
+  else
+    return false
+  end
+end

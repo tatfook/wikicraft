@@ -698,11 +698,17 @@
                             <span translate="应用中心"></span>
                         </li>
                         <li ng-if="!isGlobalVersion" class="iconfont-icon">
-                            <a href="http://iicc.keepwork.com" target="_blank">
-                                <img class="iicc-logo" ng-src="{{getImageUrl('iicc_logo.png', imgsPath)}}" alt="">
-                                {{"国际智能创意大赛" | translate}}
+                            <a href="//keepwork.com/official/creativeTimes/latest" target="_blank">
+                                <img class="iicc-logo" ng-src="{{getImageUrl('times_logo.png', imgsPath)}}" alt="">
+                                {{"创意时报" | translate}}
                             </a>
                         </li>
+                        <li ng-if="!isGlobalVersion" class="iconfont-icon">
+                          <a href="https://keepwork.com/official/paracraft/index" target="_blank">
+                              <img class="iicc-logo" ng-src="{{getImageUrl('paracraft_logo.png', imgsPath)}}" alt="">
+                              {{"Paracraft 编程学习" | translate}}
+                          </a>
+                      </li>
                     </ul>
                     <ul class="nav navbar-nav navbar-left" ng-show="!isLogin">
                         <li class="iconfont-icon" ng-click="goHomePage(true)">
@@ -710,9 +716,15 @@
                         <li class="iconfont-icon" ng-click="goApps()">
                             <i class="iconfont icon-yingyongguanli"></i>{{"应用中心" | translate}}</li>
                         <li ng-if="!isGlobalVersion" class="iconfont-icon">
-                            <a href="http://iicc.keepwork.com" target="_blank">
-                                <img class="iicc-logo" ng-src="{{getImageUrl('iicc_logo.png', imgsPath)}}" alt="">
-                                {{"国际智能创意大赛" | translate}}
+                            <a href="//keepwork.com/official/creativeTimes/latest" target="_blank">
+                                <img class="iicc-logo" ng-src="{{getImageUrl('times_logo.png', imgsPath)}}" alt="">
+                                {{"创意时报" | translate}}
+                            </a>
+                        </li>
+                        <li ng-if="!isGlobalVersion" class="iconfont-icon">
+                            <a href="https://keepwork.com/official/paracraft/index" target="_blank">
+                                <img class="iicc-logo" ng-src="{{getImageUrl('paracraft_logo.png', imgsPath)}}" alt="">
+                                {{"Paracraft 编程学习" | translate}}
                             </a>
                         </li>
                     </ul>

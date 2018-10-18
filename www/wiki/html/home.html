@@ -469,13 +469,20 @@
     <div ng-if="!isGlobalVersion" class="swiper-container banner-swiper">
       <div class="swiper-wrapper">
         <div class="swiper-slide">
+            <a href="//keepwork.com/official/creativeTimes/1st_Edition" target="_blank">
+              <img ng-src="{{getImageUrl('wiki_banner_Times.jpg', imgsPath)}}" alt="">
+            </a>
+          </div>
+        <div class="swiper-slide">
+            <a href="https://keepwork.com/official/paracraft/index" target="_blank">
+              <img ng-src="{{getImageUrl('wiki_carousel_banner_paracraft.png', imgsPath)}}" alt="">
+            </a>
+          </div>
+        <div class="swiper-slide">
             <a href="http://iicc.keepwork.com" target="_blank">
               <img ng-src="{{getImageUrl('wiki_carousel_banner1.jpg', imgsPath)}}" alt="">
             </a>
           </div>
-        <div class="swiper-slide">
-          <img ng-src="{{getImageUrl('wiki_carousel_banner2.jpg', imgsPath)}}" alt="">
-        </div>
       </div>
       <div class="swiper-button-prev swiper-button-white"></div>
       <div class="swiper-button-next swiper-button-white"></div>

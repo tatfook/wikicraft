@@ -490,9 +490,16 @@ function data_source:api_export(params)
 
 	local limit = params.limit or 1000000
 	local offset = params.offset or 0
-	local userDB = models.user:new()
 	self:db():find({_id={gt=0, offset=offset, limit=limit}}, resume)
 	local err, list = yield()
 
+	local userDB = models.user:new():db()
+	for i, dataSource in ipairs(list) do
+		userDB:findOne({['+username']={dataSource.username}}, resume)
+		local err, user = yield()
+		if user then
+			dataSource.user_id = user._id
+		end
+	end
 	return list;
 end
