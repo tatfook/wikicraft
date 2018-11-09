@@ -133,12 +133,12 @@ function pay:api_createCharge(params)
 	if(not query.username) then
 		return errors:wrap(errors.REQUEST_PARAMS_ERROR);
 	else
-		user:db():findOne({["+username"]={query.username}}, resume);
-		local _, userinfo  = yield();
+		--user:db():findOne({["+username"]={query.username}}, resume);
+		--local _, userinfo  = yield();
 
-		if(not userinfo) then
-			return errors:wrap(errors.NOT_FOUND);
-		end
+		--if(not userinfo) then
+			--return errors:wrap(errors.NOT_FOUND);
+		--end
 	end
 
 	local trade_no = tradeno:getTradeNo();
