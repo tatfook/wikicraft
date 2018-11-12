@@ -746,10 +746,10 @@ function user:api_register(params)
 		return errors:wrap(errors:new("用户名只能由字母和数字组成"))
 	end
 
-	local isOk = sensitiveWordFilter({username=params.username})
-	if not isOk then
-		return errors:wrap("含有非法字符")
-	end
+	--local isOk = sensitiveWordFilter({username=params.username})
+	--if not isOk then
+		--return errors:wrap("含有非法字符")
+	--end
 
 	-- 查找用户名是否可用
 	if self:api_checkUsername({username=params.username}).data == 0 then
