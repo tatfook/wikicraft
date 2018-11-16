@@ -401,7 +401,8 @@ function oauth_app:api_getTokenByCode(params)
 	end
 
 	local secret = KEEPWORK["config"][CURRENT_ENV]["wiki"]["secret"]
-	local token = jwt.encode({authway="oauth", username=userinfo.username},secret["token_secret"], nil, secret["token_expire"] or 3600)
+	local token = encodeJWT({authway="oauth", userId=userinfo._id, username=userinfo.username})
+	--local token = jwt.encode({authway="oauth", username=userinfo.username},secret["token_secret"], nil, secret["token_expire"] or 3600)
 
 	response:status(200);
 	return {token=token};
