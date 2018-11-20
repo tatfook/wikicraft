@@ -126,42 +126,42 @@ KEEPWORK["request_before_filter"] = {
 		testFilter,
 	},
 	-- 登录限制
-	[filter.API_URL_PREFIX .. "user/login"] = {
-		requestCountLimit({
-			typ=filter.LOGIN,
-			getKey=function(key)
-				local params = request:getparams()
-				if not params.username then
-					return false, ""
-				end
+	--[filter.API_URL_PREFIX .. "user/login"] = {
+		--requestCountLimit({
+			--typ=filter.LOGIN,
+			--getKey=function(key)
+				--local params = request:getparams()
+				--if not params.username then
+					--return false, ""
+				--end
 
-				key = key .. "_" .. params.username
-				return true, key
-			end,
-			count=20,
-		}),
-	},
+				--key = key .. "_" .. params.username
+				--return true, key
+			--end,
+			--count=20,
+		--}),
+	--},
 	-- 注册限制
-	[filter.API_URL_PREFIX .. "user/register"] = {
-		requestCountLimit({typ="register"}),
-		--sensitiveWordFilter,
-	},
+	--[filter.API_URL_PREFIX .. "user/register"] = {
+		--requestCountLimit({typ="register"}),
+		----sensitiveWordFilter,
+	--},
 	-- 获得用户配置信息
-	[filter.API_URL_PREFIX .. "user/getProfile"] = {
-		authenticated,
-	},
-	-- 邮件验证
-	[filter.API_URL_PREFIX .. "user/verifyEmailOne"] = {
-		requestCountLimit({typ="verifyEmailOne", count=30, time=300}),
-	},
-	-- 手机验证
-	[filter.API_URL_PREFIX .. "verifyCellphoneOne"] = {
-		requestCountLimit({typ="verifyCellphoneOne", count=30, time=300}),
-	},
-	-- 添加cname
-	[filter.API_URL_PREFIX .. "website_domain/upsert"] = {
-		authenticatedVip,
-	},
+	--[filter.API_URL_PREFIX .. "user/getProfile"] = {
+		--authenticated,
+	--},
+	---- 邮件验证
+	--[filter.API_URL_PREFIX .. "user/verifyEmailOne"] = {
+		--requestCountLimit({typ="verifyEmailOne", count=30, time=300}),
+	--},
+	---- 手机验证
+	--[filter.API_URL_PREFIX .. "verifyCellphoneOne"] = {
+		--requestCountLimit({typ="verifyCellphoneOne", count=30, time=300}),
+	--},
+	---- 添加cname
+	--[filter.API_URL_PREFIX .. "website_domain/upsert"] = {
+		--authenticatedVip,
+	--},
 
 	--[filter.API_URL_PREFIX .. "website/updateByName"] = {
 		--sensitiveWordFilter,
@@ -172,9 +172,9 @@ KEEPWORK["request_before_filter"] = {
 	--[filter.API_URL_PREFIX .. "website/createSite"] = {
 		--sensitiveWordFilter,
 	--},
-	[filter.API_URL_PREFIX .. "user/updateUserInfo"] = {
-		sensitiveWordFilter,
-	},
+	--[filter.API_URL_PREFIX .. "user/updateUserInfo"] = {
+		--sensitiveWordFilter,
+	--},
 }
 
 
