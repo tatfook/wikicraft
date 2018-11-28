@@ -734,7 +734,7 @@ function user:api_register(params)
 		return errors:wrap(err)
 	end
 	params.username = string.lower(params.username)
-	if #params.username < 4 or #params.username > 30 then
+	if #params.username < 4 or #params.username > 60 then
 		return errors:wrap(errors:new("用户名不合法"))
 	end
 
